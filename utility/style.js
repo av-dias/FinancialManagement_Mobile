@@ -22,7 +22,7 @@ export const _styles = StyleSheet.create({
     width: "100%",
   },
   title: { fontSize: 40, alignContent: "center", textAlign: "center" },
-  textInputLogin: { fontSize: 20, textAlign: "center", backgroundColor: "white", borderRadius: 2 },
+  textInputLogin: { fontSize: 20, padding: 5, textAlign: "center", backgroundColor: "white", borderRadius: 2 },
   text: { fontSize: 20, textAlign: "center" },
   emailText: { fontSize: 20, textAlign: "center" },
   tinyLogo: {
@@ -36,7 +36,7 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
   },
   form: { gap: 20, padding: 10, width: "100%", flex: 2 },
-  row: { flexDirection: "row", justifyContent: "center", width: "100%", backgroundColor: "white" },
+  row: { flexDirection: "row", justifyContent: "center", width: "100%", backgroundColor: "white", borderRadius: 4 },
   test: { backgroundColor: "black" },
   header: {
     padding: 10,
@@ -62,6 +62,7 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 12,
     paddingHorizontal: 32,
+    marginVertical: 10,
     borderRadius: 4,
     elevation: 3,
     backgroundColor: "#2296F3",

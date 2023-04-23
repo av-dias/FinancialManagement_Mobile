@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, Image, Button } from "react-native";
+import { StyleSheet, Text, View, TextInput, Image, Button, Pressable } from "react-native";
 import { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { clearElementValueById } from "../functions/elements";
@@ -33,8 +33,12 @@ export default function Login({ navigation }) {
           <TextInput style={styles.textInputLogin} placeholder="email" onChangeText={setEmail} />
           <Text style={styles.textInputLogin}>@gmail.com</Text>
         </View>
-        <TextInput style={styles.textInputLogin} secureTextEntry={true} placeholder="password" onChangeText={setPassword} />
-        <Button style={styles.button} title="Submit" onPress={handleLogin} />
+        <View style={styles.row}>
+          <TextInput style={styles.textInputLogin} secureTextEntry={true} placeholder="password" onChangeText={setPassword} />
+        </View>
+        <Pressable style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </Pressable>
       </View>
     </View>
   );
