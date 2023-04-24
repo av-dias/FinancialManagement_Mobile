@@ -42,6 +42,24 @@ export default function Home({ navigation }) {
         <Pressable style={styles.button} onPress={() => alert("Transaction")}>
           <Text style={styles.buttonText}>Transaction</Text>
         </Pressable>
+        <Pressable
+          style={styles.button}
+          onPress={async () => {
+            let info = await getFromStorage("purchases");
+            alert(info);
+          }}
+        >
+          <Text style={styles.buttonText}>Logs</Text>
+        </Pressable>
+        <Pressable
+          style={styles.button}
+          onPress={async () => {
+            let info = await saveToStorage("purchases", "");
+            alert("Cleared");
+          }}
+        >
+          <Text style={styles.buttonText}>Clear Logs</Text>
+        </Pressable>
       </View>
     </View>
   );
