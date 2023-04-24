@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 
 import { saveToStorage, getFromStorage } from "../utility/secureStorage";
 import { _styles } from "../utility/style";
-export default function Home() {
+
+export default function Home({ navigation }) {
   const styles = _styles;
   const [onLoadData, setOnLoadData] = useState("");
 
@@ -32,7 +33,7 @@ export default function Home() {
         <Text style={styles.headerText}>{onLoadData}</Text>
       </View>
       <View style={styles.form}>
-        <Pressable style={styles.button} onPress={() => alert("Purchase")}>
+        <Pressable style={styles.button} onPress={() => navigation.navigate("Purchase")}>
           <Text style={styles.buttonText}>Purchase</Text>
         </Pressable>
         <Pressable style={styles.button} onPress={() => alert("Income")}>
