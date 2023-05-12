@@ -35,7 +35,7 @@ export const _styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  form: { gap: 20, padding: 10, width: "100%", flex: 2 },
+  form: { gap: 20, padding: 10, width: "100%", flex: 3 },
   row: { flexDirection: "row", justifyContent: "center", width: "100%", backgroundColor: "white", borderRadius: 4 },
   test: { backgroundColor: "black" },
   header: {
