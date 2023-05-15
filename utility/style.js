@@ -24,6 +24,7 @@ export const _styles = StyleSheet.create({
   title: { padding: 10, fontSize: 40, alignContent: "center", textAlign: "center", width: "100%" },
   textInputLogin: { fontSize: 20, padding: 5, textAlign: "center", backgroundColor: "white", borderRadius: 2 },
   text: { fontSize: 20, textAlign: "center" },
+  smallText: { fontSize: 12, textAlign: "center" },
   emailText: { fontSize: 20, textAlign: "center" },
   tinyLogo: {
     width: 50,
@@ -35,7 +36,8 @@ export const _styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  form: { gap: 20, padding: 10, width: "100%", flex: 3 },
+  form: { gap: 20, paddingBottom: 100, padding: 10, width: "100%", flex: 3 },
+  tableInfo: { gap: 20, padding: 10, width: "100%", flex: 3, paddingTop: 40 },
   row: { flexDirection: "row", justifyContent: "center", width: "100%", backgroundColor: "white", borderRadius: 4 },
   test: { backgroundColor: "black" },
   header: {

@@ -1,8 +1,8 @@
 import navLogo from "../images/logo.png";
-import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
+import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
-import { Calendar, LocaleConfig } from "react-native-calendars";
 import CalendarStrip from "react-native-calendar-strip";
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
 
 import { saveToStorage, getFromStorage } from "../utility/secureStorage";
 import { _styles } from "../utility/style";
@@ -13,7 +13,7 @@ export default function Purchase() {
   const [type, setType] = useState("");
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
-  const [date, setDate] = useState("");
+  const [list, setList] = useState([]);
 
   const getUser = async () => {
     try {
@@ -25,9 +25,15 @@ export default function Purchase() {
   };
 
   const handlePurchase = async () => {
+    let date = this._calendar.getSelectedDate();
+
+    console.log(type, name, value, date);
+    if (type == "" || name == "" || value == "" || date == "" || !date) {
+      alert("Please fill all fields.");
+      return;
+    }
     try {
       let purchases = await getFromStorage("purchases");
-      let date = this._calendar.getSelectedDate();
       let newPurchase = { type: type, name: name, value: value, dop: date.toISOString().split("T")[0] };
 
       if (purchases) {
@@ -38,6 +44,10 @@ export default function Purchase() {
       }
 
       await saveToStorage("purchases", JSON.stringify(purchases));
+      setList([[type, name, value, date.toISOString().split("T")[0]], ...list].slice(0, 3));
+      this.textInputValue.clear();
+      setValue("");
+
       console.log("Purchase: " + purchases);
     } catch (err) {
       console.log("Purchase: " + err);
@@ -53,6 +63,10 @@ export default function Purchase() {
     fetchData();
   }, []);
 
+  const state = {
+    tableHead: ["Type", "Name", "Value", "Date"],
+  };
+
   return (
     <View style={styles.page}>
       <View style={styles.title}>
@@ -61,7 +75,15 @@ export default function Purchase() {
       <View style={styles.form}>
         <TextInput style={styles.textInputLogin} placeholder="Type" onChangeText={setType} />
         <TextInput style={styles.textInputLogin} placeholder="Name" onChangeText={setName} />
-        <TextInput keyboardType="numeric" style={styles.textInputLogin} placeholder="Value" onChangeText={setValue} />
+        <TextInput
+          ref={(input) => {
+            this.textInputValue = input;
+          }}
+          keyboardType="numeric"
+          style={styles.textInputLogin}
+          placeholder="Value"
+          onChangeText={setValue}
+        />
         <CalendarStrip
           ref={(component) => (this._calendar = component)}
           calendarAnimation={{ type: "sequence", duration: 15 }}
@@ -77,6 +99,18 @@ export default function Purchase() {
           disabledDateNumberStyle={{ color: "grey" }}
           iconContainer={{ flex: 0.1 }}
         />
+      </View>
+      <View style={styles.tableInfo}>
+        <Table borderStyle={{ borderColor: "transparent" }}>
+          <Row data={state.tableHead} style={styles.head} />
+          {list.map((rowData, index) => (
+            <TableWrapper key={index} style={styles.row}>
+              {rowData.map((cellData, cellIndex) => (
+                <Cell key={cellIndex} data={cellData} />
+              ))}
+            </TableWrapper>
+          ))}
+        </Table>
       </View>
       <Pressable style={styles.button} onPress={handlePurchase}>
         <Text style={styles.buttonText}>Submit</Text>
