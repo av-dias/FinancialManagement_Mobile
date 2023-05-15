@@ -27,7 +27,8 @@ export default function Purchase() {
   const handlePurchase = async () => {
     try {
       let purchases = await getFromStorage("purchases");
-      let newPurchase = { type: type, name: name, value: value, dop: this._calendar.getSelectedDate() };
+      let date = this._calendar.getSelectedDate();
+      let newPurchase = { type: type, name: name, value: value, dop: date.toISOString().split("T")[0] };
 
       if (purchases) {
         purchases = JSON.parse(purchases);
