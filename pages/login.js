@@ -14,7 +14,7 @@ export default function Login({ navigation }) {
 
   const handleLogin = async () => {
     try {
-      await saveToStorage("email", email);
+      await saveToStorage("email", email.toLowerCase());
       await saveToStorage("password", password);
 
       navigation.navigate("Home");
@@ -30,7 +30,13 @@ export default function Login({ navigation }) {
       </View>
       <View style={styles.form}>
         <View style={styles.row}>
-          <TextInput style={styles.textInputLogin} placeholder="email" onChangeText={setEmail} />
+          <TextInput
+            autoCapitalize="none"
+            autoCorrect={false}
+            style={styles.textInputLogin}
+            placeholder="email"
+            onChangeText={(value) => setEmail(value.toLowerCase())}
+          />
           <Text style={styles.textInputLogin}>@gmail.com</Text>
         </View>
         <View style={styles.row}>
