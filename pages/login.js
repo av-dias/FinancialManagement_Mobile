@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View, TextInput, Image, Button, Pressable } from "react-native";
+import { Text, View, TextInput, Image, Pressable } from "react-native";
+import { CheckBox } from "@rneui/themed";
 import { useState } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { clearElementValueById } from "../functions/elements";
 
 import navLogo from "../images/logo.png";
 import { saveToStorage, getFromStorage } from "../utility/secureStorage";
@@ -11,17 +10,36 @@ export default function Login({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [checked, setChecked] = useState(false);
 
   const handleLogin = async () => {
     try {
       await saveToStorage("email", email.toLowerCase());
       await saveToStorage("password", password);
+      await saveToStorage("remember", checked.toString());
 
       navigation.navigate("Home");
     } catch (err) {
       console.log("Login: " + err);
     }
   };
+
+  const toggleCheckbox = async () => {
+    setChecked(!checked);
+  };
+
+  const rememberMeHandle = async () => {
+    let remember = await getFromStorage("remember");
+    if (remember == "true") {
+      console.log("Remember: " + remember);
+      console.log("Checked: " + checked);
+      setEmail(await getFromStorage("email"));
+      setPassword(await getFromStorage("password"));
+      setChecked(true);
+    }
+  };
+
+  rememberMeHandle();
 
   return (
     <View style={styles.pageLogin}>
@@ -31,6 +49,7 @@ export default function Login({ navigation }) {
       <View style={styles.form}>
         <View style={styles.row}>
           <TextInput
+            value={email}
             autoCapitalize="none"
             autoCorrect={false}
             style={styles.textInputLogin}
@@ -40,11 +59,14 @@ export default function Login({ navigation }) {
           <Text style={styles.textInputLogin}>@gmail.com</Text>
         </View>
         <View style={styles.row}>
-          <TextInput style={styles.textInputLogin} secureTextEntry={true} placeholder="password" onChangeText={setPassword} />
+          <TextInput style={styles.textInputLogin} secureTextEntry={true} value={password} placeholder="password" onChangeText={setPassword} />
         </View>
         <Pressable style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Submit</Text>
         </Pressable>
+        <View style={styles.checkbox}>
+          <CheckBox size={18} checked={checked} onPress={toggleCheckbox} title="Remember Me" />
+        </View>
       </View>
     </View>
   );
