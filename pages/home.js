@@ -36,11 +36,31 @@ export default function Home({ navigation }) {
         <Pressable style={styles.button} onPress={() => navigation.navigate("Purchase")}>
           <Text style={styles.buttonText}>Purchase</Text>
         </Pressable>
-        <Pressable style={styles.button} onPress={() => alert("Income")}>
-          <Text style={styles.buttonText}>Income</Text>
-        </Pressable>
         <Pressable style={styles.button} onPress={() => alert("Transaction")}>
           <Text style={styles.buttonText}>Transaction</Text>
+        </Pressable>
+        <Pressable
+          style={styles.button}
+          onPress={async () => {
+            let access_token = await getFromStorage("access_token");
+            await fetch("http://192.168.0.102:8080/api/v1/purchase/mobile/user/1/update/purchases", {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + access_token,
+              },
+              method: "POST",
+              body: await getFromStorage("purchases"),
+            })
+              .then(function (res) {
+                console.log(JSON.stringify(res));
+              })
+              .catch(function (res) {
+                console.log(res);
+              });
+          }}
+        >
+          <Text style={styles.buttonText}>Update</Text>
         </Pressable>
         <Pressable
           style={styles.button}
