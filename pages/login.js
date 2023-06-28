@@ -27,7 +27,9 @@ export default function Login({ navigation }) {
       await saveToStorage("ip3", ip3);
       await saveToStorage("ip4", ip4);
 
-      await fetch("http://192.168.0.102:8080/api/v1/login?username=al.vrdias@gmail.com&password=123", {
+      let userEmail = email.toLowerCase() + "@gmail.com";
+
+      await fetch(`http://${ip1}.${ip2}.${ip3}.${ip4}:8080/api/v1/login?username=${userEmail}&password=${password}`, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -37,9 +39,23 @@ export default function Login({ navigation }) {
         .then(async (res) => {
           let response = await res.json();
           await saveToStorage("access_token", response.access_token);
+          await fetch(`http://${ip1}.${ip2}.${ip3}.${ip4}:8080/api/v1/user/email/${userEmail}`, {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + response.access_token,
+            },
+            method: "GET",
+          })
+            .then(async (res) => {
+              let resJson = await res.json();
+              saveToStorage("userId", resJson.userId.toString());
+            })
+            .catch(function (res) {
+              console.log(res);
+            });
         })
-        .catch(function (res) {
-          console.log(res);
+        .catch((res) => {
           console.log("Not connected to the main server");
         });
 

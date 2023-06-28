@@ -7,7 +7,7 @@ import { _styles } from "../utility/style";
 
 export default function Home({ navigation }) {
   const styles = _styles;
-  const [onLoadData, setOnLoadData] = useState("");
+  const [email, setEmail] = useState("");
 
   const getUser = async () => {
     try {
@@ -21,7 +21,7 @@ export default function Home({ navigation }) {
   useEffect(() => {
     async function fetchData() {
       let email = await getUser();
-      setOnLoadData(email);
+      setEmail(email);
     }
     // write your code here, it's like componentWillMount
     fetchData();
@@ -30,7 +30,7 @@ export default function Home({ navigation }) {
   return (
     <View style={styles.page}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>{onLoadData}</Text>
+        <Text style={styles.headerText}>{email}</Text>
       </View>
       <View style={styles.form}>
         <Pressable style={styles.button} onPress={() => navigation.navigate("Purchase")}>
@@ -43,14 +43,20 @@ export default function Home({ navigation }) {
           style={styles.button}
           onPress={async () => {
             let access_token = await getFromStorage("access_token");
-            await fetch("http://192.168.0.102:8080/api/v1/purchase/mobile/user/1/update/purchases", {
+            let purchases = await getFromStorage("purchases");
+            ip1 = await getFromStorage("ip1");
+            ip2 = await getFromStorage("ip2");
+            ip3 = await getFromStorage("ip3");
+            ip4 = await getFromStorage("ip4");
+            let userId = await getFromStorage("userId");
+            await fetch(`http://${ip1}.${ip2}.${ip3}.${ip4}:8080/api/v1/purchase/mobile/user/${userId}/update/purchases`, {
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + access_token,
               },
               method: "POST",
-              body: await getFromStorage("purchases"),
+              body: purchases,
             })
               .then(function (res) {
                 console.log(JSON.stringify(res));
