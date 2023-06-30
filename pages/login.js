@@ -29,12 +29,17 @@ export default function Login({ navigation }) {
 
       let userEmail = email.toLowerCase() + "@gmail.com";
 
+      const controller = new AbortController();
+      // 5 second timeout:
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+
       await fetch(`http://${ip1}.${ip2}.${ip3}.${ip4}:8080/api/v1/login?username=${userEmail}&password=${password}`, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
         method: "POST",
+        signal: controller.signal,
       })
         .then(async (res) => {
           let response = await res.json();
