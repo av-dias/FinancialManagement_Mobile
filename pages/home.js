@@ -36,14 +36,14 @@ export default function Home({ navigation }) {
         <Pressable style={styles.button} onPress={() => navigation.navigate("Purchase")}>
           <Text style={styles.buttonText}>Purchase</Text>
         </Pressable>
-        <Pressable style={styles.button} onPress={() => alert("Transaction")}>
+        <Pressable style={styles.button} onPress={() => alert("Transaction not available yet")}>
           <Text style={styles.buttonText}>Transaction</Text>
         </Pressable>
         <Pressable
           style={styles.button}
           onPress={async () => {
             let access_token = await getFromStorage("access_token");
-            let purchases = await getFromStorage("purchases");
+            let purchases = await getFromStorage("purchases", email);
             ip1 = await getFromStorage("ip1");
             ip2 = await getFromStorage("ip2");
             ip3 = await getFromStorage("ip3");
@@ -59,7 +59,7 @@ export default function Home({ navigation }) {
               body: purchases,
             })
               .then(function (res) {
-                console.log(JSON.stringify(res));
+                console.log("Update Status: " + res.status);
               })
               .catch(function (res) {
                 console.log(res);
@@ -71,7 +71,7 @@ export default function Home({ navigation }) {
         <Pressable
           style={styles.button}
           onPress={async () => {
-            let info = await getFromStorage("purchases");
+            let info = await getFromStorage("purchases", email);
             alert(info);
           }}
         >
@@ -80,7 +80,7 @@ export default function Home({ navigation }) {
         <Pressable
           style={styles.button}
           onPress={async () => {
-            let info = await saveToStorage("purchases", "");
+            let info = await saveToStorage("purchases", email);
             alert("Cleared");
           }}
         >

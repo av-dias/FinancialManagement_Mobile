@@ -62,6 +62,7 @@ export default function Login({ navigation }) {
       navigation.navigate("Home");
     } catch (err) {
       console.log("Login: " + err);
+      alert(err);
     }
   };
 
@@ -94,11 +95,9 @@ export default function Login({ navigation }) {
     }
   };
 
-  rememberMeHandle();
-
   useEffect(() => {
-    // write your code here, it's like componentWillMount
     rememberIP();
+    rememberMeHandle();
   }, []);
 
   return (

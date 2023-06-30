@@ -14,6 +14,7 @@ export default function Purchase() {
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
   const [list, setList] = useState([]);
+  const [email, setEmail] = useState("");
 
   const getUser = async () => {
     try {
@@ -24,6 +25,15 @@ export default function Purchase() {
     }
   };
 
+  useEffect(() => {
+    async function fetchData() {
+      let email = await getUser();
+      setEmail(email);
+    }
+    // write your code here, it's like componentWillMount
+    fetchData();
+  }, []);
+
   const handlePurchase = async () => {
     let date = this._calendar.getSelectedDate();
 
@@ -33,7 +43,7 @@ export default function Purchase() {
       return;
     }
     try {
-      let purchases = await getFromStorage("purchases");
+      let purchases = await getFromStorage("purchases", email);
       let newPurchase = { type: type, name: name, value: value, dop: date.toISOString().split("T")[0] };
 
       if (purchases) {
@@ -43,7 +53,7 @@ export default function Purchase() {
         purchases = [newPurchase];
       }
 
-      await saveToStorage("purchases", JSON.stringify(purchases));
+      await saveToStorage("purchases", JSON.stringify(purchases), email);
       setList([[type, name, value, date.toISOString().split("T")[0]], ...list].slice(0, 3));
       this.textInputValue.clear();
       setValue("");
