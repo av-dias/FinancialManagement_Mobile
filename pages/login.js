@@ -55,18 +55,22 @@ export default function Login({ navigation }) {
             .then(async (res) => {
               let resJson = await res.json();
               saveToStorage("userId", resJson.userId.toString());
+              saveToStorage("server", "on");
             })
             .catch(function (res) {
               console.log(res);
+              saveToStorage("server", "off");
             });
         })
         .catch((res) => {
           console.log("Not connected to the main server");
+          saveToStorage("server", "off");
         });
 
       navigation.navigate("Home");
     } catch (err) {
-      console.log("Login: " + err);
+      console.log("Error: " + err);
+      saveToStorage("server", "off");
       alert(err);
     }
   };
