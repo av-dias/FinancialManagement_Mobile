@@ -11,11 +11,12 @@ import Header from "../components/header";
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
+  const MAX_TABLE_SIZE = 5;
   const [onLoadData, setOnLoadData] = useState("");
   const [type, setType] = useState("");
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
-  const [list, setList] = useState([[""], [""], [""], [""], [""], [""], [""], [""], [""], [""]]);
+  const [list, setList] = useState([[""], [""], [""], [""], [""]]);
   const [email, setEmail] = useState("");
 
   const getUser = async () => {
@@ -56,7 +57,7 @@ export default function Purchase({ navigation }) {
       }
 
       await saveToStorage("purchases", JSON.stringify(purchases), email);
-      setList([[type, name, value, date.toISOString().split("T")[0]], ...list].slice(0, 10));
+      setList([[type, name, value, date.toISOString().split("T")[0]], ...list].slice(0, MAX_TABLE_SIZE));
       this.textInputValue.clear();
       setValue("");
 

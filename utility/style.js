@@ -37,7 +37,7 @@ export const _styles = StyleSheet.create({
   },
   loginForm: { gap: 20, paddingBottom: 100, padding: 10, width: "100%", flex: 3 },
   form: { gap: 20, padding: 50, width: "100%" },
-  tableInfo: { gap: 20, padding: 10, width: "100%", paddingTop: 10 },
+  tableInfo: { gap: 20, paddingLeft: 30, paddingRight: 30, width: "100%" },
   row: { flexDirection: "row", justifyContent: "center", width: "100%", backgroundColor: "white", borderRadius: 4 },
   rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", borderRadius: 4, gap: 20 },
   checkbox: {
@@ -47,10 +47,10 @@ export const _styles = StyleSheet.create({
   },
   test: { backgroundColor: "black" },
   header: {
+    fontSize: 30,
     padding: 20,
     marginTop: "8%",
     width: "100%",
-    fontSize: 30,
     flexDirection: "row",
     backgroundColor: "black",
   },
