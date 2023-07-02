@@ -111,10 +111,10 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.pageLogin}>
-      <View style={styles.header}>
+      <View style={styles.headerLogin}>
         <Image style={styles.logo} source={navLogo} />
       </View>
-      <View style={styles.form}>
+      <View style={styles.loginForm}>
         <View style={styles.row}>
           <TextInput
             value={email}

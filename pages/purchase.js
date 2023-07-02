@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity }
 import React, { useState, useEffect } from "react";
 import CalendarStrip from "react-native-calendar-strip";
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
+import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
 import { saveToStorage, getFromStorage } from "../utility/secureStorage";
 import { _styles } from "../utility/style";
@@ -79,52 +80,66 @@ export default function Purchase() {
 
   return (
     <View style={styles.page}>
-      <View style={styles.title}>
-        <Text style={styles.headerText}>Purchase</Text>
+      <View style={styles.header}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.headerText}>{email}</Text>
+        </View>
+        <View>
+          <MaterialIcons
+            name="logout"
+            size={20}
+            color="black"
+            onPress={() => {
+              navigation.navigate("Login");
+            }}
+          />
+        </View>
       </View>
-      <View style={styles.form}>
-        <TextInput style={styles.textInputLogin} placeholder="Type" onChangeText={setType} />
-        <TextInput style={styles.textInputLogin} placeholder="Name" onChangeText={setName} />
-        <TextInput
-          ref={(input) => {
-            this.textInputValue = input;
-          }}
-          keyboardType="numeric"
-          style={styles.textInputLogin}
-          placeholder="Value"
-          onChangeText={setValue}
-        />
-        <CalendarStrip
-          ref={(component) => (this._calendar = component)}
-          calendarAnimation={{ type: "sequence", duration: 15 }}
-          daySelectionAnimation={{ type: "border", duration: 200, borderWidth: 1, borderHighlightColor: "white" }}
-          style={{ height: 100, paddingTop: 20, paddingBottom: 10 }}
-          calendarHeaderStyle={{ color: "black" }}
-          calendarColor={"white"}
-          dateNumberStyle={{ color: "black" }}
-          dateNameStyle={{ color: "black" }}
-          highlightDateNumberStyle={{ color: "#2296F3" }}
-          highlightDateNameStyle={{ color: "#2296F3" }}
-          disabledDateNameStyle={{ color: "grey" }}
-          disabledDateNumberStyle={{ color: "grey" }}
-          iconContainer={{ flex: 0.1 }}
-        />
+      <View>
+        <View style={styles.form}>
+          <TextInput style={styles.textInputLogin} placeholder="Type" onChangeText={setType} />
+          <TextInput style={styles.textInputLogin} placeholder="Name" onChangeText={setName} />
+          <TextInput
+            ref={(input) => {
+              this.textInputValue = input;
+            }}
+            keyboardType="numeric"
+            style={styles.textInputLogin}
+            placeholder="Value"
+            onChangeText={setValue}
+          />
+          <CalendarStrip
+            ref={(component) => (this._calendar = component)}
+            calendarAnimation={{ type: "sequence", duration: 15 }}
+            daySelectionAnimation={{ type: "border", duration: 200, borderWidth: 1, borderHighlightColor: "white" }}
+            style={{ height: 100, paddingTop: 20, paddingBottom: 10 }}
+            calendarHeaderStyle={{ color: "black" }}
+            calendarColor={"white"}
+            dateNumberStyle={{ color: "black" }}
+            dateNameStyle={{ color: "black" }}
+            highlightDateNumberStyle={{ color: "#2296F3" }}
+            highlightDateNameStyle={{ color: "#2296F3" }}
+            disabledDateNameStyle={{ color: "grey" }}
+            disabledDateNumberStyle={{ color: "grey" }}
+            iconContainer={{ flex: 0.1 }}
+          />
+        </View>
+        <View style={styles.tableInfo}>
+          <Table borderStyle={{ borderColor: "transparent" }}>
+            <Row data={state.tableHead} style={styles.head} />
+            {list.map((rowData, index) => (
+              <TableWrapper key={index} style={styles.row}>
+                {rowData.map((cellData, cellIndex) => (
+                  <Cell key={cellIndex} data={cellData} />
+                ))}
+              </TableWrapper>
+            ))}
+          </Table>
+        </View>
+        <Pressable style={styles.button} onPress={handlePurchase}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </Pressable>
       </View>
-      <View style={styles.tableInfo}>
-        <Table borderStyle={{ borderColor: "transparent" }}>
-          <Row data={state.tableHead} style={styles.head} />
-          {list.map((rowData, index) => (
-            <TableWrapper key={index} style={styles.row}>
-              {rowData.map((cellData, cellIndex) => (
-                <Cell key={cellIndex} data={cellData} />
-              ))}
-            </TableWrapper>
-          ))}
-        </Table>
-      </View>
-      <Pressable style={styles.button} onPress={handlePurchase}>
-        <Text style={styles.buttonText}>Submit</Text>
-      </Pressable>
     </View>
   );
 }
