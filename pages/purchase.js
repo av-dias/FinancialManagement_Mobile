@@ -15,7 +15,7 @@ export default function Purchase({ navigation }) {
   const [type, setType] = useState("");
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
-  const [list, setList] = useState([]);
+  const [list, setList] = useState([[""], [""], [""], [""], [""], [""], [""], [""], [""], [""]]);
   const [email, setEmail] = useState("");
 
   const getUser = async () => {
@@ -113,7 +113,7 @@ export default function Purchase({ navigation }) {
         </View>
         <View style={styles.tableInfo}>
           <Table borderStyle={{ borderColor: "transparent" }}>
-            <Row data={state.tableHead} />
+            <Row data={state.tableHead} style={{ alignContent: "center" }} />
             {list.map((rowData, index) => (
               <TableWrapper key={index} style={styles.row}>
                 {rowData.map((cellData, cellIndex) => (
