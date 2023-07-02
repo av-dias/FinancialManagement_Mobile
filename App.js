@@ -1,11 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import Login from "./pages/login";
-import Home from "./pages/home";
-import Purchase from "./pages/purchase";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+
+import Login from "./pages/login";
+import Home from "./pages/home";
+import Purchase from "./pages/purchase";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -25,8 +27,16 @@ function HomeTabs() {
         },
       })}
     >
-      <Tab.Screen name="Dashboard" component={Home} options={{ headerShown: false }} />
-      <Tab.Screen name="Purchase" component={Purchase} options={{ headerShown: false }} />
+      <Tab.Screen
+        name="Dashboard"
+        component={Home}
+        options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="dashboard" size={24} color="white" /> }}
+      />
+      <Tab.Screen
+        name="Purchase"
+        component={Purchase}
+        options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="add-circle-outline" size={24} color="white" /> }}
+      />
     </Tab.Navigator>
   );
 }

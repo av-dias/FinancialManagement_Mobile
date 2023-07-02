@@ -35,9 +35,6 @@ export default function Home({ navigation }) {
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.form}>
-        <Pressable style={styles.button} onPress={() => navigation.navigate("Purchase")}>
-          <Text style={styles.buttonText}>Purchase</Text>
-        </Pressable>
         <Pressable style={styles.button} onPress={() => alert("Transaction not available yet")}>
           <Text style={styles.buttonText}>Transaction</Text>
         </Pressable>
