@@ -7,8 +7,9 @@ import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
 import { saveToStorage, getFromStorage } from "../utility/secureStorage";
 import { _styles } from "../utility/style";
+import Header from "../components/header";
 
-export default function Purchase() {
+export default function Purchase({ navigation }) {
   const styles = _styles;
   const [onLoadData, setOnLoadData] = useState("");
   const [type, setType] = useState("");
@@ -80,21 +81,7 @@ export default function Purchase() {
 
   return (
     <View style={styles.page}>
-      <View style={styles.header}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.headerText}>{email}</Text>
-        </View>
-        <View>
-          <MaterialIcons
-            name="logout"
-            size={20}
-            color="black"
-            onPress={() => {
-              navigation.navigate("Login");
-            }}
-          />
-        </View>
-      </View>
+      <Header email={email} navigation={navigation} />
       <View>
         <View style={styles.form}>
           <TextInput style={styles.textInputLogin} placeholder="Type" onChangeText={setType} />

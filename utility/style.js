@@ -48,11 +48,12 @@ export const _styles = StyleSheet.create({
   },
   test: { backgroundColor: "black" },
   header: {
-    padding: 30,
+    padding: 20,
+    marginTop: "8%",
     width: "100%",
     fontSize: 30,
     flexDirection: "row",
-    backgroundColor: "#f4da7ddd",
+    backgroundColor: "black",
   },
   headerLogin: {
     flex: 1,
@@ -65,6 +66,7 @@ export const _styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     width: "100%",
+    color: "white",
   },
   button: {
     alignItems: "center",

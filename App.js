@@ -34,6 +34,7 @@ function HomeTabs() {
 export default function App() {
   return (
     <NavigationContainer>
+      <StatusBar style="light" backgroundColor="black" hidden={false} />
       <Stack.Navigator>
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={HomeTabs} options={{ headerShown: false }} />
