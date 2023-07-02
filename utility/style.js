@@ -45,10 +45,11 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 4,
   },
-  test: { backgroundColor: "black" },
+  test: { backgroundColor: "red" },
   header: {
     fontSize: 30,
     padding: 20,
+    gap: 10,
     marginTop: "8%",
     width: "100%",
     flexDirection: "row",
@@ -83,4 +84,5 @@ export const _styles = StyleSheet.create({
   },
   submitButton: { position: "absolute", bottom: 60, alignSelf: "center", justifyContent: "center" },
   textIP: { fontSize: 20, padding: 5, textAlign: "center", backgroundColor: "white", borderRadius: 2, width: "20%" },
+  icon: { display: "flex", justifyContent: "center" },
 });
