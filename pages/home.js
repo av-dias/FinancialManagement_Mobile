@@ -6,21 +6,13 @@ import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
 import { saveToStorage, getFromStorage } from "../utility/secureStorage";
 import { _styles } from "../utility/style";
+import { getUser } from "../functions/basic";
 
 import Header from "../components/header";
 
 export default function Home({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
-
-  const getUser = async () => {
-    try {
-      const email = await getFromStorage("email");
-      return email;
-    } catch (err) {
-      console.log("Home: " + err);
-    }
-  };
 
   useEffect(() => {
     async function fetchData() {
