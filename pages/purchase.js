@@ -56,7 +56,7 @@ export default function Purchase({ navigation }) {
       }
 
       await saveToStorage("purchases", JSON.stringify(purchases), email);
-      setList([[type, name, value, date.toISOString().split("T")[0]], ...list].slice(0, 3));
+      setList([[type, name, value, date.toISOString().split("T")[0]], ...list].slice(0, 10));
       this.textInputValue.clear();
       setValue("");
 
@@ -113,7 +113,7 @@ export default function Purchase({ navigation }) {
         </View>
         <View style={styles.tableInfo}>
           <Table borderStyle={{ borderColor: "transparent" }}>
-            <Row data={state.tableHead} style={styles.head} />
+            <Row data={state.tableHead} />
             {list.map((rowData, index) => (
               <TableWrapper key={index} style={styles.row}>
                 {rowData.map((cellData, cellIndex) => (
@@ -123,6 +123,8 @@ export default function Purchase({ navigation }) {
             ))}
           </Table>
         </View>
+      </View>
+      <View style={styles.submitButton}>
         <Pressable style={styles.button} onPress={handlePurchase}>
           <Text style={styles.buttonText}>Submit</Text>
         </Pressable>

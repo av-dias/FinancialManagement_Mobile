@@ -36,9 +36,8 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
   },
   loginForm: { gap: 20, paddingBottom: 100, padding: 10, width: "100%", flex: 3 },
-  tableInfo: { gap: 20, padding: 10, width: "100%", flex: 3, paddingTop: 40 },
   form: { gap: 20, padding: 50, width: "100%" },
-  tableInfo: { gap: 20, padding: 10, width: "100%", paddingTop: 40 },
+  tableInfo: { gap: 20, padding: 10, width: "100%", paddingTop: 10 },
   row: { flexDirection: "row", justifyContent: "center", width: "100%", backgroundColor: "white", borderRadius: 4 },
   rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", borderRadius: 4, gap: 20 },
   checkbox: {
@@ -82,5 +81,6 @@ export const _styles = StyleSheet.create({
     fontSize: 20,
     color: "white",
   },
+  submitButton: { position: "absolute", bottom: 60, alignSelf: "center", justifyContent: "center" },
   textIP: { fontSize: 20, padding: 5, textAlign: "center", backgroundColor: "white", borderRadius: 2, width: "20%" },
 });
