@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
 
 import { _styles } from "../utility/style";
@@ -37,8 +37,20 @@ export default function Header(props) {
 
   return (
     <View style={styles.header}>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.headerText}>{props.email}</Text>
+      <View style={{ flex: 1, flexDirection: "row", gap: 10 }}>
+        <View style={styles.icon}>
+          <Ionicons
+            name="ios-menu"
+            size={30}
+            color="white"
+            onPress={() => {
+              props.navigation.navigate("Settings");
+            }}
+          />
+        </View>
+        <View style={styles.icon}>
+          <Text style={styles.headerText}>{props.email}</Text>
+        </View>
       </View>
       {server == "on" ? serverOn() : serverOff()}
       <View style={styles.icon}>

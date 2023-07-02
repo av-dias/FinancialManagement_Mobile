@@ -8,6 +8,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Login from "./pages/login";
 import Home from "./pages/home";
 import Purchase from "./pages/purchase";
+import Settings from "./pages/settings";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -37,6 +38,7 @@ function HomeTabs() {
         component={Purchase}
         options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="add-circle-outline" size={24} color="white" /> }}
       />
+      <Tab.Screen name="Settings" component={Settings} options={{ headerShown: false, tabBarButton: (props) => null }} />
     </Tab.Navigator>
   );
 }
