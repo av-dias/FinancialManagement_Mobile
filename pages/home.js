@@ -1,4 +1,5 @@
 import navLogo from "../images/logo.png";
+import { useFocusEffect } from "@react-navigation/native";
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -6,6 +7,7 @@ import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { VictoryPie, VictoryLabel, VictoryChart, VictoryLegend } from "victory-native";
 
 import { saveToStorage, getFromStorage } from "../utility/secureStorage";
+import { getPurchaseStats, getPurchaseTotal } from "../functions/purchase";
 import { _styles } from "../utility/style";
 import { getUser } from "../functions/basic";
 
@@ -14,21 +16,34 @@ import Header from "../components/header";
 export default function Home({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
+  const [purchaseStats, setPurchaseStats] = useState({});
+  const [pieChartData, setPieChartData] = useState([]);
+  const [purchaseTotal, setPurchaseTotal] = useState(0);
 
-  useEffect(() => {
-    async function fetchData() {
-      let email = await getUser();
-      setEmail(email);
-    }
-    // write your code here, it's like componentWillMount
-    fetchData();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        let email = await getUser();
+        setEmail(email);
+        let res = await getPurchaseStats(email).catch((error) => console.log(error));
+        let array = [];
+        Object.keys(res).forEach((key) => {
+          array.push({ x: key, y: res[key] });
+        });
+        setPieChartData(array);
+        setPurchaseStats(res);
+
+        res = await getPurchaseTotal(email).catch((error) => console.log(error));
+        setPurchaseTotal(res);
+      }
+      fetchData();
+    }, [purchaseTotal])
+  );
 
   const checkPosition = () => {
-    let value = "100000";
+    let value = purchaseTotal.toString();
     let size = value.length;
     let baseAnchor = 49;
-    console.log(size);
     // 10 -> 47.5
     // 1000 -> 45.5
     let leftValue = baseAnchor - size + ".5%";
@@ -39,23 +54,19 @@ export default function Home({ navigation }) {
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View>
-        <Text style={checkPosition()}>100000</Text>
+        <Text style={checkPosition()}>{purchaseTotal}</Text>
         <VictoryPie
           innerRadius={80}
-          data={[
-            { x: "Supermarket", y: 10 },
-            { x: "Home", y: 10 },
-            { x: "Restaurant", y: 10 },
-            { x: "Transport", y: 10 },
-            { x: "Travel", y: 10 },
-          ]}
+          data={pieChartData}
           labelComponent={
             <VictoryLabel
               angle={({ datum }) => {
-                console.log(datum.x + " " + (datum.startAngle + 35));
-                let angle = datum.startAngle + 35;
+                /*console.log(datum.x + " " + (datum.startAngle + 35));
+                 let angle = datum.startAngle + 35;
                 if (angle > 150 && angle < 200) return datum.startAngle + 35 - 180;
-                else return datum.startAngle + 35;
+                else if (angle > 0 && angle < 45) return 0;
+                else return datum.startAngle + 35; */
+                return 0;
               }}
               style={[{ fontSize: 10 }]}
             />
