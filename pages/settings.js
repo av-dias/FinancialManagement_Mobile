@@ -1,5 +1,5 @@
 import navLogo from "../images/logo.png";
-import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
+import { StyleSheet, Text, View, TextInput, Image, Pressable, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
@@ -22,6 +22,30 @@ export default function Settings({ navigation }) {
     // write your code here, it's like componentWillMount
     fetchData();
   }, []);
+
+  const showAlert = () =>
+    Alert.alert(
+      "Clear All",
+      "Are you sure you want to remove all purchases permanently?",
+      [
+        {
+          text: "Yes",
+          onPress: async () => {
+            let info = await saveToStorage("purchases", "", email);
+            alert("Cleared");
+          },
+          style: "yes",
+        },
+        {
+          text: "No",
+          onPress: () => {},
+          style: "no",
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
 
   return (
     <View style={styles.page}>
@@ -79,8 +103,7 @@ export default function Settings({ navigation }) {
         <Pressable
           style={styles.button}
           onPress={async () => {
-            let info = await saveToStorage("purchases", "", email);
-            alert("Cleared");
+            showAlert();
           }}
         >
           <Text style={styles.buttonText}>Clear All</Text>
