@@ -16,8 +16,8 @@ import Header from "../components/header";
 export default function Home({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
-  const [purchaseStats, setPurchaseStats] = useState({});
-  const [pieChartData, setPieChartData] = useState([]);
+  const [purchaseStats, setPurchaseStats] = useState({ "Your Spents": 0 });
+  const [pieChartData, setPieChartData] = useState([{ x: "Your Spents", y: 1 }]);
   const [purchaseTotal, setPurchaseTotal] = useState(0);
 
   useFocusEffect(
@@ -25,16 +25,20 @@ export default function Home({ navigation }) {
       async function fetchData() {
         let email = await getUser();
         setEmail(email);
-        let res = await getPurchaseStats(email).catch((error) => console.log(error));
-        let array = [];
-        Object.keys(res).forEach((key) => {
-          array.push({ x: key, y: res[key] });
-        });
-        setPieChartData(array);
-        setPurchaseStats(res);
+        try {
+          let res = await getPurchaseStats(email).catch((error) => console.log(error));
+          let array = [];
+          Object.keys(res).forEach((key) => {
+            array.push({ x: key, y: res[key] });
+          });
+          setPieChartData(array);
+          setPurchaseStats(res);
 
-        res = await getPurchaseTotal(email).catch((error) => console.log(error));
-        setPurchaseTotal(res);
+          res = await getPurchaseTotal(email).catch((error) => console.log(error));
+          setPurchaseTotal(res);
+        } catch (e) {
+          console.log(e);
+        }
       }
       fetchData();
     }, [purchaseTotal])
@@ -57,7 +61,7 @@ export default function Home({ navigation }) {
         <Text style={checkPosition()}>{purchaseTotal}</Text>
         <VictoryPie
           innerRadius={80}
-          data={pieChartData}
+          data={pieChartData.length != 0 ? pieChartData : [{ x: "Your Spents", y: 1 }]}
           labelComponent={
             <VictoryLabel
               angle={({ datum }) => {

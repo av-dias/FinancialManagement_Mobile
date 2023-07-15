@@ -10,10 +10,10 @@ export const _styles = StyleSheet.create({
     padding: 30,
   },
   page: {
-    flex: 1,
     backgroundColor: color.backgroundLight,
     //alignItems: "center",
     //justifyContent: "center",
+    height: "95%",
   },
   container: {
     padding: 20,
@@ -78,11 +78,22 @@ export const _styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: "#2296F3",
   },
+  buttonList: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    marginHorizontal: 80,
+    marginVertical: 10,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: "#85754e",
+  },
   buttonText: {
     fontSize: 20,
     color: "white",
   },
-  submitButton: { position: "absolute", bottom: 60, alignSelf: "center", justifyContent: "center" },
+  submitButton: { position: "absolute", bottom: 10, alignSelf: "center", justifyContent: "center" },
   textIP: { fontSize: 20, padding: 5, textAlign: "center", backgroundColor: "white", borderRadius: 2, width: "20%" },
   icon: { display: "flex", justifyContent: "center" },
 });
