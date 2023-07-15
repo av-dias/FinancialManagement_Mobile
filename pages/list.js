@@ -38,7 +38,9 @@ export default function Purchase({ navigation }) {
   const showAlert = (id) =>
     Alert.alert(
       "Delete Purchase",
-      "Are you sure you want to remove this purchase permanently?",
+      "Are you sure you want to remove this purchase permanently?" +
+        "\n\n" +
+        `Name: ${purchases[id].name}\nValue: ${purchases[id].value}\nType: ${purchases[id].type}\nDate: ${purchases[id].dop}`,
       [
         {
           text: "Yes",

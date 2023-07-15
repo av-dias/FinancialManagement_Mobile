@@ -83,7 +83,7 @@ export default function Settings({ navigation }) {
             alert("Cleared");
           }}
         >
-          <Text style={styles.buttonText}>Clear Logs</Text>
+          <Text style={styles.buttonText}>Clear All</Text>
         </Pressable>
       </View>
     </View>
