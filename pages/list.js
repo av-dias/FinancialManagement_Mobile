@@ -13,6 +13,7 @@ export default function Purchase({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
   const [purchases, setPurchases] = useState([]);
+  const [archives, setArchives] = useState([]);
   const [selected, setSelected] = useState(-1);
   const [purchaseTotal, setPurchaseTotal] = useState(0);
 
@@ -28,7 +29,14 @@ export default function Purchase({ navigation }) {
           res = await getPurchaseTotal(email).catch((error) => console.log(error));
           setPurchaseTotal(res);
         } catch (e) {
-          console.log(e);
+          console.log("Purchase: " + e);
+        }
+        try {
+          let resArchive = JSON.parse(await getFromStorage("archived_purchases", email)) || [];
+          setArchives(resArchive);
+          console.log(resArchive.length);
+        } catch (e) {
+          console.log("Archive: " + e);
         }
       }
       fetchData();
@@ -82,6 +90,7 @@ export default function Purchase({ navigation }) {
             </View>
           </Pressable>
         ))}
+        <Text>Archived</Text>
       </ScrollView>
     </View>
   );
