@@ -86,6 +86,11 @@ export default function Settings({ navigation }) {
                 });
             } else {
               alert("Main server not connected.");
+              if (false) {
+                // For testing purpose only
+                let purchases = await getFromStorage("purchases", email);
+                await saveToStorage("archived_purchases", purchases, email);
+              }
             }
           }}
         >
