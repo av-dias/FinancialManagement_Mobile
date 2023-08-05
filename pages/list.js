@@ -91,6 +91,22 @@ export default function Purchase({ navigation }) {
           </Pressable>
         ))}
         <Text>Archived</Text>
+        {archives.map((cellData, cellIndex) => (
+          <Pressable
+            key={cellIndex}
+            style={styles.buttonList}
+            onPress={() => {
+              setSelected(cellIndex);
+              console.log(cellIndex);
+              showAlert(cellIndex);
+            }}
+          >
+            <View style={styles.rowGap}>
+              <Text style={styles.buttonText}>{cellData.name}</Text>
+              <Text style={styles.buttonText}>{cellData.value}</Text>
+            </View>
+          </Pressable>
+        ))}
       </ScrollView>
     </View>
   );
