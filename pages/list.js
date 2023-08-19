@@ -17,6 +17,10 @@ export default function Purchase({ navigation }) {
   const [selected, setSelected] = useState(-1);
   const [purchaseTotal, setPurchaseTotal] = useState(0);
 
+  const PURCHASE_KEY = "PK-";
+  const ARCHIVE_KEY = "AK-";
+  const TOKEN_SEPARATOR = "-";
+
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
@@ -25,7 +29,7 @@ export default function Purchase({ navigation }) {
         try {
           let res = JSON.parse(await getFromStorage("purchases", email));
           setPurchases(res);
-          console.log(res.length);
+          console.log("Purchase len: " + res.length);
           res = await getPurchaseTotal(email).catch((error) => console.log(error));
           setPurchaseTotal(res);
         } catch (e) {
@@ -34,7 +38,7 @@ export default function Purchase({ navigation }) {
         try {
           let resArchive = JSON.parse(await getFromStorage("archived_purchases", email)) || [];
           setArchives(resArchive);
-          console.log(resArchive.length);
+          console.log("Archive len: " + resArchive.length);
         } catch (e) {
           console.log("Archive: " + e);
         }
@@ -43,19 +47,35 @@ export default function Purchase({ navigation }) {
     }, [purchases.lenght])
   );
 
-  const showAlert = (id) =>
+  const showAlert = (key) => {
+    let [identifier, id] = key.split(TOKEN_SEPARATOR);
+    console.log("id: " + identifier);
+    let element, elementArray, setElement;
+    
+    if (identifier == PURCHASE_KEY.split(TOKEN_SEPARATOR)[0]) {
+      element = "purchases";
+      elementArray = purchases;
+      setElement = setPurchases.bind();
+    } else if (identifier == ARCHIVE_KEY.split(TOKEN_SEPARATOR)[0]) {
+      element = "archives";
+      elementArray = archives;
+      setElement = setArchives.bind();
+    } else {
+      console.log("error: " + identifier);
+    }
+
     Alert.alert(
       "Delete Purchase",
       "Are you sure you want to remove this purchase permanently?" +
         "\n\n" +
-        `Name: ${purchases[id].name}\nValue: ${purchases[id].value}\nType: ${purchases[id].type}\nDate: ${purchases[id].dop}`,
+        `Name: ${elementArray[id].name}\nValue: ${elementArray[id].value}\nType: ${elementArray[id].type}\nDate: ${elementArray[id].dop}`,
       [
         {
           text: "Yes",
           onPress: async () => {
-            arr = purchases.filter((item) => item != purchases[id]);
-            await saveToStorage("purchases", JSON.stringify(arr), email);
-            setPurchases(arr);
+            arr = elementArray.filter((item) => item != elementArray[id]);
+            await saveToStorage(element, JSON.stringify(arr), email);
+            setElement(arr);
           },
           style: "yes",
         },
@@ -69,6 +89,7 @@ export default function Purchase({ navigation }) {
         cancelable: true,
       }
     );
+  };
 
   return (
     <View style={styles.page}>
@@ -76,12 +97,12 @@ export default function Purchase({ navigation }) {
       <ScrollView>
         {purchases.map((cellData, cellIndex) => (
           <Pressable
-            key={cellIndex}
+            key={PURCHASE_KEY + cellIndex}
             style={styles.buttonList}
             onPress={() => {
-              setSelected(cellIndex);
+              setSelected(PURCHASE_KEY + cellIndex);
               console.log(cellIndex);
-              showAlert(cellIndex);
+              showAlert(PURCHASE_KEY + cellIndex);
             }}
           >
             <View style={styles.rowGap}>
@@ -93,12 +114,11 @@ export default function Purchase({ navigation }) {
         <Text>Archived</Text>
         {archives.map((cellData, cellIndex) => (
           <Pressable
-            key={cellIndex}
+            key={ARCHIVE_KEY + cellIndex}
             style={styles.buttonList}
             onPress={() => {
-              setSelected(cellIndex);
-              console.log(cellIndex);
-              showAlert(cellIndex);
+              setSelected(ARCHIVE_KEY + cellIndex);
+              showAlert(ARCHIVE_KEY + cellIndex);
             }}
           >
             <View style={styles.rowGap}>
