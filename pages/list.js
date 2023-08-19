@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, 
 import { useFocusEffect } from "@react-navigation/native";
 
 import { _styles } from "../utility/style";
+import { KEYS } from "../utility/keys";
 import Header from "../components/header";
 
 import { getPurchaseTotal } from "../functions/purchase";
@@ -16,10 +17,6 @@ export default function Purchase({ navigation }) {
   const [archives, setArchives] = useState([]);
   const [selected, setSelected] = useState(-1);
   const [purchaseTotal, setPurchaseTotal] = useState(0);
-
-  const PURCHASE_KEY = "PK-";
-  const ARCHIVE_KEY = "AK-";
-  const TOKEN_SEPARATOR = "-";
 
   useFocusEffect(
     React.useCallback(() => {
@@ -48,8 +45,7 @@ export default function Purchase({ navigation }) {
   );
 
   const showAlert = (key) => {
-    let [identifier, id] = key.split(TOKEN_SEPARATOR);
-    console.log("id: " + identifier);
+    let [identifier, id] = key.split(KEYS.TOKEN_SEPARATOR);
     let element,
       elementArray,
       setElement,
@@ -58,7 +54,7 @@ export default function Purchase({ navigation }) {
       leftButton = "Ok",
       rightButton = "Cancel";
 
-    if (identifier == PURCHASE_KEY.split(TOKEN_SEPARATOR)[0]) {
+    if (identifier == KEYS.PURCHASE) {
       element = "purchases";
       elementArray = purchases;
       setElement = setPurchases.bind();
@@ -66,7 +62,7 @@ export default function Purchase({ navigation }) {
       description = "Are you sure you want to remove this purchase permanently?" + "\n\n";
       leftButton = "Yes";
       rightButton = "No";
-    } else if (identifier == ARCHIVE_KEY.split(TOKEN_SEPARATOR)[0]) {
+    } else if (identifier == KEYS.ARCHIVE) {
       title = "Archived Purchase Detail";
       element = "archives";
       elementArray = archives;
@@ -82,7 +78,7 @@ export default function Purchase({ navigation }) {
         {
           text: leftButton,
           onPress: async () => {
-            if (identifier == PURCHASE_KEY.split(TOKEN_SEPARATOR)[0]) {
+            if (identifier == KEYS.PURCHASE) {
               arr = elementArray.filter((item) => item != elementArray[id]);
               await saveToStorage(element, JSON.stringify(arr), email);
               setElement(arr);
@@ -108,12 +104,11 @@ export default function Purchase({ navigation }) {
       <ScrollView>
         {purchases.map((cellData, cellIndex) => (
           <Pressable
-            key={PURCHASE_KEY + cellIndex}
+            key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + cellIndex}
             style={styles.buttonList}
             onPress={() => {
-              setSelected(PURCHASE_KEY + cellIndex);
-              console.log(cellIndex);
-              showAlert(PURCHASE_KEY + cellIndex);
+              setSelected(KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + cellIndex);
+              showAlert(KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + cellIndex);
             }}
           >
             <View style={styles.rowGap}>
@@ -125,11 +120,11 @@ export default function Purchase({ navigation }) {
         <Text>Archived</Text>
         {archives.map((cellData, cellIndex) => (
           <Pressable
-            key={ARCHIVE_KEY + cellIndex}
+            key={KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex}
             style={styles.buttonList}
             onPress={() => {
-              setSelected(ARCHIVE_KEY + cellIndex);
-              showAlert(ARCHIVE_KEY + cellIndex);
+              setSelected(KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex);
+              showAlert(KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex);
             }}
           >
             <View style={styles.rowGap}>
