@@ -50,13 +50,24 @@ export default function Purchase({ navigation }) {
   const showAlert = (key) => {
     let [identifier, id] = key.split(TOKEN_SEPARATOR);
     console.log("id: " + identifier);
-    let element, elementArray, setElement;
-    
+    let element,
+      elementArray,
+      setElement,
+      title = "",
+      description = "",
+      leftButton = "Ok",
+      rightButton = "Cancel";
+
     if (identifier == PURCHASE_KEY.split(TOKEN_SEPARATOR)[0]) {
       element = "purchases";
       elementArray = purchases;
       setElement = setPurchases.bind();
+      title = "Delete Purchase";
+      description = "Are you sure you want to remove this purchase permanently?" + "\n\n";
+      leftButton = "Yes";
+      rightButton = "No";
     } else if (identifier == ARCHIVE_KEY.split(TOKEN_SEPARATOR)[0]) {
+      title = "Archived Purchase Detail";
       element = "archives";
       elementArray = archives;
       setElement = setArchives.bind();
@@ -65,22 +76,22 @@ export default function Purchase({ navigation }) {
     }
 
     Alert.alert(
-      "Delete Purchase",
-      "Are you sure you want to remove this purchase permanently?" +
-        "\n\n" +
-        `Name: ${elementArray[id].name}\nValue: ${elementArray[id].value}\nType: ${elementArray[id].type}\nDate: ${elementArray[id].dop}`,
+      title,
+      description + `Name: ${elementArray[id].name}\nValue: ${elementArray[id].value}\nType: ${elementArray[id].type}\nDate: ${elementArray[id].dop}`,
       [
         {
-          text: "Yes",
+          text: leftButton,
           onPress: async () => {
-            arr = elementArray.filter((item) => item != elementArray[id]);
-            await saveToStorage(element, JSON.stringify(arr), email);
-            setElement(arr);
+            if (identifier == PURCHASE_KEY.split(TOKEN_SEPARATOR)[0]) {
+              arr = elementArray.filter((item) => item != elementArray[id]);
+              await saveToStorage(element, JSON.stringify(arr), email);
+              setElement(arr);
+            }
           },
           style: "yes",
         },
         {
-          text: "No",
+          text: rightButton,
           onPress: () => {},
           style: "no",
         },
