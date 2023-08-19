@@ -78,7 +78,7 @@ export default function Settings({ navigation }) {
                 .then(async (res) => {
                   console.log("Update Status: " + res.status);
                   await saveToStorage("archived_purchases", purchases, email);
-                  let info = await saveToStorage("purchases", "", email);
+                  let info = await saveToStorage("purchases", "[]", email);
                   alert("Data uploaded to main server.");
                 })
                 .catch(function (res) {
@@ -90,6 +90,7 @@ export default function Settings({ navigation }) {
                 // For testing purpose only
                 let purchases = await getFromStorage("purchases", email);
                 await saveToStorage("archived_purchases", purchases, email);
+                await saveToStorage("purchases", "[]", email);
               }
             }
           }}
