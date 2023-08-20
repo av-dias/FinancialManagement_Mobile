@@ -63,7 +63,7 @@ export default function Home({ navigation }) {
           <Card borderRadius={10}>
             <View style={styles.rowGap}>
               <Feather name="calendar" size={24} color="black" />
-              <Text style={styles.text}>August</Text>
+              <Text style={styles.text}>August 2023</Text>
             </View>
           </Card>
         </View>
