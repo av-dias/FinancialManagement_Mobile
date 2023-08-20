@@ -68,6 +68,12 @@ export const _styles = StyleSheet.create({
     width: "100%",
     color: "white",
   },
+  seperatorText: {
+    fontSize: 15,
+    width: "100%",
+    color: "black",
+    textAlign: "right",
+  },
   button: {
     alignItems: "center",
     justifyContent: "center",

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import { Divider } from "react-native-paper";
 
 import { _styles } from "../utility/style";
 import { KEYS } from "../utility/keys";
@@ -117,7 +118,8 @@ export default function Purchase({ navigation }) {
             </View>
           </Pressable>
         ))}
-        <Text>Archived</Text>
+        <Text style={styles.seperatorText}>Archived</Text>
+        <Divider />
         {archives.map((cellData, cellIndex) => (
           <Pressable
             key={KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex}
