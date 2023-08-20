@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
-import { saveToStorage, getFromStorage } from "../utility/secureStorage";
+import { saveToStorage, getFromStorage, addToStorage } from "../utility/secureStorage";
 import { _styles } from "../utility/style";
 import { getUser } from "../functions/basic";
 
@@ -77,7 +77,7 @@ export default function Settings({ navigation }) {
               })
                 .then(async (res) => {
                   console.log("Update Status: " + res.status);
-                  await saveToStorage("archived_purchases", purchases, email);
+                  await addToStorage("archived_purchases", purchases, email);
                   let info = await saveToStorage("purchases", "[]", email);
                   alert("Data uploaded to main server.");
                 })
@@ -86,10 +86,10 @@ export default function Settings({ navigation }) {
                 });
             } else {
               alert("Main server not connected.");
-              if (false) {
+              if (true) {
                 // For testing purpose only
                 let purchases = await getFromStorage("purchases", email);
-                await saveToStorage("archived_purchases", purchases, email);
+                await addToStorage("archived_purchases", purchases, email);
                 await saveToStorage("purchases", "[]", email);
               }
             }
