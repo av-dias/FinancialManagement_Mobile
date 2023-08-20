@@ -31,7 +31,7 @@ export default function Settings({ navigation }) {
         {
           text: "Yes",
           onPress: async () => {
-            let info = await saveToStorage("purchases", "", email);
+            let info = await saveToStorage("purchases", "[]", email);
             alert("Cleared");
           },
           style: "yes",
