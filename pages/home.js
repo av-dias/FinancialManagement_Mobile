@@ -3,8 +3,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome, Feather } from "@expo/vector-icons";
 import { VictoryPie, VictoryLabel, VictoryChart, VictoryLegend } from "victory-native";
+import { Card } from "@rneui/themed";
 
 import { saveToStorage, getFromStorage } from "../utility/secureStorage";
 import { getPurchaseStats, getPurchaseTotal } from "../functions/purchase";
@@ -58,24 +59,34 @@ export default function Home({ navigation }) {
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View>
-        <Text style={checkPosition()}>{purchaseTotal}</Text>
-        <VictoryPie
-          innerRadius={80}
-          data={pieChartData.length != 0 ? pieChartData : [{ x: "Your Spents", y: 1 }]}
-          labelComponent={
-            <VictoryLabel
-              angle={({ datum }) => {
-                /*console.log(datum.x + " " + (datum.startAngle + 35));
+        <View style={styles.calendar}>
+          <Card borderRadius={10}>
+            <View style={styles.rowGap}>
+              <Feather name="calendar" size={24} color="black" />
+              <Text style={styles.text}>August</Text>
+            </View>
+          </Card>
+        </View>
+        <View>
+          <Text style={checkPosition()}>{purchaseTotal}</Text>
+          <VictoryPie
+            innerRadius={80}
+            data={pieChartData.length != 0 ? pieChartData : [{ x: "Your Spents", y: 1 }]}
+            labelComponent={
+              <VictoryLabel
+                angle={({ datum }) => {
+                  /*console.log(datum.x + " " + (datum.startAngle + 35));
                  let angle = datum.startAngle + 35;
                 if (angle > 150 && angle < 200) return datum.startAngle + 35 - 180;
                 else if (angle > 0 && angle < 45) return 0;
                 else return datum.startAngle + 35; */
-                return 0;
-              }}
-              style={[{ fontSize: 10 }]}
-            />
-          }
-        />
+                  return 0;
+                }}
+                style={[{ fontSize: 10 }]}
+              />
+            }
+          />
+        </View>
       </View>
     </View>
   );
