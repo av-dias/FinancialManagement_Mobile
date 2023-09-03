@@ -1,10 +1,11 @@
 import navLogo from "../images/logo.png";
 import { useFocusEffect } from "@react-navigation/native";
-import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
+import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialIcons, FontAwesome, Feather, AntDesign } from "@expo/vector-icons";
 import { VictoryPie, VictoryLabel, VictoryChart, VictoryLegend } from "victory-native";
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
 import { Card } from "@rneui/themed";
 
 import { saveToStorage, getFromStorage } from "../utility/secureStorage";
@@ -20,6 +21,8 @@ export default function Home({ navigation }) {
   const [email, setEmail] = useState("");
   const [purchaseStats, setPurchaseStats] = useState({ "Your Spents": 0 });
   const [pieChartData, setPieChartData] = useState([{ x: "Your Spents", y: 1 }]);
+  const [pieChartDataDetails, setPieChartDataDetails] = useState([[""]]);
+
   const [purchaseTotal, setPurchaseTotal] = useState(0);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -34,11 +37,15 @@ export default function Home({ navigation }) {
         try {
           let res = await getPurchaseStats(email).catch((error) => console.log(error));
           let array = [];
+          let arrayTables = [];
           Object.keys(res).forEach((key) => {
             array.push({ x: key, y: res[key] });
+            arrayTables.push([key, res[key]]);
           });
           setPieChartData(array);
           setPurchaseStats(res);
+          setPieChartDataDetails(arrayTables);
+          console.log(array);
 
           res = await getPurchaseTotal(email).catch((error) => console.log(error));
           setPurchaseTotal(res);
@@ -80,6 +87,10 @@ export default function Home({ navigation }) {
     return { left: leftValue, bottom: "-50%" };
   };
 
+  const state = {
+    tableHead: ["Type", "Value"],
+  };
+
   return (
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
@@ -109,7 +120,7 @@ export default function Home({ navigation }) {
             </View>
           </Card>
         </View>
-        <View>
+        <View style={styles.chart}>
           <Text style={checkPosition()}>{purchaseTotal}</Text>
           <VictoryPie
             innerRadius={80}
@@ -128,6 +139,20 @@ export default function Home({ navigation }) {
               />
             }
           />
+        </View>
+        <View style={{ height: 120 }}>
+          <ScrollView style={styles.tableInfo}>
+            <Table borderStyle={{ borderColor: "transparent" }}>
+              <Row data={state.tableHead} style={{ alignContent: "center" }} />
+              {pieChartDataDetails.map((rowData, index) => (
+                <TableWrapper key={index} style={styles.row}>
+                  {rowData.map((cellData, cellIndex) => (
+                    <Cell key={cellIndex} data={cellData} />
+                  ))}
+                </TableWrapper>
+              ))}
+            </Table>
+          </ScrollView>
         </View>
       </View>
     </View>

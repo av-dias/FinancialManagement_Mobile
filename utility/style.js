@@ -104,4 +104,5 @@ export const _styles = StyleSheet.create({
   icon: { display: "flex", justifyContent: "center" },
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
   calendar: { width: "50%", alignSelf: "center", marginTop: "5%" },
+  chart: { marginTop: "-5%", marginBottom: "-5%" },
 });
