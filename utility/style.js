@@ -39,6 +39,7 @@ export const _styles = StyleSheet.create({
   form: { gap: 20, padding: 50, width: "100%" },
   tableInfo: { gap: 20, paddingLeft: 30, paddingRight: 30, width: "100%" },
   row: { flexDirection: "row", justifyContent: "center", width: "100%", backgroundColor: "white", borderRadius: 4 },
+  rowTable: { flexDirection: "row", justifyContent: "center", width: "100%", backgroundColor: "transparent", borderRadius: 4 },
   rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", borderRadius: 4, gap: 20 },
   checkbox: {
     alignItems: "center",
