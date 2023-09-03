@@ -19,9 +19,8 @@ import Header from "../components/header";
 export default function Home({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
-  const [purchaseStats, setPurchaseStats] = useState({ "Your Spents": 0 });
   const [pieChartData, setPieChartData] = useState([{ x: "Your Spents", y: 1 }]);
-  const [pieChartDataDetails, setPieChartDataDetails] = useState([[""]]);
+  const [spendByType, setSpendByType] = useState([[""]]);
 
   const [purchaseTotal, setPurchaseTotal] = useState(0);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -33,40 +32,6 @@ export default function Home({ navigation }) {
       .padStart(6, "0");
     return `#${randomColor}`;
   };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      async function fetchData() {
-        let email = await getUser();
-        setEmail(email);
-        try {
-          let res = await getPurchaseStats(email).catch((error) => console.log(error));
-          let array = [];
-          let arrayTables = [];
-          Object.keys(res).forEach((key) => {
-            let _color = generateColor();
-            array.push({ x: " ", y: res[key], color: _color });
-            arrayTables.push([<FontAwesome name="circle" size={24} color={_color} style={{ textAlign: "center" }} />, key, res[key]]);
-          });
-          console.log(generateColor());
-          setPieChartData(array);
-          setPurchaseStats(res);
-          setPieChartDataDetails(
-            arrayTables.sort(function (a, b) {
-              return b[2] - a[2];
-            })
-          );
-          //console.log(arrayTables);
-
-          res = await getPurchaseTotal(email).catch((error) => console.log(error));
-          setPurchaseTotal(res);
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      fetchData();
-    }, [purchaseTotal])
-  );
 
   const getCurrentDate = () => {
     return months[currentMonth] + " " + currentYear;
@@ -103,6 +68,37 @@ export default function Home({ navigation }) {
     tableFlex: [1, 3, 2],
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        let email = await getUser();
+        setEmail(email);
+        try {
+          let res = await getPurchaseStats(email).catch((error) => console.log(error));
+          let array = [];
+          let arrayTables = [];
+          Object.keys(res).forEach((key) => {
+            let _color = generateColor();
+            array.push({ x: " ", y: res[key], color: _color });
+            arrayTables.push([<FontAwesome name="circle" size={24} color={_color} style={{ textAlign: "center" }} />, key, res[key] + " €"]);
+          });
+          setPieChartData(array);
+          setSpendByType(
+            arrayTables.sort(function (a, b) {
+              return b[2] - a[2];
+            })
+          );
+
+          res = await getPurchaseTotal(email).catch((error) => console.log(error));
+          setPurchaseTotal(res);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      fetchData();
+    }, [purchaseTotal])
+  );
+
   return (
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
@@ -116,14 +112,15 @@ export default function Home({ navigation }) {
                   previousMonth();
                 }}
                 name="left"
-                size={20}
+                size={15}
                 color="black"
               />
               <Feather name="calendar" size={24} color="black" />
               <Text style={styles.text}>{getCurrentDate()}</Text>
               <AntDesign
+                style={styles.iconCenter}
                 name="right"
-                size={20}
+                size={15}
                 onPress={() => {
                   nextMonth();
                 }}
@@ -142,19 +139,7 @@ export default function Home({ navigation }) {
                 fill: ({ datum }) => datum.color,
               },
             }}
-            labelComponent={
-              <VictoryLabel
-                angle={({ datum }) => {
-                  /*console.log(datum.x + " " + (datum.startAngle + 35));
-                 let angle = datum.startAngle + 35;
-                if (angle > 150 && angle < 200) return datum.startAngle + 35 - 180;
-                else if (angle > 0 && angle < 45) return 0;
-                else return datum.startAngle + 35; */
-                  return 0;
-                }}
-                style={[{ fontSize: 10 }]}
-              />
-            }
+            labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
           />
         </View>
         <View style={{ height: 100 }}>
@@ -162,7 +147,7 @@ export default function Home({ navigation }) {
             <Table style={{ textAlign: "center" }} borderStyle={{ borderColor: "transparent" }}>
               <Row flexArr={state.tableFlex} data={state.tableHead} textStyle={{ textAlign: "center" }} />
               <ScrollView>
-                {pieChartDataDetails.map((rowData, index) => (
+                {spendByType.map((rowData, index) => (
                   <TableWrapper key={index} style={styles.rowTable}>
                     {rowData.map((cellData, cellIndex) => (
                       <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={{ textAlign: "center" }} />
