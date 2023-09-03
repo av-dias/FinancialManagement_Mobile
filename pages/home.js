@@ -19,10 +19,10 @@ import Header from "../components/header";
 export default function Home({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
-  const [pieChartData, setPieChartData] = useState([{ x: "Your Spents", y: 1 }]);
+  const [pieChartData, setPieChartData] = useState([{ x: " ", y: 1 }]);
   const [spendByType, setSpendByType] = useState([[""]]);
 
-  const [purchaseTotal, setPurchaseTotal] = useState(0);
+  const [purchaseTotal, setPurchaseTotal] = useState("0.00");
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
@@ -56,7 +56,7 @@ export default function Home({ navigation }) {
   const checkPosition = () => {
     let value = purchaseTotal.toString();
     let size = value.length;
-    let baseAnchor = 50;
+    let baseAnchor = 49;
     // 10 -> 47.5
     // 1000 -> 45.5
     let leftValue = baseAnchor - size + ".5%";
@@ -74,7 +74,8 @@ export default function Home({ navigation }) {
         let email = await getUser();
         setEmail(email);
         try {
-          let res = await getPurchaseStats(email).catch((error) => console.log(error));
+          let res = await getPurchaseStats(email, currentMonth).catch((error) => console.log(error));
+          console.log(res);
           let array = [];
           let arrayTables = [];
           Object.keys(res).forEach((key) => {
@@ -89,17 +90,17 @@ export default function Home({ navigation }) {
             })
           );
 
-          res = await getPurchaseTotal(email).catch((error) => console.log(error));
+          res = await getPurchaseTotal(email, currentMonth).catch((error) => console.log(error));
           setPurchaseTotal(res);
         } catch (e) {
           console.log(e);
         }
       }
       fetchData();
-    }, [purchaseTotal])
+    }, [purchaseTotal, currentMonth, currentYear])
   );
 
-  return (
+  return purchaseTotal !== "0.00" ? (
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View>
@@ -130,7 +131,7 @@ export default function Home({ navigation }) {
           </Card>
         </View>
         <View style={styles.chart}>
-          <Text style={checkPosition()}>{purchaseTotal}</Text>
+          <Text style={checkPosition()}>{purchaseTotal + " €"}</Text>
           <VictoryPie
             innerRadius={80}
             data={pieChartData.length != 0 ? pieChartData : [{ x: "Your Spents", y: 1 }]}
@@ -158,6 +159,39 @@ export default function Home({ navigation }) {
             </Table>
           </View>
         </View>
+      </View>
+    </View>
+  ) : (
+    <View style={styles.page}>
+      <Header email={email} navigation={navigation} />
+      <View style={styles.calendar}>
+        <Card borderRadius={10}>
+          <View style={styles.rowGap}>
+            <AntDesign
+              style={styles.iconCenter}
+              onPress={() => {
+                previousMonth();
+              }}
+              name="left"
+              size={15}
+              color="black"
+            />
+            <Feather name="calendar" size={24} color="black" />
+            <Text style={styles.text}>{getCurrentDate()}</Text>
+            <AntDesign
+              style={styles.iconCenter}
+              name="right"
+              size={15}
+              onPress={() => {
+                nextMonth();
+              }}
+              color="black"
+            />
+          </View>
+        </Card>
+      </View>
+      <View style={{ ...styles.iconCenter, height: "70%" }}>
+        <Text>NO DATA</Text>
       </View>
     </View>
   );

@@ -8,7 +8,7 @@ export async function saveToStorage(key, value, user) {
 export async function getFromStorage(key, user) {
   if (!user) user = "";
   let result = await SecureStore.getItemAsync(user + key);
-  console.log(`%csecureStorage: %c${result}`, "color:#bada55", "color:#bada55");
+  //console.log(`%csecureStorage: %c${result}`, "color:#bada55", "color:#bada55");
   return result;
 }
 
