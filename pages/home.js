@@ -10,6 +10,7 @@ import { Card } from "@rneui/themed";
 import { saveToStorage, getFromStorage } from "../utility/secureStorage";
 import { getPurchaseStats, getPurchaseTotal } from "../functions/purchase";
 import { _styles } from "../utility/style";
+import { months } from "../utility/calendar";
 import { getUser } from "../functions/basic";
 
 import Header from "../components/header";
@@ -20,10 +21,14 @@ export default function Home({ navigation }) {
   const [purchaseStats, setPurchaseStats] = useState({ "Your Spents": 0 });
   const [pieChartData, setPieChartData] = useState([{ x: "Your Spents", y: 1 }]);
   const [purchaseTotal, setPurchaseTotal] = useState(0);
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
+        console.log("Fetching month " + months[currentMonth]);
+        console.log("Fetching year " + currentYear);
         let email = await getUser();
         setEmail(email);
         try {
@@ -63,7 +68,7 @@ export default function Home({ navigation }) {
           <Card borderRadius={10}>
             <View style={styles.rowGap}>
               <Feather name="calendar" size={24} color="black" />
-              <Text style={styles.text}>August 2023</Text>
+              <Text style={styles.text}>{months[currentMonth] + " " + currentYear}</Text>
             </View>
           </Card>
         </View>
