@@ -3,7 +3,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { MaterialIcons, FontAwesome, Feather } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome, Feather, AntDesign } from "@expo/vector-icons";
 import { VictoryPie, VictoryLabel, VictoryChart, VictoryLegend } from "victory-native";
 import { Card } from "@rneui/themed";
 
@@ -50,10 +50,30 @@ export default function Home({ navigation }) {
     }, [purchaseTotal])
   );
 
+  const getCurrentDate = () => {
+    return months[currentMonth] + " " + currentYear;
+  };
+
+  const previousMonth = () => {
+    if (currentMonth > 0) setCurrentMonth(currentMonth - 1);
+    else {
+      setCurrentMonth(11);
+      setCurrentYear(currentYear - 1);
+    }
+  };
+
+  const nextMonth = () => {
+    if (currentMonth < 11) setCurrentMonth(currentMonth + 1);
+    else {
+      setCurrentMonth(0);
+      setCurrentYear(currentYear + 1);
+    }
+  };
+
   const checkPosition = () => {
     let value = purchaseTotal.toString();
     let size = value.length;
-    let baseAnchor = 49;
+    let baseAnchor = 50;
     // 10 -> 47.5
     // 1000 -> 45.5
     let leftValue = baseAnchor - size + ".5%";
@@ -67,8 +87,25 @@ export default function Home({ navigation }) {
         <View style={styles.calendar}>
           <Card borderRadius={10}>
             <View style={styles.rowGap}>
+              <AntDesign
+                style={styles.iconCenter}
+                onPress={() => {
+                  previousMonth();
+                }}
+                name="left"
+                size={20}
+                color="black"
+              />
               <Feather name="calendar" size={24} color="black" />
-              <Text style={styles.text}>{months[currentMonth] + " " + currentYear}</Text>
+              <Text style={styles.text}>{getCurrentDate()}</Text>
+              <AntDesign
+                name="right"
+                size={20}
+                onPress={() => {
+                  nextMonth();
+                }}
+                color="black"
+              />
             </View>
           </Card>
         </View>

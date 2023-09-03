@@ -102,5 +102,6 @@ export const _styles = StyleSheet.create({
   submitButton: { position: "absolute", bottom: 10, alignSelf: "center", justifyContent: "center" },
   textIP: { fontSize: 20, padding: 5, textAlign: "center", backgroundColor: "white", borderRadius: 2, width: "20%" },
   icon: { display: "flex", justifyContent: "center" },
+  iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
   calendar: { width: "50%", alignSelf: "center", marginTop: "5%" },
 });
