@@ -21,6 +21,8 @@ export const _styles = StyleSheet.create({
     width: "100%",
   },
   title: { padding: 10, fontSize: 40, alignContent: "center", textAlign: "center", width: "100%" },
+  textCenter: { textAlign: "center" },
+  textCenterHead: { textAlign: "center", fontWeight: "bold" },
   textInputLogin: { fontSize: 20, padding: 5, textAlign: "center", backgroundColor: "white", borderRadius: 2 },
   text: { fontSize: 20, textAlign: "center" },
   smallText: { fontSize: 12, textAlign: "center" },

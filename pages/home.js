@@ -80,7 +80,7 @@ export default function Home({ navigation }) {
           Object.keys(res).forEach((key) => {
             let _color = generateColor();
             array.push({ x: " ", y: res[key], color: _color });
-            arrayTables.push([<FontAwesome name="circle" size={24} color={_color} style={{ textAlign: "center" }} />, key, res[key] + " €"]);
+            arrayTables.push([<FontAwesome name="circle" size={24} color={_color} style={styles.textCenter} />, key, res[key] + " €"]);
           });
           setPieChartData(array);
           setSpendByType(
@@ -144,13 +144,13 @@ export default function Home({ navigation }) {
         </View>
         <View style={{ height: 100 }}>
           <View style={styles.tableInfo}>
-            <Table style={{ textAlign: "center" }} borderStyle={{ borderColor: "transparent" }}>
-              <Row flexArr={state.tableFlex} data={state.tableHead} textStyle={{ textAlign: "center" }} />
+            <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
+              <Row flexArr={state.tableFlex} data={state.tableHead} textStyle={styles.textCenterHead} />
               <ScrollView>
                 {spendByType.map((rowData, index) => (
                   <TableWrapper key={index} style={styles.rowTable}>
                     {rowData.map((cellData, cellIndex) => (
-                      <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={{ textAlign: "center" }} />
+                      <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
                     ))}
                   </TableWrapper>
                 ))}
