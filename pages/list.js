@@ -26,6 +26,7 @@ export default function Purchase({ navigation }) {
         setEmail(email);
         try {
           let res = JSON.parse(await getFromStorage("purchases", email));
+          if (!res) res = [];
           setPurchases(res);
           console.log("Purchase len: " + res.length);
           res = await getPurchaseTotal(email).catch((error) => console.log(error));
