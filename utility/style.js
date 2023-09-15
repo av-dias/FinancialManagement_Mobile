@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import { color } from "./colors";
+import { horizontalScale, verticalScale, moderateScale } from "../utility/responsive";
 
 export const _styles = StyleSheet.create({
   pageLogin: {
@@ -13,7 +14,7 @@ export const _styles = StyleSheet.create({
     backgroundColor: color.backgroundLight,
     //alignItems: "center",
     //justifyContent: "center",
-    height: "95%",
+    height: "97%",
   },
   container: {
     padding: 20,
@@ -38,7 +39,7 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
   },
   loginForm: { gap: 20, paddingBottom: 100, padding: 10, width: "100%", flex: 3 },
-  form: { gap: 20, padding: 50, width: "100%" },
+  form: { gap: 20, paddingHorizontal: horizontalScale(50), paddingVertical: verticalScale(50), width: "100%" },
   tableInfo: { gap: 20, paddingLeft: 30, paddingRight: 30, width: "100%" },
   row: { flexDirection: "row", justifyContent: "center", width: "100%", backgroundColor: "white", borderRadius: 4 },
   rowTable: { flexDirection: "row", justifyContent: "center", width: "100%", backgroundColor: "transparent", borderRadius: 4 },

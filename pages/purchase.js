@@ -1,12 +1,15 @@
 import navLogo from "../images/logo.png";
-import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, Dimensions } from "react-native";
+
 import React, { useState, useEffect } from "react";
 import CalendarStrip from "react-native-calendar-strip";
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
 import { saveToStorage, getFromStorage } from "../utility/secureStorage";
+import { horizontalScale, verticalScale, moderateScale } from "../utility/responsive";
 import { _styles } from "../utility/style";
+
 import Header from "../components/header";
 
 export default function Purchase({ navigation }) {
@@ -18,6 +21,10 @@ export default function Purchase({ navigation }) {
   const [value, setValue] = useState("");
   const [list, setList] = useState([[""], [""], [""], [""], [""]]);
   const [email, setEmail] = useState("");
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight = Dimensions.get("window").height;
+
+  console.log(deviceWidth + " - " + deviceHeight);
 
   const getUser = async () => {
     try {
@@ -100,11 +107,11 @@ export default function Purchase({ navigation }) {
             ref={(component) => (this._calendar = component)}
             calendarAnimation={{ type: "sequence", duration: 15 }}
             daySelectionAnimation={{ type: "border", duration: 200, borderWidth: 1, borderHighlightColor: "white" }}
-            style={{ height: 100, paddingTop: 20, paddingBottom: 10 }}
-            calendarHeaderStyle={{ color: "black" }}
+            style={{ height: 100 }}
+            calendarHeaderStyle={{ color: "black", paddingTop: verticalScale(5), fontSize: moderateScale(15) }}
             calendarColor={"white"}
-            dateNumberStyle={{ color: "black" }}
-            dateNameStyle={{ color: "black" }}
+            dateNumberStyle={{ color: "black", fontSize: moderateScale(15) }}
+            dateNameStyle={{ color: "black", fontSize: moderateScale(10) }}
             highlightDateNumberStyle={{ color: "#2296F3" }}
             highlightDateNameStyle={{ color: "#2296F3" }}
             disabledDateNameStyle={{ color: "grey" }}
