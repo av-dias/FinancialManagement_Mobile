@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import { color } from "./colors";
 import { horizontalScale, verticalScale, moderateScale } from "../utility/responsive";
+import { StatusBar } from "react-native";
+const statusBarHeight = StatusBar.currentHeight;
 
 export const _styles = StyleSheet.create({
   pageLogin: {
@@ -52,9 +54,9 @@ export const _styles = StyleSheet.create({
   test: { backgroundColor: "red" },
   header: {
     fontSize: 30,
-    padding: 20,
+    padding: verticalScale(15),
     gap: 10,
-    marginTop: "8%",
+    marginTop: statusBarHeight,
     width: "100%",
     flexDirection: "row",
     backgroundColor: "black",

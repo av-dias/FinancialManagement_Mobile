@@ -21,10 +21,6 @@ export default function Purchase({ navigation }) {
   const [value, setValue] = useState("");
   const [list, setList] = useState([[""], [""], [""], [""], [""]]);
   const [email, setEmail] = useState("");
-  const deviceWidth = Dimensions.get("window").width;
-  const deviceHeight = Dimensions.get("window").height;
-
-  console.log(deviceWidth + " - " + deviceHeight);
 
   const getUser = async () => {
     try {
