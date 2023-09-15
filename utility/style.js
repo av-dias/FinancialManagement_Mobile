@@ -24,6 +24,7 @@ export const _styles = StyleSheet.create({
     width: "100%",
   },
   title: { padding: 10, fontSize: 40, alignContent: "center", textAlign: "center", width: "100%" },
+  centered: { alignItems: "center", justifyContent: "center", backgroundColor: "red" },
   textCenter: { textAlign: "center" },
   textCenterHead: { textAlign: "center", fontWeight: "bold" },
   textInputLogin: { fontSize: 20, padding: 5, textAlign: "center", backgroundColor: "white", borderRadius: 2 },
@@ -109,6 +110,14 @@ export const _styles = StyleSheet.create({
   textIP: { fontSize: 20, padding: 5, textAlign: "center", backgroundColor: "white", borderRadius: 2, width: "20%" },
   icon: { display: "flex", justifyContent: "center" },
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
-  calendar: { width: "50%", alignSelf: "center", marginTop: "5%" },
+  calendar: { flexDirection: "row", justifyContent: "center", alignSelf: "center", marginTop: "5%", maxHeight: "15%" },
   chart: { marginTop: "-5%", marginBottom: "0%" },
+  hitBox: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: "60%",
+    width: horizontalScale(30),
+    alignSelf: "center",
+    zIndex: -1,
+  },
 });

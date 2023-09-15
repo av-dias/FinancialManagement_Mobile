@@ -1,6 +1,6 @@
 import navLogo from "../images/logo.png";
 import { useFocusEffect } from "@react-navigation/native";
-import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView } from "react-native";
+import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialIcons, FontAwesome, Feather, AntDesign } from "@expo/vector-icons";
@@ -10,6 +10,7 @@ import { Card } from "@rneui/themed";
 
 import { saveToStorage, getFromStorage } from "../utility/secureStorage";
 import { getPurchaseStats, getPurchaseTotal } from "../functions/purchase";
+import { horizontalScale, verticalScale, moderateScale } from "../utility/responsive";
 import { _styles } from "../utility/style";
 import { months } from "../utility/calendar";
 import { getUser } from "../functions/basic";
@@ -75,7 +76,6 @@ export default function Home({ navigation }) {
         setEmail(email);
         try {
           let res = await getPurchaseStats(email, currentMonth).catch((error) => console.log(error));
-          console.log(res);
           let array = [];
           let arrayTables = [];
           Object.keys(res).forEach((key) => {
@@ -100,98 +100,80 @@ export default function Home({ navigation }) {
     }, [purchaseTotal, currentMonth, currentYear])
   );
 
-  return purchaseTotal !== "0.00" ? (
+  return (
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View>
         <View style={styles.calendar}>
-          <Card borderRadius={10}>
+          <TouchableOpacity
+            style={styles.hitBox}
+            onPress={() => {
+              console.log("Press");
+              previousMonth();
+            }}
+          >
+            <AntDesign style={styles.iconCenter} name="left" size={15} color="black" />
+          </TouchableOpacity>
+          <Card borderRadius={10} containerStyle={{ marginTop: 0, width: 170, marginHorizontal: -horizontalScale(5) }}>
             <View style={styles.rowGap}>
-              <AntDesign
-                style={styles.iconCenter}
-                onPress={() => {
-                  previousMonth();
-                }}
-                name="left"
-                size={15}
-                color="black"
-              />
-              <Feather name="calendar" size={24} color="black" />
-              <Text style={styles.text}>{getCurrentDate()}</Text>
-              <AntDesign
-                style={styles.iconCenter}
-                name="right"
-                size={15}
-                onPress={() => {
-                  nextMonth();
-                }}
-                color="black"
-              />
+              <View style={{ flex: 1 }}>
+                <Feather name="calendar" size={24} color="black" />
+              </View>
+              <View style={{ flex: 4 }}>
+                <Text style={styles.text}>{getCurrentDate()}</Text>
+              </View>
             </View>
           </Card>
-        </View>
-        <View style={styles.chart}>
-          <Text style={checkPosition()}>{purchaseTotal + " €"}</Text>
-          <VictoryPie
-            innerRadius={80}
-            data={pieChartData.length != 0 ? pieChartData : [{ x: "Your Spents", y: 1 }]}
-            style={{
-              data: {
-                fill: ({ datum }) => datum.color,
-              },
+          <TouchableOpacity
+            style={styles.hitBox}
+            onPress={() => {
+              console.log("Press");
+              nextMonth();
             }}
-            labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
-          />
+          >
+            <AntDesign style={styles.iconCenter} name="right" size={15} color="black" />
+          </TouchableOpacity>
         </View>
-        <View style={{ height: 100 }}>
-          <View style={styles.tableInfo}>
-            <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
-              <Row flexArr={state.tableFlex} data={state.tableHead} textStyle={styles.textCenterHead} />
-              <ScrollView>
-                {spendByType.map((rowData, index) => (
-                  <TableWrapper key={index} style={styles.rowTable}>
-                    {rowData.map((cellData, cellIndex) => (
-                      <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
+        {
+          // Only show chart and table if there is data to be displayed, otherwise just show "No data available" message
+        }
+        {purchaseTotal !== "0.00" ? (
+          <>
+            <View style={styles.chart}>
+              <Text style={checkPosition()}>{purchaseTotal + " €"}</Text>
+              <VictoryPie
+                innerRadius={80}
+                data={pieChartData.length != 0 ? pieChartData : [{ x: "Your Spents", y: 1 }]}
+                style={{
+                  data: {
+                    fill: ({ datum }) => datum.color,
+                  },
+                }}
+                labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
+              />
+            </View>
+            <View style={{ height: 100 }}>
+              <View style={styles.tableInfo}>
+                <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
+                  <Row flexArr={state.tableFlex} data={state.tableHead} textStyle={styles.textCenterHead} />
+                  <ScrollView>
+                    {spendByType.map((rowData, index) => (
+                      <TableWrapper key={index} style={styles.rowTable}>
+                        {rowData.map((cellData, cellIndex) => (
+                          <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
+                        ))}
+                      </TableWrapper>
                     ))}
-                  </TableWrapper>
-                ))}
-              </ScrollView>
-            </Table>
+                  </ScrollView>
+                </Table>
+              </View>
+            </View>
+          </>
+        ) : (
+          <View style={{ ...styles.iconCenter, height: "70%" }}>
+            <Text>NO DATA</Text>
           </View>
-        </View>
-      </View>
-    </View>
-  ) : (
-    <View style={styles.page}>
-      <Header email={email} navigation={navigation} />
-      <View style={styles.calendar}>
-        <Card borderRadius={10}>
-          <View style={styles.rowGap}>
-            <AntDesign
-              style={styles.iconCenter}
-              onPress={() => {
-                previousMonth();
-              }}
-              name="left"
-              size={15}
-              color="black"
-            />
-            <Feather name="calendar" size={24} color="black" />
-            <Text style={styles.text}>{getCurrentDate()}</Text>
-            <AntDesign
-              style={styles.iconCenter}
-              name="right"
-              size={15}
-              onPress={() => {
-                nextMonth();
-              }}
-              color="black"
-            />
-          </View>
-        </Card>
-      </View>
-      <View style={{ ...styles.iconCenter, height: "70%" }}>
-        <Text>NO DATA</Text>
+        )}
       </View>
     </View>
   );
