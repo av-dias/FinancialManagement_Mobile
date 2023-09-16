@@ -66,8 +66,6 @@ export default function Login({ navigation }) {
           console.log("Not connected to the main server");
           saveToStorage("server", "off");
         });
-
-      navigation.navigate("Home");
     } catch (err) {
       console.log("Error: " + err);
       saveToStorage("server", "off");
@@ -171,7 +169,13 @@ export default function Login({ navigation }) {
             onChangeText={(value) => setip4(value.toLowerCase())}
           />
         </View>
-        <Pressable style={styles.button} onPress={handleLogin}>
+        <Pressable
+          style={styles.button}
+          onPress={() => {
+            handleLogin();
+            navigation.navigate("Home");
+          }}
+        >
           <Text style={styles.buttonText}>Submit</Text>
         </Pressable>
         <View style={styles.checkbox}>
