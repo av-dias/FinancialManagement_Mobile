@@ -20,7 +20,7 @@ function HomeTabs() {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          //height: 90,
+          height: 50,
           paddingHorizontal: 5,
           paddingTop: 5,
           backgroundColor: "black",

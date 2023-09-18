@@ -93,48 +93,48 @@ export default function Home({ navigation }) {
   return (
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
-      <View>
+      <View style={styles.usableScreen}>
         <View style={styles.calendar}>
-          <TouchableOpacity
-            style={styles.hitBox}
-            onPress={() => {
-              console.log("Press");
-              previousMonth();
-            }}
-          >
-            <AntDesign style={styles.iconCenter} name="left" size={15} color="black" />
-          </TouchableOpacity>
-          <Card borderRadius={10} containerStyle={{ marginTop: 0, width: 170, marginHorizontal: -horizontalScale(5) }}>
-            <View style={styles.rowGap}>
-              <View style={{ flex: 1 }}>
-                <Feather name="calendar" size={24} color="black" />
+          <View style={{ maxHeight: "80%", width: "70%", justifyContent: "center", alignItems: "center", flexDirection: "row" }}>
+            <TouchableOpacity
+              style={styles.hitBox}
+              onPress={() => {
+                console.log("Press");
+                previousMonth();
+              }}
+            >
+              <AntDesign style={styles.iconCenter} name="left" size={15} color="black" />
+            </TouchableOpacity>
+            <Card borderRadius={10} containerStyle={{ marginTop: 0, width: 170, marginHorizontal: -horizontalScale(5) }}>
+              <View style={styles.rowGap}>
+                <View style={{ flex: 1 }}>
+                  <Feather name="calendar" size={24} color="black" />
+                </View>
+                <View style={{ flex: 4 }}>
+                  <Text style={styles.text}>{getCurrentDate()}</Text>
+                </View>
               </View>
-              <View style={{ flex: 4 }}>
-                <Text style={styles.text}>{getCurrentDate()}</Text>
-              </View>
-            </View>
-          </Card>
-          <TouchableOpacity
-            style={styles.hitBox}
-            onPress={() => {
-              console.log("Press");
-              nextMonth();
-            }}
-          >
-            <AntDesign style={styles.iconCenter} name="right" size={15} color="black" />
-          </TouchableOpacity>
+            </Card>
+            <TouchableOpacity
+              style={styles.hitBox}
+              onPress={() => {
+                console.log("Press");
+                nextMonth();
+              }}
+            >
+              <AntDesign style={styles.iconCenter} name="right" size={15} color="black" />
+            </TouchableOpacity>
+          </View>
         </View>
         {
           // Only show chart and table if there is data to be displayed, otherwise just show "No data available" message
         }
         {purchaseTotal !== "0.00" ? (
-          <>
+          <View style={{ flex: 8 }}>
             <View style={styles.chart}>
-              <View style={{ bottom: "-50%", justifyContent: "center", alignContent: "center" }}>
-                <Text style={{ alignSelf: "center" }}>{purchaseTotal + " €"}</Text>
-              </View>
               <VictoryPie
-                innerRadius={horizontalScale(90)}
+                height={verticalScale(400)}
+                innerRadius={horizontalScale(80)}
                 data={pieChartData.length != 0 ? pieChartData : [{ x: "Your Spents", y: 1 }]}
                 style={{
                   data: {
@@ -142,13 +142,17 @@ export default function Home({ navigation }) {
                   },
                 }}
                 labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
+                options={{ maintainAspectRatio: false, aspectRatio: 1 }}
               />
+              <View style={{ bottom: "55%", justifyContent: "center", alignContent: "center" }}>
+                <Text style={{ alignSelf: "center" }}>{purchaseTotal + " €"}</Text>
+              </View>
             </View>
-            <View style={{ height: 100 }}>
+            <View style={{ flex: 2 }}>
               <View style={styles.tableInfo}>
-                <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
+                <Table style={{ ...styles.textCenter }} borderStyle={{ borderColor: "transparent" }}>
                   <Row flexArr={state.tableFlex} data={state.tableHead} textStyle={styles.textCenterHead} />
-                  <ScrollView>
+                  <ScrollView style={{ height: "90%" }}>
                     {spendByType.map((rowData, index) => (
                       <TableWrapper key={index} style={styles.rowTable}>
                         {rowData.map((cellData, cellIndex) => (
@@ -160,7 +164,7 @@ export default function Home({ navigation }) {
                 </Table>
               </View>
             </View>
-          </>
+          </View>
         ) : (
           <View style={{ ...styles.iconCenter, height: "70%" }}>
             <Text>NO DATA</Text>

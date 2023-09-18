@@ -1,10 +1,17 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import { color } from "./colors";
 import { horizontalScale, verticalScale, moderateScale } from "../utility/responsive";
-import { StatusBar } from "react-native";
+import { StatusBar, Dimensions } from "react-native";
 const statusBarHeight = StatusBar.currentHeight;
+const naviagtionBarHeight = verticalScale(90);
+
+/* console.log(Dimensions.get("screen").height);
+console.log(Dimensions.get("window").height);
+console.log(statusBarHeight);
+console.log(naviagtionBarHeight); */
 
 export const _styles = StyleSheet.create({
+  usableScreen: { height: Dimensions.get("window").height - statusBarHeight - naviagtionBarHeight },
   pageLogin: {
     flex: 1,
     backgroundColor: color.backgroundDark,
@@ -43,7 +50,7 @@ export const _styles = StyleSheet.create({
   },
   loginForm: { gap: 20, paddingBottom: 100, padding: 10, width: "100%", flex: 1 },
   form: { gap: verticalScale(20), paddingHorizontal: horizontalScale(50), paddingVertical: verticalScale(50), width: "100%" },
-  tableInfo: { gap: 20, paddingLeft: 30, paddingRight: 30, width: "100%" },
+  tableInfo: { gap: 30, paddingLeft: 30, paddingRight: 30, width: "100%", height: "100%" },
   row: { flexDirection: "row", justifyContent: "center", width: "100%", backgroundColor: "white", borderRadius: 4 },
   rowTable: { flexDirection: "row", justifyContent: "center", width: "100%", backgroundColor: "transparent", borderRadius: 4 },
   rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", borderRadius: 4, gap: 20 },
@@ -112,8 +119,8 @@ export const _styles = StyleSheet.create({
   icon: { justifyContent: "center" },
   iconLeft: { justifyContent: "center", marginLeft: 0, marginRight: 0 },
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
-  calendar: { flexDirection: "row", justifyContent: "center", alignSelf: "center", marginTop: "5%", maxHeight: "15%" },
-  chart: { marginTop: "-5%", marginBottom: "0%" },
+  calendar: { justifyContent: "center", alignItems: "center", flex: 1, width: "100%" },
+  chart: { flex: 3, justifyContent: "center", alignItems: "center" },
   hitBox: {
     alignItems: "center",
     justifyContent: "center",
