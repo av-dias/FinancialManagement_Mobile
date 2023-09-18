@@ -54,16 +54,6 @@ export default function Home({ navigation }) {
     }
   };
 
-  const checkPosition = () => {
-    let value = purchaseTotal.toString();
-    let size = value.length;
-    let baseAnchor = 49;
-    // 10 -> 47.5
-    // 1000 -> 45.5
-    let leftValue = baseAnchor - size + ".5%";
-    return { left: leftValue, bottom: "-50%" };
-  };
-
   const state = {
     tableHead: ["", "Type", "Value"],
     tableFlex: [1, 3, 2],
@@ -140,9 +130,11 @@ export default function Home({ navigation }) {
         {purchaseTotal !== "0.00" ? (
           <>
             <View style={styles.chart}>
-              <Text style={checkPosition()}>{purchaseTotal + " €"}</Text>
+              <View style={{ bottom: "-50%", justifyContent: "center", alignContent: "center" }}>
+                <Text style={{ alignSelf: "center" }}>{purchaseTotal + " €"}</Text>
+              </View>
               <VictoryPie
-                innerRadius={80}
+                innerRadius={horizontalScale(90)}
                 data={pieChartData.length != 0 ? pieChartData : [{ x: "Your Spents", y: 1 }]}
                 style={{
                   data: {
