@@ -2,9 +2,9 @@ import { Text, View, TextInput, Image, Pressable } from "react-native";
 import { CheckBox } from "@rneui/themed";
 import { useState, useEffect } from "react";
 
-import navLogo from "../images/logo.png";
-import { saveToStorage, getFromStorage } from "../utility/secureStorage";
-import { _styles } from "../utility/style";
+import navLogo from "../../images/logo.png";
+import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
+import { _styles } from "./style";
 
 export default function Login({ navigation }) {
   const styles = _styles;
@@ -122,52 +122,54 @@ export default function Login({ navigation }) {
             placeholder="email"
             onChangeText={(value) => setEmail(value.toLowerCase())}
           />
-          <Text style={styles.textInputLogin}>@gmail.com</Text>
+          <Text style={styles.gmailInputLogin}>@gmail.com</Text>
         </View>
         <View style={styles.row}>
           <TextInput style={styles.textInputLogin} secureTextEntry={true} value={password} placeholder="password" onChangeText={setPassword} />
         </View>
-        <View style={styles.rowGap}>
-          <TextInput
-            value={ip1}
-            autoCapitalize="none"
-            keyboardType="numeric"
-            autoCorrect={false}
-            style={styles.textIP}
-            placeholder="xxx"
-            maxLength={3}
-            onChangeText={(value) => setip1(value.toLowerCase())}
-          />
-          <TextInput
-            value={ip2}
-            keyboardType="numeric"
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={styles.textIP}
-            placeholder="xxx"
-            maxLength={3}
-            onChangeText={(value) => setip2(value.toLowerCase())}
-          />
-          <TextInput
-            value={ip3}
-            autoCapitalize="none"
-            keyboardType="numeric"
-            autoCorrect={false}
-            style={styles.textIP}
-            placeholder="xxx"
-            maxLength={3}
-            onChangeText={(value) => setip3(value.toLowerCase())}
-          />
-          <TextInput
-            value={ip4}
-            autoCapitalize="none"
-            keyboardType="numeric"
-            autoCorrect={false}
-            style={styles.textIP}
-            placeholder="xxx"
-            maxLength={3}
-            onChangeText={(value) => setip4(value.toLowerCase())}
-          />
+        <View style={styles.row}>
+          <View style={styles.rowGap}>
+            <TextInput
+              value={ip1}
+              autoCapitalize="none"
+              keyboardType="numeric"
+              autoCorrect={false}
+              style={styles.textIP}
+              placeholder="xxx"
+              maxLength={3}
+              onChangeText={(value) => setip1(value.toLowerCase())}
+            />
+            <TextInput
+              value={ip2}
+              keyboardType="numeric"
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={styles.textIP}
+              placeholder="xxx"
+              maxLength={3}
+              onChangeText={(value) => setip2(value.toLowerCase())}
+            />
+            <TextInput
+              value={ip3}
+              autoCapitalize="none"
+              keyboardType="numeric"
+              autoCorrect={false}
+              style={styles.textIP}
+              placeholder="xxx"
+              maxLength={3}
+              onChangeText={(value) => setip3(value.toLowerCase())}
+            />
+            <TextInput
+              value={ip4}
+              autoCapitalize="none"
+              keyboardType="numeric"
+              autoCorrect={false}
+              style={styles.textIP}
+              placeholder="xxx"
+              maxLength={3}
+              onChangeText={(value) => setip4(value.toLowerCase())}
+            />
+          </View>
         </View>
         <Pressable
           style={styles.button}
