@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-nativ
 import { color } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
 import { StatusBar } from "react-native";
-const statusBarHeight = StatusBar.currentHeight;
 
 export const _styles = StyleSheet.create({
   pageLogin: {
@@ -16,14 +15,14 @@ export const _styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     fontSize: 30,
-    paddingBottom: 50,
+    paddingBottom: verticalScale(50),
     textAlign: "center",
     alignItems: "center",
     justifyContent: "flex-end",
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: verticalScale(100),
+    height: verticalScale(100),
     alignItems: "center",
     justifyContent: "center",
   },
