@@ -54,8 +54,8 @@ export default function App() {
     <NavigationContainer>
       <StatusBar style="light" backgroundColor="black" hidden={false} />
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} options={{ headerShown: false, orientation: "all" }} />
-        <Stack.Screen name="Home" component={HomeTabs} options={{ headerShown: false, orientation: "all" }} />
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false /* , orientation: "all" */ }} />
+        <Stack.Screen name="Home" component={HomeTabs} options={{ headerShown: false /* , orientation: "all" */ }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
