@@ -117,7 +117,6 @@ export default function Home({ navigation }) {
             <TouchableOpacity
               style={styles.hitBox}
               onPress={() => {
-                console.log("Press");
                 nextMonth();
               }}
             >
