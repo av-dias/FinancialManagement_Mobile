@@ -1,4 +1,4 @@
-import navLogo from "../images/logo.png";
+import navLogo from "../../images/logo.png";
 import { useFocusEffect } from "@react-navigation/native";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
@@ -8,14 +8,14 @@ import { VictoryPie, VictoryLabel, VictoryChart, VictoryLegend } from "victory-n
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
 import { Card } from "@rneui/themed";
 
-import { saveToStorage, getFromStorage } from "../utility/secureStorage";
-import { getPurchaseStats, getPurchaseTotal } from "../functions/purchase";
-import { horizontalScale, verticalScale, moderateScale } from "../utility/responsive";
-import { _styles } from "../utility/style";
-import { months } from "../utility/calendar";
-import { getUser } from "../functions/basic";
+import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
+import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
+import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
+import { _styles } from "./style";
+import { months } from "../../utility/calendar";
+import { getUser } from "../../functions/basic";
 
-import Header from "../components/header";
+import Header from "../../components/header";
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -99,7 +99,6 @@ export default function Home({ navigation }) {
             <TouchableOpacity
               style={styles.hitBox}
               onPress={() => {
-                console.log("Press");
                 previousMonth();
               }}
             >
