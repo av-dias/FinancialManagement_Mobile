@@ -166,7 +166,7 @@ export default function Home({ navigation }) {
             </View>
           </View>
         ) : (
-          <View style={{ ...styles.iconCenter, height: "70%" }}>
+          <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
             <Text>NO DATA</Text>
           </View>
         )}
