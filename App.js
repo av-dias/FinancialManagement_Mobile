@@ -7,7 +7,7 @@ import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 
 import Login from "./pages/login/login";
 import Home from "./pages/home";
-import Purchase from "./pages/purchase";
+import Purchase from "./pages/purchase/purchase";
 import List from "./pages/list";
 import Settings from "./pages/settings";
 
