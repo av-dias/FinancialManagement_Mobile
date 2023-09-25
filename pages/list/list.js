@@ -3,13 +3,13 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, 
 import { useFocusEffect } from "@react-navigation/native";
 import { Divider } from "react-native-paper";
 
-import { _styles } from "../utility/style";
-import { KEYS } from "../utility/keys";
-import Header from "../components/header";
+import { _styles } from "./style";
+import { KEYS } from "../../utility/keys";
+import Header from "../../components/header";
 
-import { getPurchaseTotal } from "../functions/purchase";
-import { getFromStorage, saveToStorage } from "../utility/secureStorage";
-import { getUser } from "../functions/basic";
+import { getPurchaseTotal } from "../../functions/purchase";
+import { getFromStorage, saveToStorage } from "../../utility/secureStorage";
+import { getUser } from "../../functions/basic";
 
 export default function Purchase({ navigation }) {
   const styles = _styles;

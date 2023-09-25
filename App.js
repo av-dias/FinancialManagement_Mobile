@@ -8,8 +8,8 @@ import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import Login from "./pages/login/login";
 import Home from "./pages/home/home";
 import Purchase from "./pages/purchase/purchase";
-import List from "./pages/list";
-import Settings from "./pages/settings";
+import List from "./pages/list/list";
+import Settings from "./pages/settings/settings";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();

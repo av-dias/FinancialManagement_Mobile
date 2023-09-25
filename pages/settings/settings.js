@@ -1,14 +1,14 @@
-import navLogo from "../images/logo.png";
+import navLogo from "../../images/logo.png";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
-import { saveToStorage, getFromStorage, addToStorage } from "../utility/secureStorage";
-import { _styles } from "../utility/style";
-import { getUser } from "../functions/basic";
+import { saveToStorage, getFromStorage, addToStorage } from "../../utility/secureStorage";
+import { _styles } from "./style";
+import { getUser } from "../../functions/basic";
 
-import Header from "../components/header";
+import Header from "../../components/header";
 
 export default function Settings({ navigation }) {
   const styles = _styles;
