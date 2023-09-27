@@ -72,7 +72,7 @@ export const _styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
-    borderRadius: 4,
+    borderRadius: 1,
     borderColor: "rgba(255,255,255, 1)",
     borderWidth: verticalScale(2),
   },
