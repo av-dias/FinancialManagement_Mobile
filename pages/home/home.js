@@ -10,7 +10,7 @@ import { Card } from "@rneui/themed";
 
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
-import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../utility/responsive";
 import { _styles } from "./style";
 import { months } from "../../utility/calendar";
 import { getUser } from "../../functions/basic";
@@ -71,7 +71,7 @@ export default function Home({ navigation }) {
           Object.keys(res).forEach((key) => {
             let _color = generateColor();
             array.push({ x: " ", y: res[key], color: _color });
-            arrayTables.push([<FontAwesome name="circle" size={24} color={_color} style={styles.textCenter} />, key, res[key] + " €"]);
+            arrayTables.push([<FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />, key, res[key] + " €"]);
           });
           setPieChartData(array);
           setSpendByType(
@@ -142,11 +142,11 @@ export default function Home({ navigation }) {
                 labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
                 options={{ maintainAspectRatio: false, aspectRatio: 1 }}
               />
-              <View style={{ bottom: "55%", justifyContent: "center", alignContent: "center" }}>
-                <Text style={{ alignSelf: "center" }}>{purchaseTotal + " €"}</Text>
+              <View style={{ position: "absolute", bottom: "50%", justifyContent: "center", alignContent: "center" }}>
+                <Text style={{ alignSelf: "center", fontSize: 20 }}>{purchaseTotal + " €"}</Text>
               </View>
             </View>
-            <View style={{ flex: 2 }}>
+            <View style={{ flex: 4 }}>
               <View style={styles.tableInfo}>
                 <Table style={{ ...styles.textCenter }} borderStyle={{ borderColor: "transparent" }}>
                   <Row flexArr={state.tableFlex} data={state.tableHead} textStyle={styles.textCenterHead} />
@@ -154,7 +154,12 @@ export default function Home({ navigation }) {
                     {spendByType.map((rowData, index) => (
                       <TableWrapper key={index} style={styles.rowTable}>
                         {rowData.map((cellData, cellIndex) => (
-                          <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
+                          <Cell
+                            style={{ flex: state.tableFlex[cellIndex], borderRadius: 4, borderColor: "rgba(255,255,255, 1)" }}
+                            key={cellIndex}
+                            data={cellData}
+                            textStyle={styles.textCenter}
+                          />
                         ))}
                       </TableWrapper>
                     ))}
