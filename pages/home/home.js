@@ -142,8 +142,8 @@ export default function Home({ navigation }) {
                 labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
                 options={{ maintainAspectRatio: false, aspectRatio: 1 }}
               />
-              <View style={{ position: "absolute", bottom: "50%", justifyContent: "center", alignContent: "center" }}>
-                <Text style={{ alignSelf: "center", fontSize: 20 }}>{purchaseTotal + " €"}</Text>
+              <View style={{ position: "absolute", bottom: "47%", justifyContent: "center", alignContent: "center" }}>
+                <Text style={{ alignSelf: "center", fontSize: verticalScale(20) }}>{purchaseTotal + " €"}</Text>
               </View>
             </View>
             <View style={{ flex: 4 }}>
