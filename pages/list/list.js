@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Divider } from "react-native-paper";
-import { MaterialIcons, FontAwesome, Feather, AntDesign } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome, Feather, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Card } from "@rneui/themed";
 import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
 

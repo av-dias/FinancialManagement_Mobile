@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, 
 import React, { useState, useEffect } from "react";
 import CalendarStrip from "react-native-calendar-strip";
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
-import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
@@ -18,6 +18,7 @@ export default function Purchase({ navigation }) {
   const [onLoadData, setOnLoadData] = useState("");
   const [type, setType] = useState("");
   const [name, setName] = useState("");
+  const [note, setNote] = useState("");
   const [value, setValue] = useState("");
   const [list, setList] = useState([[""], [""], [""], [""], [""]]);
   const [email, setEmail] = useState("");
@@ -48,9 +49,10 @@ export default function Purchase({ navigation }) {
       alert("Please fill all fields.");
       return;
     }
+    if (!note) setNote("");
     try {
       let purchases = await getFromStorage("purchases", email);
-      let newPurchase = { type: type, name: name, value: value, dop: date.toISOString().split("T")[0] };
+      let newPurchase = { type: type, name: name, value: value, dop: date.toISOString().split("T")[0], note: note };
 
       if (purchases) {
         purchases = JSON.parse(purchases);
@@ -63,6 +65,7 @@ export default function Purchase({ navigation }) {
       setList([[type, name, value, date.toISOString().split("T")[0]], ...list].slice(0, MAX_TABLE_SIZE));
       this.textInputValue.clear();
       setValue("");
+      setNote("");
 
       console.log("Purchase: " + purchases);
     } catch (err) {
@@ -86,54 +89,70 @@ export default function Purchase({ navigation }) {
   return (
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
-      <View style={{ flex: 1 }}>
-        <View style={styles.form}>
-          <TextInput style={styles.textInput} placeholder="Type" onChangeText={setType} />
-          <TextInput style={styles.textInput} placeholder="Name" onChangeText={setName} />
-          <TextInput
-            ref={(input) => {
-              this.textInputValue = input;
-            }}
-            keyboardType="numeric"
-            style={styles.textInput}
-            placeholder="Value"
-            onChangeText={setValue}
-          />
-          <CalendarStrip
-            ref={(component) => (this._calendar = component)}
-            calendarAnimation={{ type: "sequence", duration: 15 }}
-            daySelectionAnimation={{ type: "border", duration: 200, borderWidth: 1, borderHighlightColor: "white" }}
-            style={{ height: 100 }}
-            calendarHeaderStyle={{ color: "black", paddingTop: horizontalScale(5), fontSize: verticalScale(15) }}
-            calendarColor={"white"}
-            dateNumberStyle={{ color: "black", fontSize: verticalScale(15) }}
-            dateNameStyle={{ color: "black", fontSize: verticalScale(10) }}
-            highlightDateNumberStyle={{ color: "#2296F3" }}
-            highlightDateNameStyle={{ color: "#2296F3" }}
-            disabledDateNameStyle={{ color: "grey" }}
-            disabledDateNumberStyle={{ color: "grey" }}
-            iconContainer={{ flex: 0.1 }}
-          />
+      <View style={styles.usableScreen}>
+        <View style={{ flex: 1 }}>
+          <View style={styles.form}>
+            <View style={styles.rowNoBorder}>
+              <Text style={styles.symbolBig}>+</Text>
+              <TextInput
+                ref={(input) => {
+                  this.textInputValue = input;
+                }}
+                keyboardType="numeric"
+                style={styles.valueInput}
+                placeholder="0"
+                onChangeText={setValue}
+              />
+              <Text style={styles.symbolBig}>€</Text>
+            </View>
+            <View style={styles.row}>
+              <MaterialCommunityIcons style={styles.iconCenter} name="rename-box" size={verticalScale(25)} color="black" />
+              <TextInput style={styles.textInput} placeholder="Type" onChangeText={setType} />
+            </View>
+            <View style={styles.row}>
+              <MaterialCommunityIcons style={styles.iconCenter} name="format-list-bulleted-type" size={verticalScale(25)} color="black" />
+              <TextInput style={styles.textInput} placeholder="Name" onChangeText={setName} />
+            </View>
+            <CalendarStrip
+              ref={(component) => (this._calendar = component)}
+              calendarAnimation={{ type: "sequence", duration: 15 }}
+              daySelectionAnimation={{ type: "border", duration: 200, borderWidth: 1, borderHighlightColor: "white" }}
+              style={{ height: 100 }}
+              calendarHeaderStyle={{ color: "black", paddingTop: horizontalScale(5), fontSize: verticalScale(15) }}
+              calendarColor={"transparent"}
+              dateNumberStyle={{ color: "black", fontSize: verticalScale(15) }}
+              dateNameStyle={{ color: "black", fontSize: verticalScale(10) }}
+              highlightDateNumberStyle={{ color: "#2296F3" }}
+              highlightDateNameStyle={{ color: "#2296F3" }}
+              disabledDateNameStyle={{ color: "grey" }}
+              disabledDateNumberStyle={{ color: "grey" }}
+              iconContainer={{ flex: 0.1 }}
+            />
+            <View style={styles.row}>
+              <MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(25)} color="black" />
+              <TextInput style={styles.textInput} placeholder="Notes" onChangeText={setNote} />
+            </View>
+          </View>
+          <View style={styles.tableInfo}>
+            <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
+              <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
+              <ScrollView>
+                {list.map((rowData, index) => (
+                  <TableWrapper key={index} style={styles.row}>
+                    {rowData.map((cellData, cellIndex) => (
+                      <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
+                    ))}
+                  </TableWrapper>
+                ))}
+              </ScrollView>
+            </Table>
+          </View>
         </View>
-        <View style={styles.tableInfo}>
-          <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
-            <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
-            <ScrollView>
-              {list.map((rowData, index) => (
-                <TableWrapper key={index} style={styles.row}>
-                  {rowData.map((cellData, cellIndex) => (
-                    <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
-                  ))}
-                </TableWrapper>
-              ))}
-            </ScrollView>
-          </Table>
+        <View style={styles.submitButton}>
+          <Pressable style={styles.button} onPress={handlePurchase}>
+            <Text style={styles.buttonText}>Submit</Text>
+          </Pressable>
         </View>
-      </View>
-      <View style={styles.submitButton}>
-        <Pressable style={styles.button} onPress={handlePurchase}>
-          <Text style={styles.buttonText}>Submit</Text>
-        </Pressable>
       </View>
     </View>
   );
