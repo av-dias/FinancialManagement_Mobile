@@ -17,4 +17,12 @@ const moderateScale = (size, factor = 2) => {
   return size + (horizontalScale(size) - size) * factor;
 };
 
-export { horizontalScale, verticalScale, moderateScale };
+const largeScale = (size, factor = 10) => {
+  return size + (horizontalScale(size) - size) * factor;
+};
+
+const inverseScale = (size, factor = 1 / 2) => {
+  return size + (horizontalScale(size) - size) * factor;
+};
+
+export { horizontalScale, verticalScale, moderateScale, largeScale, inverseScale };
