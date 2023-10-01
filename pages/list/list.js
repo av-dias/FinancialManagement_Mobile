@@ -131,7 +131,7 @@ export default function Purchase({ navigation }) {
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
-          <View style={{ flex: verticalScale(8) }}>
+          <View style={{ flex: verticalScale(8), padding: 20 }}>
             <ScrollView>
               {purchases.map((cellData, cellIndex) =>
                 currentMonth == new Date(cellData.dop).getMonth() && currentYear == new Date(cellData.dop).getFullYear() ? (
