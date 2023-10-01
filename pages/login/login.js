@@ -1,7 +1,6 @@
 import { Text, View, TextInput, Image, Pressable } from "react-native";
 import { CheckBox } from "@rneui/themed";
 import { useState, useEffect } from "react";
-
 import navLogo from "../../images/logo.png";
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { _styles } from "./style";
@@ -27,7 +26,7 @@ export default function Login({ navigation }) {
       await saveToStorage("ip3", ip3);
       await saveToStorage("ip4", ip4);
 
-      let userEmail = email.toLowerCase() + "@gmail.com";
+      let userEmail = email.toLowerCase();
 
       const controller = new AbortController();
       // 5 second timeout:
@@ -109,79 +108,82 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.pageLogin}>
-      <View style={styles.headerLogin}>
-        <Image style={styles.logo} source={navLogo} />
-      </View>
-      <View style={styles.loginForm}>
-        <View style={styles.row}>
-          <TextInput
-            value={email}
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={styles.textInputLogin}
-            placeholder="email"
-            onChangeText={(value) => setEmail(value.toLowerCase())}
-          />
-          <Text style={styles.gmailInputLogin}>@gmail.com</Text>
+      <View style={styles.loginCard}>
+        <View style={styles.headerLogin}>
+          <Image style={styles.logo} source={navLogo} />
         </View>
-        <View style={styles.row}>
-          <TextInput style={styles.textInputLogin} secureTextEntry={true} value={password} placeholder="password" onChangeText={setPassword} />
-        </View>
-        <View style={styles.row}>
-          <View style={styles.rowGap}>
+        <View style={styles.loginForm}>
+          <View style={styles.row}>
             <TextInput
-              value={ip1}
-              autoCapitalize="none"
-              keyboardType="numeric"
-              autoCorrect={false}
-              style={styles.textIP}
-              placeholder="xxx"
-              maxLength={3}
-              onChangeText={(value) => setip1(value.toLowerCase())}
-            />
-            <TextInput
-              value={ip2}
-              keyboardType="numeric"
+              value={email}
               autoCapitalize="none"
               autoCorrect={false}
-              style={styles.textIP}
-              placeholder="xxx"
-              maxLength={3}
-              onChangeText={(value) => setip2(value.toLowerCase())}
-            />
-            <TextInput
-              value={ip3}
-              autoCapitalize="none"
-              keyboardType="numeric"
-              autoCorrect={false}
-              style={styles.textIP}
-              placeholder="xxx"
-              maxLength={3}
-              onChangeText={(value) => setip3(value.toLowerCase())}
-            />
-            <TextInput
-              value={ip4}
-              autoCapitalize="none"
-              keyboardType="numeric"
-              autoCorrect={false}
-              style={styles.textIP}
-              placeholder="xxx"
-              maxLength={3}
-              onChangeText={(value) => setip4(value.toLowerCase())}
+              style={styles.textInputLogin}
+              placeholder="email"
+              onChangeText={(value) => setEmail(value.toLowerCase())}
             />
           </View>
+          <View style={styles.row}>
+            <TextInput style={styles.textInputLogin} secureTextEntry={true} value={password} placeholder="password" onChangeText={setPassword} />
+          </View>
+          <View style={styles.row}>
+            <View style={styles.rowGap}>
+              <TextInput
+                value={ip1}
+                autoCapitalize="none"
+                keyboardType="numeric"
+                autoCorrect={false}
+                style={styles.textIP}
+                placeholder="xxx"
+                maxLength={3}
+                onChangeText={(value) => setip1(value.toLowerCase())}
+              />
+              <TextInput
+                value={ip2}
+                keyboardType="numeric"
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={styles.textIP}
+                placeholder="xxx"
+                maxLength={3}
+                onChangeText={(value) => setip2(value.toLowerCase())}
+              />
+              <TextInput
+                value={ip3}
+                autoCapitalize="none"
+                keyboardType="numeric"
+                autoCorrect={false}
+                style={styles.textIP}
+                placeholder="xxx"
+                maxLength={3}
+                onChangeText={(value) => setip3(value.toLowerCase())}
+              />
+              <TextInput
+                value={ip4}
+                autoCapitalize="none"
+                keyboardType="numeric"
+                autoCorrect={false}
+                style={styles.textIP}
+                placeholder="xxx"
+                maxLength={3}
+                onChangeText={(value) => setip4(value.toLowerCase())}
+              />
+            </View>
+          </View>
         </View>
-        <Pressable
-          style={styles.button}
-          onPress={() => {
-            handleLogin();
-            navigation.navigate("Home");
-          }}
-        >
-          <Text style={styles.buttonText}>Submit</Text>
-        </Pressable>
-        <View style={styles.checkbox}>
-          <CheckBox size={18} checked={checked} onPress={toggleCheckbox} title="Remember Me" />
+        <View style={styles.submitSection}>
+          <View style={styles.checkbox}>
+            <CheckBox size={15} checked={checked} onPress={toggleCheckbox} title="Remember Me" />
+          </View>
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              handleLogin();
+              navigation.navigate("Home");
+            }}
+          >
+            <Text style={styles.buttonText}>Submit</Text>
+          </Pressable>
         </View>
       </View>
     </View>
