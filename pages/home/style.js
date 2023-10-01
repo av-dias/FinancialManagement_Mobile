@@ -26,7 +26,14 @@ export const _styles = StyleSheet.create({
   rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", borderRadius: 4, gap: 20 },
   text: { fontSize: 20, textAlign: "center" },
   chart: { flex: 5, justifyContent: "center", alignItems: "center", backgroundColor: "transparent", margin: largeScale(5) },
-  tableInfo: { gap: 30, paddingLeft: 30, paddingRight: 30, width: "100%", height: "100%", backgroundColor: "transparent" },
+  tableInfo: {
+    gap: 30,
+    paddingHorizontal: moderateScale(45),
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+  },
   textCenter: { textAlign: "center", fontSize: verticalScale(15), padding: 5, margin: 5 },
   textCenterHead: { textAlign: "center", fontWeight: "bold", fontSize: verticalScale(15) },
   rowTable: {
