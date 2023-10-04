@@ -14,6 +14,13 @@ export const _styles = StyleSheet.create({
   },
   usableScreen: { height: Dimensions.get("window").height - statusBarHeight - naviagtionBarHeight },
   calendar: { justifyContent: "center", alignItems: "center", flex: 1, width: "100%" },
+  calendarBox: {
+    marginTop: 0,
+    width: 170,
+    marginHorizontal: -horizontalScale(5),
+    marginBottom: -5,
+    backgroundColor: color.backgroundComplementary,
+  },
   hitBox: {
     alignItems: "center",
     justifyContent: "center",
@@ -41,7 +48,7 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     borderRadius: 1,
-    borderColor: "rgba(255,255,255, 1)",
+    borderColor: color.backgroundComplementary,
     borderWidth: verticalScale(1),
   },
   colorIcon: { textAlign: "center", fontSize: verticalScale(20), padding: 5, margin: 5 },
