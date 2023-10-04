@@ -1,5 +1,6 @@
 import navLogo from "../../images/logo.png";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, Dimensions, ScrollView } from "react-native";
+import { color } from "../../utility/colors";
 
 import React, { useState, useEffect } from "react";
 import CalendarStrip from "react-native-calendar-strip";
@@ -113,13 +114,16 @@ export default function Purchase({ navigation }) {
               />
               <Text style={styles.symbolBig}>€</Text>
             </View>
-            <View style={{ backgroundColor: "transparent", height: "18%", maxHeight: 90 }}>
+            <View style={{ backgroundColor: "transparent", height: "18%", maxHeight: 90, borderRadius: 10 }}>
               <ScrollView horizontal={true} style={styles.categoryScrollContainer}>
                 {categoryIcons.map((iconComponent) => {
                   return (
                     <Pressable
                       key={iconComponent.label}
-                      style={{ backgroundColor: type == iconComponent.label ? "lightblue" : "transparent", ...styles.categoryContainer }}
+                      style={{
+                        backgroundColor: type == iconComponent.label ? color.backgroundComplementary : "transparent",
+                        ...styles.categoryContainer,
+                      }}
                       onPress={() => {
                         setType(iconComponent.label);
                       }}
@@ -139,7 +143,7 @@ export default function Purchase({ navigation }) {
               ref={(component) => (this._calendar = component)}
               calendarAnimation={{ type: "sequence", duration: 15 }}
               daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: "white" }}
-              style={{ height: 100 }}
+              style={{ height: 100, backgroundColor: color.backgroundComplementary, borderRadius: 10 }}
               calendarHeaderStyle={{ color: "black", paddingTop: horizontalScale(5), fontSize: verticalScale(15) }}
               calendarColor={"transparent"}
               dateNumberStyle={{ color: "black", fontSize: verticalScale(15) }}

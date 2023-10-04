@@ -10,6 +10,8 @@ console.log(Dimensions.get("window").height);
 console.log(statusBarHeight);
 console.log(naviagtionBarHeight); */
 
+const borderRadius = 10;
+
 export const _styles = StyleSheet.create({
   usableScreen: { height: Dimensions.get("window").height - statusBarHeight - naviagtionBarHeight },
   page: {
@@ -38,8 +40,7 @@ export const _styles = StyleSheet.create({
     fontSize: 22,
     padding: moderateScale(6),
     textAlign: "center",
-    backgroundColor: "transparent",
-    borderRadius: 1,
+    borderRadius: borderRadius,
     width: "80%",
     alignSelf: "center",
   },
@@ -53,16 +54,16 @@ export const _styles = StyleSheet.create({
   button: {
     alignItems: "center",
     paddingVertical: verticalScale(15),
-    paddingHorizontal: horizontalScale(50),
+    paddingHorizontal: horizontalScale(30),
     borderRadius: 4,
     backgroundColor: "#2296F3",
   },
-  submitButton: { flex: 1, alignItems: "center", justifyContent: "center" },
+  submitButton: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "transparent" },
   buttonText: {
     fontSize: 20,
     color: "white",
   },
-  textCenter: { textAlign: "center" },
+  textCenter: { textAlign: "center", backgroundColor: color.backgroundComplementary, borderRadius: 10 },
   textCenterHead: { textAlign: "center", fontWeight: "bold" },
   tableText: { fontSize: verticalScale(10), textAlign: "center", padding: 8 },
   symbolBig: { fontSize: moderateScale(25), textAlign: "center", width: "auto", alignSelf: "center" },
@@ -70,28 +71,24 @@ export const _styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
-    borderRadius: 1,
-    borderWidth: 1,
-    borderColor: "lightblue",
+    borderRadius: borderRadius,
+    backgroundColor: color.backgroundComplementary,
   },
   rowTable: {
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
-    borderRadius: 1,
-    borderWidth: 1,
-    borderColor: "lightblue",
   },
   rowNoBorder: {
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
-    borderRadius: 4,
+    borderRadius: borderRadius,
     backgroundColor: "transparent",
   },
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
   iconLabel: { fontSize: verticalScale(8), alignSelf: "center", backgroundColor: "transparent" },
-  categoryContainer: { borderColor: "lightblue", borderWidth: 1, justifyContent: "center", alignItems: "center" },
+  categoryContainer: { borderColor: color.backgroundComplementary, borderWidth: 1, justifyContent: "center", alignItems: "center", borderRadius: 10 },
   categoryIconContainer: { paddingHorizontal: 20 },
   categoryScrollContainer: { backgroundColor: "transparent" },
 });
