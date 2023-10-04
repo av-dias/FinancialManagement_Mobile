@@ -16,13 +16,13 @@ import Header from "../../components/header";
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
-  const MAX_TABLE_SIZE = 5;
+  const MAX_TABLE_SIZE = 2;
   const [onLoadData, setOnLoadData] = useState("");
   const [type, setType] = useState("");
   const [name, setName] = useState("");
   const [note, setNote] = useState("");
   const [value, setValue] = useState("");
-  const [list, setList] = useState([[""], [""], [""], [""], [""]]);
+  const [list, setList] = useState([[""], [""]]);
   const [email, setEmail] = useState("");
 
   const getUser = async () => {

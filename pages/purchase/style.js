@@ -19,7 +19,7 @@ export const _styles = StyleSheet.create({
     height: "97%",
   },
   form: {
-    flex: 6,
+    flex: 10,
     gap: verticalScale(20),
     paddingHorizontal: horizontalScale(50),
     paddingVertical: verticalScale(10),
