@@ -45,7 +45,6 @@ export default function Purchase({ navigation }) {
 
   const handlePurchase = async () => {
     let date = this._calendar.getSelectedDate();
-
     console.log(type, name, value, date);
     if (type == "" || name == "" || value == "" || date == "" || !date) {
       alert("Please fill all fields.");
@@ -62,9 +61,15 @@ export default function Purchase({ navigation }) {
       } else {
         purchases = [newPurchase];
       }
+      console.log(type);
 
       await saveToStorage("purchases", JSON.stringify(purchases), email);
-      setList([[type, name, value, date.toISOString().split("T")[0]], ...list].slice(0, MAX_TABLE_SIZE));
+      setList(
+        [[categoryIcons.find((category) => category.label === type).icon, name, value, date.toISOString().split("T")[0]], ...list].slice(
+          0,
+          MAX_TABLE_SIZE
+        )
+      );
       this.textInputValue.clear();
       setValue("");
       setNote("");
