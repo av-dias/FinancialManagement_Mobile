@@ -4,11 +4,13 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, 
 import React, { useState, useEffect } from "react";
 import CalendarStrip from "react-native-calendar-strip";
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
-import { MaterialIcons, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
 import { _styles } from "./style";
+
+import { categoryIcons } from "../../assets/icons";
 
 import Header from "../../components/header";
 
@@ -105,9 +107,23 @@ export default function Purchase({ navigation }) {
               />
               <Text style={styles.symbolBig}>€</Text>
             </View>
-            <View style={styles.row}>
-              <MaterialCommunityIcons style={styles.iconCenter} name="rename-box" size={verticalScale(25)} color="black" />
-              <TextInput style={styles.textInput} placeholder="Type" onChangeText={setType} />
+            <View>
+              <ScrollView horizontal={true} style={styles.categoryScrollContainer}>
+                {categoryIcons.map((iconComponent) => {
+                  return (
+                    <Pressable
+                      key={iconComponent.label}
+                      style={{ backgroundColor: type == iconComponent.label ? "lightblue" : "transparent", ...styles.categoryContainer }}
+                      onPress={() => {
+                        setType(iconComponent.label);
+                      }}
+                    >
+                      <View style={styles.categoryIconContainer}>{iconComponent.icon}</View>
+                      <Text style={styles.iconLabel}>{iconComponent.label}</Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
             </View>
             <View style={styles.row}>
               <MaterialCommunityIcons style={styles.iconCenter} name="format-list-bulleted-type" size={verticalScale(25)} color="black" />
@@ -116,7 +132,7 @@ export default function Purchase({ navigation }) {
             <CalendarStrip
               ref={(component) => (this._calendar = component)}
               calendarAnimation={{ type: "sequence", duration: 15 }}
-              daySelectionAnimation={{ type: "border", duration: 200, borderWidth: 1, borderHighlightColor: "white" }}
+              daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: "white" }}
               style={{ height: 100 }}
               calendarHeaderStyle={{ color: "black", paddingTop: horizontalScale(5), fontSize: verticalScale(15) }}
               calendarColor={"transparent"}
@@ -138,7 +154,7 @@ export default function Purchase({ navigation }) {
               <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
               <ScrollView>
                 {list.map((rowData, index) => (
-                  <TableWrapper key={index} style={styles.row}>
+                  <TableWrapper key={index} style={styles.rowTable}>
                     {rowData.map((cellData, cellIndex) => (
                       <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
                     ))}

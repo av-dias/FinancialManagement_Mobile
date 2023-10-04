@@ -73,8 +73,10 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     borderRadius: 1,
-    backgroundColor: color.backgroundSecundary,
+    borderWidth: 2,
+    borderColor: "lightblue",
   },
+  rowTable: { flexDirection: "row", justifyContent: "center", width: "100%", borderRadius: 1, borderWidth: 1, borderColor: "lightblue" },
   rowNoBorder: {
     flexDirection: "row",
     justifyContent: "center",
@@ -83,4 +85,8 @@ export const _styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
+  iconLabel: { fontSize: verticalScale(8), alignSelf: "center", backgroundColor: "transparent" },
+  categoryContainer: { borderColor: "lightblue", borderWidth: 1, justifyContent: "center", alignItems: "center" },
+  categoryIconContainer: { paddingHorizontal: 20 },
+  categoryScrollContainer: { backgroundColor: "transparent", height: "20%", maxHeight: 100 },
 });
