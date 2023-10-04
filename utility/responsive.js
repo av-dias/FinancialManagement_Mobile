@@ -13,6 +13,7 @@ const verticalScale = (size) => {
   console.log("Vertical " + vertical); */
   return (height / guidelineBaseHeight) * size;
 };
+
 const moderateScale = (size, factor = 2) => {
   return size + (horizontalScale(size) - size) * factor;
 };

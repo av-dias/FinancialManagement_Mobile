@@ -173,7 +173,14 @@ export default function Login({ navigation }) {
         </View>
         <View style={styles.submitSection}>
           <View style={styles.checkbox}>
-            <CheckBox size={15} checked={checked} onPress={toggleCheckbox} title="Remember Me" />
+            <CheckBox
+              size={15}
+              containerStyle={{ backgroundColor: "transparent" }}
+              textStyle={{ fontSize: 10, color: "white" }}
+              checked={checked}
+              onPress={toggleCheckbox}
+              title="Remember Me"
+            />
           </View>
           <Pressable
             style={styles.button}

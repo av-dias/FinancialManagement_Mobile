@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import { color } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale, largeScale, inverseScale } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, inverseScale } from "../../utility/responsive";
 import { StatusBar } from "react-native";
 
 export const _styles = StyleSheet.create({
@@ -21,7 +21,9 @@ export const _styles = StyleSheet.create({
   },
   loginCard: {
     width: verticalScale(290),
+    maxWidth: 410,
     height: inverseScale(450),
+    maxHeight: 620,
     alignContent: "center",
     justifyContent: "center",
     padding: verticalScale(20),
@@ -38,7 +40,7 @@ export const _styles = StyleSheet.create({
     flex: 2,
     gap: verticalScale(20),
     width: "100%",
-    paddingHorizontal: moderateScale(10),
+    paddingHorizontal: moderateScale(5),
     alignItems: "center",
     backgroundColor: "transparent",
     justifyContent: "center",
@@ -72,8 +74,12 @@ export const _styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 4,
+    width: "60%",
+    backgroundColor: "transparent",
   },
   button: {
+    width: "60%",
+    maxWidth: 150,
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 12,
@@ -84,4 +90,5 @@ export const _styles = StyleSheet.create({
     backgroundColor: "#2296F3",
   },
   submitSection: { flex: 1, backgroundColor: "transparent", justifyContent: "center", alignItems: "center" },
+  rememberMe: { flex: 1, fontSize: 50 },
 });
