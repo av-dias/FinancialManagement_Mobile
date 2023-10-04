@@ -9,20 +9,21 @@ import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwes
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
 import { _styles } from "./style";
-
 import { categoryIcons } from "../../assets/icons";
-
 import Header from "../../components/header";
+
+const height = Dimensions.get("window").height;
+const heightTreshold = 800;
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
-  const MAX_TABLE_SIZE = 2;
+  const MAX_TABLE_SIZE = height > heightTreshold ? 5 : 2;
   const [onLoadData, setOnLoadData] = useState("");
   const [type, setType] = useState("");
   const [name, setName] = useState("");
   const [note, setNote] = useState("");
   const [value, setValue] = useState("");
-  const [list, setList] = useState([[""], [""]]);
+  const [list, setList] = height > heightTreshold ? useState([[" "], [" "], [" "], [" "], [" "]]) : useState([[" "], [" "]]);
   const [email, setEmail] = useState("");
 
   const getUser = async () => {
@@ -97,7 +98,7 @@ export default function Purchase({ navigation }) {
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 6 }}>
           <View style={styles.form}>
             <View style={styles.rowNoBorder}>
               <Text style={styles.symbolBig}>+</Text>
@@ -112,7 +113,7 @@ export default function Purchase({ navigation }) {
               />
               <Text style={styles.symbolBig}>€</Text>
             </View>
-            <View>
+            <View style={{ backgroundColor: "transparent", height: "18%", maxHeight: 90 }}>
               <ScrollView horizontal={true} style={styles.categoryScrollContainer}>
                 {categoryIcons.map((iconComponent) => {
                   return (
