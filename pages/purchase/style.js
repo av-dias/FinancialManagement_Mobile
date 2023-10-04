@@ -66,7 +66,7 @@ export const _styles = StyleSheet.create({
   },
   textCenter: { textAlign: "center" },
   textCenterHead: { textAlign: "center", fontWeight: "bold" },
-  tableText: { fontSize: verticalScale(15), textAlign: "center" },
+  tableText: { fontSize: verticalScale(10), textAlign: "center" },
   symbolBig: { fontSize: moderateScale(25), padding: 0, textAlign: "center", width: "auto", alignSelf: "center" },
   row: {
     flexDirection: "row",
