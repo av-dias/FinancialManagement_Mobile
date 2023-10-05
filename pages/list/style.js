@@ -18,12 +18,10 @@ export const _styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: verticalScale(12),
-    paddingHorizontal: horizontalScale(32),
-    marginHorizontal: horizontalScale(80),
+    marginHorizontal: horizontalScale(20),
     marginVertical: verticalScale(10),
     borderRadius: 4,
-    elevation: 3,
-    backgroundColor: "#85754e",
+    backgroundColor: "transparent",
   },
   hitBox: {
     alignItems: "center",
@@ -34,19 +32,15 @@ export const _styles = StyleSheet.create({
     zIndex: -1,
   },
   text: { fontSize: 20, textAlign: "center", zIndex: 1, backgroundColor: "transparent" },
-  rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", borderRadius: 4, gap: 20 },
+  rowGap: { flexDirection: "row", justifyContent: "space-between", width: "100%", borderRadius: 4, backgroundColor: "transparent" },
   buttonText: {
     fontSize: 20,
-    color: "white",
+    color: "black",
   },
   seperatorText: {
     fontSize: 15,
     width: "100%",
     color: "black",
     textAlign: "right",
-  },
-  buttonText: {
-    fontSize: 20,
-    color: "white",
   },
 });

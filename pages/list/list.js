@@ -4,7 +4,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Divider } from "react-native-paper";
 import { MaterialIcons, FontAwesome, Feather, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Card } from "@rneui/themed";
+
 import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
+import { color } from "../../utility/colors";
 
 import { _styles } from "./style";
 import { KEYS } from "../../utility/keys";
@@ -20,10 +22,10 @@ export default function Purchase({ navigation }) {
   const [email, setEmail] = useState("");
   const [purchases, setPurchases] = useState([]);
   const [archives, setArchives] = useState([]);
-  const [selected, setSelected] = useState(-1);
-  const [purchaseTotal, setPurchaseTotal] = useState(0);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [groupedPurchases, setGroupedPurchases] = useState([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(true);
 
   const getCurrentDate = () => {
     return months[currentMonth] + " " + currentYear;
@@ -45,6 +47,18 @@ export default function Purchase({ navigation }) {
     }
   };
 
+  const groupByDate = (data) => {
+    if (!data || data.length == 0) return {};
+    let grouped_data = data
+      .map((value, index) => ({ ...value, index: index }))
+      .reduce((rv, x) => {
+        (rv[x["dop"]] = rv[x["dop"]] || []).push(x);
+        return rv;
+      }, {});
+
+    return grouped_data;
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
@@ -55,8 +69,8 @@ export default function Purchase({ navigation }) {
           if (!res) res = [];
           setPurchases(res);
           console.log("Purchase len: " + res.length);
-          res = await getPurchaseTotal(email).catch((error) => console.log(error));
-          setPurchaseTotal(res);
+
+          setGroupedPurchases(groupByDate(res));
         } catch (e) {
           console.log("Purchase: " + e);
         }
@@ -69,7 +83,7 @@ export default function Purchase({ navigation }) {
         }
       }
       fetchData();
-    }, [purchases.lenght])
+    }, [refreshTrigger])
   );
 
   const showAlert = (key) => {
@@ -110,6 +124,7 @@ export default function Purchase({ navigation }) {
               arr = elementArray.filter((item) => item != elementArray[id]);
               await saveToStorage(element, JSON.stringify(arr), email);
               setElement(arr);
+              setRefreshTrigger(!refreshTrigger);
             }
           },
           style: "yes",
@@ -133,25 +148,24 @@ export default function Purchase({ navigation }) {
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
           <View style={{ flex: verticalScale(8), padding: 20 }}>
             <ScrollView>
-              {purchases.map((cellData, cellIndex) =>
-                currentMonth == new Date(cellData.dop).getMonth() && currentYear == new Date(cellData.dop).getFullYear() ? (
-                  <Pressable
-                    key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + cellIndex}
-                    style={styles.buttonList}
-                    onPress={() => {
-                      setSelected(KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + cellIndex);
-                      showAlert(KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + cellIndex);
-                    }}
-                  >
-                    <View style={styles.rowGap}>
-                      <Text style={styles.buttonText}>{cellData.name}</Text>
-                      <Text style={styles.buttonText}>{cellData.value}</Text>
-                    </View>
-                  </Pressable>
-                ) : (
-                  <React.Fragment key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + cellIndex}></React.Fragment>
-                )
-              )}
+              {Object.keys(groupedPurchases).map((key) => (
+                <View key={key} style={{ padding: 20, margin: 20, backgroundColor: "transparent", gap: 10 }}>
+                  {groupedPurchases[key].map((innerData) => (
+                    <Pressable
+                      key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index}
+                      style={{ padding: 10, backgroundColor: color.backgroundComplementary }}
+                      onPress={() => {
+                        showAlert(KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index);
+                      }}
+                    >
+                      <View style={styles.rowGap}>
+                        <Text style={styles.buttonText}>{innerData.name}</Text>
+                        <Text style={styles.buttonText}>{innerData.value}</Text>
+                      </View>
+                    </Pressable>
+                  ))}
+                </View>
+              ))}
               <Text style={styles.seperatorText}>Archived</Text>
               <Divider />
               {archives.map((cellData, cellIndex) =>
