@@ -2,10 +2,10 @@ import { Text, View } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
 
-import { _styles } from "../utility/style";
-import { saveToStorage, getFromStorage } from "../utility/secureStorage";
-import { getServerStatus } from "../functions/basic";
-import { horizontalScale, verticalScale, moderateScale } from "../utility/responsive";
+import { _styles } from "../../utility/style";
+import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
+import { getServerStatus } from "../../functions/basic";
+import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
 
 export default function Header(props) {
   const styles = _styles;

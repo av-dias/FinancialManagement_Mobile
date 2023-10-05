@@ -10,12 +10,12 @@ import { color } from "../../utility/colors";
 
 import { _styles } from "./style";
 import { KEYS } from "../../utility/keys";
-import Header from "../../components/header";
+import Header from "../../components/header/header";
 
-import { getPurchaseTotal } from "../../functions/purchase";
 import { getFromStorage, saveToStorage } from "../../utility/secureStorage";
 import { getUser } from "../../functions/basic";
 import { months } from "../../utility/calendar";
+import CalendarCard from "../../components/calendarCard/calendarCard";
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
@@ -26,26 +26,6 @@ export default function Purchase({ navigation }) {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [groupedPurchases, setGroupedPurchases] = useState([]);
   const [refreshTrigger, setRefreshTrigger] = useState(true);
-
-  const getCurrentDate = () => {
-    return months[currentMonth] + " " + currentYear;
-  };
-
-  const previousMonth = () => {
-    if (currentMonth > 0) setCurrentMonth(currentMonth - 1);
-    else {
-      setCurrentMonth(11);
-      setCurrentYear(currentYear - 1);
-    }
-  };
-
-  const nextMonth = () => {
-    if (currentMonth < 11) setCurrentMonth(currentMonth + 1);
-    else {
-      setCurrentMonth(0);
-      setCurrentYear(currentYear + 1);
-    }
-  };
 
   const groupByDate = (data) => {
     if (!data || data.length == 0) return {};
@@ -225,34 +205,7 @@ export default function Purchase({ navigation }) {
             </ScrollView>
           </View>
           <View style={styles.calendar}>
-            <View style={{ maxHeight: "80%", width: "70%", justifyContent: "center", alignItems: "center", flexDirection: "row" }}>
-              <TouchableOpacity
-                style={styles.hitBox}
-                onPress={() => {
-                  previousMonth();
-                }}
-              >
-                <AntDesign style={styles.iconCenter} name="left" size={15} color="black" />
-              </TouchableOpacity>
-              <Card borderRadius={10} containerStyle={{ marginTop: 0, width: 170, marginHorizontal: -horizontalScale(5), marginBottom: -5 }}>
-                <View style={styles.rowGap}>
-                  <View style={{ flex: 1 }}>
-                    <Feather name="calendar" size={24} color="black" />
-                  </View>
-                  <View style={{ flex: 4 }}>
-                    <Text style={styles.text}>{getCurrentDate()}</Text>
-                  </View>
-                </View>
-              </Card>
-              <TouchableOpacity
-                style={styles.hitBox}
-                onPress={() => {
-                  nextMonth();
-                }}
-              >
-                <AntDesign style={styles.iconCenter} name="right" size={15} color="black" />
-              </TouchableOpacity>
-            </View>
+            <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
           </View>
         </View>
       </View>

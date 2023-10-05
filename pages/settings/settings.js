@@ -8,7 +8,7 @@ import { saveToStorage, getFromStorage, addToStorage } from "../../utility/secur
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 
-import Header from "../../components/header";
+import Header from "../../components/header/header";
 
 export default function Settings({ navigation }) {
   const styles = _styles;

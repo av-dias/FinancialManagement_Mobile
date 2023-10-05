@@ -11,7 +11,7 @@ import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
 import { _styles } from "./style";
 import { categoryIcons } from "../../assets/icons";
-import Header from "../../components/header";
+import Header from "../../components/header/header";
 
 const height = Dimensions.get("window").height;
 const heightTreshold = 800;

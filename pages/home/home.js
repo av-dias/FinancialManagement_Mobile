@@ -1,4 +1,3 @@
-import navLogo from "../../images/logo.png";
 import { useFocusEffect } from "@react-navigation/native";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
@@ -12,10 +11,10 @@ import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
 import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../utility/responsive";
 import { _styles } from "./style";
-import { months } from "../../utility/calendar";
 import { getUser } from "../../functions/basic";
+import CalendarCard from "../../components/calendarCard/calendarCard";
 
-import Header from "../../components/header";
+import Header from "../../components/header/header";
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -32,26 +31,6 @@ export default function Home({ navigation }) {
       .toString(16)
       .padStart(6, "0");
     return `#${randomColor}`;
-  };
-
-  const getCurrentDate = () => {
-    return months[currentMonth] + " " + currentYear;
-  };
-
-  const previousMonth = () => {
-    if (currentMonth > 0) setCurrentMonth(currentMonth - 1);
-    else {
-      setCurrentMonth(11);
-      setCurrentYear(currentYear - 1);
-    }
-  };
-
-  const nextMonth = () => {
-    if (currentMonth < 11) setCurrentMonth(currentMonth + 1);
-    else {
-      setCurrentMonth(0);
-      setCurrentYear(currentYear + 1);
-    }
   };
 
   const state = {
@@ -95,34 +74,7 @@ export default function Home({ navigation }) {
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={styles.calendar}>
-          <View style={{ maxHeight: "80%", width: "70%", justifyContent: "center", alignItems: "center", flexDirection: "row" }}>
-            <TouchableOpacity
-              style={styles.hitBox}
-              onPress={() => {
-                previousMonth();
-              }}
-            >
-              <AntDesign style={styles.iconCenter} name="left" size={15} color="black" />
-            </TouchableOpacity>
-            <Card borderRadius={2} containerStyle={styles.calendarBox}>
-              <View style={styles.rowGap}>
-                <View style={{ flex: 1 }}>
-                  <Feather name="calendar" size={24} color="black" />
-                </View>
-                <View style={{ flex: 4 }}>
-                  <Text style={styles.text}>{getCurrentDate()}</Text>
-                </View>
-              </View>
-            </Card>
-            <TouchableOpacity
-              style={styles.hitBox}
-              onPress={() => {
-                nextMonth();
-              }}
-            >
-              <AntDesign style={styles.iconCenter} name="right" size={15} color="black" />
-            </TouchableOpacity>
-          </View>
+          <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
         </View>
         {
           // Only show chart and table if there is data to be displayed, otherwise just show "No data available" message
