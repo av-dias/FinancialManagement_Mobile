@@ -134,7 +134,7 @@ export default function Purchase({ navigation }) {
                     style={{
                       alignSelf: "center",
                       width: "80%",
-                      maxWidth: 600,
+                      maxWidth: 550,
                       borderRadius: 10,
                       marginTop: verticalScale(10),
                       marginBottom: -10,
@@ -147,7 +147,7 @@ export default function Purchase({ navigation }) {
                     style={{
                       alignSelf: "center",
                       width: "80%",
-                      maxWidth: 600,
+                      maxWidth: 550,
                       paddingVertical: 10,
                       marginVertical: verticalScale(10),
                       backgroundColor: color.backgroundComplementary,
@@ -171,7 +171,7 @@ export default function Purchase({ navigation }) {
                       >
                         <View style={styles.rowGap}>
                           <Text style={styles.buttonText}>{innerData.name}</Text>
-                          <Text style={styles.buttonText}>{innerData.value}</Text>
+                          <Text style={styles.buttonText}>{innerData.value + " €"}</Text>
                         </View>
                       </Pressable>
                     ))}
