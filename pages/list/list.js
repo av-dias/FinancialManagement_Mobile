@@ -146,28 +146,65 @@ export default function Purchase({ navigation }) {
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
-          <View style={{ flex: verticalScale(8), padding: 20 }}>
+          <View style={{ flex: verticalScale(8), padding: 20, backgroundColor: "transparent" }}>
             <ScrollView>
               {Object.keys(groupedPurchases).map((key) => (
-                <View key={key} style={{ padding: 20, margin: 20, backgroundColor: "transparent", gap: 10 }}>
-                  {groupedPurchases[key].map((innerData) => (
-                    <Pressable
-                      key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index}
-                      style={{ padding: 10, backgroundColor: color.backgroundComplementary }}
-                      onPress={() => {
-                        showAlert(KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index);
-                      }}
-                    >
-                      <View style={styles.rowGap}>
-                        <Text style={styles.buttonText}>{innerData.name}</Text>
-                        <Text style={styles.buttonText}>{innerData.value}</Text>
-                      </View>
-                    </Pressable>
-                  ))}
-                </View>
+                <React.Fragment key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + key}>
+                  <View
+                    style={{
+                      alignSelf: "center",
+                      width: "80%",
+                      maxWidth: 600,
+                      borderRadius: 10,
+                      marginTop: verticalScale(10),
+                      marginBottom: -10,
+                    }}
+                  >
+                    <Text>{new Date(key).getDate() + " " + months[new Date(key).getMonth()]}</Text>
+                  </View>
+                  <View
+                    key={key}
+                    style={{
+                      alignSelf: "center",
+                      width: "80%",
+                      maxWidth: 600,
+                      paddingVertical: 10,
+                      marginVertical: verticalScale(10),
+                      backgroundColor: color.backgroundComplementary,
+                      borderRadius: 10,
+                      gap: 10,
+                    }}
+                  >
+                    {groupedPurchases[key].map((innerData) => (
+                      <Pressable
+                        key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index}
+                        style={{
+                          padding: 10,
+                          paddingHorizontal: horizontalScale(20),
+                          width: "100%",
+                          backgroundColor: "transparent",
+                          alignSelf: "center",
+                        }}
+                        onPress={() => {
+                          showAlert(KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index);
+                        }}
+                      >
+                        <View style={styles.rowGap}>
+                          <Text style={styles.buttonText}>{innerData.name}</Text>
+                          <Text style={styles.buttonText}>{innerData.value}</Text>
+                        </View>
+                      </Pressable>
+                    ))}
+                  </View>
+                </React.Fragment>
               ))}
-              <Text style={styles.seperatorText}>Archived</Text>
-              <Divider />
+              {archives.length != 0 ? (
+                <React.Fragment key={KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + 1}>
+                  <Text style={styles.seperatorText}>Archived</Text>
+                  <Divider />
+                </React.Fragment>
+              ) : null}
+
               {archives.map((cellData, cellIndex) =>
                 currentMonth == new Date(cellData.dop).getMonth() && currentYear == new Date(cellData.dop).getFullYear() ? (
                   <Pressable
@@ -183,9 +220,7 @@ export default function Purchase({ navigation }) {
                       <Text style={styles.buttonText}>{cellData.value}</Text>
                     </View>
                   </Pressable>
-                ) : (
-                  <React.Fragment key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + cellIndex}></React.Fragment>
-                )
+                ) : null
               )}
             </ScrollView>
           </View>

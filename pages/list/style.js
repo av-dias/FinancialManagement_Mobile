@@ -42,5 +42,6 @@ export const _styles = StyleSheet.create({
     width: "100%",
     color: "black",
     textAlign: "right",
+    paddingTop: 50,
   },
 });
