@@ -160,19 +160,21 @@ export default function Purchase({ navigation }) {
 
               {archives.map((cellData, cellIndex) =>
                 currentMonth == new Date(cellData.dop).getMonth() && currentYear == new Date(cellData.dop).getFullYear() ? (
-                  <Pressable
-                    key={KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex}
-                    style={styles.buttonList}
-                    onPress={() => {
-                      setSelected(KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex);
-                      showAlert(KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex);
-                    }}
-                  >
-                    <View style={styles.rowGap}>
-                      <Text style={styles.buttonText}>{cellData.name}</Text>
-                      <Text style={styles.buttonText}>{cellData.value}</Text>
-                    </View>
-                  </Pressable>
+                  <View style={{ ...styles.listBox, backgroundColor: color.backgroundSecundary }}>
+                    <Pressable
+                      key={KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex}
+                      style={styles.button}
+                      onPress={() => {
+                        setSelected(KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex);
+                        showAlert(KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex);
+                      }}
+                    >
+                      <View style={styles.rowGap}>
+                        <Text style={styles.buttonText}>{cellData.name}</Text>
+                        <Text style={styles.buttonText}>{cellData.value + " €"}</Text>
+                      </View>
+                    </Pressable>
+                  </View>
                 ) : null
               )}
             </ScrollView>

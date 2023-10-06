@@ -45,9 +45,10 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
   },
   seperatorText: {
-    fontSize: 15,
+    fontSize: verticalScale(13),
+    fontWeight: "bold",
+    color: "grey",
     width: "100%",
-    color: "black",
     textAlign: "right",
     paddingTop: 50,
   },
