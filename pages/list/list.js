@@ -130,41 +130,14 @@ export default function Purchase({ navigation }) {
             <ScrollView>
               {Object.keys(groupedPurchases).map((key) => (
                 <React.Fragment key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + key}>
-                  <View
-                    style={{
-                      alignSelf: "center",
-                      width: "80%",
-                      maxWidth: 550,
-                      borderRadius: 10,
-                      marginTop: verticalScale(10),
-                      marginBottom: -10,
-                    }}
-                  >
-                    <Text>{new Date(key).getDate() + " " + months[new Date(key).getMonth()]}</Text>
+                  <View style={styles.listDateBox}>
+                    <Text style={styles.listDate}>{new Date(key).getDate() + " " + months[new Date(key).getMonth()]}</Text>
                   </View>
-                  <View
-                    key={key}
-                    style={{
-                      alignSelf: "center",
-                      width: "80%",
-                      maxWidth: 550,
-                      paddingVertical: 10,
-                      marginVertical: verticalScale(10),
-                      backgroundColor: color.backgroundComplementary,
-                      borderRadius: 10,
-                      gap: 10,
-                    }}
-                  >
+                  <View key={key} style={styles.listBox}>
                     {groupedPurchases[key].map((innerData) => (
                       <Pressable
                         key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index}
-                        style={{
-                          padding: 10,
-                          paddingHorizontal: horizontalScale(20),
-                          width: "100%",
-                          backgroundColor: "transparent",
-                          alignSelf: "center",
-                        }}
+                        style={styles.button}
                         onPress={() => {
                           showAlert(KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index);
                         }}
