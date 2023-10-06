@@ -129,7 +129,7 @@ export default function Purchase({ navigation }) {
                     <Pressable
                       key={iconComponent.label}
                       style={{
-                        backgroundColor: type == iconComponent.label ? "white" : "transparent",
+                        backgroundColor: type == iconComponent.label ? color.secundary : "transparent",
                         ...styles.categoryContainer,
                       }}
                       onPress={() => {
@@ -149,7 +149,7 @@ export default function Purchase({ navigation }) {
               ref={(component) => (this._calendar = component)}
               selectedDate={pickerCurrentDate}
               calendarAnimation={{ type: "sequence", duration: 15 }}
-              daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: "white" }}
+              daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: color.calendarBorder }}
               style={{ height: "15%", backgroundColor: "transparent", borderRadius: borderRadius }}
               calendarHeaderStyle={{
                 color: "black",
@@ -158,7 +158,7 @@ export default function Purchase({ navigation }) {
                 fontSize: verticalScale(15),
                 borderWidth: 1,
                 borderRadius: borderRadius,
-                borderColor: "white",
+                borderColor: color.calendarBorder,
                 backgroundColor: "transparent",
               }}
               calendarColor={"transparent"}

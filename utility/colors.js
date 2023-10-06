@@ -6,4 +6,6 @@ export const color = {
   glassBorder: "rgba(211,211,211,1)",
   calendar: "transparent",
   calendarBorder: "rgba(20, 108, 148, 0.3)",
+  secundary: "rgba(255, 217, 90, 1)",
+  button: "rgba(229, 124, 35, 1)",
 };

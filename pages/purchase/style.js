@@ -66,7 +66,7 @@ export const _styles = StyleSheet.create({
     paddingVertical: verticalScale(15),
     paddingHorizontal: horizontalScale(30),
     borderRadius: 4,
-    backgroundColor: "#2296F3",
+    backgroundColor: color.button,
   },
   submitButton: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "transparent" },
   buttonText: {

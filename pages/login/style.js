@@ -87,7 +87,7 @@ export const _styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: "#2296F3",
+    backgroundColor: color.button,
   },
   submitSection: { flex: 1, backgroundColor: "transparent", justifyContent: "center", alignItems: "center" },
   rememberMe: { flex: 1, fontSize: 50 },
