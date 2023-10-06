@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import CalendarStrip from "react-native-calendar-strip";
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import CalendarPicker from "react-native-calendar-picker";
 
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
@@ -14,6 +15,7 @@ import { categoryIcons } from "../../assets/icons";
 import Header from "../../components/header/header";
 
 const height = Dimensions.get("window").height;
+const borderRadius = 10;
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
@@ -24,6 +26,8 @@ export default function Purchase({ navigation }) {
   const [value, setValue] = useState("");
   const [list, setList] = useState([]);
   const [email, setEmail] = useState("");
+  const [datePicker, setDatePicker] = useState(true);
+  const [pickerCurrentDate, setPickerCurrentDate] = useState(new Date());
 
   const getUser = async () => {
     try {
@@ -61,7 +65,6 @@ export default function Purchase({ navigation }) {
       } else {
         purchases = [newPurchase];
       }
-      console.log(type);
 
       await saveToStorage("purchases", JSON.stringify(purchases), email);
       setList([[categoryIcons.find((category) => category.label === type).icon, name, value, date.toISOString().split("T")[0]], ...list]);
@@ -89,6 +92,15 @@ export default function Purchase({ navigation }) {
     tableHead: ["Type", "Name", "Value", "Date"],
   };
 
+  const calendarPicker = () => {
+    setDatePicker(!datePicker);
+  };
+
+  const changeDateCalendar = (date) => {
+    calendarPicker();
+    setPickerCurrentDate(new Date(date));
+  };
+
   return (
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
@@ -108,7 +120,7 @@ export default function Purchase({ navigation }) {
               />
               <Text style={styles.symbolBig}>€</Text>
             </View>
-            <View style={{ backgroundColor: "transparent", height: "18%", maxHeight: 90, borderRadius: 10 }}>
+            <View style={{ backgroundColor: "transparent", height: "18%", maxHeight: 90, borderRadius: borderRadius }}>
               <ScrollView horizontal={true} style={styles.categoryScrollContainer}>
                 {categoryIcons.map((iconComponent) => {
                   return (
@@ -143,10 +155,20 @@ export default function Purchase({ navigation }) {
             </View>
             <CalendarStrip
               ref={(component) => (this._calendar = component)}
+              selectedDate={pickerCurrentDate}
               calendarAnimation={{ type: "sequence", duration: 15 }}
               daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: "white" }}
-              style={{ height: 100, backgroundColor: color.backgroundComplementary, borderRadius: 10 }}
-              calendarHeaderStyle={{ color: "black", paddingTop: horizontalScale(5), fontSize: verticalScale(15) }}
+              style={{ height: "15%", backgroundColor: color.backgroundComplementary, borderRadius: borderRadius }}
+              calendarHeaderStyle={{
+                color: "black",
+                marginTop: 5,
+                padding: horizontalScale(3),
+                fontSize: verticalScale(15),
+                borderWidth: 1,
+                borderRadius: borderRadius,
+                borderColor: "white",
+                backgroundColor: "white",
+              }}
               calendarColor={"transparent"}
               dateNumberStyle={{ color: "black", fontSize: verticalScale(15) }}
               dateNameStyle={{ color: "black", fontSize: verticalScale(10) }}
@@ -155,7 +177,65 @@ export default function Purchase({ navigation }) {
               disabledDateNameStyle={{ color: "grey" }}
               disabledDateNumberStyle={{ color: "grey" }}
               iconContainer={{ flex: 0.1 }}
+              startFromMonday={true}
+              scrollable={true}
+              scrollerPaging={true}
+              onHeaderSelected={() => {
+                calendarPicker();
+              }}
             />
+            {datePicker ? null : (
+              <View
+                style={{
+                  position: "absolute",
+                  top: "45%",
+                  alignSelf: "center",
+                  width: horizontalScale(275),
+                  backgroundColor: "white",
+                  padding: 10,
+                  borderRadius: borderRadius,
+                  zIndex: 1,
+                }}
+              >
+                <CalendarPicker
+                  width={horizontalScale(280)}
+                  onDateChange={(date) => {
+                    changeDateCalendar(date);
+                  }}
+                  todayBackgroundColor="transparent"
+                  todayTextStyle={{
+                    color: "gray",
+                    fontWeight: "bold",
+                    padding: 5,
+                    textAlign: "center",
+                    justifyContent: "center",
+                  }}
+                  monthYearHeaderWrapperStyle={{
+                    color: "black",
+                    borderWidth: 1,
+                    borderRadius: borderRadius,
+                    padding: horizontalScale(3),
+                    borderColor: "white",
+                    backgroundColor: "white",
+                  }}
+                  monthTitleStyle={{ fontWeight: "bold", fontSize: verticalScale(15) }}
+                  yearTitleStyle={{ fontWeight: "bold", fontSize: verticalScale(15) }}
+                  selectedDayColor="red"
+                  startFromMonday={true}
+                  initialDate={pickerCurrentDate}
+                />
+                <View style={{ marginTop: -verticalScale(26) }}>
+                  <Pressable
+                    style={{ alignSelf: "flex-end", backgroundColor: "transparent", marginTop: -verticalScale(5) }}
+                    onPress={() => {
+                      changeDateCalendar(pickerCurrentDate);
+                    }}
+                  >
+                    <AntDesign style={{ padding: verticalScale(5) }} name="closecircle" size={verticalScale(20)} color="black" />
+                  </Pressable>
+                </View>
+              </View>
+            )}
             <View style={styles.row}>
               <MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(25)} color="black" />
               <TextInput
