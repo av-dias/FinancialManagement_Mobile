@@ -19,7 +19,7 @@ import Header from "../../components/header/header";
 export default function Home({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
-  const [pieChartData, setPieChartData] = useState([{ x: " ", y: 1 }]);
+  const [pieChartData, setPieChartData] = useState([]);
   const [spendByType, setSpendByType] = useState([[""]]);
 
   const [purchaseTotal, setPurchaseTotal] = useState("0.00");
@@ -83,7 +83,7 @@ export default function Home({ navigation }) {
         {
           // Only show chart and table if there is data to be displayed, otherwise just show "No data available" message
         }
-        {purchaseTotal !== "0.00" ? (
+        {pieChartData.length !== 0 ? (
           <View style={{ flex: 8 }}>
             <View style={styles.chart}>
               <VictoryPie
