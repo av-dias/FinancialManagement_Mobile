@@ -35,7 +35,7 @@ export default function Home({ navigation }) {
 
   const state = {
     tableHead: ["", "Type", "Value"],
-    tableFlex: [1, 3, 2],
+    tableFlex: [1, 3, 1],
   };
 
   useFocusEffect(
