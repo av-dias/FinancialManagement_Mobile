@@ -50,7 +50,7 @@ export const _styles = StyleSheet.create({
     color: "grey",
     width: "100%",
     textAlign: "right",
-    paddingTop: 50,
+    paddingTop: 20,
   },
   listDate: {
     fontSize: verticalScale(13),
