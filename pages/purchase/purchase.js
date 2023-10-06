@@ -22,7 +22,7 @@ export default function Purchase({ navigation }) {
   const [name, setName] = useState("");
   const [note, setNote] = useState("");
   const [value, setValue] = useState("");
-  const [list, setList] = height > heightTreshold ? useState([[" "], [" "], [" "], [" "], [" "]]) : useState([[" "], [" "], [" "]]);
+  const [list, setList] = useState([]);
   const [email, setEmail] = useState("");
 
   const getUser = async () => {
@@ -167,20 +167,20 @@ export default function Purchase({ navigation }) {
                 onChangeText={setNote}
               />
             </View>
-          </View>
-          <View style={styles.tableInfo}>
-            <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
-              <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
-              <ScrollView>
-                {list.map((rowData, index) => (
-                  <TableWrapper key={index} style={styles.rowTable}>
-                    {rowData.map((cellData, cellIndex) => (
-                      <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
-                    ))}
-                  </TableWrapper>
-                ))}
-              </ScrollView>
-            </Table>
+            <View style={styles.tableInfo}>
+              <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
+                <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
+                <ScrollView style={styles.scrollTable}>
+                  {list.map((rowData, index) => (
+                    <TableWrapper key={index} style={styles.rowTable}>
+                      {rowData.map((cellData, cellIndex) => (
+                        <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
+                      ))}
+                    </TableWrapper>
+                  ))}
+                </ScrollView>
+              </Table>
+            </View>
           </View>
         </View>
         <View style={styles.submitButton}>
