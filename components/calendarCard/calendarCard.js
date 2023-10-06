@@ -31,32 +31,32 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
 
   return (
     <View style={styles.calendarContainer}>
-      <TouchableOpacity
-        style={styles.hitBox}
-        onPress={() => {
-          previousMonth();
-        }}
-      >
-        <AntDesign style={styles.iconCenter} name="left" size={15} color="black" />
-      </TouchableOpacity>
-      <Card containerStyle={styles.calendarBox}>
+      <View style={styles.calendarBox}>
         <View style={styles.rowGap}>
+          <TouchableOpacity
+            style={styles.hitBox}
+            onPress={() => {
+              previousMonth();
+            }}
+          >
+            <AntDesign style={styles.iconCenter} name="left" size={15} color="black" />
+          </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Feather name="calendar" size={24} color="black" />
           </View>
           <View style={{ flex: 4 }}>
             <Text style={styles.text}>{getCurrentDate()}</Text>
           </View>
+          <TouchableOpacity
+            style={styles.hitBox}
+            onPress={() => {
+              nextMonth();
+            }}
+          >
+            <AntDesign style={styles.iconCenter} name="right" size={15} color="black" />
+          </TouchableOpacity>
         </View>
-      </Card>
-      <TouchableOpacity
-        style={styles.hitBox}
-        onPress={() => {
-          nextMonth();
-        }}
-      >
-        <AntDesign style={styles.iconCenter} name="right" size={15} color="black" />
-      </TouchableOpacity>
+      </View>
     </View>
   );
 }
