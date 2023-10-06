@@ -5,6 +5,8 @@ const { width, height } = Dimensions.get("window");
 const guidelineBaseWidth = 375;
 const guidelineBaseHeight = 812;
 
+const heightTreshold = 800;
+
 const horizontalScale = (size) => {
   return (width / guidelineBaseWidth) * size;
 };
@@ -26,4 +28,4 @@ const inverseScale = (size, factor = 1 / 2) => {
   return size + (horizontalScale(size) - size) * factor;
 };
 
-export { horizontalScale, verticalScale, moderateScale, largeScale, inverseScale };
+export { horizontalScale, verticalScale, moderateScale, largeScale, inverseScale, heightTreshold };

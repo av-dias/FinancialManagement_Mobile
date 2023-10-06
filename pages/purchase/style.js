@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import { color } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
 import { StatusBar, Dimensions } from "react-native";
 const statusBarHeight = StatusBar.currentHeight;
 const naviagtionBarHeight = verticalScale(90);
+const height = Dimensions.get("window").height;
 
 /* console.log(Dimensions.get("screen").height);
 console.log(Dimensions.get("window").height);
@@ -13,7 +14,7 @@ console.log(naviagtionBarHeight); */
 const borderRadius = 10;
 
 export const _styles = StyleSheet.create({
-  usableScreen: { height: Dimensions.get("window").height - statusBarHeight - naviagtionBarHeight },
+  usableScreen: { height: height - statusBarHeight - naviagtionBarHeight },
   page: {
     backgroundColor: color.backgroundLight,
     //alignItems: "center",
@@ -33,6 +34,8 @@ export const _styles = StyleSheet.create({
     flex: 2,
     paddingHorizontal: horizontalScale(50),
     width: "100%",
+    height: "100%",
+    maxHeight: height > heightTreshold ? 300 : 100,
     backgroundColor: "transparent",
     justifyContent: "center",
   },

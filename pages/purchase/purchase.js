@@ -8,23 +8,21 @@ import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-ta
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
-import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
 import { _styles } from "./style";
 import { categoryIcons } from "../../assets/icons";
 import Header from "../../components/header/header";
 
 const height = Dimensions.get("window").height;
-const heightTreshold = 800;
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
-  const MAX_TABLE_SIZE = height > heightTreshold ? 5 : 2;
   const [onLoadData, setOnLoadData] = useState("");
   const [type, setType] = useState("");
   const [name, setName] = useState("");
   const [note, setNote] = useState("");
   const [value, setValue] = useState("");
-  const [list, setList] = height > heightTreshold ? useState([[" "], [" "], [" "], [" "], [" "]]) : useState([[" "], [" "]]);
+  const [list, setList] = height > heightTreshold ? useState([[" "], [" "], [" "], [" "], [" "]]) : useState([[" "], [" "], [" "]]);
   const [email, setEmail] = useState("");
 
   const getUser = async () => {
@@ -66,12 +64,7 @@ export default function Purchase({ navigation }) {
       console.log(type);
 
       await saveToStorage("purchases", JSON.stringify(purchases), email);
-      setList(
-        [[categoryIcons.find((category) => category.label === type).icon, name, value, date.toISOString().split("T")[0]], ...list].slice(
-          0,
-          MAX_TABLE_SIZE
-        )
-      );
+      setList([[categoryIcons.find((category) => category.label === type).icon, name, value, date.toISOString().split("T")[0]], ...list]);
       this.textInputValue.clear();
       this.textInputNote.clear();
       setValue("");
