@@ -42,7 +42,7 @@ export const _styles = StyleSheet.create({
     padding: verticalScale(5),
     paddingTop: verticalScale(10),
     borderRadius: borderRadius,
-    backgroundColor: color.backgroundComplementary,
+    backgroundColor: "transparent",
     justifyContent: "flex-start",
     alignSelf: "center",
   },
@@ -82,7 +82,7 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     borderRadius: borderRadius,
-    backgroundColor: color.backgroundComplementary,
+    backgroundColor: "transparent",
   },
   rowTable: {
     flexDirection: "row",
@@ -98,8 +98,9 @@ export const _styles = StyleSheet.create({
   },
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
   iconLabel: { fontSize: verticalScale(8), alignSelf: "center", backgroundColor: "transparent" },
-  categoryContainer: { borderColor: color.backgroundComplementary, borderWidth: 1, justifyContent: "center", alignItems: "center", borderRadius: 10 },
+  categoryContainer: { borderColor: "transparent", borderWidth: 1, justifyContent: "center", alignItems: "center", borderRadius: 10 },
   categoryIconContainer: { paddingHorizontal: 20 },
   categoryScrollContainer: { backgroundColor: "transparent" },
   scrollTable: { height: "85%", backgroundColor: "transparent" },
+  divider: { margin: -5 },
 });

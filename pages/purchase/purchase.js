@@ -1,6 +1,7 @@
 import navLogo from "../../images/logo.png";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, Dimensions, ScrollView } from "react-native";
 import { color } from "../../utility/colors";
+import { Divider } from "react-native-paper";
 
 import React, { useState, useEffect } from "react";
 import CalendarStrip from "react-native-calendar-strip";
@@ -120,14 +121,15 @@ export default function Purchase({ navigation }) {
               />
               <Text style={styles.symbolBig}>€</Text>
             </View>
-            <View style={{ backgroundColor: "transparent", height: "18%", maxHeight: 90, borderRadius: borderRadius }}>
+            <Divider style={styles.divider} />
+            <View style={{ backgroundColor: "transparent", height: "10%", maxHeight: 90, borderRadius: borderRadius }}>
               <ScrollView horizontal={true} style={styles.categoryScrollContainer}>
                 {categoryIcons.map((iconComponent) => {
                   return (
                     <Pressable
                       key={iconComponent.label}
                       style={{
-                        backgroundColor: type == iconComponent.label ? color.backgroundComplementary : "transparent",
+                        backgroundColor: type == iconComponent.label ? "white" : "transparent",
                         ...styles.categoryContainer,
                       }}
                       onPress={() => {
@@ -142,12 +144,13 @@ export default function Purchase({ navigation }) {
                 })}
               </ScrollView>
             </View>
+            <Divider style={styles.divider} />
             <CalendarStrip
               ref={(component) => (this._calendar = component)}
               selectedDate={pickerCurrentDate}
               calendarAnimation={{ type: "sequence", duration: 15 }}
               daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: "white" }}
-              style={{ height: "15%", backgroundColor: color.backgroundComplementary, borderRadius: borderRadius }}
+              style={{ height: "15%", backgroundColor: "transparent", borderRadius: borderRadius }}
               calendarHeaderStyle={{
                 color: "black",
                 marginTop: 5,
@@ -156,7 +159,7 @@ export default function Purchase({ navigation }) {
                 borderWidth: 1,
                 borderRadius: borderRadius,
                 borderColor: "white",
-                backgroundColor: "white",
+                backgroundColor: "transparent",
               }}
               calendarColor={"transparent"}
               dateNumberStyle={{ color: "black", fontSize: verticalScale(15) }}
@@ -225,12 +228,13 @@ export default function Purchase({ navigation }) {
                 </View>
               </View>
             )}
+            <Divider style={styles.divider} />
             <View
               style={{
                 width: "100%",
                 borderRadius: borderRadius,
                 gap: 10,
-                backgroundColor: color.backgroundComplementary,
+                backgroundColor: "transparent",
               }}
             >
               <View style={{ ...styles.row, backgroundColor: "transparent" }}>
@@ -244,6 +248,7 @@ export default function Purchase({ navigation }) {
                   onChangeText={setName}
                 />
               </View>
+              <Divider style={styles.divider} />
               <View style={{ ...styles.row, backgroundColor: "transparent" }}>
                 <MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(25)} color="black" />
                 <TextInput
@@ -256,6 +261,7 @@ export default function Purchase({ navigation }) {
                 />
               </View>
             </View>
+            <Divider style={styles.divider} />
             <View style={styles.tableInfo}>
               <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
                 <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
@@ -270,8 +276,10 @@ export default function Purchase({ navigation }) {
                 </ScrollView>
               </Table>
             </View>
+            <Divider style={styles.divider} />
           </View>
         </View>
+
         <View style={styles.submitButton}>
           <Pressable style={styles.button} onPress={handlePurchase}>
             <Text style={styles.buttonText}>Submit</Text>
