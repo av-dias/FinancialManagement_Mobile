@@ -27,7 +27,7 @@ export const _styles = StyleSheet.create({
     alignContent: "center",
     justifyContent: "center",
     padding: verticalScale(20),
-    backgroundColor: color.backgroundSecundary,
+    backgroundColor: color.glass,
     borderRadius: 10,
   },
   logo: {

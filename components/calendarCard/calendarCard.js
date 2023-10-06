@@ -39,7 +39,7 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
       >
         <AntDesign style={styles.iconCenter} name="left" size={15} color="black" />
       </TouchableOpacity>
-      <Card borderRadius={2} containerStyle={styles.calendarBox}>
+      <Card containerStyle={styles.calendarBox}>
         <View style={styles.rowGap}>
           <View style={{ flex: 1 }}>
             <Feather name="calendar" size={24} color="black" />

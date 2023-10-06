@@ -1,10 +1,6 @@
 export const color = {
-  secundary: "#f4da7ddd",
-  principal: "#2296F3",
-  backgroundDark: "#1a2238",
-  backgroundLight: "#e3f2fd",
-  backgroundSecundary: "rgba(184, 191, 214, 0.1)",
-  backgroundComplementary: "rgba(0, 131, 233, 0.04)",
-  button: "#1976D2",
-  chart: "#284387",
+  backgroundDark: "rgba(26, 34, 56,1)",
+  backgroundLight: "rgba(227, 242, 253,1)",
+  glass: "rgba(184, 191, 214, 0.1)",
+  complementary: "rgba(0, 131, 233, 0.04)",
 };

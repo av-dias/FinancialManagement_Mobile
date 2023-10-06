@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { horizontalScale, verticalScale } from "../../utility/responsive";
+import { color } from "../../utility/colors";
 
 export const _styles = StyleSheet.create({
   hitBox: {
@@ -16,8 +17,7 @@ export const _styles = StyleSheet.create({
     width: "35%",
     maxWidth: 140,
     marginHorizontal: -horizontalScale(8),
-    backgroundColor: "white",
-    borderRadius: 10,
+    backgroundColor: color.glass,
     padding: verticalScale(5),
   },
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },

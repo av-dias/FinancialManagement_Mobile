@@ -52,7 +52,7 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     borderRadius: 1,
-    borderColor: color.backgroundComplementary,
+    borderColor: color.complementary,
     borderWidth: verticalScale(1),
   },
   colorIcon: { textAlign: "center", fontSize: verticalScale(20), padding: 5, margin: 5 },

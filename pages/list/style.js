@@ -71,7 +71,7 @@ export const _styles = StyleSheet.create({
     maxWidth: 550,
     paddingVertical: 10,
     marginVertical: verticalScale(10),
-    backgroundColor: color.backgroundComplementary,
+    backgroundColor: color.complementary,
     borderRadius: 10,
     gap: 10,
   },

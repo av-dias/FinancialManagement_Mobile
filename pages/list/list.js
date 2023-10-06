@@ -160,7 +160,7 @@ export default function Purchase({ navigation }) {
 
               {archives.map((cellData, cellIndex) =>
                 currentMonth == new Date(cellData.dop).getMonth() && currentYear == new Date(cellData.dop).getFullYear() ? (
-                  <View key={cellIndex} style={{ ...styles.listBox, backgroundColor: color.backgroundSecundary }}>
+                  <View key={cellIndex} style={{ ...styles.listBox }}>
                     <Pressable
                       key={KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex}
                       style={styles.button}
