@@ -35,7 +35,7 @@ export default function Home({ navigation }) {
 
   const state = {
     tableHead: ["", "Type", "Value"],
-    tableFlex: [1, 3, 1],
+    tableFlex: [1, 2, 1],
   };
 
   useFocusEffect(
@@ -110,12 +110,7 @@ export default function Home({ navigation }) {
                     {spendByType.map((rowData, index) => (
                       <TableWrapper key={index} style={styles.rowTable}>
                         {rowData.map((cellData, cellIndex) => (
-                          <Cell
-                            style={{ flex: state.tableFlex[cellIndex], borderRadius: 4, borderColor: "rgba(255,255,255, 1)" }}
-                            key={cellIndex}
-                            data={cellData}
-                            textStyle={styles.textCenter}
-                          />
+                          <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
                         ))}
                       </TableWrapper>
                     ))}

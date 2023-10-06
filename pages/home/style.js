@@ -45,7 +45,7 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "transparent",
   },
-  textCenter: { textAlign: "center", fontSize: verticalScale(15), padding: 5, margin: 5 },
+  textCenter: { textAlign: "center", fontSize: verticalScale(12), padding: 5, margin: 5 },
   textCenterHead: { textAlign: "center", fontWeight: "bold", fontSize: verticalScale(15) },
   rowTable: {
     flexDirection: "row",
