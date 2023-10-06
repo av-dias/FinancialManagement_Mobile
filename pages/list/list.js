@@ -165,7 +165,6 @@ export default function Purchase({ navigation }) {
                       key={KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex}
                       style={styles.button}
                       onPress={() => {
-                        setSelected(KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex);
                         showAlert(KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex);
                       }}
                     >
