@@ -73,6 +73,7 @@ export default function Purchase({ navigation }) {
         )
       );
       this.textInputValue.clear();
+      this.textInputNote.clear();
       setValue("");
       setNote("");
 
@@ -156,7 +157,14 @@ export default function Purchase({ navigation }) {
             />
             <View style={styles.row}>
               <MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(25)} color="black" />
-              <TextInput style={styles.textInput} placeholder="Notes" onChangeText={setNote} />
+              <TextInput
+                style={styles.textInput}
+                placeholder="Notes"
+                ref={(input) => {
+                  this.textInputNote = input;
+                }}
+                onChangeText={setNote}
+              />
             </View>
           </View>
           <View style={styles.tableInfo}>
