@@ -127,6 +127,7 @@ export default function Purchase({ navigation }) {
                       }}
                       onPress={() => {
                         setType(iconComponent.label);
+                        this.textInputName.clear();
                       }}
                     >
                       <View style={styles.categoryIconContainer}>{iconComponent.icon}</View>
@@ -138,7 +139,14 @@ export default function Purchase({ navigation }) {
             </View>
             <View style={styles.row}>
               <MaterialCommunityIcons style={styles.iconCenter} name="format-list-bulleted-type" size={verticalScale(25)} color="black" />
-              <TextInput style={styles.textInput} placeholder="Name" onChangeText={setName} />
+              <TextInput
+                style={styles.textInput}
+                placeholder="Name"
+                ref={(input) => {
+                  this.textInputName = input;
+                }}
+                onChangeText={setName}
+              />
             </View>
             <CalendarStrip
               ref={(component) => (this._calendar = component)}
