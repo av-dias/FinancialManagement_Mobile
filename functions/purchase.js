@@ -22,5 +22,5 @@ export const getPurchaseTotal = async (email, currentMonth) => {
     }
     return parseFloat(acc);
   }, 0);
-  return parseFloat(res).toFixed(2);
+  return parseFloat(res).toFixed(0);
 };

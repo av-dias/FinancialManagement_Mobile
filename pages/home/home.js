@@ -50,7 +50,11 @@ export default function Home({ navigation }) {
           Object.keys(res).forEach((key) => {
             let _color = generateColor();
             array.push({ x: " ", y: res[key], color: _color });
-            arrayTables.push([<FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />, key, res[key] + " €"]);
+            arrayTables.push([
+              <FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />,
+              key,
+              parseFloat(res[key]).toFixed(0) + " €",
+            ]);
           });
           setPieChartData(array);
           setSpendByType(
