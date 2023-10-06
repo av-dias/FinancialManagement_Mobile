@@ -142,17 +142,6 @@ export default function Purchase({ navigation }) {
                 })}
               </ScrollView>
             </View>
-            <View style={styles.row}>
-              <MaterialCommunityIcons style={styles.iconCenter} name="format-list-bulleted-type" size={verticalScale(25)} color="black" />
-              <TextInput
-                style={styles.textInput}
-                placeholder="Name"
-                ref={(input) => {
-                  this.textInputName = input;
-                }}
-                onChangeText={setName}
-              />
-            </View>
             <CalendarStrip
               ref={(component) => (this._calendar = component)}
               selectedDate={pickerCurrentDate}
@@ -188,7 +177,7 @@ export default function Purchase({ navigation }) {
               <View
                 style={{
                   position: "absolute",
-                  top: "45%",
+                  top: "32%",
                   alignSelf: "center",
                   width: horizontalScale(275),
                   backgroundColor: "white",
@@ -236,16 +225,36 @@ export default function Purchase({ navigation }) {
                 </View>
               </View>
             )}
-            <View style={styles.row}>
-              <MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(25)} color="black" />
-              <TextInput
-                style={styles.textInput}
-                placeholder="Notes"
-                ref={(input) => {
-                  this.textInputNote = input;
-                }}
-                onChangeText={setNote}
-              />
+            <View
+              style={{
+                width: "100%",
+                borderRadius: borderRadius,
+                gap: 10,
+                backgroundColor: color.backgroundComplementary,
+              }}
+            >
+              <View style={{ ...styles.row, backgroundColor: "transparent" }}>
+                <MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(25)} color="black" />
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Name"
+                  ref={(input) => {
+                    this.textInputName = input;
+                  }}
+                  onChangeText={setName}
+                />
+              </View>
+              <View style={{ ...styles.row, backgroundColor: "transparent" }}>
+                <MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(25)} color="black" />
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Notes"
+                  ref={(input) => {
+                    this.textInputNote = input;
+                  }}
+                  onChangeText={setNote}
+                />
+              </View>
             </View>
             <View style={styles.tableInfo}>
               <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
