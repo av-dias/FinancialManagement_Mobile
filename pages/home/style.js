@@ -12,7 +12,11 @@ export const _styles = StyleSheet.create({
     //justifyContent: "center",
     height: "97%",
   },
-  usableScreen: { height: Dimensions.get("window").height - statusBarHeight - naviagtionBarHeight },
+  usableScreen: {
+    height: Dimensions.get("window").height - statusBarHeight - naviagtionBarHeight,
+    backgroundColor: "transparent",
+    marginTop: verticalScale(5),
+  },
   calendar: { justifyContent: "center", alignItems: "center", flex: 1, width: "100%", backgroundColor: "transparent" },
   calendarBox: {
     marginTop: 0,

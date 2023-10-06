@@ -14,7 +14,11 @@ console.log(naviagtionBarHeight); */
 const borderRadius = 10;
 
 export const _styles = StyleSheet.create({
-  usableScreen: { height: height - statusBarHeight - naviagtionBarHeight },
+  usableScreen: {
+    height: Dimensions.get("window").height - statusBarHeight - naviagtionBarHeight,
+    backgroundColor: "transparent",
+    marginTop: verticalScale(5),
+  },
   page: {
     backgroundColor: color.backgroundLight,
     //alignItems: "center",

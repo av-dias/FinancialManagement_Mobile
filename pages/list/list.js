@@ -126,7 +126,7 @@ export default function Purchase({ navigation }) {
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
-          <View style={{ flex: verticalScale(8), padding: 20, backgroundColor: "transparent" }}>
+          <View style={{ flex: verticalScale(7), padding: verticalScale(10), backgroundColor: "transparent" }}>
             <ScrollView>
               {Object.keys(groupedPurchases).map((key) => (
                 <React.Fragment key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + key}>
