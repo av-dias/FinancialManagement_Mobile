@@ -6,6 +6,7 @@ import { MaterialIcons, FontAwesome, Feather, AntDesign } from "@expo/vector-ico
 import { VictoryPie, VictoryLabel, VictoryChart, VictoryLegend } from "victory-native";
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
 import { Card } from "@rneui/themed";
+import { Divider } from "react-native-paper";
 
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";

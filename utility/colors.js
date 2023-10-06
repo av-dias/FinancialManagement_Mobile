@@ -1,7 +1,7 @@
 export const color = {
   backgroundDark: "rgba(26, 34, 56,1)",
   backgroundLight: "rgba(227, 242, 253,1)",
-  complementary: "white",
+  complementary: "rgba(255, 255, 255, 0.5)",
   glass: "rgba(184, 191, 214, 0.1)",
   glassBorder: "rgba(211,211,211,1)",
   calendar: "white",
