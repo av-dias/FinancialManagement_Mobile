@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../utility/responsive";
+import { horizontalScale, verticalScale } from "../../utility/responsive";
 
 export const _styles = StyleSheet.create({
   hitBox: {
@@ -9,17 +9,19 @@ export const _styles = StyleSheet.create({
     width: horizontalScale(30),
     alignSelf: "center",
     zIndex: -1,
+    backgroundColor: "transparent",
   },
   calendarBox: {
     marginTop: 0,
-    width: 170,
-    marginHorizontal: -horizontalScale(5),
-    marginBottom: -5,
+    width: "35%",
+    maxWidth: 140,
+    marginHorizontal: -horizontalScale(8),
     backgroundColor: "white",
     borderRadius: 10,
+    padding: verticalScale(5),
   },
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
-  text: { fontSize: 20, textAlign: "center" },
-  rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", borderRadius: 4, gap: 20 },
-  calendarContainer: { maxHeight: "80%", width: "70%", justifyContent: "center", alignItems: "center", flexDirection: "row" },
+  text: { fontSize: 20, textAlign: "center", justifyContent: "center" },
+  rowGap: { flexDirection: "row", justifyContent: "center", width: "100%" },
+  calendarContainer: { width: "100%", justifyContent: "center", alignItems: "center", flexDirection: "row", backgroundColor: "transparent" },
 });
