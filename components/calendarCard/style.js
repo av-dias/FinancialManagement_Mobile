@@ -18,7 +18,7 @@ export const _styles = StyleSheet.create({
     width: "50%",
     maxWidth: 210,
     maxHeight: 80,
-    backgroundColor: color.calendar,
+    backgroundColor: "transparent",
     padding: verticalScale(5),
     justifyContent: "center",
     borderRadius: 10,

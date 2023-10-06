@@ -180,10 +180,10 @@ export default function Purchase({ navigation }) {
               <View
                 style={{
                   position: "absolute",
-                  top: "32%",
+                  top: "30%",
                   alignSelf: "center",
                   width: horizontalScale(275),
-                  backgroundColor: "white",
+                  backgroundColor: color.calendar,
                   padding: 10,
                   borderRadius: borderRadius,
                   zIndex: 1,
