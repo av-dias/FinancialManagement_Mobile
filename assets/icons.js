@@ -1,4 +1,4 @@
-import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Feather } from "@expo/vector-icons";
 import { horizontalScale, verticalScale, moderateScale } from "../utility/responsive";
 
 const iconSize = verticalScale(30);
@@ -8,8 +8,11 @@ export const categoryIcons = [
   { label: "Travel", icon: <MaterialIcons name="flight-takeoff" style={{ alignSelf: "center" }} size={iconSize} color="black" /> },
   { label: "Rent", icon: <AntDesign name="home" style={{ alignSelf: "center" }} size={iconSize} color="black" /> },
   { label: "Work", icon: <MaterialIcons name="food-bank" style={{ alignSelf: "center" }} size={iconSize} color="black" /> },
+  { label: "Coffee-Pub", icon: <FontAwesome5 name="store" size={iconSize} color="black" /> },
   { label: "Fun", icon: <MaterialIcons name="nightlife" style={{ alignSelf: "center" }} size={iconSize} color="black" /> },
   { label: "Car", icon: <FontAwesome5 name="car-side" style={{ alignSelf: "center" }} size={iconSize} color="black" /> },
+  { label: "Transport", icon: <Ionicons name="train-outline" size={iconSize} color="black" /> },
+  { label: "Lifestyle", icon: <Ionicons name="person-add-outline" size={iconSize} color="black" /> },
   { label: "Restaurant", icon: <MaterialIcons name="restaurant" style={{ alignSelf: "center" }} size={iconSize} color="black" /> },
   { label: "Gadgets", icon: <MaterialCommunityIcons name="devices" style={{ alignSelf: "center" }} size={iconSize} color="black" /> },
   { label: "Medic", icon: <FontAwesome5 name="hand-holding-medical" style={{ alignSelf: "center" }} size={iconSize} color="black" /> },
