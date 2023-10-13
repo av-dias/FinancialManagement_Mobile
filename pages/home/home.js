@@ -35,7 +35,7 @@ export default function Home({ navigation }) {
   };
 
   const state = {
-    tableHead: ["", "Type", "Value"],
+    tableHead: ["Color", "Type", "Value"],
     tableFlex: [1, 2, 1],
   };
 
