@@ -40,13 +40,15 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
               previousMonth();
             }}
           >
-            <AntDesign style={styles.iconCenter} name="left" size={verticalScale(10)} color="black" />
+            <AntDesign style={styles.iconCenterLeft} name="left" size={verticalScale(10)} color="black" />
           </TouchableOpacity>
-          <View style={{ flex: 1, justifyContent: "center" }}>
-            <Feather name="calendar" size={verticalScale(15)} color="black" />
-          </View>
-          <View style={{ flex: 4, justifyContent: "center" }}>
-            <Text style={styles.text}>{getCurrentDate()}</Text>
+          <View style={styles.row}>
+            <View style={{ justifyContent: "center" }}>
+              <Feather name="calendar" size={verticalScale(15)} color="black" />
+            </View>
+            <View style={{ justifyContent: "center", backgroundColor: "transparent" }}>
+              <Text style={styles.text}>{getCurrentDate()}</Text>
+            </View>
           </View>
           <TouchableOpacity
             style={styles.hitBox}
@@ -54,7 +56,7 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
               nextMonth();
             }}
           >
-            <AntDesign style={styles.iconCenter} name="right" size={verticalScale(10)} color="black" />
+            <AntDesign style={styles.iconCenterRight} name="right" size={verticalScale(10)} color="black" />
           </TouchableOpacity>
         </View>
       </View>
