@@ -107,7 +107,7 @@ export default function Purchase({ navigation }) {
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
-        <View style={{ flex: 6 }}>
+        <View style={{ flex: 8 }}>
           <View style={styles.form}>
             <View style={styles.rowNoBorder}>
               <Text style={styles.symbolBig}>+</Text>
@@ -266,7 +266,7 @@ export default function Purchase({ navigation }) {
                 />
               </View>
             </CardWrapper>
-            <CardWrapper style={{ flex: 2 }}>
+            <CardWrapper style={{ flex: 2, maxHeight: height > heightTreshold ? 300 : 160 }}>
               <View style={styles.tableInfo}>
                 <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
                   <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />

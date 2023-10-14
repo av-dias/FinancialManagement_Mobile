@@ -37,7 +37,6 @@ export const _styles = StyleSheet.create({
   tableInfo: {
     width: "100%",
     height: "100%",
-    maxHeight: height > heightTreshold ? 300 : 200,
     paddingTop: verticalScale(20),
     justifyContent: "flex-start",
     alignSelf: "center",
@@ -67,7 +66,7 @@ export const _styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: color.button,
   },
-  submitButton: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "transparent" },
+  submitButton: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "transparent " },
   buttonText: {
     fontSize: 20,
     color: "white",
