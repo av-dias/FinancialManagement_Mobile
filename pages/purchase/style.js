@@ -63,8 +63,8 @@ export const _styles = StyleSheet.create({
   button: {
     alignItems: "center",
     paddingVertical: verticalScale(15),
-    paddingHorizontal: horizontalScale(30),
-    borderRadius: 4,
+    width: "100%",
+    borderRadius: 10,
     backgroundColor: color.button,
     elevation: 1,
   },
