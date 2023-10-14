@@ -31,7 +31,9 @@ export default function Settings({ navigation }) {
         {
           text: "Yes",
           onPress: async () => {
-            let info = await saveToStorage("purchases", "[]", email);
+            let infoPurchase = await saveToStorage("purchases", "[]", email);
+            let infoArchive = await saveToStorage("archived_purchases", "[]", email);
+
             alert("Cleared");
           },
           style: "yes",
@@ -100,8 +102,9 @@ export default function Settings({ navigation }) {
         <Pressable
           style={styles.button}
           onPress={async () => {
-            let info = await getFromStorage("purchases", email);
-            alert(info);
+            let infoPurchase = await getFromStorage("purchases", email);
+            let infoArchive = await getFromStorage("archived_purchases", email);
+            alert(infoPurchase + " and " + infoArchive);
           }}
         >
           <Text style={styles.buttonText}>Logs</Text>

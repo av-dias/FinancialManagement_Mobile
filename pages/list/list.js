@@ -60,6 +60,7 @@ export default function Purchase({ navigation }) {
         try {
           let resArchive = JSON.parse(await getFromStorage("archived_purchases", email)) || [];
           setArchives(resArchive);
+          console.log("Archive: " + resArchive);
           console.log("Archive len: " + resArchive.length);
         } catch (e) {
           console.log("Archive: " + e);
