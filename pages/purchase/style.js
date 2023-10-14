@@ -41,7 +41,7 @@ export const _styles = StyleSheet.create({
     maxHeight: height > heightTreshold ? 300 : 130,
     paddingTop: verticalScale(10),
     borderRadius: borderRadius,
-    backgroundColor: "transparent",
+    backgroundColor: color.complementary,
     justifyContent: "flex-start",
     alignSelf: "center",
   },

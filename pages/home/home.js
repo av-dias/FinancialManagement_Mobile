@@ -85,11 +85,12 @@ export default function Home({ navigation }) {
           // Only show chart and table if there is data to be displayed, otherwise just show "No data available" message
         }
         {pieChartData.length !== 0 ? (
-          <View style={{ flex: 8 }}>
+          <View style={{ flex: 8, gap: verticalScale(20) }}>
             <View style={styles.chart}>
               <VictoryPie
-                height={verticalScale(400)}
-                innerRadius={horizontalScale(80)}
+                height={verticalScale(350)}
+                innerRadius={verticalScale(110)}
+                padding={{ top: 0, bottom: 0 }}
                 data={pieChartData.length != 0 ? pieChartData : [{ x: "Your Spents", y: 1 }]}
                 style={{
                   data: {

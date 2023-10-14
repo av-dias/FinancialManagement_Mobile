@@ -3,7 +3,7 @@ import { color } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../utility/responsive";
 import { StatusBar, Dimensions } from "react-native";
 const statusBarHeight = StatusBar.currentHeight;
-const naviagtionBarHeight = verticalScale(90);
+const naviagtionBarHeight = verticalScale(110);
 import commonStyles from "../../utility/commonStyles";
 
 export const _styles = StyleSheet.create({
@@ -26,7 +26,7 @@ export const _styles = StyleSheet.create({
     marginHorizontal: -horizontalScale(5),
     marginBottom: -5,
     backgroundColor: "white",
-    borderRadius: 10,
+    borderRadius: commonStyles.borderRadius,
   },
   hitBox: {
     alignItems: "center",
@@ -38,13 +38,22 @@ export const _styles = StyleSheet.create({
   },
   rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", borderRadius: 4, gap: 20 },
   text: { fontSize: 20, textAlign: "center" },
-  chart: { flex: 5, justifyContent: "center", alignItems: "center", backgroundColor: "transparent", margin: largeScale(5) },
+  chart: {
+    flex: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: color.complementary,
+    borderRadius: commonStyles.borderRadius,
+  },
   tableInfo: {
     gap: 30,
     width: "100%",
     height: "100%",
     justifyContent: "center",
-    backgroundColor: "transparent",
+    backgroundColor: color.complementary,
+    borderRadius: commonStyles.borderRadius,
+    paddingVertical: commonStyles.boxPaddingVertical,
+    paddingHorizontal: commonStyles.boxPaddingHorizontal,
   },
   textCenter: { textAlign: "center", fontSize: verticalScale(12) },
   textCenterHead: { textAlign: "center", fontWeight: "bold", fontSize: verticalScale(15) },

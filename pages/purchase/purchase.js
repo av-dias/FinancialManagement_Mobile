@@ -121,15 +121,22 @@ export default function Purchase({ navigation }) {
               />
               <Text style={styles.symbolBig}>€</Text>
             </View>
-            <Divider style={styles.divider} />
+
             <View style={{ backgroundColor: "transparent", height: "10%", maxHeight: 90, borderRadius: borderRadius }}>
-              <ScrollView horizontal={true} style={styles.categoryScrollContainer}>
+              <ScrollView
+                horizontal={true}
+                rowGap={20}
+                style={styles.categoryScrollContainer}
+                contentContainerStyle={{
+                  gap: verticalScale(10),
+                }}
+              >
                 {categoryIcons.map((iconComponent) => {
                   return (
                     <Pressable
                       key={iconComponent.label}
                       style={{
-                        backgroundColor: type == iconComponent.label ? color.secundary : "transparent",
+                        backgroundColor: type == iconComponent.label ? color.secundary : color.complementary,
                         ...styles.categoryContainer,
                       }}
                       onPress={() => {
@@ -144,13 +151,13 @@ export default function Purchase({ navigation }) {
                 })}
               </ScrollView>
             </View>
-            <Divider style={styles.divider} />
+
             <CalendarStrip
               ref={(component) => (this._calendar = component)}
               selectedDate={pickerCurrentDate}
               calendarAnimation={{ type: "sequence", duration: 15 }}
               daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: color.calendarBorder }}
-              style={{ height: "15%", backgroundColor: "transparent", borderRadius: borderRadius }}
+              style={{ height: "15%", backgroundColor: color.complementary, borderRadius: borderRadius }}
               calendarHeaderStyle={{
                 color: "black",
                 marginTop: 5,
@@ -228,14 +235,14 @@ export default function Purchase({ navigation }) {
                 </View>
               </View>
             )}
-            <Divider style={styles.divider} />
+
             <View
               style={{
                 width: "100%",
                 borderRadius: borderRadius,
                 gap: 10,
-                backgroundColor: "transparent",
-                paddingHorizontal: 20,
+                backgroundColor: color.complementary,
+                paddingHorizontal: horizontalScale(10),
               }}
             >
               <View style={{ ...styles.row, backgroundColor: "transparent" }}>
@@ -249,7 +256,7 @@ export default function Purchase({ navigation }) {
                   onChangeText={setName}
                 />
               </View>
-              <Divider style={styles.divider} />
+
               <View style={{ ...styles.row, backgroundColor: "transparent" }}>
                 <MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(25)} color="black" />
                 <TextInput
@@ -262,7 +269,7 @@ export default function Purchase({ navigation }) {
                 />
               </View>
             </View>
-            <Divider style={styles.divider} />
+
             <View style={styles.tableInfo}>
               <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
                 <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
@@ -277,7 +284,6 @@ export default function Purchase({ navigation }) {
                 </ScrollView>
               </Table>
             </View>
-            <Divider style={styles.divider} />
           </View>
         </View>
 
