@@ -235,6 +235,7 @@ export default function Purchase({ navigation }) {
                 borderRadius: borderRadius,
                 gap: 10,
                 backgroundColor: "transparent",
+                paddingHorizontal: 20,
               }}
             >
               <View style={{ ...styles.row, backgroundColor: "transparent" }}>

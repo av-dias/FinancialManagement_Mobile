@@ -18,6 +18,7 @@ export const _styles = StyleSheet.create({
     height: Dimensions.get("window").height - statusBarHeight - naviagtionBarHeight,
     backgroundColor: "transparent",
     marginTop: verticalScale(5),
+    paddingHorizontal: commonStyles.paddingHorizontal,
   },
   page: {
     backgroundColor: color.backgroundLight,
@@ -28,7 +29,6 @@ export const _styles = StyleSheet.create({
   form: {
     flex: 7,
     gap: verticalScale(20),
-    paddingHorizontal: horizontalScale(50),
     //paddingVertical: verticalScale(10),
     justifyContent: "center",
     width: "100%",
@@ -39,7 +39,6 @@ export const _styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     maxHeight: height > heightTreshold ? 300 : 130,
-    padding: verticalScale(5),
     paddingTop: verticalScale(10),
     borderRadius: borderRadius,
     backgroundColor: "transparent",
@@ -47,12 +46,14 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
   },
   textInput: {
+    flex: 1,
     fontSize: 22,
-    padding: moderateScale(6),
+    paddingVertical: moderateScale(6),
     textAlign: "center",
     borderRadius: borderRadius,
-    width: "80%",
+    width: "87%",
     alignSelf: "center",
+    backgroundColor: "transparent",
   },
   valueInput: {
     fontSize: moderateScale(40),
@@ -75,14 +76,13 @@ export const _styles = StyleSheet.create({
   },
   textCenter: { textAlign: "center", borderRadius: 10 },
   textCenterHead: { textAlign: "center", fontWeight: "bold" },
-  tableText: { fontSize: verticalScale(10), textAlign: "center", padding: 8 },
+  tableText: { fontSize: verticalScale(10), textAlign: "center", padding: 0 },
   symbolBig: { fontSize: moderateScale(25), textAlign: "center", width: "auto", alignSelf: "center" },
   row: {
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
     borderRadius: borderRadius,
-    backgroundColor: "transparent",
   },
   rowTable: {
     flexDirection: "row",

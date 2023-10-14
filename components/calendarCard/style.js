@@ -15,7 +15,7 @@ export const _styles = StyleSheet.create({
   },
   calendarBox: {
     marginTop: 0,
-    width: "50%",
+    width: "55%",
     maxWidth: 210,
     maxHeight: 80,
     backgroundColor: "transparent",
