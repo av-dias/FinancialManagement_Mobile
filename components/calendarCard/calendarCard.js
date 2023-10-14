@@ -5,6 +5,7 @@ import { Card } from "@rneui/themed";
 
 import { _styles } from "./style";
 import { months } from "../../utility/calendar";
+import { horizontalScale, verticalScale } from "../../utility/responsive";
 
 export default function CalendarCard({ monthState: [currentMonth, setCurrentMonth], yearState: [currentYear, setCurrentYear] }) {
   const styles = _styles;
@@ -39,12 +40,12 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
               previousMonth();
             }}
           >
-            <AntDesign style={styles.iconCenter} name="left" size={15} color="black" />
+            <AntDesign style={styles.iconCenter} name="left" size={verticalScale(10)} color="black" />
           </TouchableOpacity>
-          <View style={{ flex: 1 }}>
-            <Feather name="calendar" size={24} color="black" />
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <Feather name="calendar" size={verticalScale(15)} color="black" />
           </View>
-          <View style={{ flex: 4 }}>
+          <View style={{ flex: 4, justifyContent: "center" }}>
             <Text style={styles.text}>{getCurrentDate()}</Text>
           </View>
           <TouchableOpacity
@@ -53,7 +54,7 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
               nextMonth();
             }}
           >
-            <AntDesign style={styles.iconCenter} name="right" size={15} color="black" />
+            <AntDesign style={styles.iconCenter} name="right" size={verticalScale(10)} color="black" />
           </TouchableOpacity>
         </View>
       </View>
