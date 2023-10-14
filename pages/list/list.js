@@ -134,7 +134,7 @@ export default function Purchase({ navigation }) {
                   <View style={styles.listDateBox}>
                     <Text style={styles.listDate}>{new Date(key).getDate() + " " + months[new Date(key).getMonth()]}</Text>
                   </View>
-                  <CardWrapper style={styles.listBox}>
+                  <CardWrapper key={key} style={styles.listBox}>
                     {groupedPurchases[key].map((innerData) => (
                       <Pressable
                         key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index}
@@ -161,7 +161,7 @@ export default function Purchase({ navigation }) {
 
               {archives.map((cellData, cellIndex) =>
                 currentMonth == new Date(cellData.dop).getMonth() && currentYear == new Date(cellData.dop).getFullYear() ? (
-                  <View key={cellIndex} style={{ ...styles.listBox }}>
+                  <CardWrapper key={cellIndex} style={styles.listBox}>
                     <Pressable
                       key={KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex}
                       style={styles.button}
@@ -174,7 +174,7 @@ export default function Purchase({ navigation }) {
                         <Text style={styles.buttonText}>{cellData.value + " €"}</Text>
                       </View>
                     </Pressable>
-                  </View>
+                  </CardWrapper>
                 ) : null
               )}
             </ScrollView>
