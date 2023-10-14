@@ -65,6 +65,7 @@ export const _styles = StyleSheet.create({
     paddingHorizontal: horizontalScale(30),
     borderRadius: 4,
     backgroundColor: color.button,
+    elevation: 1,
   },
   submitButton: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "transparent " },
   buttonText: {
