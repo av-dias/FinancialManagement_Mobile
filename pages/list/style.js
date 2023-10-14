@@ -30,6 +30,7 @@ export const _styles = StyleSheet.create({
   },
   text: { fontSize: 20, textAlign: "center", zIndex: 1, backgroundColor: "transparent" },
   rowGap: { flexDirection: "row", justifyContent: "space-between", width: "100%", borderRadius: 4, backgroundColor: "transparent" },
+  row: { flexDirection: "row", gap: 10, borderRadius: 4, backgroundColor: "transparent" },
   buttonText: {
     fontSize: verticalScale(12),
     color: "black",

@@ -17,6 +17,8 @@ import { getUser } from "../../functions/basic";
 import { months } from "../../utility/calendar";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
+import { categoryIcons } from "../../assets/icons";
+const TABLE_ICON_SIZE = 15;
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
@@ -144,7 +146,10 @@ export default function Purchase({ navigation }) {
                         }}
                       >
                         <View style={styles.rowGap}>
-                          <Text style={styles.buttonText}>{innerData.name}</Text>
+                          <View style={styles.row}>
+                            {categoryIcons(15).find((category) => category.label === innerData.type).icon}
+                            <Text style={styles.buttonText}>{innerData.name}</Text>
+                          </View>
                           <Text style={styles.buttonText}>{innerData.value + " €"}</Text>
                         </View>
                       </Pressable>
