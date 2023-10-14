@@ -67,9 +67,7 @@ export const _styles = StyleSheet.create({
     width: "100%",
     maxWidth: 750,
     paddingVertical: 10,
-    marginVertical: verticalScale(10),
-    backgroundColor: color.complementary,
-    borderRadius: 10,
+    marginVertical: verticalScale(20),
     gap: 10,
   },
 });

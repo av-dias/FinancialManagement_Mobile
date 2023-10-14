@@ -2,7 +2,7 @@ export const color = {
   backgroundDark: "rgba(26, 34, 56,1)",
   backgroundLight: "rgba(242, 249, 253,1)",
   //backgroundLight: "rgba(227, 242, 253,1)",
-  complementary: "rgba(255, 255, 255, 0.8)",
+  complementary: "rgba(255, 255, 255, 1)",
   //complementary: "rgba(253, 253, 253, 1)",
   glass: "rgba(184, 191, 214, 0.1)",
   glassBorder: "rgba(211,211,211,1)",

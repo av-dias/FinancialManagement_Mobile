@@ -16,6 +16,7 @@ import { getFromStorage, saveToStorage } from "../../utility/secureStorage";
 import { getUser } from "../../functions/basic";
 import { months } from "../../utility/calendar";
 import CalendarCard from "../../components/calendarCard/calendarCard";
+import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
@@ -133,7 +134,7 @@ export default function Purchase({ navigation }) {
                   <View style={styles.listDateBox}>
                     <Text style={styles.listDate}>{new Date(key).getDate() + " " + months[new Date(key).getMonth()]}</Text>
                   </View>
-                  <View key={key} style={styles.listBox}>
+                  <CardWrapper style={styles.listBox}>
                     {groupedPurchases[key].map((innerData) => (
                       <Pressable
                         key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index}
@@ -148,7 +149,7 @@ export default function Purchase({ navigation }) {
                         </View>
                       </Pressable>
                     ))}
-                  </View>
+                  </CardWrapper>
                 </React.Fragment>
               ))}
               {archives.length != 0 ? (

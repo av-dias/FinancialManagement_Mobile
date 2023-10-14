@@ -8,6 +8,7 @@ import CalendarStrip from "react-native-calendar-strip";
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import CalendarPicker from "react-native-calendar-picker";
+import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
@@ -133,20 +134,22 @@ export default function Purchase({ navigation }) {
               >
                 {categoryIcons.map((iconComponent) => {
                   return (
-                    <Pressable
-                      key={iconComponent.label}
-                      style={{
-                        backgroundColor: type == iconComponent.label ? color.secundary : color.complementary,
-                        ...styles.categoryContainer,
-                      }}
-                      onPress={() => {
-                        setType(iconComponent.label);
-                        this.textInputName.clear();
-                      }}
-                    >
-                      <View style={styles.categoryIconContainer}>{iconComponent.icon}</View>
-                      <Text style={styles.iconLabel}>{iconComponent.label}</Text>
-                    </Pressable>
+                    <CardWrapper key={iconComponent.label}>
+                      <Pressable
+                        key={iconComponent.label}
+                        style={{
+                          backgroundColor: type == iconComponent.label ? color.secundary : color.complementary,
+                          ...styles.categoryContainer,
+                        }}
+                        onPress={() => {
+                          setType(iconComponent.label);
+                          this.textInputName.clear();
+                        }}
+                      >
+                        <View style={styles.categoryIconContainer}>{iconComponent.icon}</View>
+                        <Text style={styles.iconLabel}>{iconComponent.label}</Text>
+                      </Pressable>
+                    </CardWrapper>
                   );
                 })}
               </ScrollView>
@@ -157,7 +160,7 @@ export default function Purchase({ navigation }) {
               selectedDate={pickerCurrentDate}
               calendarAnimation={{ type: "sequence", duration: 15 }}
               daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: color.calendarBorder }}
-              style={{ height: "15%", backgroundColor: color.complementary, borderRadius: borderRadius }}
+              style={{ height: "15%", backgroundColor: color.complementary, borderRadius: borderRadius, elevation: 2 }}
               calendarHeaderStyle={{
                 color: "black",
                 marginTop: 5,
@@ -185,13 +188,11 @@ export default function Purchase({ navigation }) {
               }}
             />
             {datePicker ? null : (
-              <View
+              <CardWrapper
                 style={{
                   position: "absolute",
-                  top: "30%",
+                  top: "25%",
                   alignSelf: "center",
-                  backgroundColor: color.calendar,
-                  borderRadius: borderRadius,
                   zIndex: 1,
                 }}
               >
@@ -232,15 +233,12 @@ export default function Purchase({ navigation }) {
                     <AntDesign style={{ padding: verticalScale(5) }} name="closecircle" size={verticalScale(20)} color="black" />
                   </Pressable>
                 </View>
-              </View>
+              </CardWrapper>
             )}
 
-            <View
+            <CardWrapper
               style={{
-                width: "100%",
-                borderRadius: borderRadius,
                 gap: 10,
-                backgroundColor: color.complementary,
                 paddingHorizontal: horizontalScale(10),
               }}
             >
@@ -267,22 +265,23 @@ export default function Purchase({ navigation }) {
                   onChangeText={setNote}
                 />
               </View>
-            </View>
-
-            <View style={styles.tableInfo}>
-              <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
-                <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
-                <ScrollView style={styles.scrollTable}>
-                  {list.map((rowData, index) => (
-                    <TableWrapper key={index} style={styles.rowTable}>
-                      {rowData.map((cellData, cellIndex) => (
-                        <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
-                      ))}
-                    </TableWrapper>
-                  ))}
-                </ScrollView>
-              </Table>
-            </View>
+            </CardWrapper>
+            <CardWrapper style={{ flex: 2 }}>
+              <View style={styles.tableInfo}>
+                <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
+                  <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
+                  <ScrollView style={styles.scrollTable}>
+                    {list.map((rowData, index) => (
+                      <TableWrapper key={index} style={styles.rowTable}>
+                        {rowData.map((cellData, cellIndex) => (
+                          <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
+                        ))}
+                      </TableWrapper>
+                    ))}
+                  </ScrollView>
+                </Table>
+              </View>
+            </CardWrapper>
           </View>
         </View>
 

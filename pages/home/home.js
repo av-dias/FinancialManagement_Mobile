@@ -16,6 +16,7 @@ import { getUser } from "../../functions/basic";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 
 import Header from "../../components/header/header";
+import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -86,25 +87,27 @@ export default function Home({ navigation }) {
         }
         {pieChartData.length !== 0 ? (
           <View style={{ flex: 8, gap: verticalScale(20) }}>
-            <View style={styles.chart}>
-              <VictoryPie
-                height={verticalScale(350)}
-                innerRadius={verticalScale(110)}
-                padding={{ top: 0, bottom: 0 }}
-                data={pieChartData.length != 0 ? pieChartData : [{ x: "Your Spents", y: 1 }]}
-                style={{
-                  data: {
-                    fill: ({ datum }) => datum.color,
-                  },
-                }}
-                labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
-                options={{ maintainAspectRatio: false, aspectRatio: 1 }}
-              />
-              <View style={{ position: "absolute", bottom: "47%", justifyContent: "center", alignContent: "center" }}>
-                <Text style={{ alignSelf: "center", fontSize: verticalScale(20) }}>{purchaseTotal + " €"}</Text>
+            <CardWrapper style={{ flex: 10, justifyContent: "center", alignItems: "center" }}>
+              <View style={styles.chart}>
+                <VictoryPie
+                  height={verticalScale(350)}
+                  innerRadius={verticalScale(110)}
+                  padding={{ top: 0, bottom: 0 }}
+                  data={pieChartData.length != 0 ? pieChartData : [{ x: "Your Spents", y: 1 }]}
+                  style={{
+                    data: {
+                      fill: ({ datum }) => datum.color,
+                    },
+                  }}
+                  labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
+                  options={{ maintainAspectRatio: false, aspectRatio: 1 }}
+                />
+                <View style={{ position: "absolute", bottom: "47%", justifyContent: "center", alignContent: "center" }}>
+                  <Text style={{ alignSelf: "center", fontSize: verticalScale(20) }}>{purchaseTotal + " €"}</Text>
+                </View>
               </View>
-            </View>
-            <View style={{ flex: 4 }}>
+            </CardWrapper>
+            <CardWrapper style={{ flex: 4 }}>
               <View style={styles.tableInfo}>
                 <Table style={{ ...styles.textCenter }} borderStyle={{ borderColor: "transparent" }}>
                   <Row flexArr={state.tableFlex} data={state.tableHead} textStyle={styles.textCenterHead} />
@@ -119,7 +122,7 @@ export default function Home({ navigation }) {
                   </ScrollView>
                 </Table>
               </View>
-            </View>
+            </CardWrapper>
           </View>
         ) : (
           <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
