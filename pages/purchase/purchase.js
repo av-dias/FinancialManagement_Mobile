@@ -16,8 +16,10 @@ import { _styles } from "./style";
 import { categoryIcons } from "../../assets/icons";
 import Header from "../../components/header/header";
 
-const height = Dimensions.get("window").height;
-const borderRadius = 10;
+const HEIGHT = Dimensions.get("window").height;
+const BORDER_RADIUS = 10;
+const CATERGORY_ICON_SIZE = 25;
+const TABLE_ICON_SIZE = 15;
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
@@ -123,14 +125,15 @@ export default function Purchase({ navigation }) {
               <Text style={styles.symbolBig}>€</Text>
             </View>
 
-            <View style={{ backgroundColor: "transparent", height: "15%", maxHeight: 100, borderRadius: borderRadius }}>
+            <View style={{ backgroundColor: "transparent", height: "15%", maxHeight: 100, borderRadius: BORDER_RADIUS }}>
               <ScrollView
                 horizontal={true}
                 rowGap={20}
                 style={styles.categoryScrollContainer}
                 contentContainerStyle={{
                   gap: verticalScale(10),
-                  padding: 10,
+                  paddingHorizontal: 1,
+                  paddingVertical: 10,
                 }}
               >
                 {categoryIcons.map((iconComponent) => {
@@ -163,14 +166,14 @@ export default function Purchase({ navigation }) {
               selectedDate={pickerCurrentDate}
               calendarAnimation={{ type: "sequence", duration: 15 }}
               daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: color.calendarBorder }}
-              style={{ height: "15%", backgroundColor: color.complementary, borderRadius: borderRadius, elevation: 2 }}
+              style={{ height: "15%", backgroundColor: color.complementary, borderRadius: BORDER_RADIUS, elevation: 2 }}
               calendarHeaderStyle={{
                 color: "black",
                 marginTop: 5,
                 padding: horizontalScale(3),
                 fontSize: verticalScale(15),
                 borderWidth: 1,
-                borderRadius: borderRadius,
+                borderRadius: BORDER_RADIUS,
                 borderColor: "white",
                 backgroundColor: "white",
                 elevation: 2,
@@ -215,7 +218,7 @@ export default function Purchase({ navigation }) {
                   monthYearHeaderWrapperStyle={{
                     color: "black",
                     borderWidth: 1,
-                    borderRadius: borderRadius,
+                    borderRadius: BORDER_RADIUS,
                     padding: horizontalScale(3),
                     borderColor: "white",
                     backgroundColor: "white",
@@ -269,7 +272,7 @@ export default function Purchase({ navigation }) {
                 />
               </View>
             </CardWrapper>
-            <CardWrapper style={{ flex: 2, maxHeight: height > heightTreshold ? 300 : 160 }}>
+            <CardWrapper style={{ flex: 2, maxHeight: HEIGHT > heightTreshold ? 300 : 160 }}>
               <View style={styles.tableInfo}>
                 <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
                   <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
