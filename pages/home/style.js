@@ -43,14 +43,13 @@ export const _styles = StyleSheet.create({
     alignItems: "center",
   },
   tableInfo: {
-    gap: 30,
     width: "100%",
     height: "100%",
     justifyContent: "center",
     paddingVertical: commonStyles.boxPaddingVertical,
     paddingHorizontal: commonStyles.boxPaddingHorizontal,
   },
-  textCenter: { textAlign: "center", fontSize: verticalScale(12) },
+  textCenter: { textAlign: "center", fontSize: verticalScale(12), gap: 10 },
   textCenterHead: { textAlign: "center", fontWeight: "bold", fontSize: verticalScale(15) },
   rowTable: {
     flexDirection: "row",

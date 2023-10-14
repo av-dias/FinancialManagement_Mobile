@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, TouchableOpacity, Dimensions } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialIcons, FontAwesome, Feather, AntDesign } from "@expo/vector-icons";
@@ -10,13 +10,14 @@ import { Divider } from "react-native-paper";
 
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
-import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, largeScale, heightTreshold } from "../../utility/responsive";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 
 import Header from "../../components/header/header";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
+const HEIGHT = Dimensions.get("window").height;
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -82,12 +83,9 @@ export default function Home({ navigation }) {
         <View style={styles.calendar}>
           <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
         </View>
-        {
-          // Only show chart and table if there is data to be displayed, otherwise just show "No data available" message
-        }
         {pieChartData.length !== 0 ? (
-          <View style={{ flex: 8, gap: verticalScale(20) }}>
-            <CardWrapper style={{ flex: 10, justifyContent: "center", alignItems: "center" }}>
+          <View style={{ flex: 8, gap: verticalScale(30) }}>
+            <CardWrapper style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
               <View style={styles.chart}>
                 <VictoryPie
                   height={verticalScale(350)}
@@ -107,22 +105,24 @@ export default function Home({ navigation }) {
                 </View>
               </View>
             </CardWrapper>
-            <CardWrapper style={{ flex: 4 }}>
-              <View style={styles.tableInfo}>
-                <Table style={{ ...styles.textCenter }} borderStyle={{ borderColor: "transparent" }}>
-                  <Row flexArr={state.tableFlex} data={state.tableHead} textStyle={styles.textCenterHead} />
-                  <ScrollView style={{ height: "90%" }}>
-                    {spendByType.map((rowData, index) => (
-                      <TableWrapper key={index} style={styles.rowTable}>
-                        {rowData.map((cellData, cellIndex) => (
-                          <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
-                        ))}
-                      </TableWrapper>
-                    ))}
-                  </ScrollView>
-                </Table>
-              </View>
-            </CardWrapper>
+            <View style={{ flex: 4 }}>
+              <CardWrapper style={{ paddingVertical: 20, height: "80%" }}>
+                <View style={styles.tableInfo}>
+                  <Table style={{ ...styles.textCenter }} borderStyle={{ borderColor: "transparent" }}>
+                    <Row flexArr={state.tableFlex} data={state.tableHead} textStyle={styles.textCenterHead} />
+                    <ScrollView style={{ height: "100%", background: "red" }}>
+                      {spendByType.map((rowData, index) => (
+                        <TableWrapper key={index} style={styles.rowTable}>
+                          {rowData.map((cellData, cellIndex) => (
+                            <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
+                          ))}
+                        </TableWrapper>
+                      ))}
+                    </ScrollView>
+                  </Table>
+                </View>
+              </CardWrapper>
+            </View>
           </View>
         ) : (
           <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
