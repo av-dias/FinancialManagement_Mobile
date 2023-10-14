@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import navLogo from "../../images/logo.png";
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { _styles } from "./style";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
 
 export default function Login({ navigation }) {
   const styles = _styles;
@@ -176,7 +177,7 @@ export default function Login({ navigation }) {
             <CheckBox
               size={15}
               containerStyle={{ backgroundColor: "transparent" }}
-              textStyle={{ fontSize: 10, color: "white" }}
+              textStyle={{ fontSize: verticalScale(10), color: "white" }}
               checked={checked}
               onPress={toggleCheckbox}
               title="Remember Me"
