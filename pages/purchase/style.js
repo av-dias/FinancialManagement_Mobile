@@ -37,7 +37,6 @@ export const _styles = StyleSheet.create({
   tableInfo: {
     width: "100%",
     height: "100%",
-    paddingTop: verticalScale(10),
     justifyContent: "flex-start",
     alignSelf: "center",
     backgroundColor: "transparent",
@@ -54,7 +53,7 @@ export const _styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   valueInput: {
-    fontSize: moderateScale(40),
+    fontSize: horizontalScale(60),
     textAlign: "center",
     backgroundColor: "transparent",
     width: "auto",
@@ -73,10 +72,10 @@ export const _styles = StyleSheet.create({
     fontSize: 20,
     color: "white",
   },
-  textCenter: { textAlign: "center", borderRadius: 10 },
+  textCenter: { textAlign: "center", borderRadius: 10, height: "100%", gap: 10 },
   textCenterHead: { textAlign: "center", fontWeight: "bold" },
   tableText: { fontSize: verticalScale(10), textAlign: "center", padding: 0 },
-  symbolBig: { fontSize: moderateScale(25), textAlign: "center", width: "auto", alignSelf: "center" },
+  symbolBig: { fontSize: horizontalScale(25), textAlign: "center", width: "auto", alignSelf: "center" },
   row: {
     flexDirection: "row",
     justifyContent: "center",
@@ -101,6 +100,6 @@ export const _styles = StyleSheet.create({
   categoryContainer: { justifyContent: "center", alignItems: "center" },
   categoryIconContainer: { paddingHorizontal: 20 },
   categoryScrollContainer: { backgroundColor: "transparent" },
-  scrollTable: { height: "85%", backgroundColor: "transparent", paddingTop: verticalScale(10) },
+  scrollTable: { height: "100%", backgroundColor: "transparent" },
   divider: { margin: -5 },
 });
