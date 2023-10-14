@@ -130,7 +130,7 @@ export default function Purchase({ navigation }) {
           <View style={{ flex: verticalScale(7), backgroundColor: "transparent" }}>
             <ScrollView>
               {Object.keys(groupedPurchases).map((key) => (
-                <React.Fragment key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + key}>
+                <View key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + key} style={{ paddingHorizontal: 5 }}>
                   <View style={styles.listDateBox}>
                     <Text style={styles.listDate}>{new Date(key).getDate() + " " + months[new Date(key).getMonth()]}</Text>
                   </View>
@@ -150,7 +150,7 @@ export default function Purchase({ navigation }) {
                       </Pressable>
                     ))}
                   </CardWrapper>
-                </React.Fragment>
+                </View>
               ))}
               {archives.length != 0 ? (
                 <React.Fragment key={KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + 1}>
