@@ -184,8 +184,8 @@ export default function Purchase({ navigation }) {
               calendarColor={"transparent"}
               dateNumberStyle={{ color: "black", fontSize: verticalScale(15) }}
               dateNameStyle={{ color: "black", fontSize: verticalScale(10) }}
-              highlightDateNumberStyle={{ color: "#2296F3", fontSize: verticalScale(20) }}
-              highlightDateNameStyle={{ color: "#2296F3" }}
+              highlightDateNumberStyle={{ color: color.secundary, fontSize: verticalScale(20) }}
+              highlightDateNameStyle={{ color: color.secundary }}
               disabledDateNameStyle={{ color: "grey" }}
               disabledDateNumberStyle={{ color: "grey" }}
               iconContainer={{ flex: 0.1 }}
@@ -252,7 +252,7 @@ export default function Purchase({ navigation }) {
               }}
             >
               <View style={{ ...styles.row, backgroundColor: "transparent" }}>
-                <MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(25)} color="black" />
+                <MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color="black" />
                 <TextInput
                   style={styles.textInput}
                   placeholder="Name"
@@ -264,7 +264,7 @@ export default function Purchase({ navigation }) {
               </View>
 
               <View style={{ ...styles.row, backgroundColor: "transparent" }}>
-                <MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(25)} color="black" />
+                <MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />
                 <TextInput
                   style={styles.textInput}
                   placeholder="Notes"

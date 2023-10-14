@@ -8,7 +8,7 @@ export const color = {
   glassBorder: "rgba(211,211,211,1)",
   calendar: "white",
   calendarBorder: "white",
-  secundary: "rgba(255, 217, 90, 1)",
+  secundary: "rgba(19, 137, 239, 1)",
   button: "rgba(236, 158, 91, 1)",
   //button: "rgba(229, 124, 35, 1)",
 };
