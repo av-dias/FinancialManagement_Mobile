@@ -165,13 +165,14 @@ export default function Purchase({ navigation }) {
                 fontSize: verticalScale(15),
                 borderWidth: 1,
                 borderRadius: borderRadius,
-                borderColor: color.calendarBorder,
-                backgroundColor: "transparent",
+                borderColor: "white",
+                backgroundColor: "white",
+                elevation: 2,
               }}
               calendarColor={"transparent"}
               dateNumberStyle={{ color: "black", fontSize: verticalScale(15) }}
               dateNameStyle={{ color: "black", fontSize: verticalScale(10) }}
-              highlightDateNumberStyle={{ color: "#2296F3" }}
+              highlightDateNumberStyle={{ color: "#2296F3", fontSize: verticalScale(20) }}
               highlightDateNameStyle={{ color: "#2296F3" }}
               disabledDateNameStyle={{ color: "grey" }}
               disabledDateNumberStyle={{ color: "grey" }}
@@ -189,15 +190,13 @@ export default function Purchase({ navigation }) {
                   position: "absolute",
                   top: "30%",
                   alignSelf: "center",
-                  width: horizontalScale(275),
                   backgroundColor: color.calendar,
-                  padding: 10,
                   borderRadius: borderRadius,
                   zIndex: 1,
                 }}
               >
                 <CalendarPicker
-                  width={horizontalScale(280)}
+                  width={horizontalScale(345)}
                   onDateChange={(date) => {
                     changeDateCalendar(date);
                   }}
