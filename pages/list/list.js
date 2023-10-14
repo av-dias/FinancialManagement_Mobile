@@ -131,42 +131,46 @@ export default function Purchase({ navigation }) {
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
           <View style={{ flex: verticalScale(7), backgroundColor: "transparent" }}>
             <ScrollView>
-              {Object.keys(groupedPurchases).map((key) => (
-                <View key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + key} style={{ paddingHorizontal: 5 }}>
-                  <View style={styles.listDateBox}>
-                    <Text style={styles.listDate}>{new Date(key).getDate() + " " + months[new Date(key).getMonth()]}</Text>
-                  </View>
-                  <CardWrapper key={key} style={styles.listBox}>
-                    {groupedPurchases[key].map((innerData) => (
-                      <Pressable
-                        key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index}
-                        style={styles.button}
-                        onPress={() => {
-                          showAlert(KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index);
-                        }}
-                      >
-                        <View style={styles.rowGap}>
-                          <View style={styles.row}>
-                            <View
-                              style={{
-                                width: verticalScale(25),
-                                backgroundColor: "transparent",
-                                borderRadius: 10,
-                                borderWidth: 1,
-                                padding: verticalScale(2),
-                              }}
-                            >
-                              {categoryIcons(15).find((category) => category.label === innerData.type).icon}
+              {Object.keys(groupedPurchases).map((key) =>
+                new Date(key).getMonth() == currentMonth && new Date(key).getFullYear() == currentYear ? (
+                  <View key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + key} style={{ paddingHorizontal: 5 }}>
+                    <View style={styles.listDateBox}>
+                      <Text style={styles.listDate}>{new Date(key).getDate() + " " + months[new Date(key).getMonth()]}</Text>
+                    </View>
+                    <CardWrapper key={key} style={styles.listBox}>
+                      {groupedPurchases[key].map((innerData) => (
+                        <Pressable
+                          key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index}
+                          style={styles.button}
+                          onPress={() => {
+                            showAlert(KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index);
+                          }}
+                        >
+                          <View style={styles.rowGap}>
+                            <View style={styles.row}>
+                              <View
+                                style={{
+                                  width: verticalScale(25),
+                                  backgroundColor: "transparent",
+                                  borderRadius: 10,
+                                  borderWidth: 1,
+                                  padding: verticalScale(2),
+                                }}
+                              >
+                                {categoryIcons(15).find((category) => category.label === innerData.type).icon}
+                              </View>
+                              <Text style={styles.buttonText}>{innerData.name}</Text>
                             </View>
-                            <Text style={styles.buttonText}>{innerData.name}</Text>
+                            <Text style={styles.buttonText}>{innerData.value + " €"}</Text>
                           </View>
-                          <Text style={styles.buttonText}>{innerData.value + " €"}</Text>
-                        </View>
-                      </Pressable>
-                    ))}
-                  </CardWrapper>
-                </View>
-              ))}
+                        </Pressable>
+                      ))}
+                    </CardWrapper>
+                  </View>
+                ) : (
+                  console.log(key)
+                )
+              )}
               {archives.length != 0 ? (
                 <React.Fragment key={KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + 1}>
                   <Text style={styles.seperatorText}>Archived</Text>
@@ -185,7 +189,20 @@ export default function Purchase({ navigation }) {
                       }}
                     >
                       <View style={styles.rowGap}>
-                        <Text style={styles.buttonText}>{cellData.name}</Text>
+                        <View style={styles.row}>
+                          <View
+                            style={{
+                              width: verticalScale(25),
+                              backgroundColor: "transparent",
+                              borderRadius: 10,
+                              borderWidth: 1,
+                              padding: verticalScale(2),
+                            }}
+                          >
+                            {categoryIcons(15).find((category) => category.label === cellData.type).icon}
+                          </View>
+                          <Text style={styles.buttonText}>{cellData.name}</Text>
+                        </View>
                         <Text style={styles.buttonText}>{cellData.value + " €"}</Text>
                       </View>
                     </Pressable>
