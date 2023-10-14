@@ -147,7 +147,17 @@ export default function Purchase({ navigation }) {
                       >
                         <View style={styles.rowGap}>
                           <View style={styles.row}>
-                            {categoryIcons(15).find((category) => category.label === innerData.type).icon}
+                            <View
+                              style={{
+                                width: verticalScale(25),
+                                backgroundColor: "transparent",
+                                borderRadius: 10,
+                                borderWidth: 1,
+                                padding: verticalScale(2),
+                              }}
+                            >
+                              {categoryIcons(15).find((category) => category.label === innerData.type).icon}
+                            </View>
                             <Text style={styles.buttonText}>{innerData.name}</Text>
                           </View>
                           <Text style={styles.buttonText}>{innerData.value + " €"}</Text>
