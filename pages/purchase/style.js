@@ -87,6 +87,7 @@ export const _styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
+    padding: verticalScale(5),
   },
   rowNoBorder: {
     flexDirection: "row",
@@ -100,6 +101,6 @@ export const _styles = StyleSheet.create({
   categoryContainer: { justifyContent: "center", alignItems: "center" },
   categoryIconContainer: { paddingHorizontal: 20 },
   categoryScrollContainer: { backgroundColor: "transparent" },
-  scrollTable: { height: "85%", backgroundColor: "transparent" },
+  scrollTable: { height: "85%", backgroundColor: "transparent", paddingTop: verticalScale(10) },
   divider: { margin: -5 },
 });

@@ -71,7 +71,10 @@ export default function Purchase({ navigation }) {
       }
 
       await saveToStorage("purchases", JSON.stringify(purchases), email);
-      setList([[categoryIcons.find((category) => category.label === type).icon, name, value, date.toISOString().split("T")[0]], ...list]);
+      setList([
+        [categoryIcons(TABLE_ICON_SIZE).find((category) => category.label === type).icon, name, value, date.toISOString().split("T")[0]],
+        ...list,
+      ]);
       this.textInputValue.clear();
       this.textInputNote.clear();
       setValue("");
@@ -136,7 +139,7 @@ export default function Purchase({ navigation }) {
                   paddingVertical: 10,
                 }}
               >
-                {categoryIcons.map((iconComponent) => {
+                {categoryIcons().map((iconComponent) => {
                   return (
                     <CardWrapper
                       key={iconComponent.label}
