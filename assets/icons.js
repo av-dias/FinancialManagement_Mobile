@@ -1,7 +1,7 @@
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Feather } from "@expo/vector-icons";
 import { horizontalScale, verticalScale, moderateScale } from "../utility/responsive";
 
-const iconSize = verticalScale(30);
+const iconSize = verticalScale(25);
 
 export const categoryIcons = [
   { label: "Supermarket", icon: <FontAwesome name="shopping-basket" style={{ alignSelf: "center" }} size={iconSize} color="black" /> },

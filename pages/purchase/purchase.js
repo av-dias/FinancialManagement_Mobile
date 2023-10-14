@@ -123,22 +123,25 @@ export default function Purchase({ navigation }) {
               <Text style={styles.symbolBig}>€</Text>
             </View>
 
-            <View style={{ backgroundColor: "transparent", height: "10%", maxHeight: 90, borderRadius: borderRadius }}>
+            <View style={{ backgroundColor: "transparent", height: "15%", maxHeight: 100, borderRadius: borderRadius }}>
               <ScrollView
                 horizontal={true}
                 rowGap={20}
                 style={styles.categoryScrollContainer}
                 contentContainerStyle={{
                   gap: verticalScale(10),
+                  padding: 10,
                 }}
               >
                 {categoryIcons.map((iconComponent) => {
                   return (
-                    <CardWrapper key={iconComponent.label}>
+                    <CardWrapper
+                      key={iconComponent.label}
+                      style={{ backgroundColor: type == iconComponent.label ? color.secundary : color.complementary }}
+                    >
                       <Pressable
                         key={iconComponent.label}
                         style={{
-                          backgroundColor: type == iconComponent.label ? color.secundary : color.complementary,
                           ...styles.categoryContainer,
                         }}
                         onPress={() => {
@@ -191,7 +194,7 @@ export default function Purchase({ navigation }) {
               <CardWrapper
                 style={{
                   position: "absolute",
-                  top: "25%",
+                  top: "30%",
                   alignSelf: "center",
                   zIndex: 1,
                 }}
