@@ -1,6 +1,7 @@
 import { Text, View, TextInput, Image, Pressable } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { CheckBox } from "@rneui/themed";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import navLogo from "../../images/logo.png";
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { _styles } from "./style";
@@ -56,6 +57,7 @@ export default function Login({ navigation }) {
               let resJson = await res.json();
               saveToStorage("userId", resJson.userId.toString());
               saveToStorage("server", "on");
+              console.log("Connected to the main server");
             })
             .catch(function (res) {
               console.log(res);
@@ -85,6 +87,9 @@ export default function Login({ navigation }) {
       setEmail(await getFromStorage("email"));
       setPassword(await getFromStorage("password"));
       setChecked(true);
+      await saveToStorage("server", "off");
+      let server = await getFromStorage("server");
+      console.log("server: " + server);
     }
   };
 
@@ -102,10 +107,12 @@ export default function Login({ navigation }) {
     }
   };
 
-  useEffect(() => {
-    rememberIP();
-    rememberMeHandle();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      rememberIP();
+      rememberMeHandle();
+    }, [])
+  );
 
   return (
     <View style={styles.pageLogin}>

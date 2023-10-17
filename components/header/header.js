@@ -1,8 +1,7 @@
 import { Text, View } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
-
-
 
 import { _styles } from "./style";
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
@@ -11,21 +10,35 @@ import { horizontalScale, verticalScale, moderateScale } from "../../utility/res
 
 export default function Header(props) {
   const styles = _styles;
-  const [server, setServer] = useState("");
+  const [server, setServer] = useState("off");
 
-  useEffect(() => {
-    async function fetchData() {
-      let server = await getServerStatus();
-      setServer(server);
-    }
-    // write your code here, it's like componentWillMount
-    fetchData();
-  }, [server]);
+  const serverCheck = async () => {
+    let serverStatus = await getServerStatus();
+    setServer(serverStatus);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        serverCheck();
+        console.log(server);
+      }
+      // write your code here, it's like componentWillMount
+      fetchData();
+    }, [server])
+  );
 
   const serverOn = () => {
     return (
       <View style={styles.iconLeft}>
-        <MaterialCommunityIcons name="server" size={18} color="gray" />
+        <MaterialCommunityIcons
+          name="server"
+          size={18}
+          color="gray"
+          onPress={() => {
+            serverCheck();
+          }}
+        />
       </View>
     );
   };
@@ -33,7 +46,14 @@ export default function Header(props) {
   const serverOff = () => {
     return (
       <View style={styles.iconLeft}>
-        <MaterialCommunityIcons name="server-off" size={18} color="gray" />
+        <MaterialCommunityIcons
+          name="server-off"
+          size={18}
+          color="gray"
+          onPress={() => {
+            serverCheck();
+          }}
+        />
       </View>
     );
   };
