@@ -1,5 +1,5 @@
 import navLogo from "../../images/logo.png";
-import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, Dimensions, ScrollView } from "react-native";
+import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, Dimensions, ScrollView, Modal } from "react-native";
 import { color } from "../../utility/colors";
 import { Divider } from "react-native-paper";
 
@@ -32,6 +32,7 @@ export default function Purchase({ navigation }) {
   const [email, setEmail] = useState("");
   const [datePicker, setDatePicker] = useState(true);
   const [pickerCurrentDate, setPickerCurrentDate] = useState(new Date());
+  const [modalVisible, setModalVisible] = useState(false);
 
   const getUser = async () => {
     try {
@@ -113,6 +114,43 @@ export default function Purchase({ navigation }) {
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 6 }}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "lightgray",
+                height: "48%",
+                width: "100%",
+                position: "absolute",
+                bottom: 0,
+                padding: 15,
+                borderRadius: 20,
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                <View style={{ flex: 3 }}>
+                  <Text style={styles.modalText}>Hello World!</Text>
+                  <Text style={styles.modalText}>Hello World!</Text>
+                  <Text style={styles.modalText}>Hello World!</Text>
+                  <Text style={styles.modalText}>Hello World!</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Pressable style={{ ...styles.button, alignSelf: "flex-end" }} onPress={() => setModalVisible(!modalVisible)}>
+                    <Text style={styles.textStyle}>Hide Modal</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </View>
+          </Modal>
+          <TouchableOpacity style={{ position: "absolute", right: 0, zIndex: 1 }} onPress={() => setModalVisible(true)}>
+            <FontAwesome name="history" size={24} color="black" />
+          </TouchableOpacity>
           <View style={styles.form}>
             <View style={styles.rowNoBorder}>
               <Text style={styles.symbolBig}>+</Text>
