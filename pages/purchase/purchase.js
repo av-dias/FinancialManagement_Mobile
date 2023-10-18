@@ -6,7 +6,7 @@ import { Divider } from "react-native-paper";
 import React, { useState, useEffect } from "react";
 import CalendarStrip from "react-native-calendar-strip";
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
-import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Entypo } from "@expo/vector-icons";
 import CalendarPicker from "react-native-calendar-picker";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
@@ -15,6 +15,7 @@ import { horizontalScale, verticalScale, moderateScale, heightTreshold } from ".
 import { _styles } from "./style";
 import { categoryIcons } from "../../assets/icons";
 import Header from "../../components/header/header";
+import commonStyles from "../../utility/commonStyles";
 
 const HEIGHT = Dimensions.get("window").height;
 const BORDER_RADIUS = 10;
@@ -122,35 +123,46 @@ export default function Purchase({ navigation }) {
               setModalVisible(!modalVisible);
             }}
           >
-            <View
-              style={{
-                backgroundColor: "lightgray",
-                height: "48%",
-                width: "100%",
-                position: "absolute",
-                bottom: 0,
-                padding: 15,
-                borderRadius: 20,
-              }}
-            >
-              <View style={{ flex: 1 }}>
-                <View style={{ flex: 3 }}>
-                  <Text style={styles.modalText}>Hello World!</Text>
-                  <Text style={styles.modalText}>Hello World!</Text>
-                  <Text style={styles.modalText}>Hello World!</Text>
-                  <Text style={styles.modalText}>Hello World!</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Pressable style={{ ...styles.button, alignSelf: "flex-end" }} onPress={() => setModalVisible(!modalVisible)}>
-                    <Text style={styles.textStyle}>Hide Modal</Text>
-                  </Pressable>
+            <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.3)" }}>
+              <TouchableOpacity style={{ flex: 5 }} onPress={() => setModalVisible(!modalVisible)} />
+              <View
+                style={{
+                  backgroundColor: color.backgroundLight,
+                  flex: 3,
+                  width: "100%",
+                  padding: commonStyles.paddingHorizontal,
+                  borderRadius: 20,
+                }}
+              >
+                <View style={{ flex: 4, backgroundColor: "white", borderRadius: 20, padding: verticalScale(20) }}>
+                  <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
+                    <TouchableOpacity style={{}} onPress={() => setModalVisible(!modalVisible)}>
+                      <Entypo name="cross" size={verticalScale(20)} color="black" />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.tableInfo}>
+                    <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
+                      <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
+                      <ScrollView style={styles.scrollTable}>
+                        {list.map((rowData, index) => (
+                          <TableWrapper key={index} style={styles.rowTable}>
+                            {rowData.map((cellData, cellIndex) => (
+                              <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
+                            ))}
+                          </TableWrapper>
+                        ))}
+                      </ScrollView>
+                    </Table>
+                  </View>
                 </View>
               </View>
             </View>
           </Modal>
-          <TouchableOpacity style={{ position: "absolute", right: 0, zIndex: 1 }} onPress={() => setModalVisible(true)}>
-            <FontAwesome name="history" size={24} color="black" />
-          </TouchableOpacity>
+          <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
+            <TouchableOpacity style={{}} onPress={() => setModalVisible(true)}>
+              <FontAwesome name="history" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
           <View style={styles.form}>
             <View style={styles.rowNoBorder}>
               <Text style={styles.symbolBig}>+</Text>
@@ -313,25 +325,9 @@ export default function Purchase({ navigation }) {
                 />
               </View>
             </CardWrapper>
-            <CardWrapper style={{ flex: 2, maxHeight: HEIGHT > heightTreshold ? 150 : 100, paddingVertical: verticalScale(10) }}>
-              <View style={styles.tableInfo}>
-                <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
-                  <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
-                  <ScrollView style={styles.scrollTable}>
-                    {list.map((rowData, index) => (
-                      <TableWrapper key={index} style={styles.rowTable}>
-                        {rowData.map((cellData, cellIndex) => (
-                          <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
-                        ))}
-                      </TableWrapper>
-                    ))}
-                  </ScrollView>
-                </Table>
-              </View>
-            </CardWrapper>
+            <CardWrapper style={{ flex: 2, maxHeight: HEIGHT > heightTreshold ? 150 : 100, paddingVertical: verticalScale(10) }}></CardWrapper>
           </View>
         </View>
-
         <View style={styles.submitButton}>
           <Pressable style={styles.button} onPress={handlePurchase}>
             <Text style={styles.buttonText}>Submit</Text>
