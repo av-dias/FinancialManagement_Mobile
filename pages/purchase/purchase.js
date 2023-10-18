@@ -1,5 +1,5 @@
 import navLogo from "../../images/logo.png";
-import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, Dimensions, ScrollView, Modal } from "react-native";
+import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, Dimensions, ScrollView } from "react-native";
 import { color } from "../../utility/colors";
 import { Divider } from "react-native-paper";
 
@@ -15,6 +15,7 @@ import { horizontalScale, verticalScale, moderateScale, heightTreshold } from ".
 import { _styles } from "./style";
 import { categoryIcons } from "../../assets/icons";
 import Header from "../../components/header/header";
+import ModalCustom from "../../components/modal/modal";
 import commonStyles from "../../utility/commonStyles";
 
 const HEIGHT = Dimensions.get("window").height;
@@ -115,49 +116,29 @@ export default function Purchase({ navigation }) {
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 6 }}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.3)" }}>
-              <TouchableOpacity style={{ flex: 5 }} onPress={() => setModalVisible(!modalVisible)} />
-              <View
-                style={{
-                  backgroundColor: color.backgroundLight,
-                  flex: 3,
-                  width: "100%",
-                  padding: commonStyles.paddingHorizontal,
-                  borderRadius: 20,
-                }}
-              >
-                <View style={{ flex: 4, backgroundColor: "white", borderRadius: 20, padding: verticalScale(20) }}>
-                  <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
-                    <TouchableOpacity style={{}} onPress={() => setModalVisible(!modalVisible)}>
-                      <Entypo name="cross" size={verticalScale(20)} color="black" />
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.tableInfo}>
-                    <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
-                      <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
-                      <ScrollView style={styles.scrollTable}>
-                        {list.map((rowData, index) => (
-                          <TableWrapper key={index} style={styles.rowTable}>
-                            {rowData.map((cellData, cellIndex) => (
-                              <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
-                            ))}
-                          </TableWrapper>
+          <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible}>
+            <View style={{ flex: 4, backgroundColor: "white", borderRadius: 20, padding: verticalScale(20) }}>
+              <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
+                <TouchableOpacity style={{}} onPress={() => setModalVisible(!modalVisible)}>
+                  <Entypo name="cross" size={verticalScale(20)} color="black" />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.tableInfo}>
+                <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
+                  <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
+                  <ScrollView style={styles.scrollTable}>
+                    {list.map((rowData, index) => (
+                      <TableWrapper key={index} style={styles.rowTable}>
+                        {rowData.map((cellData, cellIndex) => (
+                          <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
                         ))}
-                      </ScrollView>
-                    </Table>
-                  </View>
-                </View>
+                      </TableWrapper>
+                    ))}
+                  </ScrollView>
+                </Table>
               </View>
             </View>
-          </Modal>
+          </ModalCustom>
           <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
             <TouchableOpacity style={{}} onPress={() => setModalVisible(true)}>
               <FontAwesome name="history" size={24} color="black" />
