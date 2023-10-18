@@ -2,6 +2,7 @@ import navLogo from "../../images/logo.png";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, Dimensions, ScrollView } from "react-native";
 import { color } from "../../utility/colors";
 import { Divider } from "react-native-paper";
+import { Slider } from "@rneui/themed";
 
 import React, { useState, useEffect } from "react";
 import CalendarStrip from "react-native-calendar-strip";
@@ -35,6 +36,8 @@ export default function Purchase({ navigation }) {
   const [datePicker, setDatePicker] = useState(true);
   const [pickerCurrentDate, setPickerCurrentDate] = useState(new Date());
   const [modalVisible, setModalVisible] = useState(false);
+  const [slider, setSlider] = useState(50);
+  const [splitStatus, setSplitStatus] = useState(false);
 
   const getUser = async () => {
     try {
@@ -306,7 +309,47 @@ export default function Purchase({ navigation }) {
                 />
               </View>
             </CardWrapper>
-            <CardWrapper style={{ flex: 2, maxHeight: HEIGHT > heightTreshold ? 150 : 100, paddingVertical: verticalScale(10) }}></CardWrapper>
+            <CardWrapper
+              style={{
+                flex: 2,
+                maxHeight: HEIGHT > heightTreshold ? 150 : 100,
+                paddingVertical: verticalScale(10),
+                backgroundColor: splitStatus ? "white" : "lightgray",
+                gap: verticalScale(10),
+              }}
+            >
+              <Pressable
+                style={{
+                  ...styles.button,
+                  backgroundColor: splitStatus ? color.secundary : "gray",
+                  width: "30%",
+                  maxWidth: 100,
+                  alignSelf: "center",
+                }}
+                onPress={() => {
+                  setSplitStatus(!splitStatus);
+                  setSlider(50);
+                }}
+              >
+                <Text>Split {splitStatus ? slider + "%" : ""}</Text>
+              </Pressable>
+              <View style={{ paddingHorizontal: 20 }}>
+                <Slider
+                  value={slider}
+                  onValueChange={setSlider}
+                  maximumValue={100}
+                  minimumValue={0}
+                  step={1}
+                  disabled={splitStatus ? false : true}
+                  allowTouchTrack={!splitStatus ? false : true}
+                  trackStyle={{ height: 5, backgroundColor: "transparent" }}
+                  thumbStyle={{ height: verticalScale(32), width: verticalScale(32), backgroundColor: "transparent" }}
+                  thumbProps={{
+                    children: <AntDesign name="pausecircle" size={verticalScale(30)} color="black" />,
+                  }}
+                />
+              </View>
+            </CardWrapper>
           </View>
         </View>
         <View style={styles.submitButton}>
