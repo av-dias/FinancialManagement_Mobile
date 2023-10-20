@@ -1,5 +1,5 @@
 import navLogo from "../../images/logo.png";
-import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, Dimensions, ScrollView } from "react-native";
+import { StyleSheet, Text, View, TextInput, Image, Pressable, Dimensions, ScrollView } from "react-native";
 import { color } from "../../utility/colors";
 import { Divider } from "react-native-paper";
 import { Slider } from "@rneui/themed";
@@ -36,6 +36,7 @@ export default function Purchase({ navigation }) {
   const [datePicker, setDatePicker] = useState(true);
   const [pickerCurrentDate, setPickerCurrentDate] = useState(new Date());
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalContentFlag, setModalContentFlag] = useState("");
   const [slider, setSlider] = useState(50);
   const [splitStatus, setSplitStatus] = useState(false);
 
@@ -114,38 +115,75 @@ export default function Purchase({ navigation }) {
     setPickerCurrentDate(new Date(date));
   };
 
+  const ModalContent = () => {
+    let content;
+
+    switch (modalContentFlag) {
+      case "split_info":
+        content = (
+          <View style={{ flex: 4, backgroundColor: "white", borderRadius: 20, padding: verticalScale(20) }}>
+            <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
+              <Pressable style={{}} onPress={() => setModalVisible(!modalVisible)}>
+                <Entypo name="cross" size={verticalScale(20)} color="black" />
+              </Pressable>
+            </View>
+            <View style={{ flex: 1, padding: verticalScale(20) }}>
+              <Text style={{ textAlign: "center", fontSize: 20 }}>Send to: al.vrdias@gmail.com</Text>
+              <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}>
+                <Text style={{ textAlign: "center", fontSize: 20 }}>Pending Amount: {(value * slider) / 100}</Text>
+                <Text style={{ textAlign: "center", fontSize: 20 }}>Your Amount: {(value * (100 - slider)) / 100}</Text>
+              </View>
+            </View>
+          </View>
+        );
+        break;
+      default:
+        content = (
+          <View style={{ flex: 4, backgroundColor: "white", borderRadius: 20, padding: verticalScale(20) }}>
+            <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
+              <Pressable style={{}} onPress={() => setModalVisible(!modalVisible)}>
+                <Entypo name="cross" size={verticalScale(20)} color="black" />
+              </Pressable>
+            </View>
+            <View style={styles.tableInfo}>
+              <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
+                <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
+                <ScrollView style={styles.scrollTable}>
+                  {list.map((rowData, index) => (
+                    <TableWrapper key={index} style={styles.rowTable}>
+                      {rowData.map((cellData, cellIndex) => (
+                        <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
+                      ))}
+                    </TableWrapper>
+                  ))}
+                </ScrollView>
+              </Table>
+            </View>
+          </View>
+        );
+    }
+
+    return content;
+  };
+
   return (
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 6 }}>
           <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible}>
-            <View style={{ flex: 4, backgroundColor: "white", borderRadius: 20, padding: verticalScale(20) }}>
-              <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
-                <TouchableOpacity style={{}} onPress={() => setModalVisible(!modalVisible)}>
-                  <Entypo name="cross" size={verticalScale(20)} color="black" />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.tableInfo}>
-                <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
-                  <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
-                  <ScrollView style={styles.scrollTable}>
-                    {list.map((rowData, index) => (
-                      <TableWrapper key={index} style={styles.rowTable}>
-                        {rowData.map((cellData, cellIndex) => (
-                          <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
-                        ))}
-                      </TableWrapper>
-                    ))}
-                  </ScrollView>
-                </Table>
-              </View>
-            </View>
+            {ModalContent()}
           </ModalCustom>
           <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
-            <TouchableOpacity style={{}} onPress={() => setModalVisible(true)}>
+            <Pressable
+              style={{}}
+              onPress={() => {
+                setModalVisible(true);
+                setModalContentFlag("table_info");
+              }}
+            >
               <FontAwesome name="history" size={24} color="black" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
           <View style={styles.form}>
             <View style={styles.rowNoBorder}>
@@ -318,6 +356,18 @@ export default function Purchase({ navigation }) {
                 gap: verticalScale(10),
               }}
             >
+              <View style={{ backgroundColor: "transparent" }}>
+                <Pressable
+                  disabled={splitStatus ? false : true}
+                  onPress={() => {
+                    setModalVisible(true);
+                    setModalContentFlag("split_info");
+                  }}
+                  style={{ position: "absolute", right: 0, width: 30, padding: 5, backgroundColor: "transparent", alignItems: "center" }}
+                >
+                  <AntDesign name="plus" size={20} color="black" />
+                </Pressable>
+              </View>
               <Pressable
                 style={{
                   ...styles.button,
