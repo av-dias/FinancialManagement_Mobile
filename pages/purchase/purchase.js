@@ -352,7 +352,7 @@ export default function Purchase({ navigation }) {
                 flex: 2,
                 maxHeight: HEIGHT > heightTreshold ? 150 : 100,
                 paddingVertical: verticalScale(10),
-                backgroundColor: splitStatus ? "white" : "lightgray",
+                backgroundColor: splitStatus ? "white" : "gray",
                 gap: verticalScale(10),
               }}
             >
@@ -371,7 +371,7 @@ export default function Purchase({ navigation }) {
               <Pressable
                 style={{
                   ...styles.button,
-                  backgroundColor: splitStatus ? color.secundary : "gray",
+                  backgroundColor: splitStatus ? color.secundary : "lightgray",
                   width: "30%",
                   maxWidth: 100,
                   alignSelf: "center",
