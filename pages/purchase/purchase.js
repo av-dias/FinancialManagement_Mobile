@@ -121,18 +121,21 @@ export default function Purchase({ navigation }) {
     switch (modalContentFlag) {
       case "split_info":
         content = (
-          <View style={{ flex: 4, backgroundColor: "white", borderRadius: 20, padding: verticalScale(20) }}>
+          <View style={{ flex: 4, backgroundColor: "transparent", borderRadius: 20, padding: verticalScale(30), gap: 20 }}>
             <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
               <Pressable style={{}} onPress={() => setModalVisible(!modalVisible)}>
                 <Entypo name="cross" size={verticalScale(20)} color="black" />
               </Pressable>
             </View>
-            <View style={{ flex: 1, padding: verticalScale(20) }}>
-              <Text style={{ textAlign: "center", fontSize: 20 }}>Send to: al.vrdias@gmail.com</Text>
-              <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}>
-                <Text style={{ textAlign: "center", fontSize: 20 }}>Pending Amount: {(value * slider) / 100}</Text>
-                <Text style={{ textAlign: "center", fontSize: 20 }}>Your Amount: {(value * (100 - slider)) / 100}</Text>
-              </View>
+            <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: 20 }}>
+              <Text style={{ fontSize: 20 }}>Split with: Alison Dias</Text>
+              <Text style={{ fontSize: 20 }}>Amount: {(value * slider) / 100}</Text>
+              <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
+            </View>
+            <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: 20 }}>
+              <Text style={{ fontSize: 20 }}>You: Ana Rebelo</Text>
+              <Text style={{ fontSize: 20 }}>Amount: {(value * (100 - slider)) / 100}</Text>
+              <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
             </View>
           </View>
         );
@@ -356,34 +359,77 @@ export default function Purchase({ navigation }) {
                 gap: verticalScale(10),
               }}
             >
-              <View style={{ backgroundColor: "transparent" }}>
+              <View>
+                <View style={{ backgroundColor: "transparent" }}></View>
+                <View style={{ backgroundColor: "transparent" }}></View>
+              </View>
+              <View style={{ ...styles.row, justifyContent: "space-evenly", zIndex: -1, backgroundColor: "transparent" }}>
                 <Pressable
                   disabled={splitStatus ? false : true}
                   onPress={() => {
                     setModalVisible(true);
                     setModalContentFlag("split_info");
                   }}
-                  style={{ position: "absolute", right: 0, width: 30, padding: 5, backgroundColor: "transparent", alignItems: "center" }}
+                  style={{
+                    position: "absolute",
+                    right: verticalScale(10),
+                    width: verticalScale(35),
+                    padding: 5,
+                    backgroundColor: "transparent",
+                    alignItems: "center",
+                    zIndex: 1,
+                  }}
                 >
-                  <AntDesign name="plus" size={20} color="black" />
+                  <AntDesign name="plus" size={verticalScale(20)} color="black" />
+                </Pressable>
+                <Pressable
+                  style={{
+                    ...styles.button,
+                    backgroundColor: splitStatus ? color.secundary : "lightgray",
+                    width: "30%",
+                    maxWidth: 100,
+                    alignSelf: "center",
+                    paddingVertical: verticalScale(12),
+                  }}
+                  onPress={() => {
+                    setSplitStatus(!splitStatus);
+                    setSlider(50);
+                  }}
+                >
+                  <Text>Split {splitStatus ? slider + "%" : ""}</Text>
+                </Pressable>
+                <Pressable
+                  disabled={splitStatus ? false : true}
+                  onPress={() => {
+                    setSlider(50);
+                  }}
+                  style={{
+                    position: "absolute",
+                    left: verticalScale(10),
+                    width: verticalScale(35),
+                    padding: 6,
+                    backgroundColor: "transparent",
+                    alignItems: "center",
+                    zIndex: 1,
+                  }}
+                >
+                  <FontAwesome name="balance-scale" size={verticalScale(15)} color="black" />
                 </Pressable>
               </View>
-              <Pressable
-                style={{
-                  ...styles.button,
-                  backgroundColor: splitStatus ? color.secundary : "lightgray",
-                  width: "30%",
-                  maxWidth: 100,
-                  alignSelf: "center",
-                }}
-                onPress={() => {
-                  setSplitStatus(!splitStatus);
-                  setSlider(50);
-                }}
-              >
-                <Text>Split {splitStatus ? slider + "%" : ""}</Text>
-              </Pressable>
-              <View style={{ paddingHorizontal: 20 }}>
+
+              <View style={{ paddingHorizontal: 10, flexDirection: "row", backgroundColor: "transparent", justifyContent: "center" }}>
+                <View
+                  style={{
+                    backgroundColor: splitStatus ? "lightgray" : "gray",
+                    alignSelf: "center",
+                    borderRadius: 20,
+                    paddingHorizontal: verticalScale(15),
+                    paddingVertical: verticalScale(10),
+                    width: verticalScale(70),
+                  }}
+                >
+                  <Text style={{ fontSize: verticalScale(8), textAlign: "center" }}>{(value * (100 - slider)) / 100}</Text>
+                </View>
                 <Slider
                   value={slider}
                   onValueChange={setSlider}
@@ -397,7 +443,20 @@ export default function Purchase({ navigation }) {
                   thumbProps={{
                     children: <AntDesign name="pausecircle" size={verticalScale(30)} color="black" />,
                   }}
+                  style={{ flex: 1, backgroundColor: "transparent", height: "100%" }}
                 />
+                <View
+                  style={{
+                    backgroundColor: splitStatus ? "lightgray" : "gray",
+                    alignSelf: "center",
+                    borderRadius: 50,
+                    paddingHorizontal: verticalScale(15),
+                    paddingVertical: verticalScale(10),
+                    width: verticalScale(70),
+                  }}
+                >
+                  <Text style={{ fontSize: verticalScale(8), textAlign: "center" }}>{(value * slider) / 100}</Text>
+                </View>
               </View>
             </CardWrapper>
           </View>
