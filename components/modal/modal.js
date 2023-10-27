@@ -5,7 +5,7 @@ import commonStyles from "../../utility/commonStyles";
 import { color } from "../../utility/colors";
 import Modal from "react-native-modal";
 
-export default function ModalCustom({ modalVisible, setModalVisible, children }) {
+export default function ModalCustom({ modalVisible, setModalVisible, size = 3, children }) {
   const styles = _styles;
 
   return (
@@ -24,7 +24,7 @@ export default function ModalCustom({ modalVisible, setModalVisible, children })
         <View
           style={{
             backgroundColor: color.backgroundLight,
-            flex: 3,
+            flex: size,
             width: "100%",
             padding: commonStyles.paddingHorizontal,
             borderRadius: 20,
