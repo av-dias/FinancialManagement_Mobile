@@ -2,7 +2,9 @@ import navLogo from "../../images/logo.png";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome, Entypo, FontAwesome5 } from "@expo/vector-icons";
+import ModalCustom from "../../components/modal/modal";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
 
 import { saveToStorage, getFromStorage, addToStorage } from "../../utility/secureStorage";
 import { _styles } from "./style";
@@ -13,6 +15,110 @@ import Header from "../../components/header/header";
 export default function Settings({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContentFlag, setModalContentFlag] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [listVisible, setListVisible] = useState(false);
+  const [modalSize, setModalSize] = useState(3);
+  const [splitUsers, setSplitUsers] = useState("");
+
+  const getUser = async () => {
+    try {
+      const email = await getFromStorage("email");
+      return email;
+    } catch (err) {
+      console.log("Purchase: " + err);
+    }
+  };
+
+  const getSplitUsers = async () => {
+    try {
+      const users = JSON.parse(await getFromStorage("split-list", await getUser()));
+      console.log(users);
+      setSplitUsers(users);
+    } catch (err) {
+      console.log("Purchase: " + err);
+    }
+  };
+
+  const handleNewSplitUser = async () => {
+    let value = { email: newEmail };
+    let user = await getUser();
+    console.log(user);
+    await addToStorage("split-list", JSON.stringify(value), user);
+  };
+
+  const ModalContent = () => {
+    let content;
+    let value = 20;
+
+    switch (modalContentFlag) {
+      case "split":
+        content = (
+          <View style={{ flex: 4, backgroundColor: "transparent", borderRadius: 20, padding: verticalScale(30), gap: 20 }}>
+            <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
+              <Pressable
+                style={{}}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  setModalSize(3);
+                  setListVisible(false);
+                }}
+              >
+                <Entypo name="cross" size={verticalScale(20)} color="black" />
+              </Pressable>
+            </View>
+            <View style={{ position: "absolute", left: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
+              <Pressable
+                style={{}}
+                onPress={async () => {
+                  setModalSize(modalSize == 7 ? 3 : 7);
+                  setListVisible(!listVisible);
+                  if (modalSize == 3) getSplitUsers();
+                }}
+              >
+                <FontAwesome5 name="list" size={15} color="black" />
+              </Pressable>
+            </View>
+            {listVisible && (
+              <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: 10 }}>
+                <Text style={{ fontSize: 20 }}>Users Registered</Text>
+                {splitUsers ? splitUsers.map((row) => <Text key={"split-user" + row.email}>{row.email}</Text>) : null}
+              </View>
+            )}
+            <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: 10 }}>
+              <Text style={{ fontSize: 20 }}>User to Split Email</Text>
+            </View>
+            <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: 10 }}>
+              <TextInput
+                ref={(input) => {
+                  this.textInputValue = input;
+                }}
+                keyboardType="email-address"
+                style={{ fontSize: 20 }}
+                placeholder="split-user@gmail.com"
+                onChangeText={setNewEmail}
+              />
+            </View>
+            <View style={{}}>
+              <Pressable
+                style={styles.button}
+                onPress={() => {
+                  handleNewSplitUser();
+                }}
+              >
+                <Text style={{ fontSize: 20 }}>Submit</Text>
+              </Pressable>
+            </View>
+          </View>
+        );
+        break;
+      default:
+        content = <View style={{ flex: 4, backgroundColor: "white", borderRadius: 20, padding: verticalScale(20) }}></View>;
+    }
+
+    return content;
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -52,12 +158,24 @@ export default function Settings({ navigation }) {
   return (
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
+      <ModalCustom size={modalSize} modalVisible={modalVisible} setModalVisible={setModalVisible}>
+        {ModalContent()}
+      </ModalCustom>
       <View style={styles.form}>
-        <Pressable style={styles.button} onPress={() => alert("Transaction not available yet")}>
+        <Pressable style={styles.buttonChoice} onPress={() => alert("Transaction not available yet")}>
           <Text style={styles.buttonText}>Transaction</Text>
         </Pressable>
         <Pressable
-          style={styles.button}
+          style={styles.buttonChoice}
+          onPress={() => {
+            setModalVisible(true);
+            setModalContentFlag("split");
+          }}
+        >
+          <Text style={styles.buttonText}>Split</Text>
+        </Pressable>
+        <Pressable
+          style={styles.buttonChoice}
           onPress={async () => {
             let server = await getFromStorage("server");
             if (server == "on") {
@@ -100,7 +218,7 @@ export default function Settings({ navigation }) {
           <Text style={styles.buttonText}>Update</Text>
         </Pressable>
         <Pressable
-          style={styles.button}
+          style={styles.buttonChoice}
           onPress={async () => {
             let infoPurchase = await getFromStorage("purchases", email);
             let infoArchive = await getFromStorage("archived_purchases", email);
@@ -110,7 +228,7 @@ export default function Settings({ navigation }) {
           <Text style={styles.buttonText}>Logs</Text>
         </Pressable>
         <Pressable
-          style={styles.button}
+          style={styles.buttonChoice}
           onPress={async () => {
             showAlert();
           }}
