@@ -65,10 +65,23 @@ export default function Purchase({ navigation }) {
       alert("Please fill all fields.");
       return;
     }
+
     if (!note) setNote("");
     try {
       let purchases = await getFromStorage("purchases", email);
       let newPurchase = { type: type, name: name, value: value, dop: date.toISOString().split("T")[0], note: note };
+
+      //improve split destination logic
+      if (splitStatus) {
+        let destination;
+        newPurchase["split"] = {};
+        if (onLoadData == "al.vrdias@gmail.com") {
+          destination = "anacatarinarebelo98@gmail.com";
+        } else destination = "al.vrdias@gmail.com";
+
+        newPurchase["split"]["userId"] = destination;
+        newPurchase["split"]["weight"] = slider;
+      }
 
       if (purchases) {
         purchases = JSON.parse(purchases);
@@ -76,6 +89,8 @@ export default function Purchase({ navigation }) {
       } else {
         purchases = [newPurchase];
       }
+
+      console.log(newPurchase);
 
       await saveToStorage("purchases", JSON.stringify(purchases), email);
       setList([
@@ -96,6 +111,7 @@ export default function Purchase({ navigation }) {
   useEffect(() => {
     async function fetchData() {
       let email = await getUser();
+      console.log(email);
       setOnLoadData(email);
     }
     // write your code here, it's like componentWillMount
