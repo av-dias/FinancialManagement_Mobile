@@ -37,7 +37,7 @@ export default function Settings({ navigation }) {
   };
 
   const handleNewSplitUser = async () => {
-    let value = [{ email: newEmail, name: newName }];
+    let value = { email: newEmail, name: newName };
     let user = await getUser();
     await addToStorage(KEYS.SPLIT_USERS, JSON.stringify(value), user);
     await getSplitUsers();
@@ -151,6 +151,7 @@ export default function Settings({ navigation }) {
             let infoPurchase = await saveToStorage(KEYS.PURCHASE, "[]", email);
             let infoArchive = await saveToStorage(KEYS.ARCHIVE, "[]", email);
             let infoSplit = await saveToStorage(KEYS.SPLIT_USERS, "[]", email);
+            let infoTransaction = await saveToStorage(KEYS.TRANSACTION, "[]", email);
 
             alert("Cleared");
           },
@@ -174,9 +175,6 @@ export default function Settings({ navigation }) {
         {ModalContent()}
       </ModalCustom>
       <View style={styles.form}>
-        <Pressable style={styles.buttonChoice} onPress={() => alert("Transaction not available yet")}>
-          <Text style={styles.buttonText}>Transaction</Text>
-        </Pressable>
         <Pressable
           style={styles.buttonChoice}
           onPress={() => {
@@ -237,7 +235,25 @@ export default function Settings({ navigation }) {
             alert(infoPurchase + " and " + infoArchive);
           }}
         >
-          <Text style={styles.buttonText}>Logs</Text>
+          <Text style={styles.buttonText}>Logs: Purchase</Text>
+        </Pressable>
+        <Pressable
+          style={styles.buttonChoice}
+          onPress={async () => {
+            let infoTransaction = await getFromStorage(KEYS.TRANSACTION, email);
+            alert(infoTransaction);
+          }}
+        >
+          <Text style={styles.buttonText}>Logs: Transaction</Text>
+        </Pressable>
+        <Pressable
+          style={styles.buttonChoice}
+          onPress={async () => {
+            let infoSplit = await getFromStorage(KEYS.SPLIT_USERS, email);
+            alert(infoSplit);
+          }}
+        >
+          <Text style={styles.buttonText}>Logs: Split Users</Text>
         </Pressable>
         <Pressable
           style={styles.buttonChoice}

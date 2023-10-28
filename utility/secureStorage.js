@@ -22,7 +22,7 @@ export async function addToStorage(key, value, user) {
   let oldValue, newValue;
   if (oldValueString) {
     oldValue = JSON.parse(oldValueString);
-    newValue = [...oldValue, ...JSON.parse(value)];
+    newValue = [...oldValue, JSON.parse(value)];
   } else {
     newValue = [JSON.parse(value)];
   }
