@@ -9,7 +9,8 @@ import { horizontalScale, verticalScale, moderateScale } from "../../utility/res
 import { color } from "../../utility/colors";
 
 import { _styles } from "./style";
-import { KEYS } from "../../utility/keys";
+import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
+import { KEYS } from "../../utility/storageKeys";
 import Header from "../../components/header/header";
 
 import { getFromStorage, saveToStorage } from "../../utility/secureStorage";
@@ -48,7 +49,7 @@ export default function Purchase({ navigation }) {
         let email = await getUser();
         setEmail(email);
         try {
-          let res = JSON.parse(await getFromStorage("purchases", email));
+          let res = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
           if (!res) res = [];
           setPurchases(res);
           console.log("Purchase len: " + res.length);
@@ -58,7 +59,7 @@ export default function Purchase({ navigation }) {
           console.log("Purchase: " + e);
         }
         try {
-          let resArchive = JSON.parse(await getFromStorage("archived_purchases", email)) || [];
+          let resArchive = JSON.parse(await getFromStorage(KEYS.ARCHIVE, email)) || [];
           setArchives(resArchive);
           console.log("Archive: " + resArchive);
           console.log("Archive len: " + resArchive.length);
@@ -71,7 +72,7 @@ export default function Purchase({ navigation }) {
   );
 
   const showAlert = (key) => {
-    let [identifier, id] = key.split(KEYS.TOKEN_SEPARATOR);
+    let [identifier, id] = key.split(KEYS_SERIALIZER.TOKEN_SEPARATOR);
     let element,
       elementArray,
       setElement,
@@ -80,7 +81,7 @@ export default function Purchase({ navigation }) {
       leftButton = "Ok",
       rightButton = "Cancel";
 
-    if (identifier == KEYS.PURCHASE) {
+    if (identifier == KEYS_SERIALIZER.PURCHASE) {
       element = "purchases";
       elementArray = purchases;
       setElement = setPurchases.bind();
@@ -88,7 +89,7 @@ export default function Purchase({ navigation }) {
       description = "Are you sure you want to remove this purchase permanently?" + "\n\n";
       leftButton = "Yes";
       rightButton = "No";
-    } else if (identifier == KEYS.ARCHIVE) {
+    } else if (identifier == KEYS_SERIALIZER.ARCHIVE) {
       title = "Archived Purchase Detail";
       element = "archives";
       elementArray = archives;
@@ -104,7 +105,7 @@ export default function Purchase({ navigation }) {
         {
           text: leftButton,
           onPress: async () => {
-            if (identifier == KEYS.PURCHASE) {
+            if (identifier == KEYS_SERIALIZER.PURCHASE) {
               arr = elementArray.filter((item) => item != elementArray[id]);
               await saveToStorage(element, JSON.stringify(arr), email);
               setElement(arr);
@@ -134,17 +135,17 @@ export default function Purchase({ navigation }) {
             <ScrollView>
               {Object.keys(groupedPurchases).map((key) =>
                 new Date(key).getMonth() == currentMonth && new Date(key).getFullYear() == currentYear ? (
-                  <View key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + key} style={{ paddingHorizontal: 5 }}>
+                  <View key={KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + key} style={{ paddingHorizontal: 5 }}>
                     <View style={styles.listDateBox}>
                       <Text style={styles.listDate}>{new Date(key).getDate() + " " + months[new Date(key).getMonth()]}</Text>
                     </View>
                     <CardWrapper key={key} style={styles.listBox}>
                       {groupedPurchases[key].map((innerData) => (
                         <Pressable
-                          key={KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index}
+                          key={KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
                           style={styles.button}
                           onPress={() => {
-                            showAlert(KEYS.PURCHASE + KEYS.TOKEN_SEPARATOR + innerData.index);
+                            showAlert(KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index);
                           }}
                         >
                           <View style={styles.rowGap}>
@@ -173,7 +174,7 @@ export default function Purchase({ navigation }) {
                 )
               )}
               {archives.length != 0 ? (
-                <React.Fragment key={KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + 1}>
+                <React.Fragment key={KEYS_SERIALIZER.ARCHIVE + KEYS_SERIALIZER.TOKEN_SEPARATOR + 1}>
                   <Text style={styles.seperatorText}>Archived</Text>
                   <Divider />
                 </React.Fragment>
@@ -183,10 +184,10 @@ export default function Purchase({ navigation }) {
                 currentMonth == new Date(cellData.dop).getMonth() && currentYear == new Date(cellData.dop).getFullYear() ? (
                   <CardWrapper key={cellIndex} style={styles.listBox}>
                     <Pressable
-                      key={KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex}
+                      key={KEYS_SERIALIZER.ARCHIVE + KEYS_SERIALIZER.TOKEN_SEPARATOR + cellIndex}
                       style={styles.button}
                       onPress={() => {
-                        showAlert(KEYS.ARCHIVE + KEYS.TOKEN_SEPARATOR + cellIndex);
+                        showAlert(KEYS_SERIALIZER.ARCHIVE + KEYS_SERIALIZER.TOKEN_SEPARATOR + cellIndex);
                       }}
                     >
                       <View style={styles.rowGap}>

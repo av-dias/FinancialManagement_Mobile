@@ -6,6 +6,7 @@ import navLogo from "../../images/logo.png";
 import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { _styles } from "./style";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
+import { KEYS } from "../../utility/storageKeys";
 
 export default function Login({ navigation }) {
   const styles = _styles;
@@ -19,14 +20,14 @@ export default function Login({ navigation }) {
 
   const handleLogin = async () => {
     try {
-      await saveToStorage("email", email.toLowerCase());
-      await saveToStorage("password", password);
-      await saveToStorage("remember", checked.toString());
+      await saveToStorage(KEYS.EMAIL, email.toLowerCase());
+      await saveToStorage(KEYS.PASSWORDS, password);
+      await saveToStorage(KEYS.REMEMBER_ME, checked.toString());
 
-      await saveToStorage("ip1", ip1);
-      await saveToStorage("ip2", ip2);
-      await saveToStorage("ip3", ip3);
-      await saveToStorage("ip4", ip4);
+      await saveToStorage(KEYS.IP1, ip1);
+      await saveToStorage(KEYS.IP2, ip2);
+      await saveToStorage(KEYS.IP3, ip3);
+      await saveToStorage(KEYS.IP4, ip4);
 
       let userEmail = email.toLowerCase();
 
@@ -44,7 +45,7 @@ export default function Login({ navigation }) {
       })
         .then(async (res) => {
           let response = await res.json();
-          await saveToStorage("access_token", response.access_token);
+          await saveToStorage(KEYS.ACCESS_TOKEN, response.access_token);
           await fetch(`http://${ip1}.${ip2}.${ip3}.${ip4}:8080/api/v1/user/email/${userEmail}`, {
             headers: {
               Accept: "application/json",
@@ -55,22 +56,22 @@ export default function Login({ navigation }) {
           })
             .then(async (res) => {
               let resJson = await res.json();
-              saveToStorage("userId", resJson.userId.toString());
-              saveToStorage("server", "on");
+              saveToStorage(KEYS.USER_ID, resJson.userId.toString());
+              saveToStorage(KEYS.SERVER, "on");
               console.log("Connected to the main server");
             })
             .catch(function (res) {
               console.log(res);
-              saveToStorage("server", "off");
+              saveToStorage(KEYS.SERVER, "off");
             });
         })
         .catch((res) => {
           console.log("Not connected to the main server");
-          saveToStorage("server", "off");
+          saveToStorage(KEYS.SERVER, "off");
         });
     } catch (err) {
       console.log("Error: " + err);
-      saveToStorage("server", "off");
+      saveToStorage(KEYS.SERVER, "off");
       alert(err);
     }
   };
@@ -80,24 +81,24 @@ export default function Login({ navigation }) {
   };
 
   const rememberMeHandle = async () => {
-    let remember = await getFromStorage("remember");
+    let remember = await getFromStorage(KEYS.REMEMBER_ME);
     if (remember == "true") {
       console.log("Remember: " + remember);
       console.log("Checked: " + checked);
-      setEmail(await getFromStorage("email"));
-      setPassword(await getFromStorage("password"));
+      setEmail(await getFromStorage(KEYS.EMAIL));
+      setPassword(await getFromStorage(KEYS.PASSWORD));
       setChecked(true);
-      await saveToStorage("server", "off");
-      let server = await getFromStorage("server");
+      await saveToStorage(KEYS.SERVER, "off");
+      let server = await getFromStorage(KEYS.SERVER);
       console.log("server: " + server);
     }
   };
 
   const rememberIP = async () => {
-    let ip1 = await getFromStorage("ip1");
-    let ip2 = await getFromStorage("ip2");
-    let ip3 = await getFromStorage("ip3");
-    let ip4 = await getFromStorage("ip4");
+    let ip1 = await getFromStorage(KEYS.IP1);
+    let ip2 = await getFromStorage(KEYS.IP2);
+    let ip3 = await getFromStorage(KEYS.IP3);
+    let ip4 = await getFromStorage(KEYS.IP4);
 
     if (ip1 && ip2 && ip3) {
       setip1(ip1);

@@ -19,6 +19,7 @@ import Header from "../../components/header/header";
 import ModalCustom from "../../components/modal/modal";
 import commonStyles from "../../utility/commonStyles";
 import { getUser } from "../../functions/basic";
+import { KEYS } from "../../utility/storageKeys";
 
 const HEIGHT = Dimensions.get("window").height;
 const BORDER_RADIUS = 10;
@@ -52,7 +53,7 @@ export default function Purchase({ navigation }) {
   }, []);
 
   const getSplitUser = async () => {
-    let splitList = JSON.parse(await getFromStorage("split-list", email));
+    let splitList = JSON.parse(await getFromStorage(KEYS.SPLIT_USERS, email));
 
     let value = { email: "Not Registed", name: "Not Registed" };
     if (splitList && splitList.length != 0) value = splitList[0];
@@ -77,7 +78,7 @@ export default function Purchase({ navigation }) {
 
     if (!note) setNote("");
     try {
-      let purchases = await getFromStorage("purchases", email);
+      let purchases = await getFromStorage(KEYS.PURCHASE, email);
       let newPurchase = { type: type, name: name, value: value, dop: date.toISOString().split("T")[0], note: note };
 
       //improve split destination logic
@@ -96,7 +97,7 @@ export default function Purchase({ navigation }) {
 
       console.log(newPurchase);
 
-      await saveToStorage("purchases", JSON.stringify(purchases), email);
+      await saveToStorage(KEYS.PURCHASE, JSON.stringify(purchases), email);
       setList([
         [categoryIcons(TABLE_ICON_SIZE).find((category) => category.label === type).icon, name, value, date.toISOString().split("T")[0]],
         ...list,

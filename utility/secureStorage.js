@@ -3,6 +3,7 @@ import * as SecureStore from "expo-secure-store";
 export async function saveToStorage(key, value, user) {
   if (!user) user = "";
   user = user.split("@")[0];
+  console.log(value, user);
   await SecureStore.setItemAsync(user + key, value);
 }
 

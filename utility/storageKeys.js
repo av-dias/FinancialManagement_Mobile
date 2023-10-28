@@ -1,0 +1,15 @@
+export const KEYS = {
+  PURCHASE: "purchases",
+  ARCHIVE: "archived_purchases",
+  EMAIL: "email",
+  PASSWORDS: "password",
+  SPLIT_USERS: "split-list",
+  SERVER: "server",
+  IP1: "ip1",
+  IP2: "ip2",
+  IP3: "ip3",
+  IP4: "ip4",
+  REMEMBER_ME: "remember",
+  ACCESS_TOKEN: "access_token",
+  USER_ID: "userId",
+};
