@@ -88,6 +88,7 @@ export const _styles = StyleSheet.create({
     width: "100%",
     padding: verticalScale(5),
   },
+  // REMOVE
   rowNoBorder: {
     flexDirection: "row",
     justifyContent: "center",
