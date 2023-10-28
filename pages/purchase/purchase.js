@@ -39,6 +39,7 @@ export default function Purchase({ navigation }) {
   const [modalContentFlag, setModalContentFlag] = useState("");
   const [slider, setSlider] = useState(50);
   const [splitStatus, setSplitStatus] = useState(false);
+  const [splitUser, setSplitUser] = useState("");
 
   const getUser = async () => {
     try {
@@ -58,6 +59,22 @@ export default function Purchase({ navigation }) {
     fetchData();
   }, []);
 
+  const getSplitUser = async () => {
+    let splitList = JSON.parse(await getFromStorage("split-list", email));
+
+    let value = { email: "Not Registed", name: "Not Registed" };
+    if (splitList && splitList.length != 0) value = splitList[0];
+    setSplitUser(value);
+  };
+
+  const getSplitName = () => {
+    return splitUser.name;
+  };
+
+  const getSplitEmail = () => {
+    return splitUser.email;
+  };
+
   const handlePurchase = async () => {
     let date = this._calendar.getSelectedDate();
     console.log(type, name, value, date);
@@ -73,13 +90,8 @@ export default function Purchase({ navigation }) {
 
       //improve split destination logic
       if (splitStatus) {
-        let destination;
         newPurchase["split"] = {};
-        if (onLoadData == "al.vrdias@gmail.com") {
-          destination = "anacatarinarebelo98@gmail.com";
-        } else destination = "al.vrdias@gmail.com";
-
-        newPurchase["split"]["userId"] = destination;
+        newPurchase["split"]["userId"] = getSplitEmail();
         newPurchase["split"]["weight"] = slider;
       }
 
@@ -144,7 +156,7 @@ export default function Purchase({ navigation }) {
               </Pressable>
             </View>
             <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: 20 }}>
-              <Text style={{ fontSize: 20 }}>Split with: Alison Dias</Text>
+              <Text style={{ fontSize: 20 }}>Split with: {getSplitName()}</Text>
               <Text style={{ fontSize: 20 }}>Amount: {(value * slider) / 100}</Text>
               <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
             </View>
@@ -407,9 +419,10 @@ export default function Purchase({ navigation }) {
                     alignSelf: "center",
                     paddingVertical: verticalScale(12),
                   }}
-                  onPress={() => {
+                  onPress={async () => {
                     setSplitStatus(!splitStatus);
                     setSlider(50);
+                    await getSplitUser();
                   }}
                 >
                   <Text>Split {splitStatus ? slider + "%" : ""}</Text>

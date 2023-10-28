@@ -12,14 +12,18 @@ import { getUser } from "../../functions/basic";
 
 import Header from "../../components/header/header";
 
+const MODAL_DEFAULT_SIZE = 6;
+const MODAL_LARGE_SIZE = 9;
+
 export default function Settings({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [modalContentFlag, setModalContentFlag] = useState("");
   const [newEmail, setNewEmail] = useState("");
+  const [newName, setNewName] = useState("");
   const [listVisible, setListVisible] = useState(false);
-  const [modalSize, setModalSize] = useState(3);
+  const [modalSize, setModalSize] = useState(MODAL_DEFAULT_SIZE);
   const [splitUsers, setSplitUsers] = useState("");
 
   const getUser = async () => {
@@ -42,10 +46,16 @@ export default function Settings({ navigation }) {
   };
 
   const handleNewSplitUser = async () => {
-    let value = { email: newEmail };
+    let value = [{ email: newEmail, name: newName }];
     let user = await getUser();
     console.log(user);
     await addToStorage("split-list", JSON.stringify(value), user);
+    await getSplitUsers();
+
+    this.textInputName.clear();
+    this.textInputEmail.clear();
+    setNewEmail("");
+    setNewName("");
   };
 
   const ModalContent = () => {
@@ -72,7 +82,7 @@ export default function Settings({ navigation }) {
               <Pressable
                 style={{}}
                 onPress={async () => {
-                  setModalSize(modalSize == 7 ? 3 : 7);
+                  setModalSize(modalSize == MODAL_LARGE_SIZE ? MODAL_DEFAULT_SIZE : MODAL_LARGE_SIZE);
                   setListVisible(!listVisible);
                   if (modalSize == 3) getSplitUsers();
                 }}
@@ -92,12 +102,23 @@ export default function Settings({ navigation }) {
             <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: 10 }}>
               <TextInput
                 ref={(input) => {
-                  this.textInputValue = input;
+                  this.textInputEmail = input;
                 }}
                 keyboardType="email-address"
                 style={{ fontSize: 20 }}
                 placeholder="split-user@gmail.com"
                 onChangeText={setNewEmail}
+              />
+            </View>
+            <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: 10 }}>
+              <TextInput
+                ref={(input) => {
+                  this.textInputName = input;
+                }}
+                keyboardType="default"
+                style={{ fontSize: 20 }}
+                placeholder="user-name"
+                onChangeText={setNewName}
               />
             </View>
             <View style={{}}>
@@ -139,6 +160,7 @@ export default function Settings({ navigation }) {
           onPress: async () => {
             let infoPurchase = await saveToStorage("purchases", "[]", email);
             let infoArchive = await saveToStorage("archived_purchases", "[]", email);
+            let infoSplit = await saveToStorage("split-list", "[]", email);
 
             alert("Cleared");
           },
