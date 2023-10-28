@@ -18,6 +18,7 @@ import { categoryIcons } from "../../assets/icons";
 import Header from "../../components/header/header";
 import ModalCustom from "../../components/modal/modal";
 import commonStyles from "../../utility/commonStyles";
+import { getUser } from "../../functions/basic";
 
 const HEIGHT = Dimensions.get("window").height;
 const BORDER_RADIUS = 10;
@@ -40,15 +41,6 @@ export default function Purchase({ navigation }) {
   const [slider, setSlider] = useState(50);
   const [splitStatus, setSplitStatus] = useState(false);
   const [splitUser, setSplitUser] = useState("");
-
-  const getUser = async () => {
-    try {
-      const email = await getFromStorage("email");
-      return email;
-    } catch (err) {
-      console.log("Purchase: " + err);
-    }
-  };
 
   useEffect(() => {
     async function fetchData() {

@@ -26,15 +26,6 @@ export default function Settings({ navigation }) {
   const [modalSize, setModalSize] = useState(MODAL_DEFAULT_SIZE);
   const [splitUsers, setSplitUsers] = useState("");
 
-  const getUser = async () => {
-    try {
-      const email = await getFromStorage("email");
-      return email;
-    } catch (err) {
-      console.log("Purchase: " + err);
-    }
-  };
-
   const getSplitUsers = async () => {
     try {
       const users = JSON.parse(await getFromStorage("split-list", await getUser()));
@@ -48,7 +39,6 @@ export default function Settings({ navigation }) {
   const handleNewSplitUser = async () => {
     let value = [{ email: newEmail, name: newName }];
     let user = await getUser();
-    console.log(user);
     await addToStorage("split-list", JSON.stringify(value), user);
     await getSplitUsers();
 
