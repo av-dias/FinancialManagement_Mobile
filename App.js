@@ -10,6 +10,7 @@ import Home from "./pages/home/home";
 import Purchase from "./pages/purchase/purchase";
 import List from "./pages/list/list";
 import Settings from "./pages/settings/settings";
+import Transaction from "./pages/transaction/transaction";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -38,6 +39,11 @@ function HomeTabs() {
         name="Purchase"
         component={Purchase}
         options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="add-circle-outline" size={24} color="white" /> }}
+      />
+      <Tab.Screen
+        name="Transaction"
+        component={Transaction}
+        options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="compare-arrows" size={25} color="white" /> }}
       />
       <Tab.Screen
         name="List"
