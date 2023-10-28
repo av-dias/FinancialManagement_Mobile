@@ -61,7 +61,7 @@ export default function Settings({ navigation }) {
                 style={{}}
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                  setModalSize(3);
+                  setModalSize(MODAL_DEFAULT_SIZE);
                   setListVisible(false);
                 }}
               >
@@ -74,7 +74,7 @@ export default function Settings({ navigation }) {
                 onPress={async () => {
                   setModalSize(modalSize == MODAL_LARGE_SIZE ? MODAL_DEFAULT_SIZE : MODAL_LARGE_SIZE);
                   setListVisible(!listVisible);
-                  if (modalSize == 3) getSplitUsers();
+                  if (modalSize == MODAL_DEFAULT_SIZE) getSplitUsers();
                 }}
               >
                 <FontAwesome5 name="list" size={15} color="black" />
