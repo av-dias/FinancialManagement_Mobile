@@ -2,7 +2,6 @@ import navLogo from "../../images/logo.png";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, Dimensions, ScrollView } from "react-native";
 import { color } from "../../utility/colors";
 import { Divider } from "react-native-paper";
-import { Slider } from "@rneui/themed";
 
 import React, { useState, useEffect } from "react";
 import CalendarStrip from "react-native-calendar-strip";
@@ -22,6 +21,7 @@ import Header from "../../components/header/header";
 import ModalCustom from "../../components/modal/modal";
 import CustomCalendarStrip from "../../components/customCalendarStrip/customCalendarStrip";
 import CustomButton from "../../components/customButton/customButton";
+import SplitSlider from "../../components/splitSlider/splitSlider";
 
 import commonStyles from "../../utility/commonStyles";
 
@@ -295,115 +295,15 @@ export default function Purchase({ navigation }) {
                 />
               </View>
             </CardWrapper>
-            <CardWrapper
-              style={{
-                flex: 2,
-                maxHeight: HEIGHT > heightTreshold ? 150 : 100,
-                paddingVertical: verticalScale(10),
-                backgroundColor: splitStatus ? "white" : "gray",
-                gap: verticalScale(10),
-              }}
-            >
-              <View>
-                <View style={{ backgroundColor: "transparent" }}></View>
-                <View style={{ backgroundColor: "transparent" }}></View>
-              </View>
-              <View style={{ ...styles.row, justifyContent: "space-evenly", zIndex: -1, backgroundColor: "transparent" }}>
-                <Pressable
-                  disabled={splitStatus ? false : true}
-                  onPress={() => {
-                    setModalVisible(true);
-                    setModalContentFlag("split_info");
-                  }}
-                  style={{
-                    position: "absolute",
-                    right: verticalScale(10),
-                    width: verticalScale(35),
-                    padding: 5,
-                    backgroundColor: "transparent",
-                    alignItems: "center",
-                    zIndex: 1,
-                  }}
-                >
-                  <AntDesign name="plus" size={verticalScale(20)} color="black" />
-                </Pressable>
-                <Pressable
-                  style={{
-                    ...styles.button,
-                    backgroundColor: splitStatus ? color.secundary : "lightgray",
-                    width: "30%",
-                    maxWidth: 100,
-                    alignSelf: "center",
-                    paddingVertical: verticalScale(12),
-                  }}
-                  onPress={async () => {
-                    setSplitStatus(!splitStatus);
-                    setSlider(50);
-                  }}
-                >
-                  <Text>Split {splitStatus ? slider + "%" : ""}</Text>
-                </Pressable>
-                <Pressable
-                  disabled={splitStatus ? false : true}
-                  onPress={() => {
-                    setSlider(50);
-                  }}
-                  style={{
-                    position: "absolute",
-                    left: verticalScale(10),
-                    width: verticalScale(35),
-                    padding: 6,
-                    backgroundColor: "transparent",
-                    alignItems: "center",
-                    zIndex: 1,
-                  }}
-                >
-                  <FontAwesome name="balance-scale" size={verticalScale(15)} color="black" />
-                </Pressable>
-              </View>
-
-              <View style={{ paddingHorizontal: 10, flexDirection: "row", backgroundColor: "transparent", justifyContent: "center" }}>
-                <View
-                  style={{
-                    backgroundColor: splitStatus ? "lightgray" : "gray",
-                    alignSelf: "center",
-                    borderRadius: 20,
-                    paddingHorizontal: verticalScale(15),
-                    paddingVertical: verticalScale(10),
-                    width: verticalScale(70),
-                  }}
-                >
-                  <Text style={{ fontSize: verticalScale(8), textAlign: "center" }}>{(value * (100 - slider)) / 100}</Text>
-                </View>
-                <Slider
-                  value={slider}
-                  onValueChange={setSlider}
-                  maximumValue={100}
-                  minimumValue={0}
-                  step={1}
-                  disabled={splitStatus ? false : true}
-                  allowTouchTrack={!splitStatus ? false : true}
-                  trackStyle={{ height: 5, backgroundColor: "transparent" }}
-                  thumbStyle={{ height: verticalScale(32), width: verticalScale(32), backgroundColor: "transparent" }}
-                  thumbProps={{
-                    children: <AntDesign name="pausecircle" size={verticalScale(30)} color="black" />,
-                  }}
-                  style={{ flex: 1, backgroundColor: "transparent", height: "100%" }}
-                />
-                <View
-                  style={{
-                    backgroundColor: splitStatus ? "lightgray" : "gray",
-                    alignSelf: "center",
-                    borderRadius: 50,
-                    paddingHorizontal: verticalScale(15),
-                    paddingVertical: verticalScale(10),
-                    width: verticalScale(70),
-                  }}
-                >
-                  <Text style={{ fontSize: verticalScale(8), textAlign: "center" }}>{(value * slider) / 100}</Text>
-                </View>
-              </View>
-            </CardWrapper>
+            <SplitSlider
+              value={value}
+              setModalVisible={setModalVisible}
+              setModalContentFlag={setModalContentFlag}
+              splitStatus={splitStatus}
+              setSplitStatus={setSplitStatus}
+              slider={slider}
+              setSlider={setSlider}
+            />
           </View>
         </View>
         <CustomButton handlePress={handlePurchase} />
