@@ -32,6 +32,37 @@ export default function Purchase({ navigation }) {
   const [groupedPurchases, setGroupedPurchases] = useState([]);
   const [groupedTransactions, setGroupedTransactions] = useState([]);
   const [refreshTrigger, setRefreshTrigger] = useState(true);
+  const [splitUser, setSplitUser] = useState("");
+
+  const getSplitUser = async () => {
+    let splitList = JSON.parse(await getFromStorage(KEYS.SPLIT_USERS, email));
+
+    let value = { email: "Not Registed", name: "Not Registed" };
+    if (splitList && splitList.length != 0) value = splitList[0];
+    setSplitUser(value);
+  };
+
+  const getSplitEmail = () => {
+    return splitUser.email;
+  };
+
+  const getSplitName = () => {
+    return splitUser.name;
+  };
+
+  const getSplitFirstName = () => {
+    return getSplitName().split(" ")[0];
+  };
+
+  const handleSplit = async (index) => {
+    purchases[index]["split"] = {};
+    purchases[index]["split"]["userId"] = getSplitEmail();
+    purchases[index]["split"]["weight"] = 50;
+    setPurchases(purchases);
+
+    await saveToStorage(KEYS.PURCHASE, JSON.stringify(purchases), email);
+    setRefreshTrigger(!refreshTrigger);
+  };
 
   const groupByDate = (data) => {
     if (!data || data.length == 0) return {};
@@ -51,6 +82,7 @@ export default function Purchase({ navigation }) {
       async function fetchData() {
         let email = await getUser();
         setEmail(email);
+        await getSplitUser();
         try {
           let res = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
           let resTrans = JSON.parse(await getFromStorage(KEYS.TRANSACTION, email));
@@ -69,55 +101,61 @@ export default function Purchase({ navigation }) {
         try {
           let resArchive = JSON.parse(await getFromStorage(KEYS.ARCHIVE, email)) || [];
           setArchives(resArchive);
-          console.log("Archive: " + resArchive);
           console.log("Archive len: " + resArchive.length);
         } catch (e) {
           console.log("Archive: " + e);
         }
       }
       fetchData();
-    }, [refreshTrigger])
+    }, [refreshTrigger, email])
   );
 
   const showAlert = (key) => {
     let [identifier, id] = key.split(KEYS_SERIALIZER.TOKEN_SEPARATOR);
-    console.log(identifier, id);
     let element,
       elementArray,
       setElement,
       title = "",
       description = "",
+      body = "",
       leftButton = "Ok",
       rightButton = "Cancel";
 
     if (identifier == KEYS_SERIALIZER.PURCHASE) {
-      element = "purchases";
+      element = KEYS.PURCHASE;
       elementArray = purchases;
       setElement = setPurchases.bind();
       title = "Delete Purchase";
       description = "Are you sure you want to remove this purchase permanently?" + "\n\n";
       leftButton = "Yes";
       rightButton = "No";
+      body =
+        description +
+        `Name: ${elementArray[id].name}\nValue: ${elementArray[id].value}\nType: ${elementArray[id].type}\nDate: ${elementArray[id].dop}`;
     } else if (identifier == KEYS_SERIALIZER.TRANSACTION) {
-      element = "transactions";
+      element = KEYS.TRANSACTION;
       elementArray = transactions;
       setElement = setTransactions.bind();
       title = "Delete Transaction";
       description = "Are you sure you want to remove this transaction permanently?" + "\n\n";
       leftButton = "Yes";
       rightButton = "No";
+      body = description + `Description: ${elementArray[id].description}\nAmount: ${elementArray[id].amount}\nDate: ${elementArray[id].dot}`;
     } else if (identifier == KEYS_SERIALIZER.ARCHIVE) {
       title = "Archived Purchase Detail";
-      element = "archives";
+      element = KEYS.ARCHIVE;
       elementArray = archives;
       setElement = setArchives.bind();
+      vody =
+        description +
+        `Name: ${elementArray[id].name}\nValue: ${elementArray[id].value}\nType: ${elementArray[id].type}\nDate: ${elementArray[id].dop}`;
     } else {
       console.log("error: " + identifier);
     }
 
     Alert.alert(
       title,
-      description + `Description: ${elementArray[id].description}\Amount: ${elementArray[id].amount}\nDate: ${elementArray[id].dot}`,
+      body,
       [
         {
           text: leftButton,
@@ -166,7 +204,7 @@ export default function Purchase({ navigation }) {
                           }}
                         >
                           <View style={styles.rowGap}>
-                            <View style={styles.row}>
+                            <View style={{ ...styles.row, flex: 2, backgroundColor: "transparent" }}>
                               <View
                                 style={{
                                   width: verticalScale(25),
@@ -178,9 +216,29 @@ export default function Purchase({ navigation }) {
                               >
                                 {categoryIcons(15).find((category) => category.label === innerData.type).icon}
                               </View>
-                              <Text style={styles.buttonText}>{innerData.name}</Text>
+                              <View style={{ justifyContent: "center" }}>
+                                <Text style={styles.buttonText}>{innerData.name}</Text>
+                              </View>
                             </View>
-                            <Text style={styles.buttonText}>{innerData.value + " €"}</Text>
+                            <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
+                              <View style={{ justifyContent: "center", flex: 1 }}>
+                                <Text style={styles.buttonText}>{innerData.value + " €"}</Text>
+                              </View>
+                              {innerData.split ? (
+                                <View style={{ justifyContent: "center" }}>
+                                  <Text>{getSplitFirstName() + " -> " + innerData.split.weight + "%"}</Text>
+                                </View>
+                              ) : (
+                                <Pressable
+                                  style={{ borderRadius: 20, borderWidth: 1, padding: 5, justifyContent: "center" }}
+                                  onPress={() => {
+                                    handleSplit(innerData.index);
+                                  }}
+                                >
+                                  {utilIcons().find((type) => type.label === "Split").icon}
+                                </Pressable>
+                              )}
+                            </View>
                           </View>
                         </Pressable>
                       ))}
@@ -194,7 +252,7 @@ export default function Purchase({ navigation }) {
                               }}
                             >
                               <View style={styles.rowGap}>
-                                <View style={styles.row}>
+                                <View style={{ ...styles.row, flex: 2, backgroundColor: "transparent" }}>
                                   <View
                                     style={{
                                       width: verticalScale(25),
@@ -208,16 +266,16 @@ export default function Purchase({ navigation }) {
                                   </View>
                                   <Text style={styles.buttonText}>{innerData.description}</Text>
                                 </View>
-                                <Text style={styles.buttonText}>{innerData.amount + " €"}</Text>
+                                <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
+                                  <Text style={styles.buttonText}>{innerData.amount + " €"}</Text>
+                                </View>
                               </View>
                             </Pressable>
                           ))
-                        : console.log(key)}
+                        : null}
                     </CardWrapper>
                   </View>
-                ) : (
-                  console.log(key)
-                )
+                ) : null
               )}
               {archives.length != 0 ? (
                 <React.Fragment key={KEYS_SERIALIZER.ARCHIVE + KEYS_SERIALIZER.TOKEN_SEPARATOR + 1}>
@@ -237,7 +295,7 @@ export default function Purchase({ navigation }) {
                       }}
                     >
                       <View style={styles.rowGap}>
-                        <View style={styles.row}>
+                        <View style={{ ...styles.row, flex: 2, backgroundColor: "transparent" }}>
                           <View
                             style={{
                               width: verticalScale(25),
@@ -251,7 +309,9 @@ export default function Purchase({ navigation }) {
                           </View>
                           <Text style={styles.buttonText}>{cellData.name}</Text>
                         </View>
-                        <Text style={styles.buttonText}>{cellData.value + " €"}</Text>
+                        <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
+                          <Text style={styles.buttonText}>{cellData.value + " €"}</Text>
+                        </View>
                       </View>
                     </Pressable>
                   </CardWrapper>
