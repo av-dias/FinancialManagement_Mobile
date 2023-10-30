@@ -15,11 +15,15 @@ import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
 import { _styles } from "./style";
 import { categoryIcons } from "../../assets/icons";
-import Header from "../../components/header/header";
-import ModalCustom from "../../components/modal/modal";
-import commonStyles from "../../utility/commonStyles";
 import { getUser } from "../../functions/basic";
 import { KEYS } from "../../utility/storageKeys";
+
+import Header from "../../components/header/header";
+import ModalCustom from "../../components/modal/modal";
+import CustomCalendarStrip from "../../components/customCalendarStrip/customCalendarStrip";
+import CustomButton from "../../components/customButton/customButton";
+
+import commonStyles from "../../utility/commonStyles";
 
 const HEIGHT = Dimensions.get("window").height;
 const BORDER_RADIUS = 10;
@@ -47,7 +51,6 @@ export default function Purchase({ navigation }) {
     async function fetchData() {
       let email = await getUser();
       setEmail(email);
-      console.log(email);
       await getSplitUser();
     }
     // write your code here, it's like componentWillMount
@@ -261,88 +264,7 @@ export default function Purchase({ navigation }) {
                 })}
               </ScrollView>
             </View>
-
-            <CalendarStrip
-              ref={(component) => (this._calendar = component)}
-              selectedDate={pickerCurrentDate}
-              calendarAnimation={{ type: "sequence", duration: 15 }}
-              daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: color.calendarBorder }}
-              style={{ height: "15%", backgroundColor: color.complementary, borderRadius: BORDER_RADIUS, elevation: 2 }}
-              calendarHeaderStyle={{
-                color: "black",
-                marginTop: 5,
-                padding: horizontalScale(3),
-                fontSize: verticalScale(15),
-                borderWidth: 1,
-                borderRadius: BORDER_RADIUS,
-                borderColor: "white",
-                backgroundColor: "white",
-                elevation: 2,
-              }}
-              calendarColor={"transparent"}
-              dateNumberStyle={{ color: "black", fontSize: verticalScale(15) }}
-              dateNameStyle={{ color: "black", fontSize: verticalScale(10) }}
-              highlightDateNumberStyle={{ color: color.secundary, fontSize: verticalScale(20) }}
-              highlightDateNameStyle={{ color: color.secundary }}
-              disabledDateNameStyle={{ color: "grey" }}
-              disabledDateNumberStyle={{ color: "grey" }}
-              iconContainer={{ flex: 0.1 }}
-              startFromMonday={true}
-              scrollable={true}
-              scrollerPaging={true}
-              onHeaderSelected={() => {
-                calendarPicker();
-              }}
-            />
-            {datePicker ? null : (
-              <CardWrapper
-                style={{
-                  position: "absolute",
-                  top: "30%",
-                  alignSelf: "center",
-                  zIndex: 1,
-                }}
-              >
-                <CalendarPicker
-                  width={horizontalScale(345)}
-                  onDateChange={(date) => {
-                    changeDateCalendar(date);
-                  }}
-                  todayBackgroundColor="transparent"
-                  todayTextStyle={{
-                    color: "gray",
-                    fontWeight: "bold",
-                    padding: 5,
-                    textAlign: "center",
-                    justifyContent: "center",
-                  }}
-                  monthYearHeaderWrapperStyle={{
-                    color: "black",
-                    borderWidth: 1,
-                    borderRadius: BORDER_RADIUS,
-                    padding: horizontalScale(3),
-                    borderColor: "white",
-                    backgroundColor: "white",
-                  }}
-                  monthTitleStyle={{ fontWeight: "bold", fontSize: verticalScale(15) }}
-                  yearTitleStyle={{ fontWeight: "bold", fontSize: verticalScale(15) }}
-                  selectedDayColor="red"
-                  startFromMonday={true}
-                  initialDate={pickerCurrentDate}
-                />
-                <View style={{ marginTop: -verticalScale(26) }}>
-                  <Pressable
-                    style={{ alignSelf: "flex-end", backgroundColor: "transparent", marginTop: -verticalScale(5) }}
-                    onPress={() => {
-                      changeDateCalendar(pickerCurrentDate);
-                    }}
-                  >
-                    <AntDesign style={{ padding: verticalScale(5) }} name="closecircle" size={verticalScale(20)} color="black" />
-                  </Pressable>
-                </View>
-              </CardWrapper>
-            )}
-
+            <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
             <CardWrapper
               style={{
                 gap: 10,
@@ -484,11 +406,7 @@ export default function Purchase({ navigation }) {
             </CardWrapper>
           </View>
         </View>
-        <View style={styles.submitButton}>
-          <Pressable style={styles.button} onPress={handlePurchase}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </Pressable>
-        </View>
+        <CustomButton handlePress={handlePurchase} />
       </View>
     </View>
   );
