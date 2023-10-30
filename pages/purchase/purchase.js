@@ -156,7 +156,7 @@ export default function Purchase({ navigation }) {
               <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
             </View>
             <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: 20 }}>
-              <Text style={{ fontSize: 20 }}>You: Ana Rebelo</Text>
+              <Text style={{ fontSize: 20 }}>You: {email}</Text>
               <Text style={{ fontSize: 20 }}>Amount: {(value * (100 - slider)) / 100}</Text>
               <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
             </View>
