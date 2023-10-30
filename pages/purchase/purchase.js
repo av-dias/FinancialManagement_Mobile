@@ -47,10 +47,12 @@ export default function Purchase({ navigation }) {
     async function fetchData() {
       let email = await getUser();
       setEmail(email);
+      console.log(email);
+      await getSplitUser();
     }
     // write your code here, it's like componentWillMount
     fetchData();
-  }, []);
+  }, [email]);
 
   const getSplitUser = async () => {
     let splitList = JSON.parse(await getFromStorage(KEYS.SPLIT_USERS, email));
@@ -415,7 +417,6 @@ export default function Purchase({ navigation }) {
                   onPress={async () => {
                     setSplitStatus(!splitStatus);
                     setSlider(50);
-                    await getSplitUser();
                   }}
                 >
                   <Text>Split {splitStatus ? slider + "%" : ""}</Text>
