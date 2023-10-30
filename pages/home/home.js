@@ -74,7 +74,7 @@ export default function Home({ navigation }) {
         }
       }
       fetchData();
-    }, [purchaseTotal, currentMonth, currentYear])
+    }, [purchaseTotal, currentMonth, currentYear, email])
   );
 
   return (
