@@ -35,7 +35,7 @@ export default function Purchase({ navigation }) {
       alert("Please fill all fields.");
       return;
     }
-    let newTransaction = { amount: value, dot: date, description: description, user_destination_id: destination };
+    let newTransaction = { amount: value, dot: date.toISOString().split("T")[0], description: description, user_destination_id: destination };
     await addToStorage(KEYS.TRANSACTION, JSON.stringify(newTransaction), email);
     console.log("Transaction Added: " + newTransaction);
   };

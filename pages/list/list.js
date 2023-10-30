@@ -18,17 +18,19 @@ import { getUser } from "../../functions/basic";
 import { months } from "../../utility/calendar";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
-import { categoryIcons } from "../../assets/icons";
+import { categoryIcons, utilIcons } from "../../assets/icons";
 const TABLE_ICON_SIZE = 15;
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
   const [purchases, setPurchases] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [archives, setArchives] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [groupedPurchases, setGroupedPurchases] = useState([]);
+  const [groupedTransactions, setGroupedTransactions] = useState([]);
   const [refreshTrigger, setRefreshTrigger] = useState(true);
 
   const groupByDate = (data) => {
@@ -36,7 +38,8 @@ export default function Purchase({ navigation }) {
     let grouped_data = data
       .map((value, index) => ({ ...value, index: index }))
       .reduce((rv, x) => {
-        (rv[x["dop"]] = rv[x["dop"]] || []).push(x);
+        let dateValue = x["dop"] || x["dot"];
+        (rv[dateValue] = rv[dateValue] || []).push(x);
         return rv;
       }, {});
 
@@ -50,11 +53,16 @@ export default function Purchase({ navigation }) {
         setEmail(email);
         try {
           let res = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
-          if (!res) res = [];
-          setPurchases(res);
-          console.log("Purchase len: " + res.length);
+          let resTrans = JSON.parse(await getFromStorage(KEYS.TRANSACTION, email));
 
+          if (!res) res = [];
+          if (!resTrans) resTrans = [];
+          setPurchases(res);
+          setTransactions(resTrans);
+          console.log("Purchase len: " + res.length);
+          console.log("Transaction len: " + resTrans.length);
           setGroupedPurchases(groupByDate(res));
+          setGroupedTransactions(groupByDate(resTrans));
         } catch (e) {
           console.log("Purchase: " + e);
         }
@@ -73,6 +81,7 @@ export default function Purchase({ navigation }) {
 
   const showAlert = (key) => {
     let [identifier, id] = key.split(KEYS_SERIALIZER.TOKEN_SEPARATOR);
+    console.log(identifier, id);
     let element,
       elementArray,
       setElement,
@@ -89,6 +98,14 @@ export default function Purchase({ navigation }) {
       description = "Are you sure you want to remove this purchase permanently?" + "\n\n";
       leftButton = "Yes";
       rightButton = "No";
+    } else if (identifier == KEYS_SERIALIZER.TRANSACTION) {
+      element = "transactions";
+      elementArray = transactions;
+      setElement = setTransactions.bind();
+      title = "Delete Transaction";
+      description = "Are you sure you want to remove this transaction permanently?" + "\n\n";
+      leftButton = "Yes";
+      rightButton = "No";
     } else if (identifier == KEYS_SERIALIZER.ARCHIVE) {
       title = "Archived Purchase Detail";
       element = "archives";
@@ -100,12 +117,12 @@ export default function Purchase({ navigation }) {
 
     Alert.alert(
       title,
-      description + `Name: ${elementArray[id].name}\nValue: ${elementArray[id].value}\nType: ${elementArray[id].type}\nDate: ${elementArray[id].dop}`,
+      description + `Description: ${elementArray[id].description}\Amount: ${elementArray[id].amount}\nDate: ${elementArray[id].dot}`,
       [
         {
           text: leftButton,
           onPress: async () => {
-            if (identifier == KEYS_SERIALIZER.PURCHASE) {
+            if (identifier == KEYS_SERIALIZER.PURCHASE || identifier == KEYS_SERIALIZER.TRANSACTION) {
               arr = elementArray.filter((item) => item != elementArray[id]);
               await saveToStorage(element, JSON.stringify(arr), email);
               setElement(arr);
@@ -167,6 +184,35 @@ export default function Purchase({ navigation }) {
                           </View>
                         </Pressable>
                       ))}
+                      {groupedTransactions[key]
+                        ? groupedTransactions[key].map((innerData) => (
+                            <Pressable
+                              key={KEYS_SERIALIZER.TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
+                              style={styles.button}
+                              onPress={() => {
+                                showAlert(KEYS_SERIALIZER.TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index);
+                              }}
+                            >
+                              <View style={styles.rowGap}>
+                                <View style={styles.row}>
+                                  <View
+                                    style={{
+                                      width: verticalScale(25),
+                                      backgroundColor: "red",
+                                      borderRadius: 10,
+                                      borderWidth: 1,
+                                      padding: verticalScale(2),
+                                    }}
+                                  >
+                                    {utilIcons().find((type) => type.label === "Transaction").icon}
+                                  </View>
+                                  <Text style={styles.buttonText}>{innerData.description}</Text>
+                                </View>
+                                <Text style={styles.buttonText}>{innerData.amount + " €"}</Text>
+                              </View>
+                            </Pressable>
+                          ))
+                        : console.log(key)}
                     </CardWrapper>
                   </View>
                 ) : (

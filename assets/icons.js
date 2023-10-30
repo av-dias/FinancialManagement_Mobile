@@ -28,3 +28,13 @@ export const categoryIcons = (icon_size = 25) => {
     { label: "Other", icon: <FontAwesome name="plus-square-o" style={{ alignSelf: "center" }} size={iconSize} color="black" /> },
   ];
 };
+
+export const utilIcons = (size = 25) => {
+  return [
+    { label: "Transaction", icon: <MaterialIcons name="compare-arrows" style={{ alignSelf: "center" }} size={size} color="black" /> },
+    {
+      label: "Default",
+      icon: <MaterialIcons name="compare-arrows" style={{ alignSelf: "center" }} size={size} color="black" />,
+    },
+  ];
+};
