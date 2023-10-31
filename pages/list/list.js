@@ -11,8 +11,9 @@ import { color } from "../../utility/colors";
 import { _styles } from "./style";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
-import Header from "../../components/header/header";
+import { getSplitUser, getSplitEmail, getSplitFirstName } from "../../functions/split";
 
+import Header from "../../components/header/header";
 import { getFromStorage, saveToStorage } from "../../functions/secureStorage";
 import { getUser } from "../../functions/basic";
 import { months } from "../../utility/calendar";
@@ -34,29 +35,9 @@ export default function Purchase({ navigation }) {
   const [refreshTrigger, setRefreshTrigger] = useState(true);
   const [splitUser, setSplitUser] = useState("");
 
-  const getSplitUser = async () => {
-    let splitList = JSON.parse(await getFromStorage(KEYS.SPLIT_USERS, email));
-
-    let value = { email: "Not Registed", name: "Not Registed" };
-    if (splitList && splitList.length != 0) value = splitList[0];
-    setSplitUser(value);
-  };
-
-  const getSplitEmail = () => {
-    return splitUser.email;
-  };
-
-  const getSplitName = () => {
-    return splitUser.name;
-  };
-
-  const getSplitFirstName = () => {
-    return getSplitName().split(" ")[0];
-  };
-
   const handleSplit = async (index) => {
     purchases[index]["split"] = {};
-    purchases[index]["split"]["userId"] = getSplitEmail();
+    purchases[index]["split"]["userId"] = getSplitEmail(splitUser);
     purchases[index]["split"]["weight"] = 50;
     setPurchases(purchases);
 
@@ -82,7 +63,7 @@ export default function Purchase({ navigation }) {
       async function fetchData() {
         let email = await getUser();
         setEmail(email);
-        await getSplitUser();
+        await getSplitUser(setSplitUser, email);
         try {
           let res = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
           let resTrans = JSON.parse(await getFromStorage(KEYS.TRANSACTION, email));
@@ -226,7 +207,7 @@ export default function Purchase({ navigation }) {
                               </View>
                               {innerData.split ? (
                                 <View style={{ justifyContent: "center" }}>
-                                  <Text>{getSplitFirstName() + " -> " + innerData.split.weight + "%"}</Text>
+                                  <Text>{getSplitFirstName(splitUser) + " -> " + innerData.split.weight + "%"}</Text>
                                 </View>
                               ) : (
                                 <Pressable

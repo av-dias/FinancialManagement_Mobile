@@ -14,6 +14,7 @@ import CustomCalendarStrip from "../../components/customCalendarStrip/customCale
 import CustomButton from "../../components/customButton/customButton";
 import { KEYS } from "../../utility/storageKeys";
 import { saveToStorage, getFromStorage, addToStorage } from "../../functions/secureStorage";
+import { getSplitUser, getSplitEmail } from "../../functions/split";
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
@@ -23,19 +24,13 @@ export default function Purchase({ navigation }) {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date());
 
-  const getSplitUser = async () => {
-    let splitList = JSON.parse(await getFromStorage(KEYS.SPLIT_USERS, email));
-    let value = { email: "Not Registed", name: "Not Registed" };
-    if (splitList && splitList.length != 0) value = splitList[0];
-    setDestination(value.email);
-  };
-
   const handleTransaction = async () => {
-    if (destination == "" || value == "" || description == "" || date == "") {
+    let _destination = getSplitEmail(destination);
+    if (_destination == "" || value == "" || description == "" || date == "") {
       alert("Please fill all fields.");
       return;
     }
-    let newTransaction = { amount: value, dot: date.toISOString().split("T")[0], description: description, user_destination_id: destination };
+    let newTransaction = { amount: value, dot: date.toISOString().split("T")[0], description: description, user_destination_id: _destination };
     await addToStorage(KEYS.TRANSACTION, JSON.stringify(newTransaction), email);
     console.log("Transaction Added: " + newTransaction);
   };
@@ -43,10 +38,11 @@ export default function Purchase({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
-        await getSplitUser();
         let email = await getUser();
         setEmail(email);
         setValue("");
+
+        await getSplitUser(setDestination, email);
         try {
         } catch (e) {
           console.log("Transaction: " + e);
@@ -69,7 +65,7 @@ export default function Purchase({ navigation }) {
             <CustomInput
               Icon={<Entypo style={styles.iconCenter} name="email" size={verticalScale(20)} color="black" />}
               placeholder="Email"
-              value={destination}
+              value={getSplitEmail(destination)}
               editable={false}
             />
             <CustomInput

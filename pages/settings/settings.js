@@ -6,6 +6,7 @@ import { MaterialIcons, FontAwesome, Entypo, FontAwesome5 } from "@expo/vector-i
 import ModalCustom from "../../components/modal/modal";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 
+import { getSplitUser, getSplitUsers, getSplitEmail, getSplitFirstName } from "../../functions/split";
 import { saveToStorage, getFromStorage, addToStorage } from "../../functions/secureStorage";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
@@ -26,21 +27,11 @@ export default function Settings({ navigation }) {
   const [modalSize, setModalSize] = useState(MODAL_DEFAULT_SIZE);
   const [splitUsers, setSplitUsers] = useState("");
 
-  const getSplitUsers = async () => {
-    try {
-      const users = JSON.parse(await getFromStorage(KEYS.SPLIT_USERS, await getUser()));
-      console.log(users);
-      setSplitUsers(users);
-    } catch (err) {
-      console.log("Purchase: " + err);
-    }
-  };
-
   const handleNewSplitUser = async () => {
     let value = { email: newEmail, name: newName };
     let user = await getUser();
     await addToStorage(KEYS.SPLIT_USERS, JSON.stringify(value), user);
-    await getSplitUsers();
+    await getSplitUsers(setSplitUsers, email);
 
     this.textInputName.clear();
     this.textInputEmail.clear();
@@ -74,7 +65,6 @@ export default function Settings({ navigation }) {
                 onPress={async () => {
                   setModalSize(modalSize == MODAL_LARGE_SIZE ? MODAL_DEFAULT_SIZE : MODAL_LARGE_SIZE);
                   setListVisible(!listVisible);
-                  if (modalSize == MODAL_DEFAULT_SIZE) getSplitUsers();
                 }}
               >
                 <FontAwesome5 name="list" size={15} color="black" />
@@ -83,7 +73,7 @@ export default function Settings({ navigation }) {
             {listVisible && (
               <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: 10 }}>
                 <Text style={{ fontSize: 20 }}>Users Registered</Text>
-                {splitUsers ? splitUsers.map((row) => <Text key={"split-user" + row.email}>{row.email}</Text>) : null}
+                {splitUsers ? splitUsers.map((row) => <Text key={"split-user" + getSplitEmail(row)}>{getSplitEmail(row)}</Text>) : null}
               </View>
             )}
             <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: 10 }}>
@@ -135,10 +125,12 @@ export default function Settings({ navigation }) {
     async function fetchData() {
       let email = await getUser();
       setEmail(email);
+      console.log(email);
+      await getSplitUsers(setSplitUsers, email);
     }
     // write your code here, it's like componentWillMount
     fetchData();
-  }, []);
+  }, [email]);
 
   const showAlert = () =>
     Alert.alert(
