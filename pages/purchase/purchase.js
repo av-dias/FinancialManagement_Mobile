@@ -23,11 +23,6 @@ import Carrossel from "../../components/carrossel/carrossel";
 import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
 import { ModalPurchase } from "../../utility/modalContent";
 
-import commonStyles from "../../utility/commonStyles";
-
-const HEIGHT = Dimensions.get("window").height;
-const BORDER_RADIUS = 10;
-const CATERGORY_ICON_SIZE = 25;
 const TABLE_ICON_SIZE = 15;
 
 export default function Purchase({ navigation }) {
