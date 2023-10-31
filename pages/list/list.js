@@ -9,6 +9,7 @@ import { _styles } from "./style";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
 import { getSplitUser, getSplitEmail, getSplitFirstName } from "../../functions/split";
+import { handleSplit, groupByDate } from "./handler";
 
 import Header from "../../components/header/header";
 import { getFromStorage, saveToStorage } from "../../functions/secureStorage";
@@ -30,29 +31,6 @@ export default function Purchase({ navigation }) {
   const [groupedTransactions, setGroupedTransactions] = useState([]);
   const [refreshTrigger, setRefreshTrigger] = useState(true);
   const [splitUser, setSplitUser] = useState("");
-
-  const handleSplit = async (index) => {
-    purchases[index]["split"] = {};
-    purchases[index]["split"]["userId"] = getSplitEmail(splitUser);
-    purchases[index]["split"]["weight"] = 50;
-    setPurchases(purchases);
-
-    await saveToStorage(KEYS.PURCHASE, JSON.stringify(purchases), email);
-    setRefreshTrigger(!refreshTrigger);
-  };
-
-  const groupByDate = (data) => {
-    if (!data || data.length == 0) return {};
-    let grouped_data = data
-      .map((value, index) => ({ ...value, index: index }))
-      .reduce((rv, x) => {
-        let dateValue = x["dop"] || x["dot"];
-        (rv[dateValue] = rv[dateValue] || []).push(x);
-        return rv;
-      }, {});
-
-    return grouped_data;
-  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -208,8 +186,17 @@ export default function Purchase({ navigation }) {
                               ) : (
                                 <Pressable
                                   style={{ borderRadius: 20, borderWidth: 1, padding: 5, justifyContent: "center" }}
-                                  onPress={() => {
-                                    handleSplit(innerData.index);
+                                  onPress={async () => {
+                                    await handleSplit(
+                                      email,
+                                      purchases,
+                                      setPurchases,
+                                      innerData.index,
+                                      splitUser,
+                                      getSplitEmail(splitUser),
+                                      refreshTrigger,
+                                      setRefreshTrigger
+                                    );
                                   }}
                                 >
                                   {utilIcons().find((type) => type.label === "Split").icon}

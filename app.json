@@ -2,7 +2,7 @@
   "expo": {
     "name": "fm_mobile",
     "slug": "fm_mobile",
-    "version": "2.72",
+    "version": "2.73",
     "orientation": "portrait",
     "icon": "./images/icon.png",
     "userInterfaceStyle": "light",
