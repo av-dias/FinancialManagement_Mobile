@@ -4,12 +4,11 @@ import React, { useState, useEffect } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
-import { saveToStorage, getFromStorage } from "../../functions/secureStorage";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
-import { KEYS } from "../../utility/storageKeys";
 import { handlePurchase } from "./handler";
+import { getSplitUser, getSplitName, getSplitEmail } from "../../functions/split";
 
 import Header from "../../components/header/header";
 import ModalCustom from "../../components/modal/modal";
@@ -41,27 +40,11 @@ export default function Purchase({ navigation }) {
     async function fetchData() {
       let email = await getUser();
       setEmail(email);
-      await getSplitUser();
+      await getSplitUser(setSplitUser, email);
     }
     // write your code here, it's like componentWillMount
     fetchData();
   }, [email]);
-
-  const getSplitUser = async () => {
-    let splitList = JSON.parse(await getFromStorage(KEYS.SPLIT_USERS, email));
-
-    let value = { email: "Not Registed", name: "Not Registed" };
-    if (splitList && splitList.length != 0) value = splitList[0];
-    setSplitUser(value);
-  };
-
-  const getSplitName = () => {
-    return splitUser.name;
-  };
-
-  const getSplitEmail = () => {
-    return splitUser.email;
-  };
 
   useEffect(() => {
     async function fetchData() {
@@ -78,7 +61,7 @@ export default function Purchase({ navigation }) {
       <View style={styles.usableScreen}>
         <View style={{ flex: 6 }}>
           <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible}>
-            {ModalPurchase(list, value, email, modalContentFlag, modalVisible, setModalVisible, getSplitName(), slider, styles)}
+            {ModalPurchase(list, value, email, modalContentFlag, modalVisible, setModalVisible, getSplitName(splitUser), slider, styles)}
           </ModalCustom>
           <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
             <Pressable
@@ -135,7 +118,7 @@ export default function Purchase({ navigation }) {
         </View>
         <CustomButton
           handlePress={() => {
-            handlePurchase(email, value, type, name, note, splitStatus, getSplitEmail(), slider, setValue, setNote, list, setList);
+            handlePurchase(email, value, type, name, note, splitStatus, getSplitEmail(splitUser), slider, setValue, setNote, list, setList);
           }}
         />
       </View>
