@@ -97,10 +97,6 @@ export const _styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
-  iconLabel: { fontSize: verticalScale(8), alignSelf: "center", backgroundColor: "transparent" },
-  categoryContainer: { justifyContent: "center", alignItems: "center" },
-  categoryIconContainer: { paddingHorizontal: 20 },
-  categoryScrollContainer: { backgroundColor: "transparent" },
   scrollTable: { height: "100%", backgroundColor: "transparent" },
   divider: { margin: -5 },
 });

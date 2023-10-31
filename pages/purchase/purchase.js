@@ -23,6 +23,7 @@ import CustomCalendarStrip from "../../components/customCalendarStrip/customCale
 import CustomButton from "../../components/customButton/customButton";
 import SplitSlider from "../../components/splitSlider/splitSlider";
 import CustomInput from "../../components/customInput/customInput";
+import Carrossel from "../../components/carrossel/carrossel";
 
 import commonStyles from "../../utility/commonStyles";
 
@@ -228,42 +229,13 @@ export default function Purchase({ navigation }) {
               />
               <Text style={styles.symbolBig}>€</Text>
             </View>
-
-            <View style={{ backgroundColor: "transparent", height: "15%", maxHeight: 100, borderRadius: BORDER_RADIUS }}>
-              <ScrollView
-                horizontal={true}
-                rowGap={20}
-                style={styles.categoryScrollContainer}
-                contentContainerStyle={{
-                  gap: verticalScale(10),
-                  paddingHorizontal: 1,
-                  paddingVertical: 10,
-                }}
-              >
-                {categoryIcons().map((iconComponent) => {
-                  return (
-                    <CardWrapper
-                      key={iconComponent.label}
-                      style={{ backgroundColor: type == iconComponent.label ? color.secundary : color.complementary }}
-                    >
-                      <Pressable
-                        key={iconComponent.label}
-                        style={{
-                          ...styles.categoryContainer,
-                        }}
-                        onPress={() => {
-                          setType(iconComponent.label);
-                          this.textInputName.clear();
-                        }}
-                      >
-                        <View style={styles.categoryIconContainer}>{iconComponent.icon}</View>
-                        <Text style={styles.iconLabel}>{iconComponent.label}</Text>
-                      </Pressable>
-                    </CardWrapper>
-                  );
-                })}
-              </ScrollView>
-            </View>
+            <Carrossel
+              type={type}
+              setType={setType}
+              handlePress={() => {
+                setName("");
+              }}
+            />
             <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
             <CardWrapper
               style={{
