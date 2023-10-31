@@ -2,11 +2,8 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Divider } from "react-native-paper";
-import { MaterialIcons, FontAwesome, Feather, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Card } from "@rneui/themed";
 
 import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
-import { color } from "../../utility/colors";
 
 import { _styles } from "./style";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
@@ -20,7 +17,6 @@ import { months } from "../../utility/calendar";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { categoryIcons, utilIcons } from "../../assets/icons";
-const TABLE_ICON_SIZE = 15;
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
