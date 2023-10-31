@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { color } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 import commonStyles from "../../utility/commonStyles";
 

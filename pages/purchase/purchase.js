@@ -10,8 +10,8 @@ import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwes
 import CalendarPicker from "react-native-calendar-picker";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
-import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
+import { saveToStorage, getFromStorage } from "../../functions/secureStorage";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import { _styles } from "./style";
 import { categoryIcons } from "../../assets/icons";
 import { getUser } from "../../functions/basic";

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import { color } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale, inverseScale } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, inverseScale } from "../../functions/responsive";
 import { StatusBar } from "react-native";
 
 export const _styles = StyleSheet.create({

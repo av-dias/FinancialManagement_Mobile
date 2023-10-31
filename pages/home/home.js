@@ -8,9 +8,9 @@ import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-ta
 import { Card } from "@rneui/themed";
 import { Divider } from "react-native-paper";
 
-import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
+import { saveToStorage, getFromStorage } from "../../functions/secureStorage";
 import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
-import { horizontalScale, verticalScale, moderateScale, largeScale, heightTreshold } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, largeScale, heightTreshold } from "../../functions/responsive";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 import CalendarCard from "../../components/calendarCard/calendarCard";

@@ -4,9 +4,9 @@ import React, { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialIcons, FontAwesome, Entypo, FontAwesome5 } from "@expo/vector-icons";
 import ModalCustom from "../../components/modal/modal";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 
-import { saveToStorage, getFromStorage, addToStorage } from "../../utility/secureStorage";
+import { saveToStorage, getFromStorage, addToStorage } from "../../functions/secureStorage";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 import { KEYS } from "../../utility/storageKeys";

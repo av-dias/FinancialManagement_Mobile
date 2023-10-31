@@ -3,9 +3,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import { CheckBox } from "@rneui/themed";
 import React, { useState, useEffect } from "react";
 import navLogo from "../../images/logo.png";
-import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
+import { saveToStorage, getFromStorage } from "../../functions/secureStorage";
 import { _styles } from "./style";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import { KEYS } from "../../utility/storageKeys";
 
 export default function Login({ navigation }) {

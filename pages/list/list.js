@@ -5,7 +5,7 @@ import { Divider } from "react-native-paper";
 import { MaterialIcons, FontAwesome, Feather, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Card } from "@rneui/themed";
 
-import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
 import { color } from "../../utility/colors";
 
 import { _styles } from "./style";
@@ -13,7 +13,7 @@ import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
 import Header from "../../components/header/header";
 
-import { getFromStorage, saveToStorage } from "../../utility/secureStorage";
+import { getFromStorage, saveToStorage } from "../../functions/secureStorage";
 import { getUser } from "../../functions/basic";
 import { months } from "../../utility/calendar";
 import CalendarCard from "../../components/calendarCard/calendarCard";

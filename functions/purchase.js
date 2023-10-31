@@ -1,4 +1,4 @@
-import { getFromStorage } from "../utility/secureStorage";
+import { getFromStorage } from "./secureStorage";
 
 export const getPurchaseStats = async (email, currentMonth) => {
   let purchases = JSON.parse(await getFromStorage("purchases", email));

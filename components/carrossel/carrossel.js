@@ -1,6 +1,6 @@
 import { Text, View, ScrollView, Pressable } from "react-native";
 import { _styles } from "./style";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import CardWrapper from "../cardWrapper/cardWrapper";
 import { categoryIcons } from "../../assets/icons";
 const BORDER_RADIUS = 10;

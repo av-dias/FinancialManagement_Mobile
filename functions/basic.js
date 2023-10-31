@@ -1,4 +1,4 @@
-import { getFromStorage } from "../utility/secureStorage";
+import { getFromStorage } from "./secureStorage";
 
 export const getUser = async () => {
   try {

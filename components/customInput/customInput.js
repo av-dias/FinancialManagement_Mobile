@@ -1,7 +1,7 @@
 import { Text, View, TextInput } from "react-native";
 import { _styles } from "./style";
 import { MaterialIcons } from "@expo/vector-icons";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import CardWrapper from "../cardWrapper/cardWrapper";
 
 export default function CustomInput({ Icon, placeholder, value = "", editable = true, setValue, noStyle = false }) {

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import { color } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 
 const borderRadius = 10;
 

@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 import { color } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 const HEIGHT = Dimensions.get("window").height;
 
 const borderRadius = 10;

@@ -1,5 +1,5 @@
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Feather } from "@expo/vector-icons";
-import { horizontalScale, verticalScale, moderateScale } from "../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale } from "../functions/responsive";
 
 export const categoryIcons = (icon_size = 25) => {
   const iconSize = verticalScale(icon_size);

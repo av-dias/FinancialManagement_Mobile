@@ -5,7 +5,7 @@ import { Card } from "@rneui/themed";
 
 import { _styles } from "./style";
 import { months } from "../../utility/calendar";
-import { horizontalScale, verticalScale } from "../../utility/responsive";
+import { horizontalScale, verticalScale } from "../../functions/responsive";
 
 export default function CalendarCard({ monthState: [currentMonth, setCurrentMonth], yearState: [currentYear, setCurrentYear] }) {
   const styles = _styles;

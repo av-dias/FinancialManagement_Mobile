@@ -4,9 +4,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 
 import { _styles } from "./style";
-import { saveToStorage, getFromStorage } from "../../utility/secureStorage";
+import { saveToStorage, getFromStorage } from "../../functions/secureStorage";
 import { getServerStatus } from "../../functions/basic";
-import { horizontalScale, verticalScale, moderateScale } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
 
 export default function Header(props) {
   const styles = _styles;

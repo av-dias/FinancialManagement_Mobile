@@ -6,7 +6,7 @@ import { _styles } from "./style";
 import { color } from "../../utility/colors";
 
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 
 export default function SplitSlider({ value, setModalVisible, setModalContentFlag, splitStatus, setSplitStatus, slider, setSlider }) {
   const styles = _styles;

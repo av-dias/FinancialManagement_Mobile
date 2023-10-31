@@ -1,6 +1,6 @@
 import { Text, View, TextInput, Pressable } from "react-native";
 import { _styles } from "./style";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import CalendarStrip from "react-native-calendar-strip";
 import React, { useState, useEffect } from "react";
 import CalendarPicker from "react-native-calendar-picker";

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import { color } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 const statusBarHeight = StatusBar.currentHeight;
 const naviagtionBarHeight = verticalScale(110);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Entypo } from "@expo/vector-icons";
 
 import { _styles } from "./style";
@@ -13,7 +13,7 @@ import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import CustomCalendarStrip from "../../components/customCalendarStrip/customCalendarStrip";
 import CustomButton from "../../components/customButton/customButton";
 import { KEYS } from "../../utility/storageKeys";
-import { saveToStorage, getFromStorage, addToStorage } from "../../utility/secureStorage";
+import { saveToStorage, getFromStorage, addToStorage } from "../../functions/secureStorage";
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
