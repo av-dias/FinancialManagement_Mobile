@@ -1,12 +1,8 @@
-import navLogo from "../../images/logo.png";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, Dimensions, ScrollView } from "react-native";
-import { color } from "../../utility/colors";
-import { Divider } from "react-native-paper";
 
 import React, { useState, useEffect } from "react";
 import CalendarStrip from "react-native-calendar-strip";
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
-import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Entypo } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import CalendarPicker from "react-native-calendar-picker";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
