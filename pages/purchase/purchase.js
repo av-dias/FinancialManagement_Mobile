@@ -24,6 +24,7 @@ import CustomButton from "../../components/customButton/customButton";
 import SplitSlider from "../../components/splitSlider/splitSlider";
 import CustomInput from "../../components/customInput/customInput";
 import Carrossel from "../../components/carrossel/carrossel";
+import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
 
 import commonStyles from "../../utility/commonStyles";
 
@@ -77,7 +78,6 @@ export default function Purchase({ navigation }) {
 
   const handlePurchase = async () => {
     let date = this._calendar.getSelectedDate();
-    console.log(type, name, value, date);
     if (type == "" || name == "" || value == "" || date == "" || !date) {
       alert("Please fill all fields.");
       return;
@@ -109,12 +109,8 @@ export default function Purchase({ navigation }) {
         [categoryIcons(TABLE_ICON_SIZE).find((category) => category.label === type).icon, name, value, date.toISOString().split("T")[0]],
         ...list,
       ]);
-      this.textInputValue.clear();
-      this.textInputNote.clear();
       setValue("");
       setNote("");
-
-      console.log("Purchase: " + purchases);
     } catch (err) {
       console.log("Purchase: " + err);
     }
@@ -216,19 +212,7 @@ export default function Purchase({ navigation }) {
             </Pressable>
           </View>
           <View style={styles.form}>
-            <View style={styles.rowNoBorder}>
-              <Text style={styles.symbolBig}>+</Text>
-              <TextInput
-                ref={(input) => {
-                  this.textInputValue = input;
-                }}
-                keyboardType="numeric"
-                style={styles.valueInput}
-                placeholder="0"
-                onChangeText={setValue}
-              />
-              <Text style={styles.symbolBig}>€</Text>
-            </View>
+            <MoneyInputHeader value={value} setValue={setValue} />
             <Carrossel
               type={type}
               setType={setType}
