@@ -25,6 +25,7 @@ import SplitSlider from "../../components/splitSlider/splitSlider";
 import CustomInput from "../../components/customInput/customInput";
 import Carrossel from "../../components/carrossel/carrossel";
 import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
+import { ModalPurchase } from "../../utility/modalContent";
 
 import commonStyles from "../../utility/commonStyles";
 
@@ -125,10 +126,6 @@ export default function Purchase({ navigation }) {
     fetchData();
   }, []);
 
-  const state = {
-    tableHead: ["Type", "Name", "Value", "Date"],
-  };
-
   const calendarPicker = () => {
     setDatePicker(!datePicker);
   };
@@ -138,67 +135,13 @@ export default function Purchase({ navigation }) {
     setPickerCurrentDate(new Date(date));
   };
 
-  const ModalContent = () => {
-    let content;
-
-    switch (modalContentFlag) {
-      case "split_info":
-        content = (
-          <View style={{ flex: 4, backgroundColor: "transparent", borderRadius: 20, padding: verticalScale(30), gap: 20 }}>
-            <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
-              <Pressable style={{}} onPress={() => setModalVisible(!modalVisible)}>
-                <Entypo name="cross" size={verticalScale(20)} color="black" />
-              </Pressable>
-            </View>
-            <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: 20 }}>
-              <Text style={{ fontSize: 20 }}>Split with: {getSplitName()}</Text>
-              <Text style={{ fontSize: 20 }}>Amount: {(value * slider) / 100}</Text>
-              <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
-            </View>
-            <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: 20 }}>
-              <Text style={{ fontSize: 20 }}>You: {email}</Text>
-              <Text style={{ fontSize: 20 }}>Amount: {(value * (100 - slider)) / 100}</Text>
-              <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
-            </View>
-          </View>
-        );
-        break;
-      default:
-        content = (
-          <View style={{ flex: 4, backgroundColor: "white", borderRadius: 20, padding: verticalScale(20) }}>
-            <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
-              <Pressable style={{}} onPress={() => setModalVisible(!modalVisible)}>
-                <Entypo name="cross" size={verticalScale(20)} color="black" />
-              </Pressable>
-            </View>
-            <View style={styles.tableInfo}>
-              <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
-                <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
-                <ScrollView style={styles.scrollTable}>
-                  {list.map((rowData, index) => (
-                    <TableWrapper key={index} style={styles.rowTable}>
-                      {rowData.map((cellData, cellIndex) => (
-                        <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
-                      ))}
-                    </TableWrapper>
-                  ))}
-                </ScrollView>
-              </Table>
-            </View>
-          </View>
-        );
-    }
-
-    return content;
-  };
-
   return (
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 6 }}>
           <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible}>
-            {ModalContent()}
+            {ModalPurchase(list, value, email, modalContentFlag, modalVisible, setModalVisible, getSplitName(), slider, styles)}
           </ModalCustom>
           <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
             <Pressable
