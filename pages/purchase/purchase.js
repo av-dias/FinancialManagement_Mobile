@@ -22,6 +22,7 @@ import ModalCustom from "../../components/modal/modal";
 import CustomCalendarStrip from "../../components/customCalendarStrip/customCalendarStrip";
 import CustomButton from "../../components/customButton/customButton";
 import SplitSlider from "../../components/splitSlider/splitSlider";
+import CustomInput from "../../components/customInput/customInput";
 
 import commonStyles from "../../utility/commonStyles";
 
@@ -121,7 +122,6 @@ export default function Purchase({ navigation }) {
   useEffect(() => {
     async function fetchData() {
       let email = await getUser();
-      console.log(email);
       setOnLoadData(email);
     }
     // write your code here, it's like componentWillMount
@@ -271,29 +271,20 @@ export default function Purchase({ navigation }) {
                 paddingHorizontal: horizontalScale(10),
               }}
             >
-              <View style={{ ...styles.row, backgroundColor: "transparent" }}>
-                <MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color="black" />
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Name"
-                  ref={(input) => {
-                    this.textInputName = input;
-                  }}
-                  onChangeText={setName}
-                />
-              </View>
-
-              <View style={{ ...styles.row, backgroundColor: "transparent" }}>
-                <MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Notes"
-                  ref={(input) => {
-                    this.textInputNote = input;
-                  }}
-                  onChangeText={setNote}
-                />
-              </View>
+              <CustomInput
+                noStyle={true}
+                Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color="black" />}
+                placeholder="Name"
+                setValue={setName}
+                value={name}
+              />
+              <CustomInput
+                noStyle={true}
+                Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />}
+                placeholder="Notes"
+                setValue={setNote}
+                value={note}
+              />
             </CardWrapper>
             <SplitSlider
               value={value}

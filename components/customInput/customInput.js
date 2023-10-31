@@ -4,11 +4,11 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../utility/responsive";
 import CardWrapper from "../cardWrapper/cardWrapper";
 
-export default function CustomInput({ Icon, placeholder, value = "", editable = true, setValue }) {
+export default function CustomInput({ Icon, placeholder, value = "", editable = true, setValue, noStyle = false }) {
   const styles = _styles;
 
   return (
-    <CardWrapper>
+    <CardWrapper noStyle={noStyle}>
       <View style={{ ...styles.row, backgroundColor: "transparent" }}>
         <View style={{ flex: 1, backgroundColor: "transparent", justifyContent: "center", alignSelf: "center" }}>{Icon}</View>
         <TextInput
