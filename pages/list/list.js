@@ -31,6 +31,7 @@ export default function Purchase({ navigation }) {
   const [groupedTransactions, setGroupedTransactions] = useState([]);
   const [refreshTrigger, setRefreshTrigger] = useState(true);
   const [splitUser, setSplitUser] = useState("");
+  const [listDays, setListDays] = useState([]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -39,30 +40,40 @@ export default function Purchase({ navigation }) {
         setEmail(email);
         await getSplitUser(setSplitUser, email);
         try {
-          let res = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
-          let resTrans = JSON.parse(await getFromStorage(KEYS.TRANSACTION, email));
+          let resPurchase = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
+          let resTransaction = JSON.parse(await getFromStorage(KEYS.TRANSACTION, email));
+          let resArchive = JSON.parse(await getFromStorage(KEYS.ARCHIVE, email));
 
-          if (!res) res = [];
-          if (!resTrans) resTrans = [];
-          setPurchases(res);
-          setTransactions(resTrans);
-          console.log("Purchase len: " + res.length);
-          console.log("Transaction len: " + resTrans.length);
-          setGroupedPurchases(groupByDate(res));
-          setGroupedTransactions(groupByDate(resTrans));
-        } catch (e) {
-          console.log("Purchase: " + e);
-        }
-        try {
-          let resArchive = JSON.parse(await getFromStorage(KEYS.ARCHIVE, email)) || [];
+          if (!resPurchase) resPurchase = [];
+          if (!resTransaction) resTransaction = [];
+          if (!resArchive) resArchive = [];
+
+          setPurchases(resPurchase);
+          setTransactions(resTransaction);
           setArchives(resArchive);
+
+          console.log("Purchase len: " + resPurchase.length);
+          console.log("Transaction len: " + resTransaction.length);
           console.log("Archive len: " + resArchive.length);
+
+          setGroupedPurchases(groupByDate(resPurchase));
+          setGroupedTransactions(groupByDate(resTransaction));
         } catch (e) {
           console.log("Archive: " + e);
         }
       }
       fetchData();
     }, [refreshTrigger, email])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        let list = Object.keys(groupedPurchases).concat(Object.keys(groupedTransactions)).sort();
+        setListDays([...new Set(list)]);
+      }
+      fetchData();
+    }, [groupedPurchases, groupedTransactions])
   );
 
   const showAlert = (key) => {
@@ -143,95 +154,96 @@ export default function Purchase({ navigation }) {
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
           <View style={{ flex: verticalScale(7), backgroundColor: "transparent" }}>
             <ScrollView>
-              {Object.keys(groupedPurchases).map((key) =>
+              {listDays.map((key) =>
                 new Date(key).getMonth() == currentMonth && new Date(key).getFullYear() == currentYear ? (
                   <View key={KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + key} style={{ paddingHorizontal: 5 }}>
                     <View style={styles.listDateBox}>
                       <Text style={styles.listDate}>{new Date(key).getDate() + " " + months[new Date(key).getMonth()]}</Text>
                     </View>
                     <CardWrapper key={key} style={styles.listBox}>
-                      {groupedPurchases[key].map((innerData) => (
-                        <Pressable
-                          key={KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
-                          style={styles.button}
-                          onPress={() => {
-                            showAlert(KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index);
-                          }}
-                        >
-                          <View style={styles.rowGap}>
-                            <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-                              <View
-                                style={{
-                                  width: verticalScale(40),
-                                  maxWidth: 50,
-                                  height: verticalScale(40),
-                                  maxHeight: 50,
-                                  backgroundColor: "transparent",
-                                  borderRadius: 10,
-                                  borderWidth: 1,
-                                  justifyContent: "center",
-                                }}
-                              >
-                                {categoryIcons(20).find((category) => category.label === innerData.type).icon}
+                      {groupedPurchases[key] &&
+                        groupedPurchases[key].map((innerData) => (
+                          <Pressable
+                            key={KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
+                            style={styles.button}
+                            onPress={() => {
+                              showAlert(KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index);
+                            }}
+                          >
+                            <View style={styles.rowGap}>
+                              <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
+                                <View
+                                  style={{
+                                    width: verticalScale(40),
+                                    maxWidth: 50,
+                                    height: verticalScale(40),
+                                    maxHeight: 50,
+                                    backgroundColor: "transparent",
+                                    borderRadius: 10,
+                                    borderWidth: 1,
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  {categoryIcons(20).find((category) => category.label === innerData.type).icon}
+                                </View>
+                                <View style={{ justifyContent: "center" }}>
+                                  <Text style={styles.buttonText}>{innerData.name}</Text>
+                                </View>
                               </View>
-                              <View style={{ justifyContent: "center" }}>
-                                <Text style={styles.buttonText}>{innerData.name}</Text>
+                              <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
+                                <View style={{ justifyContent: "center", flex: 1, backgroundColor: "transparent", alignItems: "flex-end" }}>
+                                  <Text style={styles.buttonText}>{innerData.value + " €"}</Text>
+                                </View>
+                                <View
+                                  style={{
+                                    flex: 2,
+                                    alignContent: "center",
+                                    alignItems: "center",
+                                    width: verticalScale(40),
+                                    maxWidth: 50,
+                                    height: verticalScale(40),
+                                    maxHeight: 50,
+                                    borderRadius: 20,
+                                    borderWidth: 1,
+                                    justifyContent: "center",
+                                    backgroundColor: "transparent",
+                                  }}
+                                >
+                                  {innerData.split ? (
+                                    <Text style={styles.text}>{innerData.split.weight + "%"}</Text>
+                                  ) : (
+                                    <Pressable
+                                      style={{
+                                        width: verticalScale(40),
+                                        maxWidth: 50,
+                                        height: verticalScale(40),
+                                        maxHeight: 50,
+                                        justifyContent: "center",
+                                        backgroundColor: "transparent",
+                                        alignContent: "center",
+                                      }}
+                                      onPress={async () => {
+                                        await handleSplit(
+                                          email,
+                                          purchases,
+                                          setPurchases,
+                                          innerData.index,
+                                          splitUser,
+                                          getSplitEmail(splitUser),
+                                          refreshTrigger,
+                                          setRefreshTrigger
+                                        );
+                                      }}
+                                    >
+                                      {utilIcons(verticalScale(20)).find((type) => type.label === "Split").icon}
+                                    </Pressable>
+                                  )}
+                                </View>
                               </View>
                             </View>
-                            <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-                              <View style={{ justifyContent: "center", flex: 1, backgroundColor: "transparent", alignItems: "flex-end" }}>
-                                <Text style={styles.buttonText}>{innerData.value + " €"}</Text>
-                              </View>
-                              <View
-                                style={{
-                                  flex: 2,
-                                  alignContent: "center",
-                                  alignItems: "center",
-                                  width: verticalScale(40),
-                                  maxWidth: 50,
-                                  height: verticalScale(40),
-                                  maxHeight: 50,
-                                  borderRadius: 20,
-                                  borderWidth: 1,
-                                  justifyContent: "center",
-                                  backgroundColor: "transparent",
-                                }}
-                              >
-                                {innerData.split ? (
-                                  <Text style={styles.text}>{innerData.split.weight + "%"}</Text>
-                                ) : (
-                                  <Pressable
-                                    style={{
-                                      width: verticalScale(40),
-                                      maxWidth: 50,
-                                      height: verticalScale(40),
-                                      maxHeight: 50,
-                                      justifyContent: "center",
-                                      backgroundColor: "transparent",
-                                      alignContent: "center",
-                                    }}
-                                    onPress={async () => {
-                                      await handleSplit(
-                                        email,
-                                        purchases,
-                                        setPurchases,
-                                        innerData.index,
-                                        splitUser,
-                                        getSplitEmail(splitUser),
-                                        refreshTrigger,
-                                        setRefreshTrigger
-                                      );
-                                    }}
-                                  >
-                                    {utilIcons(verticalScale(20)).find((type) => type.label === "Split").icon}
-                                  </Pressable>
-                                )}
-                              </View>
-                            </View>
-                          </View>
-                        </Pressable>
-                      ))}
-                      {groupedTransactions[key]
+                          </Pressable>
+                        ))}
+                      {groupedTransactions[key] && groupedTransactions[key]
                         ? groupedTransactions[key].map((innerData) => (
                             <Pressable
                               key={KEYS_SERIALIZER.TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
@@ -241,22 +253,44 @@ export default function Purchase({ navigation }) {
                               }}
                             >
                               <View style={styles.rowGap}>
-                                <View style={{ ...styles.row, flex: 2, backgroundColor: "transparent" }}>
+                                <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
                                   <View
                                     style={{
-                                      width: verticalScale(25),
+                                      width: verticalScale(40),
+                                      maxWidth: 50,
+                                      height: verticalScale(40),
+                                      maxHeight: 50,
                                       backgroundColor: "transparent",
                                       borderRadius: 10,
                                       borderWidth: 1,
-                                      padding: verticalScale(2),
+                                      justifyContent: "center",
                                     }}
                                   >
                                     {utilIcons().find((type) => type.label === "Transaction").icon}
                                   </View>
-                                  <Text style={styles.buttonText}>{innerData.description}</Text>
+                                  <View style={{ justifyContent: "center" }}>
+                                    <Text style={styles.buttonText}>{innerData.description}</Text>
+                                  </View>
                                 </View>
                                 <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-                                  <Text style={styles.buttonText}>{innerData.amount + " €"}</Text>
+                                  <View style={{ justifyContent: "center", flex: 1, backgroundColor: "transparent", alignItems: "flex-end" }}>
+                                    <Text style={styles.buttonText}>{innerData.amount + " €"}</Text>
+                                  </View>
+                                  <View
+                                    style={{
+                                      flex: 2,
+                                      alignContent: "center",
+                                      alignItems: "center",
+                                      width: verticalScale(40),
+                                      maxWidth: 50,
+                                      height: verticalScale(40),
+                                      maxHeight: 50,
+                                      borderRadius: 20,
+                                      borderWidth: 0,
+                                      justifyContent: "center",
+                                      backgroundColor: "transparent",
+                                    }}
+                                  ></View>
                                 </View>
                               </View>
                             </Pressable>
