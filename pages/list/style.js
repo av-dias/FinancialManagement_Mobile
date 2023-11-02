@@ -28,7 +28,7 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
     zIndex: -1,
   },
-  text: { fontSize: 20, textAlign: "center", zIndex: 1, backgroundColor: "transparent" },
+  text: { fontSize: verticalScale(10), textAlign: "center", zIndex: 1, backgroundColor: "transparent", alignSelf: "center" },
   rowGap: { flexDirection: "row", justifyContent: "space-between", width: "100%", borderRadius: 4, backgroundColor: "transparent" },
   row: { flexDirection: "row", gap: verticalScale(15), borderRadius: 4, backgroundColor: "transparent" },
   buttonText: {
