@@ -32,6 +32,9 @@ export default function Purchase({ navigation }) {
     }
     let newTransaction = { amount: value, dot: date.toISOString().split("T")[0], description: description, user_destination_id: _destination };
     await addToStorage(KEYS.TRANSACTION, JSON.stringify(newTransaction), email);
+
+    setValue("");
+    setDescription("")
     console.log("Transaction Added: " + newTransaction);
   };
 
@@ -40,7 +43,6 @@ export default function Purchase({ navigation }) {
       async function fetchData() {
         let email = await getUser();
         setEmail(email);
-        setValue("");
 
         await getSplitUser(setDestination, email);
         try {
