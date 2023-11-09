@@ -28,7 +28,7 @@ export default function Settings({ navigation }) {
   const [splitUsers, setSplitUsers] = useState("");
 
   const handleNewSplitUser = async () => {
-    let value = { email: newEmail, name: newName };
+    let value = [{ email: newEmail, name: newName }];
     let user = await getUser();
     await addToStorage(KEYS.SPLIT_USERS, JSON.stringify(value), user);
     await getSplitUsers(setSplitUsers, email);
@@ -141,10 +141,10 @@ export default function Settings({ navigation }) {
           text: "Yes",
           onPress: async () => {
             let infoPurchase = await saveToStorage(KEYS.PURCHASE, "[]", email);
-            let infoArchive = await saveToStorage(KEYS.ARCHIVE, "[]", email);
-            let infoSplit = await saveToStorage(KEYS.SPLIT_USERS, "[]", email);
+            let infoArchivedPurchase = await saveToStorage(KEYS.ARCHIVE_PURCHASE, "[]", email);
+            //let infoSplit = await saveToStorage(KEYS.SPLIT_USERS, "[]", email);
             let infoTransaction = await saveToStorage(KEYS.TRANSACTION, "[]", email);
-
+            let infoArchivedTransaction = await saveToStorage(KEYS.ARCHIVE_TRANSACTION, "[]", email);
             alert("Cleared");
           },
           style: "yes",
@@ -180,9 +180,10 @@ export default function Settings({ navigation }) {
           style={styles.buttonChoice}
           onPress={async () => {
             let server = await getFromStorage(KEYS.SERVER);
+            let purchases = await getFromStorage(KEYS.PURCHASE, email);
+            let transactions = await getFromStorage(KEYS.TRANSACTION, email);
             if (server == "on") {
               let access_token = await getFromStorage(KEYS.ACCESS_TOKEN);
-              let purchases = await getFromStorage(KEYS.PURCHASE, email);
               ip1 = await getFromStorage(KEYS.IP1);
               ip2 = await getFromStorage(KEYS.IP2);
               ip3 = await getFromStorage(KEYS.IP3);
@@ -199,8 +200,26 @@ export default function Settings({ navigation }) {
               })
                 .then(async (res) => {
                   console.log("Update Status: " + res.status);
-                  await addToStorage(KEYS.ARCHIVE, purchases, email);
+                  await addToStorage(KEYS.ARCHIVE_PURCHASE, purchases, email);
                   let info = await saveToStorage(KEYS.PURCHASE, "[]", email);
+                  alert("Data uploaded to main server.");
+                })
+                .catch(function (res) {
+                  console.log(res);
+                });
+              await fetch(`http://${ip1}.${ip2}.${ip3}.${ip4}:8080/api/v1/transactions/mobile/user/${userId}/update/transactions`, {
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + access_token,
+                },
+                method: "POST",
+                body: transactions,
+              })
+                .then(async (res) => {
+                  console.log("Update Status: " + res.status);
+                  await addToStorage(KEYS.ARCHIVE_TRANSACTION, transactions, email);
+                  let info = await saveToStorage(KEYS.TRANSACTION, "[]", email);
                   alert("Data uploaded to main server.");
                 })
                 .catch(function (res) {
@@ -208,11 +227,13 @@ export default function Settings({ navigation }) {
                 });
             } else {
               alert("Main server not connected.");
-              if (false) {
+              if (true) {
                 // For testing purpose only
-                let purchases = await getFromStorage(KEYS.PURCHASE, email);
-                await addToStorage(KEYS.ARCHIVE, purchases, email);
+                await addToStorage(KEYS.ARCHIVE_PURCHASE, purchases, email);
                 await saveToStorage(KEYS.PURCHASE, "[]", email);
+
+                await addToStorage(KEYS.ARCHIVE_TRANSACTION, transactions, email);
+                await saveToStorage(KEYS.TRANSACTION, "[]", email);
               }
             }
           }}
@@ -223,8 +244,8 @@ export default function Settings({ navigation }) {
           style={styles.buttonChoice}
           onPress={async () => {
             let infoPurchase = await getFromStorage(KEYS.PURCHASE, email);
-            let infoArchive = await getFromStorage(KEYS.ARCHIVE, email);
-            alert(infoPurchase + " and " + infoArchive);
+            let infoArchivePurchase = await getFromStorage(KEYS.ARCHIVE_PURCHASE, email);
+            alert(infoPurchase + " and " + infoArchivePurchase);
           }}
         >
           <Text style={styles.buttonText}>Logs: Purchase</Text>
@@ -233,7 +254,8 @@ export default function Settings({ navigation }) {
           style={styles.buttonChoice}
           onPress={async () => {
             let infoTransaction = await getFromStorage(KEYS.TRANSACTION, email);
-            alert(infoTransaction);
+            let infoArchiveTransaction = await getFromStorage(KEYS.ARCHIVE_TRANSACTION, email);
+            alert(infoTransaction + " and " + infoArchiveTransaction);
           }}
         >
           <Text style={styles.buttonText}>Logs: Transaction</Text>

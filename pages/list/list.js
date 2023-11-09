@@ -47,7 +47,7 @@ export default function List({ navigation }) {
         try {
           let resPurchase = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
           let resTransaction = JSON.parse(await getFromStorage(KEYS.TRANSACTION, email));
-          let resArchive = JSON.parse(await getFromStorage(KEYS.ARCHIVE, email));
+          let resArchive = JSON.parse(await getFromStorage(KEYS.ARCHIVE_PURCHASE, email));
 
           if (!resPurchase) resPurchase = [];
           if (!resTransaction) resTransaction = [];
@@ -148,7 +148,7 @@ export default function List({ navigation }) {
                                   KEYS_SERIALIZER.ARCHIVE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
                                   archives,
                                   setArchives,
-                                  KEYS.ARCHIVE,
+                                  KEYS.ARCHIVE_PURCHASE,
                                   email,
                                   setRefreshTrigger,
                                   refreshTrigger

@@ -18,12 +18,13 @@ export async function addToStorage(key, value, user) {
   if (!user) user = "";
   user = user.split("@")[0];
   let oldValueString = await getFromStorage(user + key);
-  let oldValue, newValue;
-  if (oldValueString) {
-    oldValue = JSON.parse(oldValueString);
-    newValue = [...oldValue, JSON.parse(value)];
+  let oldValue = JSON.parse(oldValueString),
+    newValue;
+
+  if (oldValue.length != 0) {
+    newValue = [...oldValue, ...JSON.parse(value)];
   } else {
-    newValue = [JSON.parse(value)];
+    newValue = [...JSON.parse(value)];
   }
   await SecureStore.setItemAsync(user + key, JSON.stringify(newValue));
 }
