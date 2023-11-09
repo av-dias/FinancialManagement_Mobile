@@ -26,10 +26,13 @@ export default showAlert = (key, array, setArray, storageKey, email, setRefreshT
     leftButton = "Yes";
     rightButton = "No";
     body = description + `Description: ${elementArray[id].description}\nAmount: ${elementArray[id].amount}\nDate: ${elementArray[id].dot}`;
-  } else if (identifier == KEYS_SERIALIZER.ARCHIVE) {
+  } else if (identifier == KEYS_SERIALIZER.ARCHIVE_PURCHASE) {
     title = "Archived Purchase Detail";
     body =
       description + `Name: ${elementArray[id].name}\nValue: ${elementArray[id].value}\nType: ${elementArray[id].type}\nDate: ${elementArray[id].dop}`;
+  } else if (identifier == KEYS_SERIALIZER.ARCHIVE_TRANSACTION) {
+    title = "Archived Transaction Detail";
+    body = description + `Description: ${elementArray[id].description}\nAmount: ${elementArray[id].amount}\nDate: ${elementArray[id].dot}`;
   } else {
     console.log("error: " + identifier);
   }

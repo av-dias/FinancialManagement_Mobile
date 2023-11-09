@@ -26,8 +26,9 @@ export default function List({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
   const [purchases, setPurchases] = useState([]);
+  const [archivesPurchase, setArchivesPurchase] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const [archives, setArchives] = useState([]);
+  const [archivesTransaction, setArchivesTransaction] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [groupedPurchases, setGroupedPurchases] = useState([]);
@@ -47,23 +48,28 @@ export default function List({ navigation }) {
         try {
           let resPurchase = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
           let resTransaction = JSON.parse(await getFromStorage(KEYS.TRANSACTION, email));
-          let resArchive = JSON.parse(await getFromStorage(KEYS.ARCHIVE_PURCHASE, email));
+          let resArchivePurchase = JSON.parse(await getFromStorage(KEYS.ARCHIVE_PURCHASE, email));
+          let resArchiveTransaction = JSON.parse(await getFromStorage(KEYS.ARCHIVE_TRANSACTION, email));
 
           if (!resPurchase) resPurchase = [];
           if (!resTransaction) resTransaction = [];
-          if (!resArchive) resArchive = [];
+          if (!resArchivePurchase) resArchivePurchase = [];
+          if (!resArchiveTransaction) resArchiveTransaction = [];
 
           setPurchases(resPurchase);
           setTransactions(resTransaction);
-          setArchives(resArchive);
+          setArchivesPurchase(resArchivePurchase);
+          setArchivesTransaction(resArchiveTransaction);
 
           console.log("Purchase len: " + resPurchase.length);
           console.log("Transaction len: " + resTransaction.length);
-          console.log("Archive len: " + resArchive.length);
+          console.log("Archive Purchase len: " + resArchivePurchase.length);
+          console.log("Archive Transaction  len: " + resArchiveTransaction.length);
 
           setGroupedPurchases(groupByDate(resPurchase));
           setGroupedTransactions(groupByDate(resTransaction));
-          setGroupedArchivedPurchases(groupByDate(resArchive));
+          setGroupedArchivedPurchases(groupByDate(resArchivePurchase));
+          setGroupedArchivedTransactions(groupByDate(resArchiveTransaction));
         } catch (e) {
           console.log("Archive: " + e);
         }
@@ -75,11 +81,15 @@ export default function List({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
-        let list = Object.keys(groupedPurchases).concat(Object.keys(groupedTransactions)).concat(Object.keys(groupedArchivedPurchases)).sort();
+        let list = Object.keys(groupedPurchases)
+          .concat(Object.keys(groupedTransactions))
+          .concat(Object.keys(groupedArchivedPurchases))
+          .concat(Object.keys(groupedArchivedTransactions))
+          .sort();
         setListDays([...new Set(list)]);
       }
       fetchData();
-    }, [groupedPurchases, groupedTransactions, groupedArchivedPurchases])
+    }, [groupedPurchases, groupedTransactions, groupedArchivedPurchases, groupedArchivedTransactions])
   );
 
   return (
@@ -151,16 +161,36 @@ export default function List({ navigation }) {
                         {groupedArchivedPurchases[date] &&
                           groupedArchivedPurchases[date].map((innerData) => (
                             <ListItem
-                              key={innerData.index + KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
+                              key={innerData.index + KEYS_SERIALIZER.ARCHIVE_PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
                               innerData={innerData}
-                              keys={KEYS_SERIALIZER.ARCHIVE}
+                              keys={KEYS_SERIALIZER.ARCHIVE_PURCHASE}
                               gray={true}
                               showAlert={() => {
                                 showAlert(
-                                  KEYS_SERIALIZER.ARCHIVE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
-                                  archives,
-                                  setArchives,
+                                  KEYS_SERIALIZER.ARCHIVE_PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
+                                  archivesPurchase,
+                                  setArchivesPurchase,
                                   KEYS.ARCHIVE_PURCHASE,
+                                  email,
+                                  setRefreshTrigger,
+                                  refreshTrigger
+                                );
+                              }}
+                            />
+                          ))}
+                        {groupedArchivedTransactions[date] &&
+                          groupedArchivedTransactions[date].map((innerData) => (
+                            <ListItem
+                              key={innerData.index + KEYS_SERIALIZER.ARCHIVE_TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
+                              innerData={innerData}
+                              keys={KEYS_SERIALIZER.ARCHIVE_TRANSACTION}
+                              gray={true}
+                              showAlert={() => {
+                                showAlert(
+                                  KEYS_SERIALIZER.ARCHIVE_TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
+                                  archivesTransaction,
+                                  setArchivesTransaction,
+                                  KEYS.ARCHIVE_TRANSACTION,
                                   email,
                                   setRefreshTrigger,
                                   refreshTrigger

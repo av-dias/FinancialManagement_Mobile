@@ -40,58 +40,39 @@ export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = fal
           <View style={{ justifyContent: "center", flex: 1, backgroundColor: "transparent", alignItems: "flex-end" }}>
             <Text style={styles.buttonText}>{(innerData.value || innerData.amount) + " €"}</Text>
           </View>
-          {keys == KEYS_SERIALIZER.PURCHASE || KEYS_SERIALIZER.ARCHIVE ? (
-            <View
-              style={{
-                flex: 2,
-                alignContent: "center",
-                alignItems: "center",
-                width: verticalScale(40),
-                maxWidth: 50,
-                height: verticalScale(40),
-                maxHeight: 50,
-                borderRadius: 20,
-                borderWidth: 1,
-                justifyContent: "center",
-                backgroundColor: "transparent",
-              }}
-            >
-              {innerData.split ? (
-                <Text style={styles.text}>{innerData.split.weight + "%"}</Text>
-              ) : (
-                <Pressable
-                  style={{
-                    width: verticalScale(40),
-                    maxWidth: 50,
-                    height: verticalScale(40),
-                    maxHeight: 50,
-                    justifyContent: "center",
-                    backgroundColor: "transparent",
-                    alignContent: "center",
-                  }}
-                  onPress={handleSplit}
-                >
-                  {utilIcons(verticalScale(20)).find((type) => type.label === "Split").icon}
-                </Pressable>
-              )}
-            </View>
-          ) : (
-            <View
-              style={{
-                flex: 2,
-                alignContent: "center",
-                alignItems: "center",
-                width: verticalScale(40),
-                maxWidth: 50,
-                height: verticalScale(40),
-                maxHeight: 50,
-                borderRadius: 20,
-                borderWidth: 0,
-                justifyContent: "center",
-                backgroundColor: "transparent",
-              }}
-            ></View>
-          )}
+          <View
+            style={{
+              flex: 2,
+              alignContent: "center",
+              alignItems: "center",
+              width: verticalScale(40),
+              maxWidth: 50,
+              height: verticalScale(40),
+              maxHeight: 50,
+              borderRadius: 20,
+              borderWidth: keys == KEYS_SERIALIZER.ARCHIVE_PURCHASE && innerData.split ? 1 : 0,
+              justifyContent: "center",
+              backgroundColor: "transparent",
+            }}
+          >
+            {!innerData.split && keys === KEYS_SERIALIZER.PURCHASE ? (
+              <Pressable
+                style={{
+                  width: verticalScale(40),
+                  maxWidth: 50,
+                  height: verticalScale(40),
+                  maxHeight: 50,
+                  justifyContent: "center",
+                  backgroundColor: "transparent",
+                  alignContent: "center",
+                }}
+                onPress={handleSplit}
+              >
+                {utilIcons(verticalScale(20)).find((type) => type.label === "Split").icon}
+              </Pressable>
+            ) : null}
+            {innerData.split ? <Text style={styles.text}>{innerData.split.weight + "%"}</Text> : null}
+          </View>
         </View>
       </View>
     </Pressable>

@@ -1,6 +1,7 @@
 export const KEYS = {
   PURCHASE: "PK",
   TRANSACTION: "TK",
-  ARCHIVE: "AK",
+  ARCHIVE_PURCHASE: "APK",
+  ARCHIVE_TRANSACTION: "ATK",
   TOKEN_SEPARATOR: "-=-=+=+",
 };
