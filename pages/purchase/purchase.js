@@ -76,13 +76,7 @@ export default function Purchase({ navigation }) {
           </View>
           <View style={styles.form}>
             <MoneyInputHeader value={value} setValue={setValue} />
-            <Carrossel
-              type={type}
-              setType={setType}
-              handlePress={() => {
-                setName("");
-              }}
-            />
+            <Carrossel type={type} setType={setType} />
             <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
             <CardWrapper
               style={{
@@ -118,7 +112,22 @@ export default function Purchase({ navigation }) {
         </View>
         <CustomButton
           handlePress={() => {
-            handlePurchase(email, value, type, name, note, splitStatus, getSplitEmail(splitUser), slider, setValue, setNote, list, setList);
+            handlePurchase(
+              email,
+              value,
+              type,
+              name,
+              setName,
+              note,
+              splitStatus,
+              setSplitStatus,
+              getSplitEmail(splitUser),
+              slider,
+              setValue,
+              setNote,
+              list,
+              setList
+            );
           }}
         />
       </View>

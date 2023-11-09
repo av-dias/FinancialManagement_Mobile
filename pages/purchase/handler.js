@@ -4,14 +4,30 @@ import { KEYS } from "../../utility/storageKeys";
 
 const TABLE_ICON_SIZE = 15;
 
-export const handlePurchase = async (email, value, type, name, note, splitStatus, splitEmail, slider, setValue, setNote, list, setList) => {
+export const handlePurchase = async (
+  email,
+  value,
+  type,
+  name,
+  setName,
+  note,
+  splitStatus,
+  setSplitStatus,
+  splitEmail,
+  slider,
+  setValue,
+  setNote,
+  list,
+  setList
+) => {
   let date = this._calendar.getSelectedDate();
-  if (type == "" || name == "" || value == "" || date == "" || !date) {
+  if (type == "" || value == "" || date == "" || !date) {
     alert("Please fill all fields.");
     return;
   }
 
-  if (!note) setNote("");
+  if (name == "") name = type;
+
   try {
     let newPurchase = [{ type: type, name: name, value: value, dop: date.toISOString().split("T")[0], note: note }];
 
@@ -30,6 +46,8 @@ export const handlePurchase = async (email, value, type, name, note, splitStatus
     ]);
     setValue("");
     setNote("");
+    setName("");
+    setSplitStatus(false);
   } catch (err) {
     console.log("Purchase: " + err);
   }

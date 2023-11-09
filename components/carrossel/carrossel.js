@@ -6,7 +6,7 @@ import { categoryIcons } from "../../assets/icons";
 const BORDER_RADIUS = 10;
 import { color } from "../../utility/colors";
 
-export default function Carrossel({ type, setType, handlePress }) {
+export default function Carrossel({ type, setType }) {
   const styles = _styles;
 
   return (
@@ -31,7 +31,6 @@ export default function Carrossel({ type, setType, handlePress }) {
                 }}
                 onPress={() => {
                   setType(iconComponent.label);
-                  handlePress();
                 }}
               >
                 <View style={styles.categoryIconContainer}>{iconComponent.icon}</View>
