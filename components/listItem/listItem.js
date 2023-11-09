@@ -38,7 +38,7 @@ export default ListItem = ({ innerData, showAlert, keys, gray = false }) => {
         </View>
         <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
           <View style={{ justifyContent: "center", flex: 1, backgroundColor: "transparent", alignItems: "flex-end" }}>
-            <Text style={styles.buttonText}>{innerData.value || innerData.amount + " €"}</Text>
+            <Text style={styles.buttonText}>{(innerData.value || innerData.amount) + " €"}</Text>
           </View>
           {keys == KEYS_SERIALIZER.PURCHASE ? (
             <View
