@@ -6,7 +6,7 @@ import { _styles } from "./style";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
 
-export default ListItem = ({ innerData, showAlert, keys, gray = false }) => {
+export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = false }) => {
   const styles = _styles;
   return (
     <Pressable
@@ -69,18 +69,7 @@ export default ListItem = ({ innerData, showAlert, keys, gray = false }) => {
                     backgroundColor: "transparent",
                     alignContent: "center",
                   }}
-                  onPress={async () => {
-                    await handleSplit(
-                      email,
-                      purchases,
-                      setPurchases,
-                      innerData.index,
-                      splitUser,
-                      getSplitEmail(splitUser),
-                      refreshTrigger,
-                      setRefreshTrigger
-                    );
-                  }}
+                  onPress={handleSplit}
                 >
                   {utilIcons(verticalScale(20)).find((type) => type.label === "Split").icon}
                 </Pressable>

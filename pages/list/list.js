@@ -103,6 +103,18 @@ export default function List({ navigation }) {
                             <ListItem
                               key={innerData.index + KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
                               innerData={innerData}
+                              handleSplit={async () => {
+                                await handleSplit(
+                                  email,
+                                  purchases,
+                                  setPurchases,
+                                  innerData.index,
+                                  splitUser,
+                                  getSplitEmail(splitUser),
+                                  refreshTrigger,
+                                  setRefreshTrigger
+                                );
+                              }}
                               keys={KEYS_SERIALIZER.PURCHASE}
                               showAlert={() => {
                                 showAlert(
