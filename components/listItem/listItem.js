@@ -33,7 +33,7 @@ export default ListItem = ({ innerData, showAlert, keys, gray = false }) => {
               : utilIcons().find((type) => type.label === "Transaction").icon}
           </View>
           <View style={{ justifyContent: "center" }}>
-            <Text style={styles.buttonText}>{innerData.name}</Text>
+            <Text style={styles.buttonText}>{innerData.name || innerData.description}</Text>
           </View>
         </View>
         <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>

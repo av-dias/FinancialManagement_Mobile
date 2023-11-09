@@ -1,7 +1,8 @@
 import { Alert } from "react-native";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
+import { getFromStorage, saveToStorage } from "../../functions/secureStorage";
 
-export default showAlert = (key, array, setArray, storageKey) => {
+export default showAlert = (key, array, setArray, storageKey, email, setRefreshTrigger, refreshTrigger) => {
   let [identifier, id] = key.split(KEYS_SERIALIZER.TOKEN_SEPARATOR);
   let element = storageKey,
     elementArray = array,

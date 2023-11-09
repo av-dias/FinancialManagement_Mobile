@@ -109,7 +109,10 @@ export default function List({ navigation }) {
                                   KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
                                   purchases,
                                   setPurchases,
-                                  KEYS.PURCHASE
+                                  KEYS.PURCHASE,
+                                  email,
+                                  setRefreshTrigger,
+                                  refreshTrigger
                                 );
                               }}
                             />
@@ -125,7 +128,10 @@ export default function List({ navigation }) {
                                   KEYS_SERIALIZER.TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
                                   transactions,
                                   setTransactions,
-                                  KEYS.TRANSACTION
+                                  KEYS.TRANSACTION,
+                                  email,
+                                  setRefreshTrigger,
+                                  refreshTrigger
                                 );
                               }}
                             />
@@ -142,7 +148,10 @@ export default function List({ navigation }) {
                                   KEYS_SERIALIZER.ARCHIVE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
                                   archives,
                                   setArchives,
-                                  KEYS.ARCHIVE
+                                  KEYS.ARCHIVE,
+                                  email,
+                                  setRefreshTrigger,
+                                  refreshTrigger
                                 );
                               }}
                             />
