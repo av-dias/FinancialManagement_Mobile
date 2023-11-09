@@ -67,8 +67,7 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
     width: "100%",
     maxWidth: 750,
-    paddingVertical: 10,
+    paddingVertical: 0,
     marginVertical: verticalScale(20),
-    gap: 10,
   },
 });

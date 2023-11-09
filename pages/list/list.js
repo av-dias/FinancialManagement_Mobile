@@ -17,9 +17,12 @@ import { getUser } from "../../functions/basic";
 import { months } from "../../utility/calendar";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
+import ListItem from "../../components/listItem/listItem";
+import showAlert from "./showAlert";
+
 import { categoryIcons, utilIcons } from "../../assets/icons";
 
-export default function Purchase({ navigation }) {
+export default function List({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
   const [purchases, setPurchases] = useState([]);
@@ -29,6 +32,8 @@ export default function Purchase({ navigation }) {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [groupedPurchases, setGroupedPurchases] = useState([]);
   const [groupedTransactions, setGroupedTransactions] = useState([]);
+  const [groupedArchivedPurchases, setGroupedArchivedPurchases] = useState([]);
+  const [groupedArchivedTransactions, setGroupedArchivedTransactions] = useState([]);
   const [refreshTrigger, setRefreshTrigger] = useState(true);
   const [splitUser, setSplitUser] = useState("");
   const [listDays, setListDays] = useState([]);
@@ -58,6 +63,7 @@ export default function Purchase({ navigation }) {
 
           setGroupedPurchases(groupByDate(resPurchase));
           setGroupedTransactions(groupByDate(resTransaction));
+          setGroupedArchivedPurchases(groupByDate(resArchive));
         } catch (e) {
           console.log("Archive: " + e);
         }
@@ -69,83 +75,12 @@ export default function Purchase({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
-        let list = Object.keys(groupedPurchases).concat(Object.keys(groupedTransactions)).sort();
+        let list = Object.keys(groupedPurchases).concat(Object.keys(groupedTransactions)).concat(Object.keys(groupedArchivedPurchases)).sort();
         setListDays([...new Set(list)]);
       }
       fetchData();
-    }, [groupedPurchases, groupedTransactions])
+    }, [groupedPurchases, groupedTransactions, groupedArchivedPurchases])
   );
-
-  const showAlert = (key) => {
-    let [identifier, id] = key.split(KEYS_SERIALIZER.TOKEN_SEPARATOR);
-    let element,
-      elementArray,
-      setElement,
-      title = "",
-      description = "",
-      body = "",
-      leftButton = "Ok",
-      rightButton = "Cancel";
-
-    if (identifier == KEYS_SERIALIZER.PURCHASE) {
-      element = KEYS.PURCHASE;
-      elementArray = purchases;
-      setElement = setPurchases.bind();
-      title = "Delete Purchase";
-      description = "Are you sure you want to remove this purchase permanently?" + "\n\n";
-      leftButton = "Yes";
-      rightButton = "No";
-      body =
-        description +
-        `Name: ${elementArray[id].name}\nValue: ${elementArray[id].value}\nType: ${elementArray[id].type}\nDate: ${elementArray[id].dop}`;
-    } else if (identifier == KEYS_SERIALIZER.TRANSACTION) {
-      element = KEYS.TRANSACTION;
-      elementArray = transactions;
-      setElement = setTransactions.bind();
-      title = "Delete Transaction";
-      description = "Are you sure you want to remove this transaction permanently?" + "\n\n";
-      leftButton = "Yes";
-      rightButton = "No";
-      body = description + `Description: ${elementArray[id].description}\nAmount: ${elementArray[id].amount}\nDate: ${elementArray[id].dot}`;
-    } else if (identifier == KEYS_SERIALIZER.ARCHIVE) {
-      title = "Archived Purchase Detail";
-      element = KEYS.ARCHIVE;
-      elementArray = archives;
-      setElement = setArchives.bind();
-      vody =
-        description +
-        `Name: ${elementArray[id].name}\nValue: ${elementArray[id].value}\nType: ${elementArray[id].type}\nDate: ${elementArray[id].dop}`;
-    } else {
-      console.log("error: " + identifier);
-    }
-
-    Alert.alert(
-      title,
-      body,
-      [
-        {
-          text: leftButton,
-          onPress: async () => {
-            if (identifier == KEYS_SERIALIZER.PURCHASE || identifier == KEYS_SERIALIZER.TRANSACTION) {
-              arr = elementArray.filter((item) => item != elementArray[id]);
-              await saveToStorage(element, JSON.stringify(arr), email);
-              setElement(arr);
-              setRefreshTrigger(!refreshTrigger);
-            }
-          },
-          style: "yes",
-        },
-        {
-          text: rightButton,
-          onPress: () => {},
-          style: "no",
-        },
-      ],
-      {
-        cancelable: true,
-      }
-    );
-  };
 
   return (
     <View style={styles.page}>
@@ -154,191 +89,67 @@ export default function Purchase({ navigation }) {
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
           <View style={{ flex: verticalScale(7), backgroundColor: "transparent" }}>
             <ScrollView>
-              {listDays.map((key) =>
-                new Date(key).getMonth() == currentMonth && new Date(key).getFullYear() == currentYear ? (
-                  <View key={KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + key} style={{ paddingHorizontal: 5 }}>
-                    <View style={styles.listDateBox}>
-                      <Text style={styles.listDate}>{new Date(key).getDate() + " " + months[new Date(key).getMonth()]}</Text>
-                    </View>
-                    <CardWrapper key={key} style={styles.listBox}>
-                      {groupedPurchases[key] &&
-                        groupedPurchases[key].map((innerData) => (
-                          <Pressable
-                            key={KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
-                            style={styles.button}
-                            onPress={() => {
-                              showAlert(KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index);
-                            }}
-                          >
-                            <View style={styles.rowGap}>
-                              <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-                                <View
-                                  style={{
-                                    width: verticalScale(40),
-                                    maxWidth: 50,
-                                    height: verticalScale(40),
-                                    maxHeight: 50,
-                                    backgroundColor: "transparent",
-                                    borderRadius: 10,
-                                    borderWidth: 1,
-                                    justifyContent: "center",
-                                  }}
-                                >
-                                  {categoryIcons(20).find((category) => category.label === innerData.type).icon}
-                                </View>
-                                <View style={{ justifyContent: "center" }}>
-                                  <Text style={styles.buttonText}>{innerData.name}</Text>
-                                </View>
-                              </View>
-                              <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-                                <View style={{ justifyContent: "center", flex: 1, backgroundColor: "transparent", alignItems: "flex-end" }}>
-                                  <Text style={styles.buttonText}>{innerData.value + " €"}</Text>
-                                </View>
-                                <View
-                                  style={{
-                                    flex: 2,
-                                    alignContent: "center",
-                                    alignItems: "center",
-                                    width: verticalScale(40),
-                                    maxWidth: 50,
-                                    height: verticalScale(40),
-                                    maxHeight: 50,
-                                    borderRadius: 20,
-                                    borderWidth: 1,
-                                    justifyContent: "center",
-                                    backgroundColor: "transparent",
-                                  }}
-                                >
-                                  {innerData.split ? (
-                                    <Text style={styles.text}>{innerData.split.weight + "%"}</Text>
-                                  ) : (
-                                    <Pressable
-                                      style={{
-                                        width: verticalScale(40),
-                                        maxWidth: 50,
-                                        height: verticalScale(40),
-                                        maxHeight: 50,
-                                        justifyContent: "center",
-                                        backgroundColor: "transparent",
-                                        alignContent: "center",
-                                      }}
-                                      onPress={async () => {
-                                        await handleSplit(
-                                          email,
-                                          purchases,
-                                          setPurchases,
-                                          innerData.index,
-                                          splitUser,
-                                          getSplitEmail(splitUser),
-                                          refreshTrigger,
-                                          setRefreshTrigger
-                                        );
-                                      }}
-                                    >
-                                      {utilIcons(verticalScale(20)).find((type) => type.label === "Split").icon}
-                                    </Pressable>
-                                  )}
-                                </View>
-                              </View>
-                            </View>
-                          </Pressable>
-                        ))}
-                      {groupedTransactions[key] && groupedTransactions[key]
-                        ? groupedTransactions[key].map((innerData) => (
-                            <Pressable
-                              key={KEYS_SERIALIZER.TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
-                              style={styles.button}
-                              onPress={() => {
-                                showAlert(KEYS_SERIALIZER.TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index);
-                              }}
-                            >
-                              <View style={styles.rowGap}>
-                                <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-                                  <View
-                                    style={{
-                                      width: verticalScale(40),
-                                      maxWidth: 50,
-                                      height: verticalScale(40),
-                                      maxHeight: 50,
-                                      backgroundColor: "transparent",
-                                      borderRadius: 10,
-                                      borderWidth: 1,
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    {utilIcons().find((type) => type.label === "Transaction").icon}
-                                  </View>
-                                  <View style={{ justifyContent: "center" }}>
-                                    <Text style={styles.buttonText}>{innerData.description}</Text>
-                                  </View>
-                                </View>
-                                <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-                                  <View style={{ justifyContent: "center", flex: 1, backgroundColor: "transparent", alignItems: "flex-end" }}>
-                                    <Text style={styles.buttonText}>{innerData.amount + " €"}</Text>
-                                  </View>
-                                  <View
-                                    style={{
-                                      flex: 2,
-                                      alignContent: "center",
-                                      alignItems: "center",
-                                      width: verticalScale(40),
-                                      maxWidth: 50,
-                                      height: verticalScale(40),
-                                      maxHeight: 50,
-                                      borderRadius: 20,
-                                      borderWidth: 0,
-                                      justifyContent: "center",
-                                      backgroundColor: "transparent",
-                                    }}
-                                  ></View>
-                                </View>
-                              </View>
-                            </Pressable>
-                          ))
-                        : null}
-                    </CardWrapper>
-                  </View>
-                ) : null
-              )}
-              {archives.length != 0 ? (
-                <React.Fragment key={KEYS_SERIALIZER.ARCHIVE + KEYS_SERIALIZER.TOKEN_SEPARATOR + 1}>
-                  <Text style={styles.seperatorText}>Archived</Text>
-                  <Divider />
-                </React.Fragment>
-              ) : null}
-
-              {archives.map((cellData, cellIndex) =>
-                currentMonth == new Date(cellData.dop).getMonth() && currentYear == new Date(cellData.dop).getFullYear() ? (
-                  <CardWrapper key={cellIndex} style={styles.listBox}>
-                    <Pressable
-                      key={KEYS_SERIALIZER.ARCHIVE + KEYS_SERIALIZER.TOKEN_SEPARATOR + cellIndex}
-                      style={styles.button}
-                      onPress={() => {
-                        showAlert(KEYS_SERIALIZER.ARCHIVE + KEYS_SERIALIZER.TOKEN_SEPARATOR + cellIndex);
-                      }}
-                    >
-                      <View style={styles.rowGap}>
-                        <View style={{ ...styles.row, flex: 2, backgroundColor: "transparent" }}>
-                          <View
-                            style={{
-                              width: verticalScale(25),
-                              backgroundColor: "transparent",
-                              borderRadius: 10,
-                              borderWidth: 1,
-                              padding: verticalScale(2),
-                            }}
-                          >
-                            {categoryIcons(15).find((category) => category.label === cellData.type).icon}
-                          </View>
-                          <Text style={styles.buttonText}>{cellData.name}</Text>
-                        </View>
-                        <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-                          <Text style={styles.buttonText}>{cellData.value + " €"}</Text>
-                        </View>
+              {listDays.map(
+                (date) =>
+                  new Date(date).getMonth() == currentMonth &&
+                  new Date(date).getFullYear() == currentYear && (
+                    <View key={KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date} style={{ paddingHorizontal: 5 }}>
+                      <View style={styles.listDateBox}>
+                        <Text style={styles.listDate}>{new Date(date).getDate() + " " + months[new Date(date).getMonth()]}</Text>
                       </View>
-                    </Pressable>
-                  </CardWrapper>
-                ) : null
+                      <CardWrapper key={date} style={styles.listBox}>
+                        {groupedPurchases[date] &&
+                          groupedPurchases[date].map((innerData) => (
+                            <ListItem
+                              key={innerData.index + KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
+                              innerData={innerData}
+                              keys={KEYS_SERIALIZER.PURCHASE}
+                              showAlert={() => {
+                                showAlert(
+                                  KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
+                                  purchases,
+                                  setPurchases,
+                                  KEYS.PURCHASE
+                                );
+                              }}
+                            />
+                          ))}
+                        {groupedTransactions[date] &&
+                          groupedTransactions[date].map((innerData) => (
+                            <ListItem
+                              key={innerData.index + KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
+                              innerData={innerData}
+                              keys={KEYS_SERIALIZER.TRANSACTION}
+                              showAlert={() => {
+                                showAlert(
+                                  KEYS_SERIALIZER.TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
+                                  transactions,
+                                  setTransactions,
+                                  KEYS.TRANSACTION
+                                );
+                              }}
+                            />
+                          ))}
+                        {groupedArchivedPurchases[date] &&
+                          groupedArchivedPurchases[date].map((innerData) => (
+                            <ListItem
+                              key={innerData.index + KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
+                              innerData={innerData}
+                              keys={KEYS_SERIALIZER.ARCHIVE}
+                              gray={true}
+                              showAlert={() => {
+                                showAlert(
+                                  KEYS_SERIALIZER.ARCHIVE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
+                                  archives,
+                                  setArchives,
+                                  KEYS.ARCHIVE
+                                );
+                              }}
+                            />
+                          ))}
+                      </CardWrapper>
+                    </View>
+                  )
               )}
             </ScrollView>
           </View>
