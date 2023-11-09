@@ -40,7 +40,7 @@ export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = fal
           <View style={{ justifyContent: "center", flex: 1, backgroundColor: "transparent", alignItems: "flex-end" }}>
             <Text style={styles.buttonText}>{(innerData.value || innerData.amount) + " €"}</Text>
           </View>
-          {keys == KEYS_SERIALIZER.PURCHASE ? (
+          {keys == KEYS_SERIALIZER.PURCHASE || KEYS_SERIALIZER.ARCHIVE ? (
             <View
               style={{
                 flex: 2,
