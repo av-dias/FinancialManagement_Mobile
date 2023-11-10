@@ -102,9 +102,7 @@ export default function Home({ navigation }) {
                 />
                 <View style={{ position: "absolute", justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}>
                   <Text style={{ alignSelf: "center", fontSize: verticalScale(40) }}>{purchaseTotal + "€"}</Text>
-                  <View style={{ width: "100%" }}>
-                    <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
-                  </View>
+                  <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
                 </View>
               </View>
             </CardWrapper>
@@ -129,6 +127,7 @@ export default function Home({ navigation }) {
           </View>
         ) : (
           <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
+            <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
             <Text>NO DATA</Text>
           </View>
         )}
