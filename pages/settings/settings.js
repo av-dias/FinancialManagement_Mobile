@@ -227,7 +227,7 @@ export default function Settings({ navigation }) {
                 });
             } else {
               alert("Main server not connected.");
-              if (true) {
+              if (false) {
                 // For testing purpose only
                 await addToStorage(KEYS.ARCHIVE_PURCHASE, purchases, email);
                 await saveToStorage(KEYS.PURCHASE, "[]", email);

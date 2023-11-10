@@ -81,16 +81,15 @@ export default function Home({ navigation }) {
     <View style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
-        <View style={styles.calendar}>
-          <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
-        </View>
         {pieChartData.length !== 0 ? (
-          <View style={{ flex: 8, gap: verticalScale(30) }}>
-            <CardWrapper style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
+          <View style={{ flex: 8, gap: verticalScale(0) }}>
+            <CardWrapper
+              style={{ flex: verticalScale(8), justifyContent: "center", alignItems: "center", backgroundColor: "transparent", elevation: 0 }}
+            >
               <View style={styles.chart}>
                 <VictoryPie
-                  height={verticalScale(350)}
-                  innerRadius={verticalScale(110)}
+                  height={horizontalScale(320)}
+                  innerRadius={horizontalScale(130)}
                   padding={{ top: 0, bottom: 0 }}
                   data={pieChartData.length != 0 ? pieChartData : [{ x: "Your Spents", y: 1 }]}
                   style={{
@@ -101,8 +100,11 @@ export default function Home({ navigation }) {
                   labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
                   options={{ maintainAspectRatio: false, aspectRatio: 1 }}
                 />
-                <View style={{ position: "absolute", bottom: "47%", justifyContent: "center", alignContent: "center" }}>
-                  <Text style={{ alignSelf: "center", fontSize: verticalScale(20) }}>{purchaseTotal + " €"}</Text>
+                <View style={{ position: "absolute", justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}>
+                  <Text style={{ alignSelf: "center", fontSize: verticalScale(40) }}>{purchaseTotal + "€"}</Text>
+                  <View style={{ width: "100%" }}>
+                    <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
+                  </View>
                 </View>
               </View>
             </CardWrapper>
