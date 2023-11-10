@@ -19,7 +19,7 @@ export const _styles = StyleSheet.create({
     //justifyContent: "center",
     height: "97%",
   },
-  calendar: { justifyContent: "center", alignItems: "center", flex: 1, width: "100%", backgroundColor: "transparent" },
+  calendar: { justifyContent: "center", alignItems: "flex-end", flex: 1, width: "100%", backgroundColor: "transparent" },
   hitBox: {
     alignItems: "center",
     justifyContent: "center",
