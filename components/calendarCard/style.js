@@ -13,7 +13,7 @@ export const _styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   calendarBox: {
-    width: "33%",
+    width: verticalScale(100),
     height: "100%",
     maxWidth: 175,
     maxHeight: 80,
@@ -43,7 +43,6 @@ export const _styles = StyleSheet.create({
     gap: 10,
   },
   calendarContainer: {
-    width: "100%",
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",

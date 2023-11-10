@@ -43,9 +43,6 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
             <AntDesign style={styles.iconCenterLeft} name="left" size={verticalScale(10)} color="black" />
           </TouchableOpacity>
           <View style={styles.row}>
-            <View style={{ justifyContent: "center" }}>
-              <Feather name="calendar" size={verticalScale(15)} color="black" />
-            </View>
             <View style={{ justifyContent: "center", backgroundColor: "transparent" }}>
               <Text style={styles.text}>{getCurrentDate()}</Text>
             </View>
