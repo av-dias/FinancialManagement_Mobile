@@ -82,7 +82,7 @@ export default function Home({ navigation }) {
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         {pieChartData.length !== 0 ? (
-          <View style={{ flex: 8, gap: verticalScale(0) }}>
+          <View style={{ flex: 8, gap: verticalScale(10) }}>
             <CardWrapper
               style={{ flex: verticalScale(8), justifyContent: "center", alignItems: "center", backgroundColor: "transparent", elevation: 0 }}
             >
