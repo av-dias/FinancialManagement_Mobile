@@ -1,11 +1,10 @@
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, Pressable, Dimensions } from "react-native";
 import React, { useState } from "react";
-import { Feather, AntDesign } from "@expo/vector-icons";
-import { Card } from "@rneui/themed";
 
 import { _styles } from "./style";
 import { months } from "../../utility/calendar";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
+import Carousel from "react-native-reanimated-carousel";
 
 export default function CalendarCard({ monthState: [currentMonth, setCurrentMonth], yearState: [currentYear, setCurrentYear] }) {
   const styles = _styles;
@@ -14,47 +13,33 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
     return months[currentMonth] + " " + currentYear;
   };
 
-  const previousMonth = () => {
-    if (currentMonth > 0) setCurrentMonth(currentMonth - 1);
-    else {
-      setCurrentMonth(11);
-      setCurrentYear(currentYear - 1);
-    }
-  };
-
-  const nextMonth = () => {
-    if (currentMonth < 11) setCurrentMonth(currentMonth + 1);
-    else {
-      setCurrentMonth(0);
-      setCurrentYear(currentYear + 1);
-    }
-  };
-
   return (
     <View style={styles.calendarContainer}>
       <View style={styles.calendarBox}>
         <View style={styles.rowGap}>
-          <TouchableOpacity
-            style={styles.hitBox}
-            onPress={() => {
-              previousMonth();
+          <Carousel
+            width={verticalScale(100)}
+            height={verticalScale(40)}
+            data={months}
+            scrollAnimationDuration={1000}
+            onSnapToItem={(index) => {
+              setCurrentMonth(index);
             }}
-          >
-            <AntDesign style={styles.iconCenterLeft} name="left" size={verticalScale(10)} color="black" />
-          </TouchableOpacity>
-          <View style={styles.row}>
-            <View style={{ justifyContent: "center", backgroundColor: "transparent" }}>
-              <Text style={styles.text}>{getCurrentDate()}</Text>
-            </View>
-          </View>
-          <TouchableOpacity
-            style={styles.hitBox}
-            onPress={() => {
-              nextMonth();
-            }}
-          >
-            <AntDesign style={styles.iconCenterRight} name="right" size={verticalScale(10)} color="black" />
-          </TouchableOpacity>
+            defaultIndex={currentMonth}
+            renderItem={({ index }) => (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  backgroundColor: "transparent",
+                }}
+              >
+                <Pressable onPress={() => console.log("hi")}>
+                  <Text style={{ textAlign: "center", fontSize: verticalScale(15) }}>{months[index] + " " + currentYear}</Text>
+                </Pressable>
+              </View>
+            )}
+          ></Carousel>
         </View>
       </View>
     </View>

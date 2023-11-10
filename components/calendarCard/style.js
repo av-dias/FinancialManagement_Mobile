@@ -16,7 +16,7 @@ export const _styles = StyleSheet.create({
     width: verticalScale(100),
     height: "100%",
     maxWidth: 175,
-    maxHeight: 80,
+    maxHeight: 50,
     backgroundColor: color.complementary,
     padding: verticalScale(0),
     justifyContent: "center",
