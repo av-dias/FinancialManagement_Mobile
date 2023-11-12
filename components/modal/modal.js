@@ -5,7 +5,7 @@ import commonStyles from "../../utility/commonStyles";
 import { color } from "../../utility/colors";
 import Modal from "react-native-modal";
 
-export default function ModalCustom({ modalVisible, setModalVisible, size = 3, children }) {
+export default function ModalCustom({ modalVisible, setModalVisible, size = 3, hasColor = true, children }) {
   const styles = _styles;
 
   return (
@@ -23,7 +23,7 @@ export default function ModalCustom({ modalVisible, setModalVisible, size = 3, c
         <TouchableOpacity style={{ flex: 5 }} onPress={() => setModalVisible(!modalVisible)} />
         <View
           style={{
-            backgroundColor: color.backgroundLight,
+            backgroundColor: hasColor ? color.backgroundLight : "transparent",
             flex: size,
             width: "100%",
             padding: commonStyles.paddingHorizontal,

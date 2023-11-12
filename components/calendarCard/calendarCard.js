@@ -44,10 +44,21 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
           />
         </View>
         {datePicker && (
-          <ModalCustom modalVisible={datePicker} setModalVisible={setDatePicker} size={1}>
-            <View style={{ ...styles.rowGap, maxWidth: 500, flex: 1, alignItems: "center", gap: verticalScale(20) }}>
+          <ModalCustom modalVisible={datePicker} setModalVisible={setDatePicker} size={6} hasColor={false}>
+            <View
+              style={{
+                ...styles.rowGap,
+                maxWidth: verticalScale(300),
+                maxHeight: verticalScale(100),
+                flex: 1,
+                alignItems: "center",
+                gap: verticalScale(20),
+                backgroundColor: "white",
+                borderRadius: 10,
+              }}
+            >
               <View style={{ width: verticalScale(120), height: verticalScale(70) }}>
-                <ScrollView vertical={true} style={{ backgroundColor: "white", borderRadius: 10 }}>
+                <ScrollView vertical={true}>
                   {months.map((month, index) => {
                     return (
                       <Pressable
@@ -66,7 +77,7 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
                 </ScrollView>
               </View>
               <View style={{ width: verticalScale(120), height: verticalScale(70) }}>
-                <ScrollView vertical={true} style={{ backgroundColor: "white", borderRadius: 10 }}>
+                <ScrollView vertical={true}>
                   {["2022", "2023", "2024", "2025"].map((year) => {
                     return (
                       <Pressable
