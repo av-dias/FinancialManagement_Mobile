@@ -97,6 +97,13 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
                 </ScrollView>
               </View>
             </View>
+            <Pressable
+              style={{ flex: 1, backgroundColor: "transparent" }}
+              key={"CloseButton"}
+              onPress={() => {
+                setDatePicker(!datePicker);
+              }}
+            ></Pressable>
           </ModalCustom>
         )}
       </View>
