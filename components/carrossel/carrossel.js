@@ -23,7 +23,10 @@ export default function Carrossel({ type, setType }) {
       >
         {categoryIcons().map((iconComponent) => {
           return (
-            <CardWrapper key={iconComponent.label} style={{ backgroundColor: type == iconComponent.label ? color.secundary : color.complementary }}>
+            <CardWrapper
+              key={iconComponent.label}
+              style={{ backgroundColor: type == iconComponent.label ? color.secundary : color.complementary, width: verticalScale(65) }}
+            >
               <Pressable
                 key={iconComponent.label}
                 style={{
