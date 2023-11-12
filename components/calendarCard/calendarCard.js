@@ -1,32 +1,15 @@
-import { Text, View, Pressable } from "react-native";
+import { Text, View, Pressable, ScrollView } from "react-native";
 import React, { useState } from "react";
-import { AntDesign } from "@expo/vector-icons";
 
 import { _styles } from "./style";
 import { months } from "../../utility/calendar";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import Carousel from "react-native-reanimated-carousel";
-import CustomCalendarPicker from "../customCalendarPicker/customCalendarPicker";
-import CardWrapper from "../../components/cardWrapper/cardWrapper";
+import ModalCustom from "../../components/modal/modal";
 
 export default function CalendarCard({ monthState: [currentMonth, setCurrentMonth], yearState: [currentYear, setCurrentYear] }) {
   const styles = _styles;
   const [datePicker, setDatePicker] = useState(false);
-
-  const getCurrentDate = () => {
-    return months[currentMonth] + " " + currentYear;
-  };
-
-  const changeDateCalendar = (date) => {
-    let newDate = new Date(date);
-    setDatePicker(!datePicker);
-    setCurrentMonth(newDate.getMonth());
-    setCurrentYear(newDate.getFullYear());
-  };
-
-  const getPickerCurrentDate = () => {
-    return new Date();
-  };
 
   const dateItem = (index) => {
     return months[index] + " " + currentYear;
@@ -61,25 +44,49 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
           />
         </View>
         {datePicker && (
-          <CardWrapper
-            style={{
-              position: "absolute",
-              alignSelf: "center",
-              zIndex: 1,
-            }}
-          >
-            <CustomCalendarPicker pickerCurrentDate={getPickerCurrentDate()} changeDateCalendar={changeDateCalendar} />
-            <View style={{ marginTop: -verticalScale(26) }}>
-              <Pressable
-                style={{ alignSelf: "flex-end", backgroundColor: "transparent", marginTop: -verticalScale(5) }}
-                onPress={() => {
-                  changeDateCalendar(getPickerCurrentDate());
-                }}
-              >
-                <AntDesign style={{ padding: verticalScale(5) }} name="closecircle" size={verticalScale(20)} color="black" />
-              </Pressable>
+          <ModalCustom modalVisible={datePicker} setModalVisible={setDatePicker} size={1}>
+            <View style={{ ...styles.rowGap, maxWidth: 500, flex: 1, alignItems: "center", gap: verticalScale(20) }}>
+              <View style={{ width: verticalScale(120), height: verticalScale(70) }}>
+                <ScrollView vertical={true} style={{ backgroundColor: "white", borderRadius: 10 }}>
+                  {months.map((month, index) => {
+                    return (
+                      <Pressable
+                        key={"P" + month}
+                        style={{ backgroundColor: "white", paddingVertical: verticalScale(5), marginVertical: verticalScale(5) }}
+                        onPress={() => {
+                          setCurrentMonth(index);
+                        }}
+                      >
+                        <Text key={"T" + month} style={{ fontSize: verticalScale(20), textAlign: "center", justifyContent: "center" }}>
+                          {month}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+              <View style={{ width: verticalScale(120), height: verticalScale(70) }}>
+                <ScrollView vertical={true} style={{ backgroundColor: "white", borderRadius: 10 }}>
+                  {["2022", "2023", "2024", "2025"].map((year) => {
+                    return (
+                      <Pressable
+                        key={"P" + year}
+                        style={{ backgroundColor: "white", paddingVertical: verticalScale(5), marginVertical: verticalScale(5) }}
+                        onPress={() => {
+                          setCurrentYear(year);
+                          setDatePicker(!datePicker);
+                        }}
+                      >
+                        <Text key={"T" + year} style={{ fontSize: verticalScale(20), textAlign: "center", justifyContent: "center" }}>
+                          {year}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              </View>
             </View>
-          </CardWrapper>
+          </ModalCustom>
         )}
       </View>
     </View>
