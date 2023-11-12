@@ -16,6 +16,7 @@ import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import { KEYS } from "../../utility/storageKeys";
+import { categoryIcons } from "../../assets/icons";
 
 import Header from "../../components/header/header";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
@@ -53,7 +54,13 @@ export default function Home({ navigation }) {
           let array = [];
           let arrayTables = [];
           Object.keys(res).forEach((key) => {
-            let _color = generateColor();
+            let _color;
+
+            categoryIcons().find((type) => {
+              if (type.label === key) {
+                _color = type.color;
+              }
+            });
             array.push({ x: " ", y: res[key], color: _color });
             arrayTables.push([
               <FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />,

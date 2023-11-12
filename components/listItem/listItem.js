@@ -23,7 +23,7 @@ export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = fal
               maxWidth: 50,
               height: verticalScale(40),
               maxHeight: 50,
-              backgroundColor: gray ? "gray" : color.complementary,
+              backgroundColor: gray ? "lightgray" : color.complementary,
               borderRadius: 10,
               borderWidth: 1,
               justifyContent: "center",
