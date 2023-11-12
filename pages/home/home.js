@@ -48,7 +48,7 @@ export default function Home({ navigation }) {
         let email = await getUser();
         setEmail(email);
         try {
-          let res = await getPurchaseStats(email, currentMonth).catch((error) => console.log(error));
+          let res = await getPurchaseStats(email, currentMonth, currentYear).catch((error) => console.log(error));
           let array = [];
           let arrayTables = [];
           Object.keys(res).forEach((key) => {
@@ -67,7 +67,7 @@ export default function Home({ navigation }) {
             })
           );
 
-          res = await getPurchaseTotal(email, currentMonth).catch((error) => console.log(error));
+          res = await getPurchaseTotal(email, currentMonth, currentYear).catch((error) => console.log(error));
           setPurchaseTotal(res);
         } catch (e) {
           console.log(e);
