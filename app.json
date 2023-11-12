@@ -9,7 +9,7 @@
     "splash": {
       "image": "./images/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "black"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -22,7 +22,7 @@
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./images/logo.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "black"
       },
       "package": "com.avdias.fm_mobile"
     },
