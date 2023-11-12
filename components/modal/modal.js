@@ -9,7 +9,7 @@ export default function ModalCustom({ modalVisible, setModalVisible, size = 3, h
   const styles = _styles;
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
