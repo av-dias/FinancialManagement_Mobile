@@ -13,6 +13,7 @@ export default function MoneyInputHeader({ value = "", setValue }) {
         }}
         keyboardType="numeric"
         style={styles.valueInput}
+        placeholderTextColor="white"
         placeholder="0"
         onChangeText={setValue}
         value={value}

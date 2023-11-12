@@ -59,8 +59,8 @@ export default function CustomCalendarStrip({ pickerCurrentDate, setPickerCurren
           fontSize: verticalScale(15),
           borderWidth: 1,
           borderRadius: BORDER_RADIUS,
-          borderColor: "white",
-          backgroundColor: "white",
+          borderColor: color.complementary,
+          backgroundColor: color.complementary,
           elevation: 2,
         }}
         calendarColor={"transparent"}

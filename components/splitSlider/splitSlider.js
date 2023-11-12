@@ -12,7 +12,7 @@ export default function SplitSlider({ value, setModalVisible, setModalContentFla
   const styles = _styles;
 
   return (
-    <CardWrapper style={{ ...styles.cardWrapperSlider, backgroundColor: splitStatus ? "white" : "gray" }}>
+    <CardWrapper style={{ ...styles.cardWrapperSlider, backgroundColor: splitStatus ? color.complementary : "#333333" }}>
       <View>
         <View style={{ backgroundColor: "transparent" }}></View>
         <View style={{ backgroundColor: "transparent" }}></View>
@@ -39,7 +39,8 @@ export default function SplitSlider({ value, setModalVisible, setModalContentFla
         <Pressable
           style={{
             ...styles.button,
-            backgroundColor: splitStatus ? color.secundary : "lightgray",
+            backgroundColor: splitStatus ? color.secundary : "gray",
+
             width: "30%",
             maxWidth: 100,
             alignSelf: "center",
@@ -74,7 +75,7 @@ export default function SplitSlider({ value, setModalVisible, setModalContentFla
       <View style={{ paddingHorizontal: 10, flexDirection: "row", backgroundColor: "transparent", justifyContent: "center" }}>
         <View
           style={{
-            backgroundColor: splitStatus ? "lightgray" : "gray",
+            backgroundColor: splitStatus ? "lightgray" : "#333333",
             alignSelf: "center",
             borderRadius: 20,
             paddingHorizontal: verticalScale(15),
@@ -101,7 +102,7 @@ export default function SplitSlider({ value, setModalVisible, setModalContentFla
         />
         <View
           style={{
-            backgroundColor: splitStatus ? "lightgray" : "gray",
+            backgroundColor: splitStatus ? "lightgray" : "#333333",
             alignSelf: "center",
             borderRadius: 50,
             paddingHorizontal: verticalScale(15),

@@ -21,12 +21,13 @@ export const _styles = StyleSheet.create({
     borderRadius: borderRadius,
     backgroundColor: "transparent",
   },
-  symbolBig: { fontSize: horizontalScale(25), textAlign: "center", width: "auto", alignSelf: "center" },
+  symbolBig: { fontSize: horizontalScale(25), textAlign: "center", width: "auto", alignSelf: "center", color: "white" },
   valueInput: {
     fontSize: horizontalScale(60),
     textAlign: "center",
     backgroundColor: "transparent",
     width: "auto",
     alignSelf: "center",
+    color: "white",
   },
 });

@@ -6,6 +6,7 @@ import { months } from "../../utility/calendar";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import Carousel from "react-native-reanimated-carousel";
 import ModalCustom from "../../components/modal/modal";
+import { color } from "../../utility/colors";
 
 export default function CalendarCard({ monthState: [currentMonth, setCurrentMonth], yearState: [currentYear, setCurrentYear] }) {
   const styles = _styles;
@@ -53,7 +54,7 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
                 flex: 1,
                 alignItems: "center",
                 gap: verticalScale(20),
-                backgroundColor: "white",
+                backgroundColor: color.complementary,
                 borderRadius: 10,
               }}
             >
@@ -63,7 +64,7 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
                     return (
                       <Pressable
                         key={"P" + month}
-                        style={{ backgroundColor: "white", paddingVertical: verticalScale(5), marginVertical: verticalScale(5) }}
+                        style={{ backgroundColor: color.complementary, paddingVertical: verticalScale(5), marginVertical: verticalScale(5) }}
                         onPress={() => {
                           setCurrentMonth(index);
                         }}
@@ -82,7 +83,7 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
                     return (
                       <Pressable
                         key={"P" + year}
-                        style={{ backgroundColor: "white", paddingVertical: verticalScale(5), marginVertical: verticalScale(5) }}
+                        style={{ backgroundColor: color.complementary, paddingVertical: verticalScale(5), marginVertical: verticalScale(5) }}
                         onPress={() => {
                           setCurrentYear(year);
                           setDatePicker(!datePicker);

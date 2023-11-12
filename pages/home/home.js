@@ -15,6 +15,7 @@ import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import { KEYS } from "../../utility/storageKeys";
+import { LinearGradient } from "expo-linear-gradient";
 
 import Header from "../../components/header/header";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
@@ -78,7 +79,7 @@ export default function Home({ navigation }) {
   );
 
   return (
-    <View style={styles.page}>
+    <LinearGradient colors={["#121212", "#121212", "#000000"]} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         {pieChartData.length !== 0 ? (
@@ -101,7 +102,7 @@ export default function Home({ navigation }) {
                   options={{ maintainAspectRatio: false, aspectRatio: 1 }}
                 />
                 <View style={{ position: "absolute", justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}>
-                  <Text style={{ alignSelf: "center", fontSize: verticalScale(40) }}>{purchaseTotal + "€"}</Text>
+                  <Text style={{ alignSelf: "center", fontSize: verticalScale(40), color: "white" }}>{purchaseTotal + "€"}</Text>
                   <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
                 </View>
               </View>
@@ -132,6 +133,6 @@ export default function Home({ navigation }) {
           </View>
         )}
       </View>
-    </View>
+    </LinearGradient>
   );
 }

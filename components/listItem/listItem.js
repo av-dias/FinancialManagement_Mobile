@@ -5,13 +5,14 @@ import { horizontalScale, verticalScale, moderateScale } from "../../functions/r
 import { _styles } from "./style";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
+import { color } from "../../utility/colors";
 
 export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = false }) => {
   const styles = _styles;
   return (
     <Pressable
       key={keys + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
-      style={{ ...styles.button, backgroundColor: gray ? "lightgray" : "white" }}
+      style={{ ...styles.button, backgroundColor: color.complementary }}
       onPress={showAlert}
     >
       <View style={styles.rowGap}>
@@ -22,7 +23,7 @@ export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = fal
               maxWidth: 50,
               height: verticalScale(40),
               maxHeight: 50,
-              backgroundColor: "transparent",
+              backgroundColor: gray ? "gray" : color.complementary,
               borderRadius: 10,
               borderWidth: 1,
               justifyContent: "center",
