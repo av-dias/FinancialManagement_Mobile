@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable, Dimensions, ScrollView } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 import React, { useState, useEffect } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
@@ -56,7 +57,7 @@ export default function Purchase({ navigation }) {
   }, []);
 
   return (
-    <View style={styles.page}>
+    <LinearGradient colors={["#121212", "#121212", "#999999"]} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 6 }}>
@@ -131,6 +132,6 @@ export default function Purchase({ navigation }) {
           }}
         />
       </View>
-    </View>
+    </LinearGradient>
   );
 }

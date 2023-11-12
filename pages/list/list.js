@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Divider } from "react-native-paper";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
 
@@ -93,7 +94,7 @@ export default function List({ navigation }) {
   );
 
   return (
-    <View style={styles.page}>
+    <LinearGradient colors={["#121212", "#121212", "#999999"]} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
@@ -209,6 +210,6 @@ export default function List({ navigation }) {
           </View>
         </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 }

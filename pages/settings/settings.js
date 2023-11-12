@@ -5,6 +5,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialIcons, FontAwesome, Entypo, FontAwesome5 } from "@expo/vector-icons";
 import ModalCustom from "../../components/modal/modal";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { getSplitUser, getSplitUsers, getSplitEmail, getSplitFirstName } from "../../functions/split";
 import { saveToStorage, getFromStorage, addToStorage } from "../../functions/secureStorage";
@@ -161,7 +162,7 @@ export default function Settings({ navigation }) {
     );
 
   return (
-    <View style={styles.page}>
+    <LinearGradient colors={["#121212", "#121212", "#999999"]} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <ModalCustom size={modalSize} modalVisible={modalVisible} setModalVisible={setModalVisible}>
         {ModalContent()}
@@ -278,6 +279,6 @@ export default function Settings({ navigation }) {
           <Text style={styles.buttonText}>Clear All</Text>
         </Pressable>
       </View>
-    </View>
+    </LinearGradient>
   );
 }

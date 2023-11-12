@@ -7,6 +7,7 @@ import { VictoryPie, VictoryLabel, VictoryChart, VictoryLegend } from "victory-n
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
 import { Card } from "@rneui/themed";
 import { Divider } from "react-native-paper";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { saveToStorage, getFromStorage } from "../../functions/secureStorage";
 import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
@@ -15,7 +16,6 @@ import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import { KEYS } from "../../utility/storageKeys";
-import { LinearGradient } from "expo-linear-gradient";
 
 import Header from "../../components/header/header";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
@@ -79,7 +79,7 @@ export default function Home({ navigation }) {
   );
 
   return (
-    <LinearGradient colors={["#121212", "#121212", "#000000"]} style={styles.page}>
+    <LinearGradient colors={["#121212", "#121212", "#999999"]} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         {pieChartData.length !== 0 ? (

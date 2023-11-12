@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, 
 import { useFocusEffect } from "@react-navigation/native";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Entypo } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
@@ -55,7 +56,7 @@ export default function Purchase({ navigation }) {
   );
 
   return (
-    <View style={styles.page}>
+    <LinearGradient colors={["#121212", "#121212", "#999999"]} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
@@ -82,6 +83,6 @@ export default function Purchase({ navigation }) {
           </View>
         </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
