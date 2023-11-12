@@ -18,6 +18,7 @@ export default function ModalCustom({ modalVisible, setModalVisible, size = 3, h
       }}
       style={{ margin: 0 }}
       propagateSwipe
+      statusBarTranslucent
     >
       <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.3)" }}>
         <TouchableOpacity style={{ flex: 5 }} onPress={() => setModalVisible(!modalVisible)} />
