@@ -2,14 +2,14 @@
   "expo": {
     "name": "fm_mobile",
     "slug": "fm_mobile",
-    "version": "2.8",
+    "version": "2.9",
     "orientation": "portrait",
     "icon": "./images/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./images/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "black"
+      "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -22,7 +22,7 @@
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./images/logo.png",
-        "backgroundColor": "black"
+        "backgroundColor": "#ffffff"
       },
       "package": "com.avdias.fm_mobile"
     },
