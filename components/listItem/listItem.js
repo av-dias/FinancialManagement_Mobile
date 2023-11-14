@@ -12,7 +12,7 @@ export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = fal
   return (
     <Pressable
       key={keys + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
-      style={{ ...styles.button, backgroundColor: color.complementary }}
+      style={{ ...styles.button, backgroundColor: color.complementary, width: "85%", paddingHorizontal: 0 }}
       onPress={showAlert}
     >
       <View style={styles.rowGap}>
