@@ -94,7 +94,7 @@ export default function List({ navigation }) {
   );
 
   return (
-    <LinearGradient colors={["#121212", "#121212", "#999999"]} style={styles.page}>
+    <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1, backgroundColor: "transparent" }}>

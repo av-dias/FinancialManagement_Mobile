@@ -26,8 +26,10 @@ function HomeTabs() {
           paddingTop: 5,
           backgroundColor: "black",
           position: "absolute",
-          //borderTopWidth: 0,
+          borderTopWidth: 0,
+          navigationBarColor: "gold",
         },
+        navigationBarColor: "gold",
       })}
     >
       <Tab.Screen
