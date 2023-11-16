@@ -9,6 +9,9 @@ import { color } from "../../utility/colors";
 
 export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = false }) => {
   const styles = _styles;
+  let iconComponent;
+  if (innerData.type) iconComponent = categoryIcons(20).find((category) => category.label === innerData.type);
+  else iconComponent = utilIcons().find((type) => type.label === "Transaction");
   return (
     <Pressable
       key={keys + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
@@ -23,16 +26,15 @@ export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = fal
               maxWidth: 50,
               height: verticalScale(40),
               maxHeight: 50,
-              backgroundColor: gray ? "lightgray" : color.complementary,
+              backgroundColor: gray ? "lightgray" : iconComponent.color,
               borderRadius: 10,
               borderWidth: 1,
               justifyContent: "center",
             }}
           >
-            {innerData.type
-              ? categoryIcons(20).find((category) => category.label === innerData.type).icon
-              : utilIcons().find((type) => type.label === "Transaction").icon}
+            {iconComponent.icon}
           </View>
+
           <View style={{ justifyContent: "center" }}>
             <Text style={styles.buttonText}>{innerData.name || innerData.description}</Text>
           </View>
