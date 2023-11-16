@@ -34,8 +34,10 @@ export default function Carrossel({ type, setType, size, iconSize }) {
                   setType(iconComponent.label);
                 }}
               >
-                <View style={styles.categoryIconContainer}>{iconComponent.icon}</View>
-                <Text style={styles.iconLabel}>{iconComponent.label}</Text>
+                <View style={{ ...styles.categoryIconContainer, backgroundColor: iconComponent.color }}>{iconComponent.icon}</View>
+                <View style={styles.labelContainer}>
+                  <Text style={styles.iconLabel}>{iconComponent.label}</Text>
+                </View>
               </Pressable>
             </CardWrapper>
           );
