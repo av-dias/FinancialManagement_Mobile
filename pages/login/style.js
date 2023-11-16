@@ -57,7 +57,7 @@ export const _styles = StyleSheet.create({
   },
   rowGap: { flex: 1, flexDirection: "row", justifyContent: "center", maxWidth: 500, borderRadius: 4, gap: 10 },
   textInputLogin: {
-    fontSize: horizontalScale(12),
+    fontSize: 12,
     paddingVertical: horizontalScale(5),
     paddingHorizontal: horizontalScale(15),
     backgroundColor: "white",
@@ -74,7 +74,7 @@ export const _styles = StyleSheet.create({
   },
   textIP: {
     flex: 1,
-    fontSize: horizontalScale(12),
+    fontSize: 12,
     padding: horizontalScale(5),
     textAlign: "center",
     backgroundColor: "white",

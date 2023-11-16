@@ -28,8 +28,7 @@ export const _styles = StyleSheet.create({
     flex: 7,
     gap: verticalScale(20),
     //paddingVertical: verticalScale(10),
-    justifyContent: "center",
-    backgroundColor: "transparent",
+    paddingTop: verticalScale(20),
   },
   tableInfo: {
     width: "100%",

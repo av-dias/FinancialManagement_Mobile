@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { _styles } from "./style";
+import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 
 export default function MoneyInputHeader({ value = "", setValue }) {
   const styles = _styles;
 
   return (
-    <View style={{ ...styles.rowNoBorder, height: 150, backgroundColor: "transparent" }}>
+    <View style={{ ...styles.rowNoBorder, height: verticalScale(150) }}>
       <Text style={styles.symbolBig}>+</Text>
       <TextInput
         ref={(input) => {
