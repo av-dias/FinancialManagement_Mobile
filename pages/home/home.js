@@ -115,11 +115,10 @@ export default function Home({ navigation }) {
               </View>
             </CardWrapper>
             <View style={{ flex: 4 }}>
-              <CardWrapper style={{ paddingVertical: 20, height: "80%" }}>
+              <CardWrapper style={{ height: "95%" }}>
                 <View style={styles.tableInfo}>
                   <Table style={{ ...styles.textCenter }} borderStyle={{ borderColor: "transparent" }}>
-                    <Row flexArr={state.tableFlex} data={state.tableHead} textStyle={styles.textCenterHead} />
-                    <ScrollView style={{ height: "100%", background: "red" }}>
+                    <ScrollView style={{ height: "100%", background: "transparent" }}>
                       {spendByType.map((rowData, index) => (
                         <TableWrapper key={index} style={styles.rowTable}>
                           {rowData.map((cellData, cellIndex) => (
