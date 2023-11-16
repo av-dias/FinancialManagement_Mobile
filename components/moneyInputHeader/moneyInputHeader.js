@@ -5,7 +5,7 @@ export default function MoneyInputHeader({ value = "", setValue }) {
   const styles = _styles;
 
   return (
-    <View style={{ ...styles.rowNoBorder, flex: 1, backgroundColor: "transparent" }}>
+    <View style={{ ...styles.rowNoBorder, height: 150, backgroundColor: "transparent" }}>
       <Text style={styles.symbolBig}>+</Text>
       <TextInput
         ref={(input) => {

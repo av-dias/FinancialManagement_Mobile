@@ -4,7 +4,6 @@ import { horizontalScale, verticalScale, moderateScale, heightTreshold } from ".
 import { StatusBar, Dimensions } from "react-native";
 const statusBarHeight = StatusBar.currentHeight;
 const naviagtionBarHeight = verticalScale(90);
-const height = Dimensions.get("window").height;
 
 /* console.log(Dimensions.get("screen").height);
 console.log(Dimensions.get("window").height);
@@ -17,7 +16,6 @@ export const _styles = StyleSheet.create({
   usableScreen: {
     height: Dimensions.get("window").height - statusBarHeight - naviagtionBarHeight,
     backgroundColor: "transparent",
-    marginTop: verticalScale(5),
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
   page: {
@@ -31,7 +29,6 @@ export const _styles = StyleSheet.create({
     gap: verticalScale(20),
     //paddingVertical: verticalScale(10),
     justifyContent: "center",
-    width: "100%",
     backgroundColor: "transparent",
   },
   tableInfo: {

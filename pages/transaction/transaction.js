@@ -60,10 +60,8 @@ export default function Purchase({ navigation }) {
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
-          <View style={{ flex: 2, backgroundColor: "transparent" }}>
-            <MoneyInputHeader value={value} setValue={setValue} />
-          </View>
-          <View style={{ flex: 7, backgroundColor: "transparent", gap: verticalScale(20) }}>
+          <MoneyInputHeader value={value} setValue={setValue} />
+          <View style={{ flex: 7, backgroundColor: "transparent", gap: verticalScale(20), paddingTop: verticalScale(20) }}>
             <CustomCalendarStrip pickerCurrentDate={date} setPickerCurrentDate={setDate} />
             <CustomInput
               Icon={<Entypo style={styles.iconCenter} name="email" size={verticalScale(20)} color="black" />}
@@ -78,9 +76,7 @@ export default function Purchase({ navigation }) {
               value={description}
             />
           </View>
-          <View style={{ flex: 1, backgroundColor: "transparent" }}>
-            <CustomButton handlePress={handleTransaction} />
-          </View>
+          <CustomButton handlePress={handleTransaction} />
         </View>
       </View>
     </LinearGradient>

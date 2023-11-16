@@ -60,23 +60,9 @@ export default function Purchase({ navigation }) {
     <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
-        <View style={{ flex: 6 }}>
-          <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible}>
-            {ModalPurchase(list, value, email, modalContentFlag, modalVisible, setModalVisible, getSplitName(splitUser), slider, styles)}
-          </ModalCustom>
-          <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
-            <Pressable
-              style={{}}
-              onPress={() => {
-                setModalVisible(true);
-                setModalContentFlag("table_info");
-              }}
-            >
-              <FontAwesome name="history" size={24} color="black" />
-            </Pressable>
-          </View>
+        <View style={{ flex: 1 }}>
+          <MoneyInputHeader value={value} setValue={setValue} />
           <View style={styles.form}>
-            <MoneyInputHeader value={value} setValue={setValue} />
             <Carrossel type={type} setType={setType} size={verticalScale(90)} iconSize={30} />
             <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
             <CardWrapper
@@ -111,27 +97,27 @@ export default function Purchase({ navigation }) {
               size={verticalScale(90)}
             />
           </View>
+          <CustomButton
+            handlePress={() => {
+              handlePurchase(
+                email,
+                value,
+                type,
+                name,
+                setName,
+                note,
+                splitStatus,
+                setSplitStatus,
+                getSplitEmail(splitUser),
+                slider,
+                setValue,
+                setNote,
+                list,
+                setList
+              );
+            }}
+          />
         </View>
-        <CustomButton
-          handlePress={() => {
-            handlePurchase(
-              email,
-              value,
-              type,
-              name,
-              setName,
-              note,
-              splitStatus,
-              setSplitStatus,
-              getSplitEmail(splitUser),
-              slider,
-              setValue,
-              setNote,
-              list,
-              setList
-            );
-          }}
-        />
       </View>
     </LinearGradient>
   );
