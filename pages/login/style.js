@@ -56,7 +56,14 @@ export const _styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   rowGap: { flex: 1, flexDirection: "row", justifyContent: "center", maxWidth: 500, borderRadius: 4, gap: 10 },
-  textInputLogin: { fontSize: 20, padding: horizontalScale(5), textAlign: "center", backgroundColor: "white", borderRadius: 2, flex: 3 },
+  textInputLogin: {
+    fontSize: horizontalScale(12),
+    paddingVertical: horizontalScale(5),
+    paddingHorizontal: horizontalScale(15),
+    backgroundColor: "white",
+    borderRadius: 2,
+    flex: 3,
+  },
   gmailInputLogin: {
     fontSize: 20,
     padding: 1,
@@ -65,7 +72,15 @@ export const _styles = StyleSheet.create({
     borderRadius: 2,
     flex: 2,
   },
-  textIP: { flex: 1, fontSize: 20, padding: horizontalScale(5), textAlign: "center", backgroundColor: "white", borderRadius: 2, width: "20%" },
+  textIP: {
+    flex: 1,
+    fontSize: horizontalScale(12),
+    padding: horizontalScale(5),
+    textAlign: "center",
+    backgroundColor: "white",
+    borderRadius: 2,
+    width: "20%",
+  },
   buttonText: {
     fontSize: 20,
     color: "white",
