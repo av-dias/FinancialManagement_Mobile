@@ -9,7 +9,7 @@
     "splash": {
       "image": "./images/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -22,12 +22,12 @@
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./images/logo.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000"
       },
       "package": "com.avdias.fm_mobile"
     },
     "androidNavigationBar": {
-      "backgroundColor": "black"
+      "backgroundColor": "#000000"
     },
     "web": {
       "favicon": "./assets/favicon.png"
