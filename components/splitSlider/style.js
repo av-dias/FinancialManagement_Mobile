@@ -7,8 +7,6 @@ const borderRadius = 10;
 
 export const _styles = StyleSheet.create({
   cardWrapperSlider: {
-    flex: 2,
-    maxHeight: HEIGHT > heightTreshold ? 150 : 100,
     paddingVertical: verticalScale(10),
     backgroundColor: "white",
     gap: verticalScale(10),

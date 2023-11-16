@@ -8,15 +8,11 @@ import { color } from "../../utility/colors";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 
-export default function SplitSlider({ value, setModalVisible, setModalContentFlag, splitStatus, setSplitStatus, slider, setSlider }) {
+export default function SplitSlider({ value, setModalVisible, setModalContentFlag, splitStatus, setSplitStatus, slider, setSlider, size }) {
   const styles = _styles;
 
   return (
-    <CardWrapper style={{ ...styles.cardWrapperSlider, backgroundColor: splitStatus ? color.complementary : "#333333" }}>
-      <View>
-        <View style={{ backgroundColor: "transparent" }}></View>
-        <View style={{ backgroundColor: "transparent" }}></View>
-      </View>
+    <CardWrapper style={{ ...styles.cardWrapperSlider, backgroundColor: splitStatus ? color.complementary : "#333333", height: size }}>
       <View style={{ ...styles.row, justifyContent: "space-evenly", zIndex: -1, backgroundColor: "transparent" }}>
         <Pressable
           disabled={splitStatus ? false : true}
@@ -41,10 +37,10 @@ export default function SplitSlider({ value, setModalVisible, setModalContentFla
             ...styles.button,
             backgroundColor: splitStatus ? color.secundary : "gray",
 
-            width: "30%",
+            width: "25%",
             maxWidth: 100,
             alignSelf: "center",
-            paddingVertical: verticalScale(12),
+            paddingVertical: verticalScale(8),
           }}
           onPress={async () => {
             setSplitStatus(!splitStatus);
@@ -68,14 +64,13 @@ export default function SplitSlider({ value, setModalVisible, setModalContentFla
             zIndex: 1,
           }}
         >
-          <FontAwesome name="balance-scale" size={verticalScale(15)} color="black" />
+          <MaterialCommunityIcons name="fraction-one-half" size={verticalScale(15)} color="black" />
         </Pressable>
       </View>
 
       <View style={{ paddingHorizontal: 10, flexDirection: "row", backgroundColor: "transparent", justifyContent: "center" }}>
         <View
           style={{
-            backgroundColor: splitStatus ? "lightgray" : "#333333",
             alignSelf: "center",
             borderRadius: 20,
             paddingHorizontal: verticalScale(15),
@@ -102,7 +97,6 @@ export default function SplitSlider({ value, setModalVisible, setModalContentFla
         />
         <View
           style={{
-            backgroundColor: splitStatus ? "lightgray" : "#333333",
             alignSelf: "center",
             borderRadius: 50,
             paddingHorizontal: verticalScale(15),

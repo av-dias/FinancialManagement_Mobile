@@ -77,12 +77,12 @@ export default function Purchase({ navigation }) {
           </View>
           <View style={styles.form}>
             <MoneyInputHeader value={value} setValue={setValue} />
-            <Carrossel type={type} setType={setType} />
+            <Carrossel type={type} setType={setType} size={verticalScale(90)} iconSize={30} />
             <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
             <CardWrapper
               style={{
-                gap: 10,
                 paddingHorizontal: horizontalScale(10),
+                height: verticalScale(90),
               }}
             >
               <CustomInput
@@ -108,6 +108,7 @@ export default function Purchase({ navigation }) {
               setSplitStatus={setSplitStatus}
               slider={slider}
               setSlider={setSlider}
+              size={verticalScale(90)}
             />
           </View>
         </View>

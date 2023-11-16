@@ -6,26 +6,24 @@ import { categoryIcons } from "../../assets/icons";
 const BORDER_RADIUS = 10;
 import { color } from "../../utility/colors";
 
-export default function Carrossel({ type, setType }) {
+export default function Carrossel({ type, setType, size, iconSize }) {
   const styles = _styles;
 
   return (
-    <View style={{ backgroundColor: "transparent", height: "15%", maxHeight: 100, borderRadius: BORDER_RADIUS }}>
+    <View style={{ backgroundColor: "transparent", height: size, borderRadius: BORDER_RADIUS }}>
       <ScrollView
         horizontal={true}
-        rowGap={20}
         style={styles.categoryScrollContainer}
         contentContainerStyle={{
           gap: verticalScale(10),
           paddingHorizontal: 1,
-          paddingVertical: 10,
         }}
       >
-        {categoryIcons().map((iconComponent) => {
+        {categoryIcons(iconSize).map((iconComponent) => {
           return (
             <CardWrapper
               key={iconComponent.label}
-              style={{ backgroundColor: type == iconComponent.label ? color.secundary : color.complementary, width: verticalScale(65) }}
+              style={{ backgroundColor: type == iconComponent.label ? color.secundary : color.complementary, width: size }}
             >
               <Pressable
                 key={iconComponent.label}

@@ -51,7 +51,7 @@ export default function CustomCalendarStrip({ pickerCurrentDate, setPickerCurren
         selectedDate={pickerCurrentDate}
         calendarAnimation={{ type: "sequence", duration: 15 }}
         daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: color.calendarBorder }}
-        style={{ height: verticalScale(80), backgroundColor: color.complementary, borderRadius: BORDER_RADIUS, elevation: 2 }}
+        style={{ height: verticalScale(90), backgroundColor: color.complementary, borderRadius: BORDER_RADIUS, elevation: 2 }}
         calendarHeaderStyle={{
           color: "black",
           marginTop: 5,
