@@ -4,7 +4,6 @@ import { horizontalScale, verticalScale, moderateScale } from "../../functions/r
 export const _styles = StyleSheet.create({
   button: {
     padding: 10,
-    paddingHorizontal: horizontalScale(20),
     width: "100%",
     backgroundColor: "transparent",
     alignSelf: "center",
