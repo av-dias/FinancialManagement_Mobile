@@ -7,6 +7,7 @@ import { horizontalScale, verticalScale } from "../../functions/responsive";
 import Carousel from "react-native-reanimated-carousel";
 import ModalCustom from "../../components/modal/modal";
 import { color } from "../../utility/colors";
+import commonStyles from "../../utility/commonStyles";
 
 export default function CalendarCard({ monthState: [currentMonth, setCurrentMonth], yearState: [currentYear, setCurrentYear] }) {
   const styles = _styles;
@@ -55,7 +56,7 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
                 alignItems: "center",
                 gap: verticalScale(20),
                 backgroundColor: color.complementary,
-                borderRadius: 10,
+                borderRadius: commonStyles.borderRadius,
               }}
             >
               <View style={{ width: verticalScale(120), height: verticalScale(70) }}>

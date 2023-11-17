@@ -1,15 +1,14 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import { color } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
-
-const borderRadius = 10;
+import commonStyles from "../../utility/commonStyles";
 
 export const _styles = StyleSheet.create({
   button: {
     alignItems: "center",
     paddingVertical: verticalScale(15),
     width: "100%",
-    borderRadius: 10,
+    borderRadius: commonStyles.borderRadius,
     backgroundColor: color.button,
     elevation: 1,
   },

@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-nativ
 import { color } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale, inverseScale } from "../../functions/responsive";
 import { StatusBar } from "react-native";
+const borderRadius = 5;
 
 export const _styles = StyleSheet.create({
   pageLogin: {
@@ -28,7 +29,7 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
     padding: verticalScale(20),
     backgroundColor: color.glass,
-    borderRadius: 10,
+    borderRadius: borderRadius,
   },
   logo: {
     width: verticalScale(100),
@@ -52,7 +53,7 @@ export const _styles = StyleSheet.create({
     width: "100%",
     maxWidth: 400,
     backgroundColor: "white",
-    borderRadius: 4,
+    borderRadius: borderRadius,
     backgroundColor: "transparent",
   },
   rowGap: { flex: 1, flexDirection: "row", justifyContent: "center", maxWidth: 500, borderRadius: 4, gap: 10 },
@@ -61,16 +62,8 @@ export const _styles = StyleSheet.create({
     paddingVertical: horizontalScale(5),
     paddingHorizontal: verticalScale(12),
     backgroundColor: "white",
-    borderRadius: 2,
+    borderRadius: borderRadius,
     flex: 3,
-  },
-  gmailInputLogin: {
-    fontSize: 20,
-    padding: 1,
-    textAlign: "center",
-    backgroundColor: "white",
-    borderRadius: 2,
-    flex: 2,
   },
   textIP: {
     flex: 1,
@@ -78,7 +71,7 @@ export const _styles = StyleSheet.create({
     padding: horizontalScale(5),
     textAlign: "center",
     backgroundColor: "white",
-    borderRadius: 2,
+    borderRadius: borderRadius,
     width: "20%",
   },
   buttonText: {
@@ -88,7 +81,6 @@ export const _styles = StyleSheet.create({
   checkbox: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 4,
     width: "60%",
     backgroundColor: "transparent",
   },
@@ -98,7 +90,7 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 12,
     marginVertical: 10,
-    borderRadius: 4,
+    borderRadius: borderRadius,
     backgroundColor: color.button,
     elevation: 1,
   },

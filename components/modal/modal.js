@@ -28,7 +28,7 @@ export default function ModalCustom({ modalVisible, setModalVisible, size = 3, h
             flex: size,
             width: "100%",
             padding: commonStyles.paddingHorizontal,
-            borderRadius: 20,
+            borderRadius: commonStyles.borderRadius,
           }}
         >
           {children}

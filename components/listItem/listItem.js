@@ -6,6 +6,7 @@ import { _styles } from "./style";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
 import { color } from "../../utility/colors";
+import commonStyles from "../../utility/commonStyles";
 
 export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = false }) => {
   const styles = _styles;
@@ -15,7 +16,7 @@ export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = fal
   return (
     <Pressable
       key={keys + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
-      style={{ ...styles.button, backgroundColor: color.complementary, borderRadius: 20 }}
+      style={{ ...styles.button, backgroundColor: color.complementary, borderRadius: commonStyles.borderRadius }}
       onPress={showAlert}
     >
       <View style={styles.rowGap}>
@@ -27,7 +28,7 @@ export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = fal
               height: verticalScale(40),
               maxHeight: 50,
               backgroundColor: gray ? "lightgray" : iconComponent.color,
-              borderRadius: 10,
+              borderRadius: commonStyles.borderRadius,
               borderWidth: 1,
               justifyContent: "center",
             }}
@@ -52,7 +53,7 @@ export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = fal
               maxWidth: 50,
               height: verticalScale(40),
               maxHeight: 50,
-              borderRadius: 20,
+              borderRadius: commonStyles.borderRadius,
               borderWidth: keys == KEYS_SERIALIZER.ARCHIVE_PURCHASE && innerData.split ? 1 : 0,
               justifyContent: "center",
               backgroundColor: "transparent",

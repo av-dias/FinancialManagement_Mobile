@@ -2,6 +2,8 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-nativ
 import { color } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
+import commonStyles from "../../utility/commonStyles";
+
 const statusBarHeight = StatusBar.currentHeight;
 const naviagtionBarHeight = verticalScale(90);
 
@@ -10,7 +12,7 @@ console.log(Dimensions.get("window").height);
 console.log(statusBarHeight);
 console.log(naviagtionBarHeight); */
 
-const borderRadius = 10;
+const borderRadius = commonStyles.borderRadius;
 
 export const _styles = StyleSheet.create({
   usableScreen: {
@@ -59,7 +61,7 @@ export const _styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: verticalScale(15),
     width: "100%",
-    borderRadius: 10,
+    borderRadius: borderRadius,
     backgroundColor: color.button,
     elevation: 1,
   },
@@ -68,7 +70,7 @@ export const _styles = StyleSheet.create({
     fontSize: 20,
     color: "white",
   },
-  textCenter: { textAlign: "center", borderRadius: 10, height: "100%", gap: 10 },
+  textCenter: { textAlign: "center", borderRadius: borderRadius, height: "100%", gap: 10 },
   textCenterHead: { textAlign: "center", fontWeight: "bold" },
   tableText: { fontSize: verticalScale(10), textAlign: "center", padding: 0 },
   symbolBig: { fontSize: horizontalScale(25), textAlign: "center", width: "auto", alignSelf: "center" },

@@ -20,14 +20,6 @@ export const _styles = StyleSheet.create({
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
   calendar: { justifyContent: "center", alignItems: "center", flex: 1, width: "100%", backgroundColor: "transparent" },
-  calendarBox: {
-    marginTop: 0,
-    width: 170,
-    marginHorizontal: -horizontalScale(5),
-    marginBottom: -5,
-    backgroundColor: "white",
-    borderRadius: commonStyles.borderRadius,
-  },
   hitBox: {
     alignItems: "center",
     justifyContent: "center",
@@ -36,7 +28,7 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
     zIndex: -1,
   },
-  rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", borderRadius: 4, gap: 20 },
+  rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", gap: 20 },
   text: { fontSize: 20, textAlign: "center" },
   chart: {
     justifyContent: "center",
@@ -56,7 +48,6 @@ export const _styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
-    borderRadius: 1,
     borderColor: color.complementary,
     borderWidth: verticalScale(1),
   },

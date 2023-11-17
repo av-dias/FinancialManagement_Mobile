@@ -1,9 +1,9 @@
 import { StyleSheet, Dimensions } from "react-native";
 import { color } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
-const HEIGHT = Dimensions.get("window").height;
+import commonStyles from "../../utility/commonStyles";
 
-const borderRadius = 10;
+const borderRadius = commonStyles.borderRadius;
 
 export const _styles = StyleSheet.create({
   cardWrapperSlider: {
@@ -21,7 +21,7 @@ export const _styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: verticalScale(15),
     width: "100%",
-    borderRadius: 10,
+    borderRadius: commonStyles.borderRadius,
     backgroundColor: color.button,
     elevation: 1,
   },

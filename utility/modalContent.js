@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable, Dimensions, Scroll
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../functions/responsive";
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Entypo } from "@expo/vector-icons";
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
+import commonStyles from "../utility/commonStyles";
 
 export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider, styles) => {
   const state = {
@@ -13,18 +14,18 @@ export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible
   switch (modalContentFlag) {
     case "split_info":
       content = (
-        <View style={{ flex: 4, backgroundColor: "transparent", borderRadius: 20, padding: verticalScale(30), gap: 20 }}>
+        <View style={{ flex: 4, backgroundColor: "transparent", borderRadius: commonStyles.borderRadius, padding: verticalScale(30), gap: 20 }}>
           <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
             <Pressable style={{}} onPress={() => setModalVisible(!modalVisible)}>
               <Entypo name="cross" size={verticalScale(20)} color="black" />
             </Pressable>
           </View>
-          <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: 20 }}>
+          <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
             <Text style={{ fontSize: 20 }}>Split with: {splitName}</Text>
             <Text style={{ fontSize: 20 }}>Amount: {(value * slider) / 100}</Text>
             <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
           </View>
-          <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: 20 }}>
+          <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
             <Text style={{ fontSize: 20 }}>You: {email}</Text>
             <Text style={{ fontSize: 20 }}>Amount: {(value * (100 - slider)) / 100}</Text>
             <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
@@ -34,7 +35,7 @@ export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible
       break;
     default:
       content = (
-        <View style={{ flex: 4, backgroundColor: "white", borderRadius: 20, padding: verticalScale(20) }}>
+        <View style={{ flex: 4, backgroundColor: "white", borderRadius: commonStyles.borderRadius, padding: verticalScale(20) }}>
           <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
             <Pressable style={{}} onPress={() => setModalVisible(!modalVisible)}>
               <Entypo name="cross" size={verticalScale(20)} color="black" />

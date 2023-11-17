@@ -4,6 +4,7 @@ import { Slider } from "@rneui/themed";
 
 import { _styles } from "./style";
 import { color } from "../../utility/colors";
+import commonStyles from "../../utility/commonStyles";
 
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
@@ -72,7 +73,7 @@ export default function SplitSlider({ value, setModalVisible, setModalContentFla
         <View
           style={{
             alignSelf: "center",
-            borderRadius: 20,
+            borderRadius: commonStyles.borderRadius,
             paddingHorizontal: verticalScale(15),
             paddingVertical: verticalScale(10),
             width: verticalScale(70),

@@ -29,8 +29,8 @@ export const _styles = StyleSheet.create({
     zIndex: -1,
   },
   text: { fontSize: verticalScale(10), textAlign: "center", zIndex: 1, backgroundColor: "transparent", alignSelf: "center" },
-  rowGap: { flexDirection: "row", justifyContent: "space-between", width: "100%", borderRadius: 4, backgroundColor: "transparent" },
-  row: { flexDirection: "row", gap: verticalScale(15), borderRadius: 4, backgroundColor: "transparent" },
+  rowGap: { flexDirection: "row", justifyContent: "space-between", width: "100%", backgroundColor: "transparent" },
+  row: { flexDirection: "row", gap: verticalScale(15), backgroundColor: "transparent" },
   buttonText: {
     fontSize: verticalScale(12),
     color: "black",
@@ -59,7 +59,7 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
     width: "100%",
     maxWidth: 750,
-    borderRadius: 10,
+    borderRadius: commonStyles.borderRadius,
     marginTop: verticalScale(10),
     marginBottom: -10,
   },
@@ -68,6 +68,6 @@ export const _styles = StyleSheet.create({
     width: "100%",
     maxWidth: 750,
     marginVertical: verticalScale(20),
-    borderRadius: 20,
+    borderRadius: commonStyles.borderRadius,
   },
 });

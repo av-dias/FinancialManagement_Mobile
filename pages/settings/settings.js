@@ -6,6 +6,7 @@ import { MaterialIcons, FontAwesome, Entypo, FontAwesome5 } from "@expo/vector-i
 import ModalCustom from "../../components/modal/modal";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import { LinearGradient } from "expo-linear-gradient";
+import commonStyles from "../../utility/commonStyles";
 
 import { getSplitUser, getSplitUsers, getSplitEmail, getSplitFirstName } from "../../functions/split";
 import { saveToStorage, getFromStorage, addToStorage } from "../../functions/secureStorage";
@@ -47,7 +48,7 @@ export default function Settings({ navigation }) {
     switch (modalContentFlag) {
       case "split":
         content = (
-          <View style={{ flex: 4, backgroundColor: "transparent", borderRadius: 20, padding: verticalScale(30), gap: 20 }}>
+          <View style={{ flex: 4, backgroundColor: "transparent", borderRadius: commonStyles.borderRadius, padding: verticalScale(30), gap: 20 }}>
             <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
               <Pressable
                 style={{}}
@@ -72,15 +73,15 @@ export default function Settings({ navigation }) {
               </Pressable>
             </View>
             {listVisible && (
-              <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: 10 }}>
+              <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
                 <Text style={{ fontSize: 20 }}>Users Registered</Text>
                 {splitUsers ? splitUsers.map((row) => <Text key={"split-user" + getSplitEmail(row)}>{getSplitEmail(row)}</Text>) : null}
               </View>
             )}
-            <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: 10 }}>
+            <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
               <Text style={{ fontSize: 20 }}>User to Split Email</Text>
             </View>
-            <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: 10 }}>
+            <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
               <TextInput
                 ref={(input) => {
                   this.textInputEmail = input;
@@ -91,7 +92,7 @@ export default function Settings({ navigation }) {
                 onChangeText={setNewEmail}
               />
             </View>
-            <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: 10 }}>
+            <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
               <TextInput
                 ref={(input) => {
                   this.textInputName = input;
@@ -116,7 +117,7 @@ export default function Settings({ navigation }) {
         );
         break;
       default:
-        content = <View style={{ flex: 4, backgroundColor: "white", borderRadius: 20, padding: verticalScale(20) }}></View>;
+        content = <View style={{ flex: 4, backgroundColor: "white", borderRadius: commonStyles.borderRadius, padding: verticalScale(20) }}></View>;
     }
 
     return content;
