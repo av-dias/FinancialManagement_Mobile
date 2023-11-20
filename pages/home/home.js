@@ -1,26 +1,22 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, TouchableOpacity, Dimensions } from "react-native";
 import React, { useState, useEffect } from "react";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { MaterialIcons, FontAwesome, Feather, AntDesign } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { VictoryPie, VictoryLabel, VictoryChart, VictoryLegend } from "victory-native";
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
 import { Card } from "@rneui/themed";
 import { Divider } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { saveToStorage, getFromStorage } from "../../functions/secureStorage";
 import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
 import { horizontalScale, verticalScale, moderateScale, largeScale, heightTreshold } from "../../functions/responsive";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 import CalendarCard from "../../components/calendarCard/calendarCard";
-import { KEYS } from "../../utility/storageKeys";
 import { categoryIcons } from "../../assets/icons";
 
 import Header from "../../components/header/header";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
-const HEIGHT = Dimensions.get("window").height;
 
 export default function Home({ navigation }) {
   const styles = _styles;
