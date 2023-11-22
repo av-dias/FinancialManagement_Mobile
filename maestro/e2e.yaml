@@ -1,0 +1,13 @@
+# test1.yaml
+
+appId: com.avdias.fm_mobile
+name: e2e test
+---
+- launchApp
+- tapOn: "email"
+- inputText: "al.vrdias@gmail.com"
+- tapOn: "password"
+- inputText: "123"
+- hideKeyboard
+- tapOn: "Submit"
+- assertVisible: "NO DATA"
