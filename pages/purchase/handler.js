@@ -31,13 +31,13 @@ export const handlePurchase = async (
   try {
     let newPurchase = [{ type: type, name: name, value: value, dop: date.toISOString().split("T")[0], note: note }];
 
+    console.log(splitStatus);
     //improve split destination logic
     if (splitStatus) {
-      newPurchase["split"] = {};
-      newPurchase["split"]["userId"] = splitEmail;
-      newPurchase["split"]["weight"] = slider;
+      newPurchase[0]["split"] = {};
+      newPurchase[0]["split"]["userId"] = splitEmail;
+      newPurchase[0]["split"]["weight"] = slider;
     }
-    console.log(newPurchase);
 
     await addToStorage(KEYS.PURCHASE, JSON.stringify(newPurchase), email);
     setList([
