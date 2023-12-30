@@ -6,4 +6,4 @@ export const KEYS = {
   TOKEN_SEPARATOR: "-=-=+=+",
 };
 
-export const STATS_TYPE = ["Total", "Personal", "Average"];
+export const STATS_TYPE = ["Total", "Personal"];

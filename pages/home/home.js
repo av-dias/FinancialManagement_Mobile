@@ -41,7 +41,7 @@ export default function Home({ navigation }) {
         let email = await getUser();
         setEmail(email);
         try {
-          let res = await getPurchaseStats(email, currentMonth, currentYear).catch((error) => console.log(error));
+          let res = await getPurchaseStats(email, currentMonth, currentYear, statsType).catch((error) => console.log(error));
           let array = [];
           let arrayTables = [];
           Object.keys(res).forEach((key) => {
@@ -66,14 +66,14 @@ export default function Home({ navigation }) {
             })
           );
 
-          res = await getPurchaseTotal(email, currentMonth, currentYear).catch((error) => console.log(error));
+          res = await getPurchaseTotal(email, currentMonth, currentYear, statsType).catch((error) => console.log(error));
           setPurchaseTotal(res);
         } catch (e) {
           console.log(e);
         }
       }
       fetchData();
-    }, [purchaseTotal, currentMonth, currentYear, email])
+    }, [purchaseTotal, currentMonth, currentYear, email, statsType])
   );
 
   return (
@@ -85,9 +85,6 @@ export default function Home({ navigation }) {
             <CardWrapper
               style={{ flex: verticalScale(8), justifyContent: "center", alignItems: "center", backgroundColor: "transparent", elevation: 0 }}
             >
-              <View style={{ position: "absolute", alignSelf: "flex-end", top: 0 }}>
-                <TypeCard item={statsType} setItem={setStatsType} itemList={STATS_TYPE} />
-              </View>
               <View style={styles.chart}>
                 <VictoryPie
                   height={horizontalScale(320)}
@@ -108,6 +105,9 @@ export default function Home({ navigation }) {
                 </View>
               </View>
             </CardWrapper>
+            <View style={{ flex: 1, alignSelf: "flex-end" }}>
+              <TypeCard setItem={setStatsType} itemList={STATS_TYPE} />
+            </View>
             <View style={{ flex: 4 }}>
               <CardWrapper style={{ height: "95%" }}>
                 <View style={styles.tableInfo}>

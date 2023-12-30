@@ -9,7 +9,7 @@ import ModalCustom from "../modal/modal";
 import { color } from "../../utility/colors";
 import commonStyles from "../../utility/commonStyles";
 
-export default function TypeCard({ item, setItem, itemList }) {
+export default function TypeCard({ setItem, itemList }) {
   const styles = _styles;
   const [datePicker, setDatePicker] = useState(false);
 
@@ -23,7 +23,7 @@ export default function TypeCard({ item, setItem, itemList }) {
             data={itemList}
             scrollAnimationDuration={1000}
             onSnapToItem={(index) => {
-              setItem(index);
+              setItem(itemList[index]);
             }}
             defaultIndex={0}
             renderItem={({ index }) => (
