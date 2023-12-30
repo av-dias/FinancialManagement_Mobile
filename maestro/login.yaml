@@ -1,0 +1,12 @@
+# test1.yaml
+
+appId: com.avdias.fm_mobile
+name: login test
+---
+- launchApp
+- tapOn: "email"
+- inputText: "user1@gmail.com"
+- tapOn: "password"
+- inputText: "123"
+- hideKeyboard
+- tapOn: "Submit"

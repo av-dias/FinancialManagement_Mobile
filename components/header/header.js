@@ -32,6 +32,7 @@ export default function Header(props) {
     return (
       <View style={styles.iconLeft}>
         <MaterialCommunityIcons
+          testID="server_on_icon"
           name="server"
           size={18}
           color="gray"
@@ -47,6 +48,7 @@ export default function Header(props) {
     return (
       <View style={styles.iconLeft}>
         <MaterialCommunityIcons
+          testID="server_off_icon"
           name="server-off"
           size={18}
           color="gray"
@@ -66,6 +68,7 @@ export default function Header(props) {
             name="ios-menu"
             size={30}
             color="white"
+            testID="settings_icon"
             onPress={() => {
               props.navigation.navigate("Settings");
             }}
@@ -79,6 +82,7 @@ export default function Header(props) {
         {server == "on" ? serverOn() : serverOff()}
         <View style={styles.iconLeft}>
           <MaterialIcons
+            testID="logout_icon"
             name="logout"
             size={20}
             color="white"

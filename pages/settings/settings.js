@@ -63,6 +63,7 @@ export default function Settings({ navigation }) {
             </View>
             <View style={{ position: "absolute", left: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
               <Pressable
+                testID="split_list"
                 style={{}}
                 onPress={async () => {
                   setModalSize(modalSize == MODAL_LARGE_SIZE ? MODAL_DEFAULT_SIZE : MODAL_LARGE_SIZE);

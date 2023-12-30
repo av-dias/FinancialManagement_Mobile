@@ -1,0 +1,12 @@
+# clean.yaml
+
+appId: com.avdias.fm_mobile
+name: clean internal storage
+---
+- tapOn:
+    id: "settings_icon"
+- tapOn: "Clear All"
+- tapOn: "YES"
+- tapOn: "OK"
+- tapOn: "Dashboard"
+- assertVisible: "NO DATA"

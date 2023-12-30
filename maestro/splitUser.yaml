@@ -1,0 +1,17 @@
+# clean.yaml
+
+appId: com.avdias.fm_mobile
+name: create split user
+---
+- tapOn:
+    id: "settings_icon"
+- tapOn: "Split"
+- tapOn:
+    id: "split_list"
+- assertNotVisible: "user2@gmail.com"
+- tapOn: "split-user@gmail.com"
+- inputText: "user2@gmail.com"
+- tapOn: "user-name"
+- inputText: "User Name"
+- tapOn: "Submit"
+- assertVisible: "user2@gmail.com"

@@ -2,12 +2,42 @@
 
 appId: com.avdias.fm_mobile
 name: e2e test
+onFlowStart:
+  - runFlow: /mnt/c/Users/av.dias/Desktop/Apps/fm_mobile/maestro/login.yaml
+onFlowComplete:
+  - runFlow: /mnt/c/Users/av.dias/Desktop/Apps/fm_mobile/maestro/clean.yaml
 ---
-- launchApp
-- tapOn: "email"
-- inputText: "al.vrdias@gmail.com"
-- tapOn: "password"
-- inputText: "123"
-- hideKeyboard
-- tapOn: "Submit"
 - assertVisible: "NO DATA"
+- tapOn: "list"
+- assertNotVisible: "Supermarket"
+- assertNotVisible: "Travel"
+- assertNotVisible: "Rent"
+- assertNotVisible: "Work"
+- assertNotVisible: "Coffee-Pub"
+- assertNotVisible: "Fun"
+- assertNotVisible: "Car"
+- assertNotVisible: "Lifestyle"
+- assertNotVisible: "Restaurant"
+- assertNotVisible: "Gadgets"
+- assertNotVisible: "Medic"
+- assertNotVisible: "Gift"
+- assertNotVisible: "Cloth"
+- assertNotVisible: "Subscription"
+- assertNotVisible: "Home"
+- assertNotVisible: "Uber"
+- assertNotVisible: "Other"
+- tapOn: "Transaction"
+- assertVisible: "Not Registed"
+- tapOn: "Purchase"
+- tapOn: "0"
+- inputText: "100"
+- hideKeyboard
+- tapOn: "Supermarket"
+- tapOn: "MON"
+- tapOn: Submit
+- tapOn: "list"
+- assertVisible: "Supermarket"
+- assertVisible: "100 €"
+- tapOn: "Dashboard"
+- assertVisible: "Supermarket"
+- assertVisible: "100€"

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "fm_mobile",
-    "slug": "fm_mobile",
+    "slug": "mobile-app",
     "version": "2.9",
     "orientation": "portrait",
     "icon": "./images/icon.png",
@@ -34,7 +34,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "0d93d640-abb9-49dd-a31c-eee72b033d17"
+        "projectId": "8aded037-3c4e-4e9c-b33d-2a0303917be6"
       }
     }
   }
