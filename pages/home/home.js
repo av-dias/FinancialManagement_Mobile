@@ -4,10 +4,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { VictoryPie, VictoryLabel, VictoryChart, VictoryLegend } from "victory-native";
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
-import { Card } from "@rneui/themed";
-import { Divider } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
-import Carousel from "react-native-reanimated-carousel";
 
 import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
 import { horizontalScale, verticalScale, moderateScale, largeScale, heightTreshold } from "../../functions/responsive";
@@ -32,13 +29,6 @@ export default function Home({ navigation }) {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   const [statsType, setStatsType] = useState(STATS_TYPE[0]);
-
-  const generateColor = () => {
-    const randomColor = Math.floor(Math.random() * 16777215)
-      .toString(16)
-      .padStart(6, "0");
-    return `#${randomColor}`;
-  };
 
   const state = {
     tableHead: ["Color", "Type", "Value"],
