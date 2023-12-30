@@ -5,3 +5,5 @@ export const KEYS = {
   ARCHIVE_TRANSACTION: "ATK",
   TOKEN_SEPARATOR: "-=-=+=+",
 };
+
+export const STATS_TYPE = ["Total", "Personal", "Average"];

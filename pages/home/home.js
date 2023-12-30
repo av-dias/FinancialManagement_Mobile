@@ -7,16 +7,19 @@ import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-ta
 import { Card } from "@rneui/themed";
 import { Divider } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
+import Carousel from "react-native-reanimated-carousel";
 
 import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
 import { horizontalScale, verticalScale, moderateScale, largeScale, heightTreshold } from "../../functions/responsive";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 import CalendarCard from "../../components/calendarCard/calendarCard";
+import TypeCard from "../../components/ScrollCard/ScrollCard";
 import { categoryIcons } from "../../assets/icons";
 
 import Header from "../../components/header/header";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
+import { STATS_TYPE } from "../../utility/keys";
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -27,6 +30,8 @@ export default function Home({ navigation }) {
   const [purchaseTotal, setPurchaseTotal] = useState("0.00");
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+
+  const [statsType, setStatsType] = useState(STATS_TYPE[0]);
 
   const generateColor = () => {
     const randomColor = Math.floor(Math.random() * 16777215)
@@ -90,6 +95,9 @@ export default function Home({ navigation }) {
             <CardWrapper
               style={{ flex: verticalScale(8), justifyContent: "center", alignItems: "center", backgroundColor: "transparent", elevation: 0 }}
             >
+              <View style={{ position: "absolute", alignSelf: "flex-end", top: 0 }}>
+                <TypeCard item={statsType} setItem={setStatsType} itemList={STATS_TYPE} />
+              </View>
               <View style={styles.chart}>
                 <VictoryPie
                   height={horizontalScale(320)}
