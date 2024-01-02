@@ -31,3 +31,41 @@ export const getPurchaseTotal = async (email, currentMonth, currentYear, statsTy
   }, 0);
   return parseFloat(res).toFixed(0);
 };
+
+export const getPurchaseAverage = async (email, currentYear, statsType) => {
+  let purchasesStats,
+    purchaseAverage = {};
+  let usedMonthsCount = 0;
+  for (let i = 0; i < 12; i++) {
+    purchasesStats = await getPurchaseStats(email, i, currentYear, statsType);
+    if (JSON.stringify(purchasesStats) != "{}") usedMonthsCount++;
+    for (const stat of Object.keys(purchasesStats)) {
+      if (purchaseAverage[stat]) {
+        purchaseAverage[stat] += purchasesStats[stat];
+      } else {
+        purchaseAverage[stat] = purchasesStats[stat];
+      }
+    }
+  }
+
+  for (const stat of Object.keys(purchaseAverage)) {
+    purchaseAverage[stat] = purchaseAverage[stat] / usedMonthsCount;
+  }
+
+  return purchaseAverage;
+};
+
+export const getPurchaseAverageTotal = async (email, currentYear, statsType) => {
+  let purchasesTotal = 0,
+    purchaseAverageTotal = 0;
+  usedMonthsCount = 0;
+
+  for (let i = 0; i < 12; i++) {
+    purchasesTotal = parseInt(await getPurchaseTotal(email, i, currentYear, statsType));
+    purchaseAverageTotal += purchasesTotal;
+
+    if (String(purchasesTotal) != "0") usedMonthsCount++;
+  }
+
+  return parseInt(purchaseAverageTotal) / parseInt(usedMonthsCount);
+};

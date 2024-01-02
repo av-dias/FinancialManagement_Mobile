@@ -6,7 +6,7 @@ import { VictoryPie, VictoryLabel, VictoryChart, VictoryLegend } from "victory-n
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
+import { getPurchaseStats, getPurchaseTotal, getPurchaseAverage, getPurchaseAverageTotal } from "../../functions/purchase";
 import { horizontalScale, verticalScale, moderateScale, largeScale, heightTreshold } from "../../functions/responsive";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
@@ -16,7 +16,7 @@ import { categoryIcons } from "../../assets/icons";
 
 import Header from "../../components/header/header";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
-import { STATS_TYPE } from "../../utility/keys";
+import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -25,10 +25,13 @@ export default function Home({ navigation }) {
   const [spendByType, setSpendByType] = useState([[""]]);
 
   const [purchaseTotal, setPurchaseTotal] = useState("0.00");
+  const [purchaseAverageTotal, setPurchaseAverageTotal] = useState({});
+  const [purchaseAverage, setPurchaseAverage] = useState({});
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   const [statsType, setStatsType] = useState(STATS_TYPE[0]);
+  const [statsMode, setStatsMode] = useState(STATS_MODE[0]);
 
   const state = {
     tableHead: ["Color", "Type", "Value"],
@@ -76,6 +79,48 @@ export default function Home({ navigation }) {
     }, [purchaseTotal, currentMonth, currentYear, email, statsType])
   );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        let email = await getUser();
+        setEmail(email);
+        try {
+          let array = [];
+          let arrayTables = [];
+
+          res = await getPurchaseAverage(email, currentYear, statsType).catch((error) => console.log(error));
+
+          Object.keys(res).forEach((key) => {
+            let _color;
+
+            categoryIcons().find((type) => {
+              if (type.label === key) {
+                _color = type.color;
+              }
+            });
+            array.push({ x: " ", y: res[key], color: _color });
+            arrayTables.push([
+              <FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />,
+              key,
+              parseFloat(res[key]).toFixed(0) + " €",
+            ]);
+          });
+          setPurchaseAverage(
+            arrayTables.sort(function (a, b) {
+              return b[2] - a[2];
+            })
+          );
+
+          let a = await getPurchaseAverageTotal(email, currentYear, statsType);
+          setPurchaseAverageTotal(a);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      fetchData();
+    }, [currentYear, statsType, statsMode])
+  );
+
   return (
     <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
       <Header email={email} navigation={navigation} />
@@ -100,26 +145,39 @@ export default function Home({ navigation }) {
                   options={{ maintainAspectRatio: false, aspectRatio: 1 }}
                 />
                 <View style={{ position: "absolute", justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}>
-                  <Text style={{ alignSelf: "center", fontSize: verticalScale(40), color: "white" }}>{purchaseTotal + "€"}</Text>
-                  <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
+                  <Text style={{ alignSelf: "center", fontSize: verticalScale(40), color: "white" }}>
+                    {statsMode == STATS_MODE[0] ? purchaseTotal : purchaseAverageTotal + "€"}
+                  </Text>
+                  {statsMode == STATS_MODE[0] ? (
+                    <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
+                  ) : null}
                 </View>
               </View>
             </CardWrapper>
-            <View style={{ flex: 1, alignSelf: "flex-end" }}>
+            <View style={{ flex: 1, alignSelf: "flex-end", flexDirection: "row", maxHeight: 35, gap: 10 }}>
               <TypeCard setItem={setStatsType} itemList={STATS_TYPE} />
+              <TypeCard setItem={setStatsMode} itemList={STATS_MODE} />
             </View>
             <View style={{ flex: 4 }}>
               <CardWrapper style={{ height: "95%" }}>
                 <View style={styles.tableInfo}>
                   <Table style={{ ...styles.textCenter }} borderStyle={{ borderColor: "transparent" }}>
                     <ScrollView style={{ height: "100%", background: "transparent" }}>
-                      {spendByType.map((rowData, index) => (
-                        <TableWrapper key={index} style={styles.rowTable}>
-                          {rowData.map((cellData, cellIndex) => (
-                            <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
+                      {statsMode === STATS_MODE[0]
+                        ? spendByType.map((rowData, index) => (
+                            <TableWrapper key={index} style={styles.rowTable}>
+                              {rowData.map((cellData, cellIndex) => (
+                                <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
+                              ))}
+                            </TableWrapper>
+                          ))
+                        : purchaseAverage.map((rowData, index) => (
+                            <TableWrapper key={index} style={styles.rowTable}>
+                              {rowData.map((cellData, cellIndex) => (
+                                <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
+                              ))}
+                            </TableWrapper>
                           ))}
-                        </TableWrapper>
-                      ))}
                     </ScrollView>
                   </Table>
                 </View>

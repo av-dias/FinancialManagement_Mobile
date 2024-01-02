@@ -7,3 +7,4 @@ export const KEYS = {
 };
 
 export const STATS_TYPE = ["Total", "Personal"];
+export const STATS_MODE = ["Monthly", "Average"];
