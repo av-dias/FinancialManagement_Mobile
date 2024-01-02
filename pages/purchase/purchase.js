@@ -36,6 +36,7 @@ export default function Purchase({ navigation }) {
   const [slider, setSlider] = useState(50);
   const [splitStatus, setSplitStatus] = useState(false);
   const [splitUser, setSplitUser] = useState("");
+  const [refundActive, setRefundActive] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -56,12 +57,37 @@ export default function Purchase({ navigation }) {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (refundActive) {
+      setNote("Refund");
+    } else {
+      setNote("");
+    }
+  }, [refundActive]);
+
   return (
     <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1 }}>
-          <MoneyInputHeader value={value} setValue={setValue} />
+          <View style={{ position: "absolute", right: 0, paddingVertical: 10 }}>
+            <Pressable
+              style={{
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                backgroundColor: refundActive ? "lightblue" : "lightgray",
+                borderRadius: 10,
+                zIndex: 1,
+              }}
+              onPress={() => {
+                console.log(refundActive);
+                setRefundActive(!refundActive);
+              }}
+            >
+              <Text>Refund</Text>
+            </Pressable>
+          </View>
+          <MoneyInputHeader value={value} setValue={setValue} signal={refundActive ? "-" : "+"} />
           <View style={styles.form}>
             <Carrossel type={type} setType={setType} size={verticalScale(90)} iconSize={30} />
             <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
@@ -113,7 +139,9 @@ export default function Purchase({ navigation }) {
                 setValue,
                 setNote,
                 list,
-                setList
+                setList,
+                refundActive,
+                setRefundActive
               );
             }}
           />

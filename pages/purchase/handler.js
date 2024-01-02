@@ -18,7 +18,9 @@ export const handlePurchase = async (
   setValue,
   setNote,
   list,
-  setList
+  setList,
+  refundActive,
+  setRefundActive
 ) => {
   let date = this._calendar.getSelectedDate();
   if (type == "" || value == "" || date == "" || !date) {
@@ -29,7 +31,8 @@ export const handlePurchase = async (
   if (name == "") name = type;
 
   try {
-    let newPurchase = [{ type: type, name: name, value: value, dop: date.toISOString().split("T")[0], note: note }];
+    let _value = refundActive ? "-" + value : value;
+    let newPurchase = [{ type: type, name: name, value: _value, dop: date.toISOString().split("T")[0], note: note }];
 
     console.log(splitStatus);
     //improve split destination logic
@@ -48,6 +51,7 @@ export const handlePurchase = async (
     setNote("");
     setName("");
     setSplitStatus(false);
+    setRefundActive(false);
   } catch (err) {
     console.log("Purchase: " + err);
   }
