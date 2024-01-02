@@ -2,11 +2,11 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, 
 import { _styles } from "./style";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 
-export default function MoneyInputHeader({ value = "", setValue }) {
+export default function MoneyInputHeader({ value = "", setValue, verticalHeight = 150 }) {
   const styles = _styles;
 
   return (
-    <View style={{ ...styles.rowNoBorder, height: verticalScale(150) }}>
+    <View style={{ ...styles.rowNoBorder, height: verticalScale(verticalHeight) }}>
       <Text style={styles.symbolBig}>+</Text>
       <TextInput
         ref={(input) => {
