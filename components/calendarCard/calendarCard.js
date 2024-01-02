@@ -27,6 +27,11 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
             data={months}
             scrollAnimationDuration={1000}
             onSnapToItem={(index) => {
+              if (currentMonth === 0 && index == 11) {
+                setCurrentYear(currentYear - 1);
+              } else if (currentMonth === 11 && index == 0) {
+                setCurrentYear(currentYear + 1);
+              }
               setCurrentMonth(index);
             }}
             defaultIndex={currentMonth}
