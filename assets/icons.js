@@ -102,7 +102,11 @@ export const utilIcons = (size = 25) => {
   return [
     { label: "Split", icon: <MaterialIcons name="call-split" style={{ alignSelf: "center" }} size={size} color="black" />, color: "white" },
     { label: "Transaction", icon: <MaterialIcons name="compare-arrows" style={{ alignSelf: "center" }} size={size} color="black" />, color: "white" },
-
+    {
+      label: "Edit",
+      icon: <Feather name="edit" style={{ alignSelf: "center" }} size={size} color="black" />,
+      color: "white",
+    },
     {
       label: "Default",
       icon: <MaterialIcons name="compare-arrows" style={{ alignSelf: "center" }} size={size} color="black" />,
