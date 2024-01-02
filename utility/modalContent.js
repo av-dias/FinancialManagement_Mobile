@@ -3,6 +3,13 @@ import { horizontalScale, verticalScale, moderateScale, heightTreshold } from ".
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Entypo } from "@expo/vector-icons";
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
 import commonStyles from "../utility/commonStyles";
+import CustomInput from "../components/customInput/customInput";
+import CardWrapper from "../components/cardWrapper/cardWrapper";
+import Carrossel from "../components/carrossel/carrossel";
+import CustomCalendarStrip from "../components/customCalendarStrip/customCalendarStrip";
+import MoneyInputHeader from "../components/moneyInputHeader/moneyInputHeader";
+import SplitSlider from "../components/splitSlider/splitSlider";
+import CustomButton from "../components/customButton/customButton";
 
 export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider, styles) => {
   const state = {
@@ -58,6 +65,56 @@ export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible
         </View>
       );
   }
+};
 
-  return content;
+export const ModalList = (
+  slider,
+  setSlider,
+  splitStatus,
+  setSplitStatus,
+  value,
+  setValue,
+  name,
+  setName,
+  note,
+  setNote,
+  type,
+  setType,
+  pickerCurrentDate,
+  setPickerCurrentDate,
+  styles
+) => {
+  return (content = (
+    <View style={{ flex: 1 }}>
+      <MoneyInputHeader value={value} setValue={setValue} verticalHeight={65} />
+      <View style={styles.form}>
+        <Carrossel type={type} setType={setType} size={verticalScale(90)} iconSize={30} />
+        <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
+        <CustomInput
+          noStyle={false}
+          Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />}
+          placeholder="Name"
+          setValue={setName}
+          value={name}
+        />
+        <CustomInput
+          noStyle={false}
+          Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />}
+          placeholder="Notes"
+          setValue={setNote}
+          value={note}
+        />
+        <SplitSlider
+          userInfo={false}
+          value={value}
+          splitStatus={splitStatus}
+          setSplitStatus={setSplitStatus}
+          slider={slider}
+          setSlider={setSlider}
+          size={verticalScale(90)}
+        />
+      </View>
+      <CustomButton handlePress={() => {}} />
+    </View>
+  ));
 };

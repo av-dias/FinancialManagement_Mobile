@@ -70,4 +70,11 @@ export const _styles = StyleSheet.create({
     marginVertical: verticalScale(20),
     borderRadius: commonStyles.borderRadius,
   },
+  iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
+  form: {
+    flex: 7,
+    gap: verticalScale(15),
+    //paddingVertical: verticalScale(10),
+    paddingTop: verticalScale(20),
+  },
 });

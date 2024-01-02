@@ -20,6 +20,8 @@ import CalendarCard from "../../components/calendarCard/calendarCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import ListItem from "../../components/listItem/listItem";
 import showAlert from "./showAlert";
+import ModalCustom from "../../components/modal/modal";
+import { ModalList } from "../../utility/modalContent";
 
 import { categoryIcons, utilIcons } from "../../assets/icons";
 
@@ -39,6 +41,16 @@ export default function List({ navigation }) {
   const [refreshTrigger, setRefreshTrigger] = useState(true);
   const [splitUser, setSplitUser] = useState("");
   const [listDays, setListDays] = useState([]);
+  const [itemToEdit, setItemToEdit] = useState({});
+  const [editVisible, setEditVisible] = useState(false);
+  const [modalContentFlag, setModalContentFlag] = useState("");
+  const [type, setType] = useState("");
+  const [name, setName] = useState("");
+  const [note, setNote] = useState("");
+  const [value, setValue] = useState("");
+  const [pickerCurrentDate, setPickerCurrentDate] = useState(new Date());
+  const [slider, setSlider] = useState(50);
+  const [splitStatus, setSplitStatus] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -98,6 +110,27 @@ export default function List({ navigation }) {
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
+          {editVisible && (
+            <ModalCustom modalVisible={editVisible} setModalVisible={setEditVisible} size={14} hasColor={true}>
+              {ModalList(
+                slider,
+                setSlider,
+                splitStatus,
+                setSplitStatus,
+                value,
+                setValue,
+                name,
+                setName,
+                note,
+                setNote,
+                type,
+                setType,
+                pickerCurrentDate,
+                setPickerCurrentDate,
+                styles
+              )}
+            </ModalCustom>
+          )}
           <View style={{ flex: verticalScale(7), backgroundColor: "transparent" }}>
             <ScrollView>
               {listDays.map(
@@ -126,6 +159,10 @@ export default function List({ navigation }) {
                                   setRefreshTrigger
                                 );
                               }}
+                              handleEdit={async () => {
+                                setItemToEdit(innerData);
+                                setEditVisible(true);
+                              }}
                               keys={KEYS_SERIALIZER.PURCHASE}
                               showAlert={() => {
                                 showAlert(
@@ -145,6 +182,10 @@ export default function List({ navigation }) {
                             <ListItem
                               key={innerData.index + KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
                               innerData={innerData}
+                              handleEdit={async () => {
+                                setItemToEdit(innerData);
+                                setEditVisible(true);
+                              }}
                               keys={KEYS_SERIALIZER.TRANSACTION}
                               showAlert={() => {
                                 showAlert(

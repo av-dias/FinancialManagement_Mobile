@@ -8,7 +8,7 @@ import { KEYS } from "../../utility/storageKeys";
 import { color } from "../../utility/colors";
 import commonStyles from "../../utility/commonStyles";
 
-export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = false }) => {
+export default ListItem = ({ innerData, handleSplit, handleEdit, showAlert, keys, gray = false }) => {
   const styles = _styles;
   let iconComponent;
   if (innerData.type) iconComponent = categoryIcons(20).find((category) => category.label === innerData.type);
@@ -47,15 +47,16 @@ export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = fal
           <View
             style={{
               flex: 2,
+              flexDirection: "row",
               alignContent: "center",
               alignItems: "center",
               width: verticalScale(40),
-              maxWidth: 50,
+              maxWidth: 70,
               height: verticalScale(40),
               maxHeight: 50,
               borderRadius: commonStyles.borderRadius,
               borderWidth: keys == KEYS_SERIALIZER.ARCHIVE_PURCHASE && innerData.split ? 1 : 0,
-              justifyContent: "center",
+              justifyContent: "flex-end",
               backgroundColor: "transparent",
             }}
           >
@@ -75,7 +76,35 @@ export default ListItem = ({ innerData, handleSplit, showAlert, keys, gray = fal
                 {utilIcons(verticalScale(20)).find((type) => type.label === "Split").icon}
               </Pressable>
             ) : null}
-            {innerData.split ? <Text style={styles.text}>{innerData.split.weight + "%"}</Text> : null}
+            {innerData.split ? (
+              <View
+                style={{
+                  width: verticalScale(40),
+                  maxWidth: 50,
+                  height: verticalScale(40),
+                  maxHeight: 50,
+                  justifyContent: "center",
+                  backgroundColor: "transparent",
+                  alignContent: "center",
+                }}
+              >
+                <Text style={styles.text}>{innerData.split.weight + "%"}</Text>
+              </View>
+            ) : null}
+            <Pressable
+              style={{
+                width: verticalScale(40),
+                maxWidth: 50,
+                height: verticalScale(40),
+                maxHeight: 50,
+                justifyContent: "center",
+                backgroundColor: "transparent",
+                alignContent: "center",
+              }}
+              onPress={handleEdit}
+            >
+              {utilIcons(verticalScale(20)).find((type) => type.label === "Edit").icon}
+            </Pressable>
           </View>
         </View>
       </View>
