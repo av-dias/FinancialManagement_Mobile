@@ -71,6 +71,8 @@ export const ModalList = (
   email,
   purchases,
   setPurchases,
+  transactions,
+  setTransactions,
   index,
   splitUser,
   refreshTrigger,
@@ -87,16 +89,56 @@ export const ModalList = (
   setNote,
   type,
   setType,
+  description,
+  setDescription,
   pickerCurrentDate,
   setPickerCurrentDate,
   modalContentFlag,
-  handleEdit,
+  handleEditPurchase,
+  handleEditTransaction,
   setEditVisible,
   styles
 ) => {
   let content;
   switch (modalContentFlag) {
     case "Transaction":
+      content = (
+        <View style={{ flex: 1 }}>
+          <MoneyInputHeader value={String(value)} setValue={setValue} />
+          <View style={{ flex: 7, gap: verticalScale(20), paddingTop: verticalScale(20) }}>
+            <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
+            <CustomInput
+              Icon={<Entypo style={styles.iconCenter} name="email" size={verticalScale(20)} color="black" />}
+              placeholder="Email"
+              value={splitUser}
+              editable={false}
+            />
+            <CustomInput
+              Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color="black" />}
+              placeholder="Description"
+              setValue={setDescription}
+              value={description}
+            />
+          </View>
+          <CustomButton
+            handlePress={() => {
+              handleEditTransaction(
+                email,
+                transactions,
+                setTransactions,
+                index,
+                value,
+                description,
+                pickerCurrentDate,
+                splitUser,
+                refreshTrigger,
+                setRefreshTrigger,
+                setEditVisible
+              );
+            }}
+          />
+        </View>
+      );
       break;
     default:
       content = (
@@ -141,7 +183,7 @@ export const ModalList = (
           <CustomButton
             text="Save"
             handlePress={() => {
-              handleEdit(
+              handleEditPurchase(
                 email,
                 purchases,
                 setPurchases,

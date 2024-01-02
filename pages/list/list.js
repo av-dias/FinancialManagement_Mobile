@@ -10,7 +10,7 @@ import { _styles } from "./style";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
 import { getSplitUser, getSplitEmail, getSplitFirstName } from "../../functions/split";
-import { handleSplit, handleEdit, groupByDate } from "./handler";
+import { handleSplit, handleEditPurchase, groupByDate, handleEditTransaction } from "./handler";
 
 import Header from "../../components/header/header";
 import { getFromStorage, saveToStorage } from "../../functions/secureStorage";
@@ -50,7 +50,9 @@ export default function List({ navigation }) {
   const [pickerCurrentDate, setPickerCurrentDate] = useState(new Date());
   const [slider, setSlider] = useState(50);
   const [splitStatus, setSplitStatus] = useState(false);
+  const [description, setDescription] = useState("");
   const [index, setIndex] = useState(-1);
+
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
@@ -115,8 +117,10 @@ export default function List({ navigation }) {
                 email,
                 purchases,
                 setPurchases,
+                transactions,
+                setTransactions,
                 index,
-                splitUser,
+                getSplitEmail(splitUser),
                 refreshTrigger,
                 setRefreshTrigger,
                 slider,
@@ -131,10 +135,13 @@ export default function List({ navigation }) {
                 setNote,
                 type,
                 setType,
+                description,
+                setDescription,
                 pickerCurrentDate,
                 setPickerCurrentDate,
                 modalContentFlag,
-                handleEdit,
+                handleEditPurchase,
+                handleEditTransaction,
                 setEditVisible,
                 styles
               )}
@@ -206,6 +213,10 @@ export default function List({ navigation }) {
                               innerData={innerData}
                               handleEdit={async () => {
                                 setModalContentFlag("Transaction");
+                                setDescription(innerData.description);
+                                setValue(innerData.amount);
+                                setIndex(innerData.index);
+                                setPickerCurrentDate(innerData.dot);
                                 setEditVisible(true);
                               }}
                               keys={KEYS_SERIALIZER.TRANSACTION}

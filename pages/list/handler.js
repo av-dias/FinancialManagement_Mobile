@@ -2,7 +2,6 @@ import { getFromStorage, saveToStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 
 export const handleSplit = async (email, purchases, setPurchases, index, splitUser, splitEmail, refreshTrigger, setRefreshTrigger, getSplitEmail) => {
-  console.log(purchases);
   purchases[index]["split"] = {};
   purchases[index]["split"]["userId"] = splitEmail;
   purchases[index]["split"]["weight"] = 50;
@@ -12,7 +11,7 @@ export const handleSplit = async (email, purchases, setPurchases, index, splitUs
   setRefreshTrigger(!refreshTrigger);
 };
 
-export const handleEdit = async (
+export const handleEditPurchase = async (
   email,
   purchases,
   setPurchases,
@@ -33,13 +32,39 @@ export const handleEdit = async (
   else purchases[index].name = type;
   purchases[index].value = value;
   purchases[index].type = type;
-  purchases[index].dop = pickerCurrentDate;
+  purchases[index].dop = new Date(pickerCurrentDate).toISOString().split("T")[0];
   purchases[index].note = note;
   if (splitStatus) purchases[index]["split"] = { userId: splitUser, weight: splitWeight };
   else delete purchases[index]["split"];
   setPurchases(purchases);
 
   await saveToStorage(KEYS.PURCHASE, JSON.stringify(purchases), email);
+  setRefreshTrigger(!refreshTrigger);
+  setEditVisible(false);
+};
+
+export const handleEditTransaction = async (
+  email,
+  transactions,
+  setTransactions,
+  index,
+  value,
+  description,
+  pickerCurrentDate,
+  splitUser,
+  refreshTrigger,
+  setRefreshTrigger,
+  setEditVisible
+) => {
+  transactions[index] = {
+    amount: value,
+    dot: new Date(pickerCurrentDate).toISOString().split("T")[0],
+    description: description,
+    user_destination_id: splitUser,
+  };
+  setTransactions(transactions);
+  await saveToStorage(KEYS.TRANSACTION, JSON.stringify(transactions), email);
+
   setRefreshTrigger(!refreshTrigger);
   setEditVisible(false);
 };
