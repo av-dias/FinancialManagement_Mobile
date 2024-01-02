@@ -12,6 +12,38 @@ export const handleSplit = async (email, purchases, setPurchases, index, splitUs
   setRefreshTrigger(!refreshTrigger);
 };
 
+export const handleEdit = async (
+  email,
+  purchases,
+  setPurchases,
+  index,
+  name,
+  value,
+  type,
+  note,
+  pickerCurrentDate,
+  splitStatus,
+  splitWeight,
+  splitUser,
+  refreshTrigger,
+  setRefreshTrigger,
+  setEditVisible
+) => {
+  if (name && name != "") purchases[index].name = name;
+  else purchases[index].name = type;
+  purchases[index].value = value;
+  purchases[index].type = type;
+  purchases[index].dop = pickerCurrentDate;
+  purchases[index].note = note;
+  if (splitStatus) purchases[index]["split"] = { userId: splitUser, weight: splitWeight };
+  else delete purchases[index]["split"];
+  setPurchases(purchases);
+
+  await saveToStorage(KEYS.PURCHASE, JSON.stringify(purchases), email);
+  setRefreshTrigger(!refreshTrigger);
+  setEditVisible(false);
+};
+
 export const groupByDate = (data) => {
   if (!data || data.length == 0) return {};
   let grouped_data = data

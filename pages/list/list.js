@@ -10,7 +10,7 @@ import { _styles } from "./style";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
 import { getSplitUser, getSplitEmail, getSplitFirstName } from "../../functions/split";
-import { handleSplit, groupByDate } from "./handler";
+import { handleSplit, handleEdit, groupByDate } from "./handler";
 
 import Header from "../../components/header/header";
 import { getFromStorage, saveToStorage } from "../../functions/secureStorage";
@@ -41,7 +41,6 @@ export default function List({ navigation }) {
   const [refreshTrigger, setRefreshTrigger] = useState(true);
   const [splitUser, setSplitUser] = useState("");
   const [listDays, setListDays] = useState([]);
-  const [itemToEdit, setItemToEdit] = useState({});
   const [editVisible, setEditVisible] = useState(false);
   const [modalContentFlag, setModalContentFlag] = useState("");
   const [type, setType] = useState("");
@@ -51,7 +50,7 @@ export default function List({ navigation }) {
   const [pickerCurrentDate, setPickerCurrentDate] = useState(new Date());
   const [slider, setSlider] = useState(50);
   const [splitStatus, setSplitStatus] = useState(false);
-
+  const [index, setIndex] = useState(-1);
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
@@ -113,6 +112,13 @@ export default function List({ navigation }) {
           {editVisible && (
             <ModalCustom modalVisible={editVisible} setModalVisible={setEditVisible} size={14} hasColor={true}>
               {ModalList(
+                email,
+                purchases,
+                setPurchases,
+                index,
+                splitUser,
+                refreshTrigger,
+                setRefreshTrigger,
                 slider,
                 setSlider,
                 splitStatus,
@@ -127,6 +133,9 @@ export default function List({ navigation }) {
                 setType,
                 pickerCurrentDate,
                 setPickerCurrentDate,
+                modalContentFlag,
+                handleEdit,
+                setEditVisible,
                 styles
               )}
             </ModalCustom>
@@ -160,7 +169,20 @@ export default function List({ navigation }) {
                                 );
                               }}
                               handleEdit={async () => {
-                                setItemToEdit(innerData);
+                                setModalContentFlag("Purchase");
+                                setName(innerData.name);
+                                setType(innerData.type);
+                                setNote(innerData.note);
+                                setValue(innerData.value);
+                                setPickerCurrentDate(innerData.dop);
+                                setIndex(innerData.index);
+                                if (innerData.split) {
+                                  setSplitStatus(true);
+                                  setSlider(innerData.split.weight);
+                                } else {
+                                  setSplitStatus(false);
+                                  setSlider(50);
+                                }
                                 setEditVisible(true);
                               }}
                               keys={KEYS_SERIALIZER.PURCHASE}
@@ -183,7 +205,7 @@ export default function List({ navigation }) {
                               key={innerData.index + KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
                               innerData={innerData}
                               handleEdit={async () => {
-                                setItemToEdit(innerData);
+                                setModalContentFlag("Transaction");
                                 setEditVisible(true);
                               }}
                               keys={KEYS_SERIALIZER.TRANSACTION}

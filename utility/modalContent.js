@@ -68,6 +68,13 @@ export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible
 };
 
 export const ModalList = (
+  email,
+  purchases,
+  setPurchases,
+  index,
+  splitUser,
+  refreshTrigger,
+  setRefreshTrigger,
   slider,
   setSlider,
   splitStatus,
@@ -82,39 +89,81 @@ export const ModalList = (
   setType,
   pickerCurrentDate,
   setPickerCurrentDate,
+  modalContentFlag,
+  handleEdit,
+  setEditVisible,
   styles
 ) => {
-  return (content = (
-    <View style={{ flex: 1 }}>
-      <MoneyInputHeader value={value} setValue={setValue} verticalHeight={65} />
-      <View style={styles.form}>
-        <Carrossel type={type} setType={setType} size={verticalScale(90)} iconSize={30} />
-        <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
-        <CustomInput
-          noStyle={false}
-          Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />}
-          placeholder="Name"
-          setValue={setName}
-          value={name}
-        />
-        <CustomInput
-          noStyle={false}
-          Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />}
-          placeholder="Notes"
-          setValue={setNote}
-          value={note}
-        />
-        <SplitSlider
-          userInfo={false}
-          value={value}
-          splitStatus={splitStatus}
-          setSplitStatus={setSplitStatus}
-          slider={slider}
-          setSlider={setSlider}
-          size={verticalScale(90)}
-        />
-      </View>
-      <CustomButton handlePress={() => {}} />
-    </View>
-  ));
+  let content;
+  switch (modalContentFlag) {
+    case "Transaction":
+      break;
+    default:
+      content = (
+        <View style={{ flex: 1 }}>
+          <MoneyInputHeader value={value} setValue={setValue} verticalHeight={65} />
+          <View style={styles.form}>
+            <Carrossel
+              type={type}
+              setType={(value) => {
+                setType(value);
+                setName("");
+                setNote("");
+              }}
+              size={verticalScale(90)}
+              iconSize={30}
+            />
+            <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
+            <CustomInput
+              noStyle={false}
+              Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />}
+              placeholder="Name"
+              setValue={setName}
+              value={name}
+            />
+            <CustomInput
+              noStyle={false}
+              Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />}
+              placeholder="Notes"
+              setValue={setNote}
+              value={note}
+            />
+            <SplitSlider
+              userInfo={false}
+              value={value}
+              splitStatus={splitStatus}
+              setSplitStatus={setSplitStatus}
+              slider={slider}
+              setSlider={setSlider}
+              size={verticalScale(90)}
+            />
+          </View>
+          <CustomButton
+            text="Save"
+            handlePress={() => {
+              handleEdit(
+                email,
+                purchases,
+                setPurchases,
+                index,
+                name,
+                value,
+                type,
+                note,
+                pickerCurrentDate,
+                splitStatus,
+                slider,
+                splitUser,
+                refreshTrigger,
+                setRefreshTrigger,
+                setEditVisible
+              );
+            }}
+          />
+        </View>
+      );
+      break;
+  }
+
+  return content;
 };
