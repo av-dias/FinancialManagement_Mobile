@@ -9,30 +9,42 @@ import commonStyles from "../../utility/commonStyles";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 
-export default function SplitSlider({ value, setModalVisible, setModalContentFlag, splitStatus, setSplitStatus, slider, setSlider, size }) {
+export default function SplitSlider({
+  value,
+  setModalVisible,
+  setModalContentFlag,
+  splitStatus,
+  setSplitStatus,
+  slider,
+  setSlider,
+  size,
+  userInfo = true,
+}) {
   const styles = _styles;
 
   return (
     <CardWrapper style={{ ...styles.cardWrapperSlider, backgroundColor: splitStatus ? color.complementary : "#333333", height: size }}>
       <View style={{ ...styles.row, justifyContent: "space-evenly", zIndex: -1, backgroundColor: "transparent" }}>
-        <Pressable
-          disabled={splitStatus ? false : true}
-          onPress={() => {
-            setModalVisible(true);
-            setModalContentFlag("split_info");
-          }}
-          style={{
-            position: "absolute",
-            right: verticalScale(10),
-            width: verticalScale(35),
-            padding: 5,
-            backgroundColor: "transparent",
-            alignItems: "center",
-            zIndex: 1,
-          }}
-        >
-          <AntDesign name="plus" size={verticalScale(20)} color="black" />
-        </Pressable>
+        {userInfo && (
+          <Pressable
+            disabled={splitStatus ? false : true}
+            onPress={() => {
+              setModalVisible(true);
+              setModalContentFlag("split_info");
+            }}
+            style={{
+              position: "absolute",
+              right: verticalScale(10),
+              width: verticalScale(35),
+              padding: 5,
+              backgroundColor: "transparent",
+              alignItems: "center",
+              zIndex: 1,
+            }}
+          >
+            <AntDesign name="plus" size={verticalScale(20)} color="black" />
+          </Pressable>
+        )}
         <Pressable
           style={{
             ...styles.button,
