@@ -6,50 +6,47 @@ const TABLE_ICON_SIZE = 15;
 
 export const handlePurchase = async (
   email,
-  value,
-  type,
-  name,
-  setName,
-  note,
+  newPurchase,
+  setNewPurchase,
   splitStatus,
   setSplitStatus,
   splitEmail,
   slider,
-  setValue,
-  setNote,
   list,
   setList,
   refundActive,
   setRefundActive
 ) => {
-  let date = this._calendar.getSelectedDate();
-  if (type == "" || value == "" || date == "" || !date) {
+  if (!newPurchase.type || newPurchase.type == "" || !newPurchase.value || newPurchase.value == "" || !newPurchase.dop || newPurchase.dop == "") {
     alert("Please fill all fields.");
     return;
   }
-
-  if (name == "") name = type;
+  if (!newPurchase.name || newPurchase.name == "") newPurchase.name = newPurchase.type;
 
   try {
-    let _value = refundActive ? "-" + value : value;
-    let newPurchase = [{ type: type, name: name, value: _value, dop: date.toISOString().split("T")[0], note: note }];
+    newPurchase.value = refundActive ? "-" + newPurchase.value : newPurchase.value;
 
-    console.log(splitStatus);
     //improve split destination logic
     if (splitStatus) {
-      newPurchase[0]["split"] = {};
-      newPurchase[0]["split"]["userId"] = splitEmail;
-      newPurchase[0]["split"]["weight"] = slider;
+      newPurchase["split"] = {};
+      newPurchase["split"]["userId"] = splitEmail;
+      newPurchase["split"]["weight"] = slider;
     }
 
-    await addToStorage(KEYS.PURCHASE, JSON.stringify(newPurchase), email);
+    await addToStorage(KEYS.PURCHASE, JSON.stringify([newPurchase]), email);
+
+    // History List
     setList([
-      [categoryIcons(TABLE_ICON_SIZE).find((category) => category.label === type).icon, name, value, date.toISOString().split("T")[0]],
+      [
+        categoryIcons(TABLE_ICON_SIZE).find((category) => category.label === newPurchase.type).icon,
+        newPurchase.name,
+        newPurchase.value,
+        newPurchase.dop,
+      ],
       ...list,
     ]);
-    setValue("");
-    setNote("");
-    setName("");
+
+    setNewPurchase({ ...newPurchase, value: "", note: "", name: "" });
     setSplitStatus(false);
     setRefundActive(false);
   } catch (err) {

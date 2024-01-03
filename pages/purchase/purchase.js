@@ -29,7 +29,7 @@ export default function Purchase({ navigation }) {
   const [note, setNote] = useState("");
   const [value, setValue] = useState("");
   const [email, setEmail] = useState("");
-  const [pickerCurrentDate, setPickerCurrentDate] = useState(new Date());
+  const [newPurchase, setNewPurchase] = useState({ dop: new Date().toISOString().split("T")[0] });
 
   const [slider, setSlider] = useState(50);
   const [splitStatus, setSplitStatus] = useState(false);
@@ -100,10 +100,30 @@ export default function Purchase({ navigation }) {
               <Text>History</Text>
             </Pressable>
           </View>
-          <MoneyInputHeader value={value} setValue={setValue} signal={refundActive ? "-" : "+"} />
+          <MoneyInputHeader
+            value={newPurchase.value}
+            setValue={(_value) => {
+              setValue(_value);
+              setNewPurchase({ ...newPurchase, value: _value });
+            }}
+            signal={refundActive ? "-" : "+"}
+          />
           <View style={styles.form}>
-            <Carrossel type={type} setType={setType} size={verticalScale(90)} iconSize={30} />
-            <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
+            <Carrossel
+              type={newPurchase.type}
+              setType={(_type) => {
+                setType(_type);
+                setNewPurchase({ ...newPurchase, type: _type });
+              }}
+              size={verticalScale(90)}
+              iconSize={30}
+            />
+            <CustomCalendarStrip
+              pickerCurrentDate={new Date(newPurchase.dop)}
+              setPickerCurrentDate={(_date) => {
+                setNewPurchase({ ...newPurchase, dop: _date.toISOString().split("T")[0] });
+              }}
+            />
             <CardWrapper
               style={{
                 paddingHorizontal: horizontalScale(10),
@@ -114,19 +134,25 @@ export default function Purchase({ navigation }) {
                 noStyle={true}
                 Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color="black" />}
                 placeholder="Name"
-                setValue={setName}
-                value={name}
+                setValue={(_name) => {
+                  setName(_name);
+                  setNewPurchase({ ...newPurchase, name: _name });
+                }}
+                value={newPurchase.name}
               />
               <CustomInput
                 noStyle={true}
                 Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />}
                 placeholder="Notes"
-                setValue={setNote}
-                value={note}
+                setValue={(_note) => {
+                  setName(_note);
+                  setNewPurchase({ ...newPurchase, note: _note });
+                }}
+                value={newPurchase.note}
               />
             </CardWrapper>
             <SplitSlider
-              value={value}
+              value={newPurchase.value}
               setModalVisible={setModalVisible}
               setModalContentFlag={setModalContentFlag}
               splitStatus={splitStatus}
@@ -140,17 +166,12 @@ export default function Purchase({ navigation }) {
             handlePress={() => {
               handlePurchase(
                 email,
-                value,
-                type,
-                name,
-                setName,
-                note,
+                newPurchase,
+                setNewPurchase,
                 splitStatus,
                 setSplitStatus,
                 getSplitEmail(splitUser),
                 slider,
-                setValue,
-                setNote,
                 list,
                 setList,
                 refundActive,
