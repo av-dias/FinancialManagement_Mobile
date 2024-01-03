@@ -6,5 +6,5 @@ export const KEYS = {
   TOKEN_SEPARATOR: "-=-=+=+",
 };
 
-export const STATS_TYPE = ["Total", "Personal"];
-export const STATS_MODE = ["Monthly", "Average"];
+export const STATS_TYPE = { 0: "Total", 1: "Personal" };
+export const STATS_MODE = { 0: "Monthly", 1: "Average" };
