@@ -28,13 +28,15 @@ export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible
             </Pressable>
           </View>
           <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
-            <Text style={{ fontSize: 20 }}>Split with: {splitName}</Text>
-            <Text style={{ fontSize: 20 }}>Amount: {(value * slider) / 100}</Text>
+            <Text style={{ fontSize: 15 }}>Split with</Text>
+            <Text style={{ fontSize: 15 }}>{splitName}</Text>
+            <Text style={{ fontSize: 15 }}>Amount: {(value * slider) / 100}</Text>
             <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
           </View>
           <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
-            <Text style={{ fontSize: 20 }}>You: {email}</Text>
-            <Text style={{ fontSize: 20 }}>Amount: {(value * (100 - slider)) / 100}</Text>
+            <Text style={{ fontSize: 15 }}>You</Text>
+            <Text style={{ fontSize: 15 }}>{email}</Text>
+            <Text style={{ fontSize: 15 }}>Amount: {(value * (100 - slider)) / 100}</Text>
             <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
           </View>
         </View>
@@ -42,7 +44,15 @@ export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible
       break;
     default:
       content = (
-        <View style={{ flex: 4, backgroundColor: "white", borderRadius: commonStyles.borderRadius, padding: verticalScale(20) }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "white",
+            borderRadius: commonStyles.borderRadius,
+            padding: verticalScale(20),
+            marginVertical: verticalScale(10),
+          }}
+        >
           <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
             <Pressable style={{}} onPress={() => setModalVisible(!modalVisible)}>
               <Entypo name="cross" size={verticalScale(20)} color="black" />
@@ -65,6 +75,7 @@ export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible
         </View>
       );
   }
+  return content;
 };
 
 export const ModalList = (

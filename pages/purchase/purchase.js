@@ -1,15 +1,15 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable, Dimensions, ScrollView } from "react-native";
+import { Text, View, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 import React, { useState, useEffect } from "react";
-import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
+import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 import { handlePurchase } from "./handler";
-import { getSplitUser, getSplitName, getSplitEmail } from "../../functions/split";
+import { getSplitUser, getSplitEmail } from "../../functions/split";
 
 import Header from "../../components/header/header";
 import ModalCustom from "../../components/modal/modal";
@@ -23,19 +23,22 @@ import { ModalPurchase } from "../../utility/modalContent";
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
-  const [onLoadData, setOnLoadData] = useState("");
+
   const [type, setType] = useState("");
   const [name, setName] = useState("");
   const [note, setNote] = useState("");
   const [value, setValue] = useState("");
-  const [list, setList] = useState([]);
   const [email, setEmail] = useState("");
   const [pickerCurrentDate, setPickerCurrentDate] = useState(new Date());
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalContentFlag, setModalContentFlag] = useState("");
+
   const [slider, setSlider] = useState(50);
   const [splitStatus, setSplitStatus] = useState(false);
   const [splitUser, setSplitUser] = useState("");
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContentFlag, setModalContentFlag] = useState("");
+  const [list, setList] = useState([]);
+
   const [refundActive, setRefundActive] = useState(false);
 
   useEffect(() => {
@@ -47,15 +50,6 @@ export default function Purchase({ navigation }) {
     // write your code here, it's like componentWillMount
     fetchData();
   }, [email]);
-
-  useEffect(() => {
-    async function fetchData() {
-      let email = await getUser();
-      setOnLoadData(email);
-    }
-    // write your code here, it's like componentWillMount
-    fetchData();
-  }, []);
 
   useEffect(() => {
     if (refundActive) {
@@ -70,7 +64,12 @@ export default function Purchase({ navigation }) {
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1 }}>
-          <View style={{ position: "absolute", right: 0, paddingVertical: 10 }}>
+          {modalVisible && (
+            <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible}>
+              {ModalPurchase(list, value, email, modalContentFlag, modalVisible, setModalVisible, getSplitEmail(splitUser), slider, styles)}
+            </ModalCustom>
+          )}
+          <View style={{ position: "absolute", right: 0, paddingVertical: 10, gap: 10 }}>
             <Pressable
               style={{
                 paddingHorizontal: 10,
@@ -80,11 +79,25 @@ export default function Purchase({ navigation }) {
                 zIndex: 1,
               }}
               onPress={() => {
-                console.log(refundActive);
                 setRefundActive(!refundActive);
               }}
             >
               <Text>Refund</Text>
+            </Pressable>
+            <Pressable
+              style={{
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                backgroundColor: modalContentFlag == "history" && modalVisible ? "lightblue" : "lightgray",
+                borderRadius: 10,
+                zIndex: 1,
+              }}
+              onPress={() => {
+                setModalContentFlag("history");
+                setModalVisible(true);
+              }}
+            >
+              <Text>History</Text>
             </Pressable>
           </View>
           <MoneyInputHeader value={value} setValue={setValue} signal={refundActive ? "-" : "+"} />
