@@ -10,7 +10,7 @@ import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 import CalendarCard from "../../components/calendarCard/calendarCard";
-import TypeCard from "../../components/TypeCard/TypeCard";
+import TypeCard from "../../components/typeCard/typeCard";
 
 import Header from "../../components/header/header";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
