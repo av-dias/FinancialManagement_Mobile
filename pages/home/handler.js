@@ -37,3 +37,18 @@ export const refinePurchaseStats = (purchasesStats) => {
 export const loadCalendarCard = (statsMode, currentMonth, setCurrentMonth, currentYear, setCurrentYear) => {
   if (statsMode == STATS_MODE[0]) return <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />;
 };
+
+export const loadPieChartData = (statsMode, statsType, pieChartData, pieChartAverageData) => {
+  if (statsMode == STATS_MODE[0]) return pieChartData[statsType];
+  else return pieChartAverageData[statsType];
+};
+
+export const loadPurchaseTotalData = (statsMode, statsType, purchaseTotal, purchaseAverageTotal) => {
+  if (statsMode == STATS_MODE[0]) return purchaseTotal[statsType] + "€";
+  else return purchaseAverageTotal[statsType] + "€";
+};
+
+export const loadSpendTableData = (statsMode, statsType, spendByType, spendAverageByType) => {
+  if (statsMode == STATS_MODE[0]) return spendByType[statsType];
+  else return spendAverageByType[statsType];
+};
