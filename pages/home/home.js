@@ -68,7 +68,6 @@ export default function Home({ navigation }) {
           setPieChartData(auxPieChartData);
           setPurchaseTotal(auxPurchaseTotal);
           setSpendByType(auxSpendByType);
-          console.log("CHAING");
         } catch (e) {
           console.log(e);
         }
