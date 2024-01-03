@@ -21,7 +21,7 @@ export default function Header(props) {
     React.useCallback(() => {
       async function fetchData() {
         serverCheck();
-        console.log(server);
+        console.log("[Header] Server: " + server);
       }
       // write your code here, it's like componentWillMount
       fetchData();
