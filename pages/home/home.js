@@ -23,6 +23,8 @@ export default function Home({ navigation }) {
   const [email, setEmail] = useState("");
   const [statsType, setStatsType] = useState(STATS_TYPE[0]);
   const [statsMode, setStatsMode] = useState(STATS_MODE[0]);
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   const [pieChartData, setPieChartData] = useState({ [STATS_TYPE[0]]: [] });
   const [spendByType, setSpendByType] = useState({ [STATS_TYPE[0]]: [[""]] });
@@ -30,8 +32,6 @@ export default function Home({ navigation }) {
   const [pieChartAverageData, setPieChartAverageData] = useState({ [STATS_TYPE[0]]: [] });
   const [spendAverageByType, setSpendAverageByType] = useState({ [STATS_TYPE[0]]: [[""]] });
   const [purchaseAverageTotal, setPurchaseAverageTotal] = useState({ [STATS_TYPE[0]]: "0.00" });
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   const state = {
     tableHead: ["Color", "Type", "Value"],
