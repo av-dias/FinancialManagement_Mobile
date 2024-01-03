@@ -4,7 +4,7 @@ export const KEYS = {
   TRANSACTION: "transactions",
   ARCHIVE_TRANSACTION: "archived_transactions",
   EMAIL: "email",
-  PASSWORDS: "password",
+  PASSWORD: "password",
   SPLIT_USERS: "split-list",
   SERVER: "server",
   IP1: "ip1",

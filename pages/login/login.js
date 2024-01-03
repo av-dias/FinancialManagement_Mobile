@@ -1,11 +1,11 @@
 import { Text, View, TextInput, Image, Pressable } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { CheckBox } from "@rneui/themed";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import navLogo from "../../images/logo.png";
 import { saveToStorage, getFromStorage } from "../../functions/secureStorage";
 import { _styles } from "./style";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
+import { verticalScale } from "../../functions/responsive";
 import { KEYS } from "../../utility/storageKeys";
 
 export default function Login({ navigation }) {
@@ -21,7 +21,7 @@ export default function Login({ navigation }) {
   const handleLogin = async () => {
     try {
       await saveToStorage(KEYS.EMAIL, email.toLowerCase());
-      await saveToStorage(KEYS.PASSWORDS, password);
+      await saveToStorage(KEYS.PASSWORD, password);
       await saveToStorage(KEYS.REMEMBER_ME, checked.toString());
 
       await saveToStorage(KEYS.IP1, ip1);
@@ -33,7 +33,7 @@ export default function Login({ navigation }) {
 
       const controller = new AbortController();
       // 5 second timeout:
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      setTimeout(() => controller.abort(), 2000);
 
       await fetch(`http://${ip1}.${ip2}.${ip3}.${ip4}:8080/api/v1/login?username=${userEmail}&password=${password}`, {
         headers: {
