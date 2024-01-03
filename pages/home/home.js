@@ -5,16 +5,20 @@ import { VictoryPie, VictoryLabel } from "victory-native";
 import { Table, TableWrapper, Cell } from "react-native-table-component";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { getPurchaseStats, getPurchaseTotal, getPurchaseAverage, getPurchaseAverageTotal } from "../../functions/purchase";
-import { horizontalScale, verticalScale } from "../../functions/responsive";
-import { _styles } from "./style";
-import { getUser } from "../../functions/basic";
+//Custom Components
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import TypeCard from "../../components/typeCard/typeCard";
-
 import Header from "../../components/header/header";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
+
+//Custom Constants
+import { _styles } from "./style";
 import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
+
+//Functions
+import { getPurchaseStats, getPurchaseTotal, getPurchaseAverage, getPurchaseAverageTotal } from "../../functions/purchase";
+import { horizontalScale, verticalScale } from "../../functions/responsive";
+import { getUser } from "../../functions/basic";
 import { refinePurchaseStats, loadCalendarCard, loadPieChartData, loadPurchaseTotalData, loadSpendTableData } from "./handler";
 
 export default function Home({ navigation }) {
