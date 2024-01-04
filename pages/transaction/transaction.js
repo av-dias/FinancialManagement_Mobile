@@ -1,43 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView, Alert } from "react-native";
+import React, { useState } from "react";
+import { View } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
-import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Entypo } from "@expo/vector-icons";
+import { MaterialIcons, Entypo } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { _styles } from "./style";
-import { getUser } from "../../functions/basic";
+//Custom Components
 import Header from "../../components/header/header";
 import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
 import CustomInput from "../../components/customInput/customInput";
-import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import CustomCalendarStrip from "../../components/customCalendarStrip/customCalendarStrip";
 import CustomButton from "../../components/customButton/customButton";
-import { KEYS } from "../../utility/storageKeys";
-import { saveToStorage, getFromStorage, addToStorage } from "../../functions/secureStorage";
+
+//Custom Constants
+import { _styles } from "./style";
+
+//Functions
+import { verticalScale } from "../../functions/responsive";
+import { getUser } from "../../functions/basic";
 import { getSplitUser, getSplitEmail } from "../../functions/split";
+import { handleTransaction } from "./handler";
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
   const [destination, setDestination] = useState("");
-  const [value, setValue] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState(new Date());
-
-  const handleTransaction = async () => {
-    let _destination = getSplitEmail(destination);
-    if (_destination == "" || value == "" || description == "" || date == "") {
-      alert("Please fill all fields.");
-      return;
-    }
-    let newTransaction = [{ amount: value, dot: date.toISOString().split("T")[0], description: description, user_destination_id: _destination }];
-    await addToStorage(KEYS.TRANSACTION, JSON.stringify(newTransaction), email);
-
-    setValue("");
-    setDescription("");
-    console.log("Transaction Added: " + newTransaction);
-  };
+  const [newTransaction, setNewTransaction] = useState({ dot: new Date().toISOString().split("T")[0] });
 
   useFocusEffect(
     React.useCallback(() => {
@@ -52,7 +39,7 @@ export default function Purchase({ navigation }) {
         }
       }
       fetchData();
-    }, [email, date])
+    }, [email])
   );
 
   return (
@@ -60,9 +47,19 @@ export default function Purchase({ navigation }) {
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1 }}>
-          <MoneyInputHeader value={value} setValue={setValue} />
+          <MoneyInputHeader
+            value={newTransaction.amount}
+            setValue={(_amount) => {
+              setNewTransaction({ ...newTransaction, amount: _amount });
+            }}
+          />
           <View style={{ flex: 7, gap: verticalScale(20), paddingTop: verticalScale(20) }}>
-            <CustomCalendarStrip pickerCurrentDate={date} setPickerCurrentDate={setDate} />
+            <CustomCalendarStrip
+              pickerCurrentDate={newTransaction.dot}
+              setPickerCurrentDate={(_date) => {
+                setNewTransaction({ ...newTransaction, dot: new Date(_date).toISOString().split("T")[0] });
+              }}
+            />
             <CustomInput
               Icon={<Entypo style={styles.iconCenter} name="email" size={verticalScale(20)} color="black" />}
               placeholder="Email"
@@ -72,11 +69,17 @@ export default function Purchase({ navigation }) {
             <CustomInput
               Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color="black" />}
               placeholder="Description"
-              setValue={setDescription}
-              value={description}
+              setValue={(_description) => {
+                setNewTransaction({ ...newTransaction, description: _description });
+              }}
+              value={newTransaction.description}
             />
           </View>
-          <CustomButton handlePress={handleTransaction} />
+          <CustomButton
+            handlePress={() => {
+              handleTransaction(newTransaction, setNewTransaction, destination, email);
+            }}
+          />
         </View>
       </View>
     </LinearGradient>
