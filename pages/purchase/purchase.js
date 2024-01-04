@@ -1,16 +1,10 @@
 import { Text, View, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-
 import React, { useState, useEffect } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
+
+//Custom Components
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
-
-import { horizontalScale, verticalScale } from "../../functions/responsive";
-import { _styles } from "./style";
-import { getUser } from "../../functions/basic";
-import { handlePurchase } from "./handler";
-import { getSplitUser, getSplitEmail } from "../../functions/split";
-
 import Header from "../../components/header/header";
 import ModalCustom from "../../components/modal/modal";
 import CustomCalendarStrip from "../../components/customCalendarStrip/customCalendarStrip";
@@ -21,13 +15,18 @@ import Carrossel from "../../components/carrossel/carrossel";
 import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
 import { ModalPurchase } from "../../utility/modalContent";
 
+//Custom Constants
+import { _styles } from "./style";
+
+//Functions
+import { getUser } from "../../functions/basic";
+import { handlePurchase } from "./handler";
+import { getSplitUser, getSplitEmail } from "../../functions/split";
+import { horizontalScale, verticalScale } from "../../functions/responsive";
+
 export default function Purchase({ navigation }) {
   const styles = _styles;
 
-  const [type, setType] = useState("");
-  const [name, setName] = useState("");
-  const [note, setNote] = useState("");
-  const [value, setValue] = useState("");
   const [email, setEmail] = useState("");
   const [newPurchase, setNewPurchase] = useState({ dop: new Date().toISOString().split("T")[0] });
 
@@ -53,9 +52,9 @@ export default function Purchase({ navigation }) {
 
   useEffect(() => {
     if (refundActive) {
-      setNote("Refund");
+      setNewPurchase({ ...newPurchase, note: "Refund" });
     } else {
-      setNote("");
+      setNewPurchase({ ...newPurchase, note: "" });
     }
   }, [refundActive]);
 
@@ -66,7 +65,17 @@ export default function Purchase({ navigation }) {
         <View style={{ flex: 1 }}>
           {modalVisible && (
             <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible}>
-              {ModalPurchase(list, value, email, modalContentFlag, modalVisible, setModalVisible, getSplitEmail(splitUser), slider, styles)}
+              {ModalPurchase(
+                list,
+                newPurchase.value,
+                email,
+                modalContentFlag,
+                modalVisible,
+                setModalVisible,
+                getSplitEmail(splitUser),
+                slider,
+                styles
+              )}
             </ModalCustom>
           )}
           <View style={{ position: "absolute", right: 0, paddingVertical: 10, gap: 10 }}>
@@ -103,7 +112,6 @@ export default function Purchase({ navigation }) {
           <MoneyInputHeader
             value={newPurchase.value}
             setValue={(_value) => {
-              setValue(_value);
               setNewPurchase({ ...newPurchase, value: _value });
             }}
             signal={refundActive ? "-" : "+"}
@@ -112,7 +120,6 @@ export default function Purchase({ navigation }) {
             <Carrossel
               type={newPurchase.type}
               setType={(_type) => {
-                setType(_type);
                 setNewPurchase({ ...newPurchase, type: _type });
               }}
               size={verticalScale(90)}
@@ -135,7 +142,6 @@ export default function Purchase({ navigation }) {
                 Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color="black" />}
                 placeholder="Name"
                 setValue={(_name) => {
-                  setName(_name);
                   setNewPurchase({ ...newPurchase, name: _name });
                 }}
                 value={newPurchase.name}
@@ -145,7 +151,6 @@ export default function Purchase({ navigation }) {
                 Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />}
                 placeholder="Notes"
                 setValue={(_note) => {
-                  setName(_note);
                   setNewPurchase({ ...newPurchase, note: _note });
                 }}
                 value={newPurchase.note}
