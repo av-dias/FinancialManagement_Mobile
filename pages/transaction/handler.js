@@ -17,6 +17,11 @@ export const handleTransaction = async (newTransaction, setNewTransaction, desti
     return;
   }
 
+  if (!_destination || _destination == "" || _destination == "Not Registed") {
+    alert("Please register a split user on the settings.");
+    return;
+  }
+
   newTransaction = { ...newTransaction, user_destination_id: _destination };
   await addToStorage(KEYS.TRANSACTION, JSON.stringify([newTransaction]), email);
 
