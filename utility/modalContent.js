@@ -1,10 +1,9 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable, Dimensions, ScrollView } from "react-native";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../functions/responsive";
-import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Entypo } from "@expo/vector-icons";
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
+import { Text, View, Pressable, ScrollView } from "react-native";
+import { verticalScale } from "../functions/responsive";
+import { MaterialIcons, Entypo } from "@expo/vector-icons";
+import { Table, TableWrapper, Row, Cell } from "react-native-table-component";
 import commonStyles from "../utility/commonStyles";
 import CustomInput from "../components/customInput/customInput";
-import CardWrapper from "../components/cardWrapper/cardWrapper";
 import Carrossel from "../components/carrossel/carrossel";
 import CustomCalendarStrip from "../components/customCalendarStrip/customCalendarStrip";
 import MoneyInputHeader from "../components/moneyInputHeader/moneyInputHeader";
@@ -80,11 +79,11 @@ export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible
 
 export const ModalList = (
   email,
-  purchases,
-  setPurchases,
-  transactions,
-  setTransactions,
   index,
+  selectedPurchase,
+  setSelectedPurchase,
+  selectedTransaction,
+  setSelectedTransaction,
   splitUser,
   refreshTrigger,
   setRefreshTrigger,
@@ -92,18 +91,6 @@ export const ModalList = (
   setSlider,
   splitStatus,
   setSplitStatus,
-  value,
-  setValue,
-  name,
-  setName,
-  note,
-  setNote,
-  type,
-  setType,
-  description,
-  setDescription,
-  pickerCurrentDate,
-  setPickerCurrentDate,
   modalContentFlag,
   handleEditPurchase,
   handleEditTransaction,
@@ -115,9 +102,25 @@ export const ModalList = (
     case "Transaction":
       content = (
         <View style={{ flex: 1 }}>
-          <MoneyInputHeader value={String(value)} setValue={setValue} />
+          <MoneyInputHeader
+            value={String(selectedTransaction.amount)}
+            setValue={(_amout) => {
+              setSelectedTransaction({
+                ...selectedTransaction,
+                amount: _amout,
+              });
+            }}
+          />
           <View style={{ flex: 7, gap: verticalScale(20), paddingTop: verticalScale(20) }}>
-            <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
+            <CustomCalendarStrip
+              pickerCurrentDate={selectedTransaction.dot}
+              setPickerCurrentDate={(_dot) => {
+                setSelectedTransaction({
+                  ...selectedTransaction,
+                  dot: new Date(_dot).toISOString().split("T")[0],
+                });
+              }}
+            />
             <CustomInput
               Icon={<Entypo style={styles.iconCenter} name="email" size={verticalScale(20)} color="black" />}
               placeholder="Email"
@@ -127,25 +130,18 @@ export const ModalList = (
             <CustomInput
               Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color="black" />}
               placeholder="Description"
-              setValue={setDescription}
-              value={description}
+              setValue={(_description) => {
+                setSelectedTransaction({
+                  ...selectedTransaction,
+                  description: _description,
+                });
+              }}
+              value={selectedTransaction.description}
             />
           </View>
           <CustomButton
             handlePress={() => {
-              handleEditTransaction(
-                email,
-                transactions,
-                setTransactions,
-                index,
-                value,
-                description,
-                pickerCurrentDate,
-                splitUser,
-                refreshTrigger,
-                setRefreshTrigger,
-                setEditVisible
-              );
+              handleEditTransaction(email, index, selectedTransaction, splitUser, refreshTrigger, setRefreshTrigger, setEditVisible);
             }}
           />
         </View>
@@ -154,36 +150,66 @@ export const ModalList = (
     default:
       content = (
         <View style={{ flex: 1 }}>
-          <MoneyInputHeader value={value} setValue={setValue} verticalHeight={65} />
+          <MoneyInputHeader
+            value={selectedPurchase.value}
+            setValue={(_value) => {
+              setSelectedPurchase({
+                ...selectedPurchase,
+                value: _value,
+              });
+            }}
+            verticalHeight={65}
+          />
           <View style={styles.form}>
             <Carrossel
-              type={type}
-              setType={(value) => {
-                setType(value);
-                setName("");
-                setNote("");
+              type={selectedPurchase.type}
+              setType={(_type) => {
+                setSelectedPurchase({
+                  ...selectedPurchase,
+                  type: _type,
+                  name: "",
+                  note: "",
+                });
               }}
               size={verticalScale(90)}
               iconSize={30}
             />
-            <CustomCalendarStrip pickerCurrentDate={pickerCurrentDate} setPickerCurrentDate={setPickerCurrentDate} />
+            <CustomCalendarStrip
+              pickerCurrentDate={selectedPurchase.dop}
+              setPickerCurrentDate={(_dop) => {
+                setSelectedPurchase({
+                  ...selectedPurchase,
+                  dop: new Date(_dop).toISOString().split("T")[0],
+                });
+              }}
+            />
             <CustomInput
               noStyle={false}
               Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />}
               placeholder="Name"
-              setValue={setName}
-              value={name}
+              setValue={(_name) => {
+                setSelectedPurchase({
+                  ...selectedPurchase,
+                  name: _name,
+                });
+              }}
+              value={selectedPurchase.name}
             />
             <CustomInput
               noStyle={false}
               Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />}
               placeholder="Notes"
-              setValue={setNote}
-              value={note}
+              setValue={(_note) => {
+                setSelectedPurchase({
+                  ...selectedPurchase,
+                  note: _note,
+                });
+              }}
+              value={selectedPurchase.note}
             />
             <SplitSlider
               userInfo={false}
-              value={value}
+              value={selectedPurchase.value}
               splitStatus={splitStatus}
               setSplitStatus={setSplitStatus}
               slider={slider}
@@ -194,23 +220,7 @@ export const ModalList = (
           <CustomButton
             text="Save"
             handlePress={() => {
-              handleEditPurchase(
-                email,
-                purchases,
-                setPurchases,
-                index,
-                name,
-                value,
-                type,
-                note,
-                pickerCurrentDate,
-                splitStatus,
-                slider,
-                splitUser,
-                refreshTrigger,
-                setRefreshTrigger,
-                setEditVisible
-              );
+              handleEditPurchase(email, index, selectedPurchase, splitStatus, splitUser, slider, refreshTrigger, setRefreshTrigger, setEditVisible);
             }}
           />
         </View>

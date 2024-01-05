@@ -28,3 +28,15 @@ export async function addToStorage(key, value, user) {
   }
   await SecureStore.setItemAsync(user + key, JSON.stringify(newValue));
 }
+
+export async function editOnStorage(key, value, index, user) {
+  if (!user) user = "";
+  user = user.split("@")[0];
+  let oldValueString = await getFromStorage(user + key);
+  let oldValue = JSON.parse(oldValueString);
+
+  if (oldValue && oldValue.length != 0 && oldValue.length > index) {
+    oldValue[index] = JSON.parse(value);
+  }
+  await SecureStore.setItemAsync(user + key, JSON.stringify(oldValue));
+}

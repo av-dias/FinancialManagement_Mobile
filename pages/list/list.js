@@ -23,35 +23,30 @@ import showAlert from "./showAlert";
 import ModalCustom from "../../components/modal/modal";
 import { ModalList } from "../../utility/modalContent";
 
-import { categoryIcons, utilIcons } from "../../assets/icons";
-
 export default function List({ navigation }) {
   const styles = _styles;
+
   const [email, setEmail] = useState("");
-  const [purchases, setPurchases] = useState([]);
-  const [archivesPurchase, setArchivesPurchase] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [archivesTransaction, setArchivesTransaction] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+
   const [groupedPurchases, setGroupedPurchases] = useState([]);
   const [groupedTransactions, setGroupedTransactions] = useState([]);
   const [groupedArchivedPurchases, setGroupedArchivedPurchases] = useState([]);
   const [groupedArchivedTransactions, setGroupedArchivedTransactions] = useState([]);
-  const [refreshTrigger, setRefreshTrigger] = useState(true);
+
+  const [selectedPurchase, setSelectedPurchase] = useState({ dop: new Date().toISOString().split("T")[0] });
+  const [selectedTransaction, setSelectedTransaction] = useState({ dot: new Date().toISOString().split("T")[0] });
+  const [index, setIndex] = useState(-1);
   const [splitUser, setSplitUser] = useState("");
-  const [listDays, setListDays] = useState([]);
-  const [editVisible, setEditVisible] = useState(false);
-  const [modalContentFlag, setModalContentFlag] = useState("");
-  const [type, setType] = useState("");
-  const [name, setName] = useState("");
-  const [note, setNote] = useState("");
-  const [value, setValue] = useState("");
-  const [pickerCurrentDate, setPickerCurrentDate] = useState(new Date());
+
   const [slider, setSlider] = useState(50);
   const [splitStatus, setSplitStatus] = useState(false);
-  const [description, setDescription] = useState("");
-  const [index, setIndex] = useState(-1);
+  const [listDays, setListDays] = useState([]);
+
+  const [refreshTrigger, setRefreshTrigger] = useState(true);
+  const [editVisible, setEditVisible] = useState(false);
+  const [modalContentFlag, setModalContentFlag] = useState("");
 
   useFocusEffect(
     React.useCallback(() => {
@@ -69,11 +64,6 @@ export default function List({ navigation }) {
           if (!resTransaction) resTransaction = [];
           if (!resArchivePurchase) resArchivePurchase = [];
           if (!resArchiveTransaction) resArchiveTransaction = [];
-
-          setPurchases(resPurchase);
-          setTransactions(resTransaction);
-          setArchivesPurchase(resArchivePurchase);
-          setArchivesTransaction(resArchiveTransaction);
 
           console.log("Purchase len: " + resPurchase.length);
           console.log("Transaction len: " + resTransaction.length);
@@ -115,11 +105,11 @@ export default function List({ navigation }) {
             <ModalCustom modalVisible={editVisible} setModalVisible={setEditVisible} size={14} hasColor={true}>
               {ModalList(
                 email,
-                purchases,
-                setPurchases,
-                transactions,
-                setTransactions,
                 index,
+                selectedPurchase,
+                setSelectedPurchase,
+                selectedTransaction,
+                setSelectedTransaction,
                 getSplitEmail(splitUser),
                 refreshTrigger,
                 setRefreshTrigger,
@@ -127,18 +117,6 @@ export default function List({ navigation }) {
                 setSlider,
                 splitStatus,
                 setSplitStatus,
-                value,
-                setValue,
-                name,
-                setName,
-                note,
-                setNote,
-                type,
-                setType,
-                description,
-                setDescription,
-                pickerCurrentDate,
-                setPickerCurrentDate,
                 modalContentFlag,
                 handleEditPurchase,
                 handleEditTransaction,
@@ -164,24 +142,25 @@ export default function List({ navigation }) {
                               key={innerData.index + KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
                               innerData={innerData}
                               handleSplit={async () => {
-                                await handleSplit(
-                                  email,
-                                  purchases,
-                                  setPurchases,
-                                  innerData.index,
-                                  splitUser,
-                                  getSplitEmail(splitUser),
-                                  refreshTrigger,
-                                  setRefreshTrigger
-                                );
+                                let selectedValue = {
+                                  name: innerData.name,
+                                  type: innerData.type,
+                                  value: innerData.value,
+                                  dop: innerData.dop,
+                                  note: innerData.note,
+                                };
+                                setIndex(innerData.index);
+                                await handleSplit(email, selectedValue, innerData.index, getSplitEmail(splitUser), refreshTrigger, setRefreshTrigger);
                               }}
                               handleEdit={async () => {
                                 setModalContentFlag("Purchase");
-                                setName(innerData.name);
-                                setType(innerData.type);
-                                setNote(innerData.note);
-                                setValue(innerData.value);
-                                setPickerCurrentDate(innerData.dop);
+                                setSelectedPurchase({
+                                  name: innerData.name,
+                                  type: innerData.type,
+                                  value: innerData.value,
+                                  dop: innerData.dop,
+                                  note: innerData.note,
+                                });
                                 setIndex(innerData.index);
                                 if (innerData.split) {
                                   setSplitStatus(true);
@@ -196,8 +175,8 @@ export default function List({ navigation }) {
                               showAlert={() => {
                                 showAlert(
                                   KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
-                                  purchases,
-                                  setPurchases,
+                                  groupedPurchases,
+                                  setGroupedPurchases,
                                   KEYS.PURCHASE,
                                   email,
                                   setRefreshTrigger,
@@ -213,18 +192,20 @@ export default function List({ navigation }) {
                               innerData={innerData}
                               handleEdit={async () => {
                                 setModalContentFlag("Transaction");
-                                setDescription(innerData.description);
-                                setValue(innerData.amount);
+                                setSelectedTransaction({
+                                  description: innerData.description,
+                                  amount: innerData.amount,
+                                  dot: innerData.dot,
+                                });
                                 setIndex(innerData.index);
-                                setPickerCurrentDate(innerData.dot);
                                 setEditVisible(true);
                               }}
                               keys={KEYS_SERIALIZER.TRANSACTION}
                               showAlert={() => {
                                 showAlert(
                                   KEYS_SERIALIZER.TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
-                                  transactions,
-                                  setTransactions,
+                                  groupedTransactions,
+                                  setGroupedTransactions,
                                   KEYS.TRANSACTION,
                                   email,
                                   setRefreshTrigger,
@@ -243,8 +224,8 @@ export default function List({ navigation }) {
                               showAlert={() => {
                                 showAlert(
                                   KEYS_SERIALIZER.ARCHIVE_PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
-                                  archivesPurchase,
-                                  setArchivesPurchase,
+                                  groupedArchivedPurchases,
+                                  setGroupedArchivedPurchases,
                                   KEYS.ARCHIVE_PURCHASE,
                                   email,
                                   setRefreshTrigger,
@@ -263,8 +244,8 @@ export default function List({ navigation }) {
                               showAlert={() => {
                                 showAlert(
                                   KEYS_SERIALIZER.ARCHIVE_TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
-                                  archivesTransaction,
-                                  setArchivesTransaction,
+                                  groupedArchivedTransactions,
+                                  setGroupedArchivedTransactions,
                                   KEYS.ARCHIVE_TRANSACTION,
                                   email,
                                   setRefreshTrigger,

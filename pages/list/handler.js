@@ -1,70 +1,41 @@
-import { getFromStorage, saveToStorage } from "../../functions/secureStorage";
+import { editOnStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 
-export const handleSplit = async (email, purchases, setPurchases, index, splitUser, splitEmail, refreshTrigger, setRefreshTrigger, getSplitEmail) => {
-  purchases[index]["split"] = {};
-  purchases[index]["split"]["userId"] = splitEmail;
-  purchases[index]["split"]["weight"] = 50;
-  setPurchases(purchases);
+export const handleSplit = async (email, selectedPurchase, index, splitUser, refreshTrigger, setRefreshTrigger) => {
+  console.log(selectedPurchase);
+  selectedPurchase["split"] = { userId: splitUser, weight: 50 };
 
-  await saveToStorage(KEYS.PURCHASE, JSON.stringify(purchases), email);
+  await editOnStorage(KEYS.PURCHASE, JSON.stringify(selectedPurchase), index, email);
   setRefreshTrigger(!refreshTrigger);
 };
 
 export const handleEditPurchase = async (
   email,
-  purchases,
-  setPurchases,
   index,
-  name,
-  value,
-  type,
-  note,
-  pickerCurrentDate,
+  selectedPurchase,
   splitStatus,
-  splitWeight,
   splitUser,
+  slider,
   refreshTrigger,
   setRefreshTrigger,
   setEditVisible
 ) => {
-  if (name && name != "") purchases[index].name = name;
-  else purchases[index].name = type;
-  purchases[index].value = value;
-  purchases[index].type = type;
-  purchases[index].dop = new Date(pickerCurrentDate).toISOString().split("T")[0];
-  purchases[index].note = note;
-  if (splitStatus) purchases[index]["split"] = { userId: splitUser, weight: splitWeight };
-  else delete purchases[index]["split"];
-  setPurchases(purchases);
+  if (!selectedPurchase.name && selectedPurchase.name == "") selectedPurchase.name = selectedPurchase.type;
+  if (splitStatus) selectedPurchase["split"] = { userId: splitUser, weight: slider };
+  else delete selectedPurchase["split"];
 
-  await saveToStorage(KEYS.PURCHASE, JSON.stringify(purchases), email);
+  await editOnStorage(KEYS.PURCHASE, JSON.stringify(selectedPurchase), index, email);
   setRefreshTrigger(!refreshTrigger);
   setEditVisible(false);
 };
 
-export const handleEditTransaction = async (
-  email,
-  transactions,
-  setTransactions,
-  index,
-  value,
-  description,
-  pickerCurrentDate,
-  splitUser,
-  refreshTrigger,
-  setRefreshTrigger,
-  setEditVisible
-) => {
-  transactions[index] = {
-    amount: value,
-    dot: new Date(pickerCurrentDate).toISOString().split("T")[0],
-    description: description,
+export const handleEditTransaction = async (email, index, selectedTransaction, splitUser, refreshTrigger, setRefreshTrigger, setEditVisible) => {
+  selectedTransaction = {
+    ...selectedTransaction,
     user_destination_id: splitUser,
   };
-  setTransactions(transactions);
-  await saveToStorage(KEYS.TRANSACTION, JSON.stringify(transactions), email);
 
+  await editOnStorage(KEYS.TRANSACTION, JSON.stringify(selectedTransaction), index, email);
   setRefreshTrigger(!refreshTrigger);
   setEditVisible(false);
 };
