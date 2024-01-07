@@ -149,6 +149,7 @@ export default function List({ navigation }) {
                                   dop: innerData.dop,
                                   note: innerData.note,
                                 };
+                                setSelectedPurchase(selectedValue);
                                 setIndex(innerData.index);
                                 await handleSplit(email, selectedValue, innerData.index, getSplitEmail(splitUser), refreshTrigger, setRefreshTrigger);
                               }}
@@ -173,10 +174,18 @@ export default function List({ navigation }) {
                               }}
                               keys={KEYS_SERIALIZER.PURCHASE}
                               showAlert={() => {
+                                let selectedValue = {
+                                  name: innerData.name,
+                                  type: innerData.type,
+                                  value: innerData.value,
+                                  dop: innerData.dop,
+                                  note: innerData.note,
+                                };
+                                setSelectedPurchase(selectedValue);
+                                setIndex(innerData.index);
                                 showAlert(
                                   KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
-                                  groupedPurchases,
-                                  setGroupedPurchases,
+                                  selectedValue,
                                   KEYS.PURCHASE,
                                   email,
                                   setRefreshTrigger,
@@ -202,10 +211,16 @@ export default function List({ navigation }) {
                               }}
                               keys={KEYS_SERIALIZER.TRANSACTION}
                               showAlert={() => {
+                                let selectedValue = {
+                                  description: innerData.description,
+                                  amount: innerData.amount,
+                                  dot: innerData.dot,
+                                };
+                                setSelectedPurchase(selectedValue);
+                                setIndex(innerData.index);
                                 showAlert(
                                   KEYS_SERIALIZER.TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
-                                  groupedTransactions,
-                                  setGroupedTransactions,
+                                  selectedValue,
                                   KEYS.TRANSACTION,
                                   email,
                                   setRefreshTrigger,
@@ -221,17 +236,7 @@ export default function List({ navigation }) {
                               innerData={innerData}
                               keys={KEYS_SERIALIZER.ARCHIVE_PURCHASE}
                               gray={true}
-                              showAlert={() => {
-                                showAlert(
-                                  KEYS_SERIALIZER.ARCHIVE_PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
-                                  groupedArchivedPurchases,
-                                  setGroupedArchivedPurchases,
-                                  KEYS.ARCHIVE_PURCHASE,
-                                  email,
-                                  setRefreshTrigger,
-                                  refreshTrigger
-                                );
-                              }}
+                              showAlert={() => {}}
                             />
                           ))}
                         {groupedArchivedTransactions[date] &&
@@ -241,17 +246,7 @@ export default function List({ navigation }) {
                               innerData={innerData}
                               keys={KEYS_SERIALIZER.ARCHIVE_TRANSACTION}
                               gray={true}
-                              showAlert={() => {
-                                showAlert(
-                                  KEYS_SERIALIZER.ARCHIVE_TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
-                                  groupedArchivedTransactions,
-                                  setGroupedArchivedTransactions,
-                                  KEYS.ARCHIVE_TRANSACTION,
-                                  email,
-                                  setRefreshTrigger,
-                                  refreshTrigger
-                                );
-                              }}
+                              showAlert={() => {}}
                             />
                           ))}
                       </CardWrapper>

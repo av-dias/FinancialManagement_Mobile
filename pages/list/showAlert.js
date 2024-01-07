@@ -1,12 +1,11 @@
 import { Alert } from "react-native";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
-import { getFromStorage, saveToStorage } from "../../functions/secureStorage";
+import { removeFromStorage } from "../../functions/secureStorage";
 
-export default showAlert = (key, array, setArray, storageKey, email, setRefreshTrigger, refreshTrigger) => {
+export default showAlert = (key, array, storageKey, email, setRefreshTrigger, refreshTrigger) => {
   let [identifier, id] = key.split(KEYS_SERIALIZER.TOKEN_SEPARATOR);
   let element = storageKey,
     elementArray = array,
-    setElement = setArray.bind(),
     title = "",
     description = "",
     body = "",
@@ -18,21 +17,19 @@ export default showAlert = (key, array, setArray, storageKey, email, setRefreshT
     description = "Are you sure you want to remove this purchase permanently?" + "\n\n";
     leftButton = "Yes";
     rightButton = "No";
-    body =
-      description + `Name: ${elementArray[id].name}\nValue: ${elementArray[id].value}\nType: ${elementArray[id].type}\nDate: ${elementArray[id].dop}`;
+    body = description + `Name: ${elementArray.name}\nValue: ${elementArray.value}\nType: ${elementArray.type}\nDate: ${elementArray.dop}`;
   } else if (identifier == KEYS_SERIALIZER.TRANSACTION) {
     title = "Delete Transaction";
     description = "Are you sure you want to remove this transaction permanently?" + "\n\n";
     leftButton = "Yes";
     rightButton = "No";
-    body = description + `Description: ${elementArray[id].description}\nAmount: ${elementArray[id].amount}\nDate: ${elementArray[id].dot}`;
+    body = description + `Description: ${elementArray.description}\nAmount: ${elementArray.amount}\nDate: ${elementArray.dot}`;
   } else if (identifier == KEYS_SERIALIZER.ARCHIVE_PURCHASE) {
     title = "Archived Purchase Detail";
-    body =
-      description + `Name: ${elementArray[id].name}\nValue: ${elementArray[id].value}\nType: ${elementArray[id].type}\nDate: ${elementArray[id].dop}`;
+    body = description + `Name: ${elementArray.name}\nValue: ${elementArray.value}\nType: ${elementArray.type}\nDate: ${elementArray.dop}`;
   } else if (identifier == KEYS_SERIALIZER.ARCHIVE_TRANSACTION) {
     title = "Archived Transaction Detail";
-    body = description + `Description: ${elementArray[id].description}\nAmount: ${elementArray[id].amount}\nDate: ${elementArray[id].dot}`;
+    body = description + `Description: ${elementArray.description}\nAmount: ${elementArray.amount}\nDate: ${elementArray.dot}`;
   } else {
     console.log("error: " + identifier);
   }
@@ -45,9 +42,7 @@ export default showAlert = (key, array, setArray, storageKey, email, setRefreshT
         text: leftButton,
         onPress: async () => {
           if (identifier == KEYS_SERIALIZER.PURCHASE || identifier == KEYS_SERIALIZER.TRANSACTION) {
-            arr = elementArray.filter((item) => item != elementArray[id]);
-            await saveToStorage(element, JSON.stringify(arr), email);
-            setElement(arr);
+            await removeFromStorage(element, id, email);
             setRefreshTrigger(!refreshTrigger);
           }
         },

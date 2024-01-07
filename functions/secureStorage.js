@@ -40,3 +40,14 @@ export async function editOnStorage(key, value, index, user) {
   }
   await SecureStore.setItemAsync(user + key, JSON.stringify(oldValue));
 }
+
+export async function removeFromStorage(key, index, user) {
+  if (!user) user = "";
+  user = user.split("@")[0];
+  let oldValueString = await getFromStorage(user + key);
+  let oldValue = JSON.parse(oldValueString);
+
+  let newValue = oldValue.filter((value, i) => i != index);
+
+  await SecureStore.setItemAsync(user + key, JSON.stringify(newValue));
+}
