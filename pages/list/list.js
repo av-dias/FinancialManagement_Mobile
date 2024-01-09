@@ -35,8 +35,7 @@ export default function List({ navigation }) {
   const [groupedArchivedPurchases, setGroupedArchivedPurchases] = useState([]);
   const [groupedArchivedTransactions, setGroupedArchivedTransactions] = useState([]);
 
-  const [selectedPurchase, setSelectedPurchase] = useState({ dop: new Date().toISOString().split("T")[0] });
-  const [selectedTransaction, setSelectedTransaction] = useState({ dot: new Date().toISOString().split("T")[0] });
+  const [selectedItem, setSelectedItem] = useState({ date: new Date().toISOString().split("T")[0] });
   const [index, setIndex] = useState(-1);
   const [splitUser, setSplitUser] = useState("");
 
@@ -106,10 +105,8 @@ export default function List({ navigation }) {
               {ModalList(
                 email,
                 index,
-                selectedPurchase,
-                setSelectedPurchase,
-                selectedTransaction,
-                setSelectedTransaction,
+                selectedItem,
+                setSelectedItem,
                 getSplitEmail(splitUser),
                 refreshTrigger,
                 setRefreshTrigger,
@@ -146,20 +143,20 @@ export default function List({ navigation }) {
                                   name: innerData.name,
                                   type: innerData.type,
                                   value: innerData.value,
-                                  dop: innerData.dop,
+                                  date: innerData.dop,
                                   note: innerData.note,
                                 };
-                                setSelectedPurchase(selectedValue);
+                                setSelectedItem(selectedValue);
                                 setIndex(innerData.index);
                                 await handleSplit(email, selectedValue, innerData.index, getSplitEmail(splitUser), refreshTrigger, setRefreshTrigger);
                               }}
                               handleEdit={async () => {
                                 setModalContentFlag("Purchase");
-                                setSelectedPurchase({
+                                setSelectedItem({
                                   name: innerData.name,
                                   type: innerData.type,
                                   value: innerData.value,
-                                  dop: innerData.dop,
+                                  date: innerData.dop,
                                   note: innerData.note,
                                 });
                                 setIndex(innerData.index);
@@ -181,7 +178,7 @@ export default function List({ navigation }) {
                                   dop: innerData.dop,
                                   note: innerData.note,
                                 };
-                                setSelectedPurchase(selectedValue);
+                                setSelectedItem(selectedValue);
                                 setIndex(innerData.index);
                                 showAlert(
                                   KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
@@ -201,10 +198,10 @@ export default function List({ navigation }) {
                               innerData={innerData}
                               handleEdit={async () => {
                                 setModalContentFlag("Transaction");
-                                setSelectedTransaction({
+                                setSelectedItem({
                                   description: innerData.description,
                                   amount: innerData.amount,
-                                  dot: innerData.dot,
+                                  date: innerData.dot,
                                 });
                                 setIndex(innerData.index);
                                 setEditVisible(true);
@@ -216,7 +213,7 @@ export default function List({ navigation }) {
                                   amount: innerData.amount,
                                   dot: innerData.dot,
                                 };
-                                setSelectedPurchase(selectedValue);
+                                setSelectedItem(selectedValue);
                                 setIndex(innerData.index);
                                 showAlert(
                                   KEYS_SERIALIZER.TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,

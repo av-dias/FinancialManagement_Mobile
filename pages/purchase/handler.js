@@ -26,8 +26,6 @@ export const handlePurchase = async (
   try {
     newPurchase.value = refundActive ? "-" + newPurchase.value : newPurchase.value;
 
-    console.log(splitStatus, slider);
-
     //improve split destination logic
     if (splitStatus) {
       newPurchase["split"] = {};

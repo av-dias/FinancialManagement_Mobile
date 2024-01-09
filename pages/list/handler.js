@@ -2,8 +2,9 @@ import { editOnStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 
 export const handleSplit = async (email, selectedPurchase, index, splitUser, refreshTrigger, setRefreshTrigger) => {
-  console.log(selectedPurchase);
   selectedPurchase["split"] = { userId: splitUser, weight: 50 };
+  selectedPurchase["dop"] = selectedPurchase.date;
+  delete selectedPurchase["date"];
 
   await editOnStorage(KEYS.PURCHASE, JSON.stringify(selectedPurchase), index, email);
   setRefreshTrigger(!refreshTrigger);
@@ -24,6 +25,8 @@ export const handleEditPurchase = async (
   if (splitStatus) selectedPurchase["split"] = { userId: splitUser, weight: slider };
   else delete selectedPurchase["split"];
 
+  selectedPurchase["dop"] = selectedPurchase.date;
+  delete selectedPurchase["date"];
   await editOnStorage(KEYS.PURCHASE, JSON.stringify(selectedPurchase), index, email);
   setRefreshTrigger(!refreshTrigger);
   setEditVisible(false);
@@ -33,8 +36,9 @@ export const handleEditTransaction = async (email, index, selectedTransaction, s
   selectedTransaction = {
     ...selectedTransaction,
     user_destination_id: splitUser,
+    dot: selectedTransaction.date,
   };
-
+  delete selectedTransaction["date"];
   await editOnStorage(KEYS.TRANSACTION, JSON.stringify(selectedTransaction), index, email);
   setRefreshTrigger(!refreshTrigger);
   setEditVisible(false);
@@ -49,6 +53,5 @@ export const groupByDate = (data) => {
       (rv[dateValue] = rv[dateValue] || []).push(x);
       return rv;
     }, {});
-
   return grouped_data;
 };
