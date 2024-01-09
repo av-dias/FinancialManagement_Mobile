@@ -1,5 +1,6 @@
 import { editOnStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
+import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 
 export const handleSplit = async (email, innerData, splitUser, setRefreshTrigger) => {
   let selectedValue = {
@@ -9,7 +10,7 @@ export const handleSplit = async (email, innerData, splitUser, setRefreshTrigger
   delete selectedValue["index"];
 
   await editOnStorage(KEYS.PURCHASE, JSON.stringify(selectedValue), innerData.index, email);
-  setRefreshTrigger((prev) => !prev);
+  setRefreshTrigger(KEYS_SERIALIZER.PURCHASE);
 };
 
 export const handleEditPurchase = async (email, selectedPurchase, sliderStatus, setRefreshTrigger, setEditVisible) => {
@@ -19,15 +20,15 @@ export const handleEditPurchase = async (email, selectedPurchase, sliderStatus, 
   let index = selectedPurchase["index"];
   delete selectedPurchase["index"];
   await editOnStorage(KEYS.PURCHASE, JSON.stringify(selectedPurchase), index, email);
-  setRefreshTrigger((prev) => !prev);
+  setRefreshTrigger(KEYS_SERIALIZER.PURCHASE);
   setEditVisible(false);
 };
 
 export const handleEditTransaction = async (email, selectedTransaction, setRefreshTrigger, setEditVisible) => {
-  let index = selectedPurchase["index"];
+  let index = selectedTransaction["index"];
   delete selectedTransaction["index"];
   await editOnStorage(KEYS.TRANSACTION, JSON.stringify(selectedTransaction), index, email);
-  setRefreshTrigger((prev) => !prev);
+  setRefreshTrigger(KEYS_SERIALIZER.TRANSACTION);
   setEditVisible(false);
 };
 

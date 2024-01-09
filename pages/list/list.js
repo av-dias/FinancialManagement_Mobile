@@ -40,7 +40,7 @@ export default function List({ navigation }) {
 
   const [listDays, setListDays] = useState([]);
 
-  const [refreshTrigger, setRefreshTrigger] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState();
   const [editVisible, setEditVisible] = useState(false);
   const [modalContentFlag, setModalContentFlag] = useState("");
 
@@ -51,25 +51,31 @@ export default function List({ navigation }) {
         setEmail(email);
         await getSplitUser(setSplitUser, email);
         try {
-          let resPurchase = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
-          let resTransaction = JSON.parse(await getFromStorage(KEYS.TRANSACTION, email));
-          let resArchivePurchase = JSON.parse(await getFromStorage(KEYS.ARCHIVE_PURCHASE, email));
-          let resArchiveTransaction = JSON.parse(await getFromStorage(KEYS.ARCHIVE_TRANSACTION, email));
-
-          if (!resPurchase) resPurchase = [];
-          if (!resTransaction) resTransaction = [];
-          if (!resArchivePurchase) resArchivePurchase = [];
-          if (!resArchiveTransaction) resArchiveTransaction = [];
-
-          console.log("Purchase len: " + resPurchase.length);
-          console.log("Transaction len: " + resTransaction.length);
-          console.log("Archive Purchase len: " + resArchivePurchase.length);
-          console.log("Archive Transaction  len: " + resArchiveTransaction.length);
-
-          setGroupedPurchases(groupByDate(resPurchase));
-          setGroupedTransactions(groupByDate(resTransaction));
-          setGroupedArchivedPurchases(groupByDate(resArchivePurchase));
-          setGroupedArchivedTransactions(groupByDate(resArchiveTransaction));
+          if (!refreshTrigger || refreshTrigger == KEYS_SERIALIZER.PURCHASE) {
+            let resPurchase = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
+            if (!resPurchase) resPurchase = [];
+            setGroupedPurchases(groupByDate(resPurchase));
+            console.log("Purchase len: " + resPurchase.length);
+          }
+          if (!refreshTrigger || refreshTrigger == KEYS_SERIALIZER.TRANSACTION) {
+            let resTransaction = JSON.parse(await getFromStorage(KEYS.TRANSACTION, email));
+            if (!resTransaction) resTransaction = [];
+            setGroupedTransactions(groupByDate(resTransaction));
+            console.log("Transaction len: " + resTransaction.length);
+          }
+          if (!refreshTrigger || refreshTrigger == KEYS_SERIALIZER.ARCHIVE_PURCHASE) {
+            let resArchivePurchase = JSON.parse(await getFromStorage(KEYS.ARCHIVE_PURCHASE, email));
+            if (!resArchivePurchase) resArchivePurchase = [];
+            setGroupedArchivedPurchases(groupByDate(resArchivePurchase));
+            console.log("Archive Purchase  len: " + resArchivePurchase.length);
+          }
+          if (!refreshTrigger || refreshTrigger == KEYS_SERIALIZER.ARCHIVE_TRANSACTION) {
+            let resArchiveTransaction = JSON.parse(await getFromStorage(KEYS.ARCHIVE_TRANSACTION, email));
+            if (!resArchiveTransaction) resArchiveTransaction = [];
+            setGroupedArchivedTransactions(groupByDate(resArchiveTransaction));
+            console.log("Archive Transaction  len: " + resArchiveTransaction.length);
+          }
+          setRefreshTrigger("reset"); // Reset refresh trigger
         } catch (e) {
           console.log("Archive: " + e);
         }

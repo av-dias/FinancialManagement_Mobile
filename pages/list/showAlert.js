@@ -43,7 +43,8 @@ export default showAlert = (key, array, storageKey, email, setRefreshTrigger) =>
         onPress: async () => {
           if (identifier == KEYS_SERIALIZER.PURCHASE || identifier == KEYS_SERIALIZER.TRANSACTION) {
             await removeFromStorage(element, id, email);
-            setRefreshTrigger((prev) => !prev);
+            if (identifier == KEYS_SERIALIZER.PURCHASE) setRefreshTrigger(KEYS_SERIALIZER.PURCHASE);
+            else if (identifier == KEYS_SERIALIZER.TRANSACTION) setRefreshTrigger(KEYS_SERIALIZER.TRANSACTION);
           }
         },
         style: "yes",
