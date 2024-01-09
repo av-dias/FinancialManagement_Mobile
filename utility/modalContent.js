@@ -79,16 +79,12 @@ export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible
 
 export const ModalList = (
   email,
-  index,
   selectedItem,
   setSelectedItem,
   splitUser,
-  refreshTrigger,
+  sliderStatus,
+  setSliderStatus,
   setRefreshTrigger,
-  slider,
-  setSlider,
-  splitStatus,
-  setSplitStatus,
   modalContentFlag,
   handleEditPurchase,
   handleEditTransaction,
@@ -96,6 +92,7 @@ export const ModalList = (
   styles
 ) => {
   let content;
+
   switch (modalContentFlag) {
     case "Transaction":
       content = (
@@ -111,11 +108,11 @@ export const ModalList = (
           />
           <View style={{ flex: 7, gap: verticalScale(20), paddingTop: verticalScale(20) }}>
             <CustomCalendarStrip
-              pickerCurrentDate={selectedItem.date}
+              pickerCurrentDate={selectedItem.dot}
               setPickerCurrentDate={(_dot) => {
                 setSelectedItem({
                   ...selectedItem,
-                  date: new Date(_dot).toISOString().split("T")[0],
+                  dot: new Date(_dot).toISOString().split("T")[0],
                 });
               }}
             />
@@ -139,7 +136,7 @@ export const ModalList = (
           </View>
           <CustomButton
             handlePress={() => {
-              handleEditTransaction(email, index, selectedItem, splitUser, refreshTrigger, setRefreshTrigger, setEditVisible);
+              handleEditTransaction(email, selectedItem, setRefreshTrigger, setEditVisible);
             }}
           />
         </View>
@@ -173,11 +170,11 @@ export const ModalList = (
               iconSize={30}
             />
             <CustomCalendarStrip
-              pickerCurrentDate={selectedItem.date}
+              pickerCurrentDate={selectedItem.dop}
               setPickerCurrentDate={(_dop) => {
                 setSelectedItem({
                   ...selectedItem,
-                  date: new Date(_dop).toISOString().split("T")[0],
+                  dop: new Date(_dop).toISOString().split("T")[0],
                 });
               }}
             />
@@ -208,17 +205,19 @@ export const ModalList = (
             <SplitSlider
               userInfo={false}
               value={selectedItem.value}
-              splitStatus={splitStatus}
-              setSplitStatus={setSplitStatus}
-              slider={slider}
-              setSlider={setSlider}
+              splitStatus={sliderStatus}
+              setSplitStatus={setSliderStatus}
+              slider={"split" in selectedItem ? selectedItem.split.weight : 50}
+              setSlider={(_slider) => {
+                setSelectedItem({ ...selectedItem, split: { weight: _slider, userId: splitUser } });
+              }}
               size={verticalScale(90)}
             />
           </View>
           <CustomButton
             text="Save"
             handlePress={() => {
-              handleEditPurchase(email, index, selectedItem, splitStatus, splitUser, slider, refreshTrigger, setRefreshTrigger, setEditVisible);
+              handleEditPurchase(email, selectedItem, sliderStatus, setRefreshTrigger, setEditVisible);
             }}
           />
         </View>

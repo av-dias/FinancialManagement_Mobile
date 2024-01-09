@@ -1,46 +1,33 @@
 import { editOnStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 
-export const handleSplit = async (email, selectedPurchase, index, splitUser, refreshTrigger, setRefreshTrigger) => {
-  selectedPurchase["split"] = { userId: splitUser, weight: 50 };
-  selectedPurchase["dop"] = selectedPurchase.date;
-  delete selectedPurchase["date"];
+export const handleSplit = async (email, innerData, splitUser, setRefreshTrigger) => {
+  let selectedValue = {
+    ...innerData,
+    split: { userId: splitUser, weight: 50 },
+  };
+  delete selectedValue["index"];
 
-  await editOnStorage(KEYS.PURCHASE, JSON.stringify(selectedPurchase), index, email);
-  setRefreshTrigger(!refreshTrigger);
+  await editOnStorage(KEYS.PURCHASE, JSON.stringify(selectedValue), innerData.index, email);
+  setRefreshTrigger((prev) => !prev);
 };
 
-export const handleEditPurchase = async (
-  email,
-  index,
-  selectedPurchase,
-  splitStatus,
-  splitUser,
-  slider,
-  refreshTrigger,
-  setRefreshTrigger,
-  setEditVisible
-) => {
+export const handleEditPurchase = async (email, selectedPurchase, sliderStatus, setRefreshTrigger, setEditVisible) => {
   if (!selectedPurchase.name && selectedPurchase.name == "") selectedPurchase.name = selectedPurchase.type;
-  if (splitStatus) selectedPurchase["split"] = { userId: splitUser, weight: slider };
-  else delete selectedPurchase["split"];
+  if (!sliderStatus) delete selectedPurchase["split"];
 
-  selectedPurchase["dop"] = selectedPurchase.date;
-  delete selectedPurchase["date"];
+  let index = selectedPurchase["index"];
+  delete selectedPurchase["index"];
   await editOnStorage(KEYS.PURCHASE, JSON.stringify(selectedPurchase), index, email);
-  setRefreshTrigger(!refreshTrigger);
+  setRefreshTrigger((prev) => !prev);
   setEditVisible(false);
 };
 
-export const handleEditTransaction = async (email, index, selectedTransaction, splitUser, refreshTrigger, setRefreshTrigger, setEditVisible) => {
-  selectedTransaction = {
-    ...selectedTransaction,
-    user_destination_id: splitUser,
-    dot: selectedTransaction.date,
-  };
-  delete selectedTransaction["date"];
+export const handleEditTransaction = async (email, selectedTransaction, setRefreshTrigger, setEditVisible) => {
+  let index = selectedPurchase["index"];
+  delete selectedTransaction["index"];
   await editOnStorage(KEYS.TRANSACTION, JSON.stringify(selectedTransaction), index, email);
-  setRefreshTrigger(!refreshTrigger);
+  setRefreshTrigger((prev) => !prev);
   setEditVisible(false);
 };
 
