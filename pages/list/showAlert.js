@@ -2,7 +2,7 @@ import { Alert } from "react-native";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { removeFromStorage } from "../../functions/secureStorage";
 
-export default showAlert = (key, array, storageKey, email, setRefreshTrigger) => {
+export default showAlert = (key, array, storageKey, email, setRefreshTrigger, setItemsCounts) => {
   let [identifier, id] = key.split(KEYS_SERIALIZER.TOKEN_SEPARATOR);
   let element = storageKey,
     elementArray = array,
@@ -43,8 +43,23 @@ export default showAlert = (key, array, storageKey, email, setRefreshTrigger) =>
         onPress: async () => {
           if (identifier == KEYS_SERIALIZER.PURCHASE || identifier == KEYS_SERIALIZER.TRANSACTION) {
             await removeFromStorage(element, id, email);
-            if (identifier == KEYS_SERIALIZER.PURCHASE) setRefreshTrigger(KEYS_SERIALIZER.PURCHASE);
-            else if (identifier == KEYS_SERIALIZER.TRANSACTION) setRefreshTrigger(KEYS_SERIALIZER.TRANSACTION);
+            if (identifier == KEYS_SERIALIZER.PURCHASE) {
+              setRefreshTrigger(KEYS_SERIALIZER.PURCHASE);
+              setItemsCounts((prev) => {
+                return {
+                  purchaseCount: prev.purchaseCount - 1,
+                  transactionCount: prev.transactionCount,
+                };
+              });
+            } else if (identifier == KEYS_SERIALIZER.TRANSACTION) {
+              setRefreshTrigger(KEYS_SERIALIZER.TRANSACTION);
+              setItemsCounts((prev) => {
+                return {
+                  purchaseCount: prev.purchaseCount,
+                  transactionCount: prev.transactionCount - 1,
+                };
+              });
+            }
           }
         },
         style: "yes",

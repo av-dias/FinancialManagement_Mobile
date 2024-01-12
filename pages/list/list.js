@@ -2,25 +2,26 @@ import React, { useState } from "react";
 import { Text, View, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import { _styles } from "./style";
 
 import { verticalScale } from "../../functions/responsive";
-
-import { _styles } from "./style";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
 import { getSplitUser, getSplitEmail } from "../../functions/split";
 import { handleSplit, handleEditPurchase, groupByDate, handleEditTransaction } from "./handler";
-
-import Header from "../../components/header/header";
 import { getFromStorage } from "../../functions/secureStorage";
 import { getUser } from "../../functions/basic";
 import { months } from "../../utility/calendar";
+import { ModalList } from "../../utility/modalContent";
+import { getPurchaseCount } from "../../functions/purchase";
+import { getTransactionCount } from "../../functions/transaction";
+import showAlert from "./showAlert";
+
+import Header from "../../components/header/header";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
-import ListItem from "../../components/listItem/listItem";
-import showAlert from "./showAlert";
 import ModalCustom from "../../components/modal/modal";
-import { ModalList } from "../../utility/modalContent";
+import ListItem from "../../components/listItem/listItem";
 
 export default function List({ navigation }) {
   const styles = _styles;
@@ -39,6 +40,7 @@ export default function List({ navigation }) {
   const [sliderStatus, setSliderStatus] = useState(false);
 
   const [listDays, setListDays] = useState([]);
+  const [itemsCounts, setItemsCounts] = useState({ purchaseCount: 0, transactionCount: 0 });
 
   const [refreshTrigger, setRefreshTrigger] = useState();
   const [editVisible, setEditVisible] = useState(false);
@@ -47,9 +49,9 @@ export default function List({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
-        let email = await getUser();
-        setEmail(email);
-        await getSplitUser(setSplitUser, email);
+        if (!email) return;
+
+        //var startTime = performance.now();
         try {
           if (!refreshTrigger || refreshTrigger == KEYS_SERIALIZER.PURCHASE) {
             let resPurchase = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
@@ -79,6 +81,9 @@ export default function List({ navigation }) {
         } catch (e) {
           console.log("Archive: " + e);
         }
+
+        //var endTime = performance.now();
+        //console.log("\x1b[36m%s\x1b[0m", `Call to update items ${(endTime - startTime).toFixed(2)} milliseconds.`);
       }
       fetchData();
     }, [refreshTrigger, email])
@@ -87,15 +92,62 @@ export default function List({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
-        let list = Object.keys(groupedPurchases)
-          .concat(Object.keys(groupedTransactions))
-          .concat(Object.keys(groupedArchivedPurchases))
-          .concat(Object.keys(groupedArchivedTransactions))
-          .sort();
-        setListDays([...new Set(list)]);
+        if (refreshTrigger == "reset") {
+          //var startTime = performance.now();
+
+          let list = Object.keys(groupedPurchases)
+            .concat(Object.keys(groupedTransactions))
+            .concat(Object.keys(groupedArchivedPurchases))
+            .concat(Object.keys(groupedArchivedTransactions))
+            .sort();
+          setListDays([...new Set(list)]);
+          //var endTime = performance.now();
+          //console.log("\x1b[36m%s\x1b[0m", `Call to sort items in ordered list took ${(endTime - startTime).toFixed(2)} milliseconds.`);
+        }
       }
       fetchData();
-    }, [groupedPurchases, groupedTransactions, groupedArchivedPurchases, groupedArchivedTransactions])
+    }, [refreshTrigger])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        //var startTime = performance.now();
+        let _email = await getUser();
+        let purchaseCount = await getPurchaseCount(_email);
+        let transactionCount = await getTransactionCount(_email);
+
+        if (email != _email) {
+          //console.log("Load Email...");
+          setEmail(_email);
+          await getSplitUser(setSplitUser, _email);
+        }
+
+        if (_email && itemsCounts.purchaseCount != purchaseCount && itemsCounts.transactionCount != transactionCount) {
+          //console.log("Triggering full data reload...");
+          setRefreshTrigger();
+          setItemsCounts(() => {
+            return { purchaseCount: purchaseCount, transactionCount: transactionCount };
+          });
+        } else if (_email && itemsCounts.purchaseCount != purchaseCount) {
+          //console.log("Triggering purchase data reload...");
+          setRefreshTrigger(KEYS_SERIALIZER.PURCHASE);
+          setItemsCounts((prev) => {
+            return { purchaseCount: purchaseCount, transactionCount: prev.transactionCount };
+          });
+        } else if (_email && itemsCounts.transactionCount != transactionCount) {
+          //console.log("Triggering transaction data reload...");
+          setRefreshTrigger(KEYS_SERIALIZER.TRANSACTION);
+          setItemsCounts((prev) => {
+            return { purchaseCount: prev.purchaseCount, transactionCount: transactionCount };
+          });
+        }
+
+        //var endTime = performance.now();
+        //console.log("\x1b[36m%s\x1b[0m", `Call to check data is up-to-date took ${(endTime - startTime).toFixed(2)} milliseconds.`);
+      }
+      fetchData();
+    }, [itemsCounts.purchaseCount, itemsCounts.transactionCount, email])
   );
 
   return (
@@ -153,7 +205,8 @@ export default function List({ navigation }) {
                                   innerData,
                                   KEYS.PURCHASE,
                                   email,
-                                  setRefreshTrigger
+                                  setRefreshTrigger,
+                                  setItemsCounts
                                 );
                               }}
                             />
@@ -175,7 +228,8 @@ export default function List({ navigation }) {
                                   innerData,
                                   KEYS.TRANSACTION,
                                   email,
-                                  setRefreshTrigger
+                                  setRefreshTrigger,
+                                  setItemsCounts
                                 );
                               }}
                             />

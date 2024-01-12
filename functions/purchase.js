@@ -1,8 +1,9 @@
 import { getFromStorage } from "./secureStorage";
 import { STATS_TYPE } from "../utility/keys";
+import { KEYS } from "../utility/storageKeys";
 
 export const getPurchaseStats = async (email, currentMonth, currentYear, statsType) => {
-  let purchases = JSON.parse(await getFromStorage("purchases", email));
+  let purchases = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
 
   const res = purchases.reduce((acc, { type, value, dop, split }) => {
     if (statsType == STATS_TYPE[1] && split) {
@@ -18,7 +19,7 @@ export const getPurchaseStats = async (email, currentMonth, currentYear, statsTy
 };
 
 export const getPurchaseTotal = async (email, currentMonth, currentYear, statsType) => {
-  let purchases = JSON.parse(await getFromStorage("purchases", email));
+  let purchases = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
 
   const res = purchases.reduce((acc, curr) => {
     if (statsType == STATS_TYPE[1] && curr.split) {
@@ -68,4 +69,10 @@ export const getPurchaseAverageTotal = async (email, currentYear, statsType) => 
   }
 
   return parseInt(purchaseAverageTotal) / parseInt(usedMonthsCount);
+};
+
+export const getPurchaseCount = async (email) => {
+  let purchases = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
+
+  return purchases.length;
 };
