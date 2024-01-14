@@ -2,7 +2,7 @@ import { getFromStorage } from "./secureStorage";
 import { STATS_TYPE } from "../utility/keys";
 import { KEYS } from "../utility/storageKeys";
 
-export const getPurchaseStats = async (email, currentMonth, currentYear, statsType) => {
+export const getMonthPurchaseStats = async (email, currentMonth, currentYear, statsType) => {
   let purchases = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
 
   const res = purchases.reduce((acc, { type, value, dop, split }) => {
@@ -18,7 +18,23 @@ export const getPurchaseStats = async (email, currentMonth, currentYear, statsTy
   return res;
 };
 
-export const getPurchaseTotal = async (email, currentMonth, currentYear, statsType) => {
+export const getPurchaseStats = async (email, currentYear, statsType) => {
+  let purchases = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
+
+  const res = purchases.reduce((acc, { type, value, dop, split }) => {
+    if (statsType == STATS_TYPE[1] && split) {
+      value = (value * (100 - split.weight)) / 100;
+    }
+    if (new Date(dop).getFullYear() == currentYear) {
+      acc[type] = parseFloat(acc[type] || 0) + parseFloat(value);
+    }
+    return acc;
+  }, {});
+
+  return res;
+};
+
+export const getMonthPurchaseTotal = async (email, currentMonth, currentYear, statsType) => {
   let purchases = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
 
   const res = purchases.reduce((acc, curr) => {
@@ -33,12 +49,29 @@ export const getPurchaseTotal = async (email, currentMonth, currentYear, statsTy
   return parseFloat(res).toFixed(0);
 };
 
+export const getPurchaseTotal = async (email, currentYear, statsType) => {
+  let purchases = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
+
+  const res = purchases.reduce((acc, { value, dop, split }) => {
+    if (statsType == STATS_TYPE[1] && split) {
+      value = (value * (100 - split.weight)) / 100;
+    }
+    if (new Date(dop).getFullYear() == currentYear) {
+      let month = new Date(dop).getMonth();
+      acc[month] = parseFloat(acc[month] || 0) + parseFloat(value);
+    }
+    return acc;
+  }, {});
+
+  return res;
+};
+
 export const getPurchaseAverage = async (email, currentYear, statsType) => {
   let purchasesStats,
     purchaseAverage = {};
   let usedMonthsCount = 0;
   for (let i = 0; i < 12; i++) {
-    purchasesStats = await getPurchaseStats(email, i, currentYear, statsType);
+    purchasesStats = await getMonthPurchaseStats(email, i, currentYear, statsType);
     if (JSON.stringify(purchasesStats) != "{}") usedMonthsCount++;
     for (const stat of Object.keys(purchasesStats)) {
       if (purchaseAverage[stat]) {
@@ -62,7 +95,7 @@ export const getPurchaseAverageTotal = async (email, currentYear, statsType) => 
   usedMonthsCount = 0;
 
   for (let i = 0; i < 12; i++) {
-    purchasesTotal = parseInt(await getPurchaseTotal(email, i, currentYear, statsType));
+    purchasesTotal = parseInt(await getMonthPurchaseTotal(email, i, currentYear, statsType));
     purchaseAverageTotal += purchasesTotal;
 
     if (String(purchasesTotal) != "0") usedMonthsCount++;

@@ -16,7 +16,7 @@ import { _styles } from "./style";
 import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
 
 //Functions
-import { getPurchaseStats, getPurchaseTotal, getPurchaseAverage, getPurchaseAverageTotal } from "../../functions/purchase";
+import { getMonthPurchaseStats, getMonthPurchaseTotal, getPurchaseAverage, getPurchaseAverageTotal } from "../../functions/purchase";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { getUser } from "../../functions/basic";
 import { refinePurchaseStats, loadCalendarCard, loadPieChartData, loadPurchaseTotalData, loadSpendTableData } from "./handler";
@@ -54,12 +54,12 @@ export default function Home({ navigation }) {
 
           for (let type of Object.values(STATS_TYPE)) {
             // Current Month Data
-            let resPurchaseStats = await getPurchaseStats(email, currentMonth, currentYear, type).catch((error) => console.log(error));
+            let resPurchaseStats = await getMonthPurchaseStats(email, currentMonth, currentYear, type).catch((error) => console.log(error));
             let [chartDataArray, tableDataArray] = refinePurchaseStats(resPurchaseStats);
             auxPieChartData[type] = chartDataArray;
             auxSpendByType[type] = tableDataArray;
 
-            let resPurchaseTotal = await getPurchaseTotal(email, currentMonth, currentYear, type).catch((error) => console.log(error));
+            let resPurchaseTotal = await getMonthPurchaseTotal(email, currentMonth, currentYear, type).catch((error) => console.log(error));
             auxPurchaseTotal[type] = resPurchaseTotal;
           }
 
