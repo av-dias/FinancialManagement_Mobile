@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, FontAwesome5, AntDesign } from "@expo/vector-icons";
 
 import Login from "./pages/login/login";
 import Home from "./pages/home/home";
@@ -12,6 +12,7 @@ import List from "./pages/list/list";
 import Settings from "./pages/settings/settings";
 import Transaction from "./pages/transaction/transaction";
 import Stats from "./pages/stats/stats";
+import Budget from "./pages/budget/budget";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -42,6 +43,11 @@ function HomeTabs() {
         name="Stats"
         component={Stats}
         options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={24} color="white" /> }}
+      />
+      <Tab.Screen
+        name="Budget"
+        component={Budget}
+        options={{ headerShown: false, tabBarIcon: ({ color, size }) => <AntDesign name="piechart" size={20} color="white" /> }}
       />
       <Tab.Screen
         name="Purchase"
