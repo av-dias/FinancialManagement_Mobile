@@ -39,16 +39,20 @@ export default function Stats({ navigation }) {
           auxSpendByType = {};
 
         for (let type of Object.values(STATS_TYPE)) {
-          // Current Month Data
+          // Current Year Data
           let resPurchaseStats = await getPurchaseStats(email, currentYear, type).catch((error) => console.log(error));
           auxSpendByType[type] = resPurchaseStats;
 
+          // Current Year Total Purchases
           let resCurrentPurchaseTotal = await getPurchaseTotal(email, currentYear, type).catch((error) => console.log(error));
           auxCurrentPurchaseTotal[type] = resCurrentPurchaseTotal;
 
+          // Previous Year Total Purchase
           let resPreviousPurchaseTotal = await getPurchaseTotal(email, currentYear - 1, type).catch((error) => console.log(error));
           auxPreviousPurchaseTotal[type] = resPreviousPurchaseTotal;
         }
+
+        if (Object.keys(auxSpendByType["Personal"]).length == 0 || Object.keys(auxSpendByType["Total"]).length == 0) return;
 
         let auxPurchaseTotalByDate = { currentYear: [], lastYear: [] };
         let auxPurchaseSpendByType = [];
@@ -74,8 +78,7 @@ export default function Stats({ navigation }) {
 
         for (let type of Object.keys(auxSpendByType[STATS_TYPE[0]])) {
           let purchaseTotal = parseFloat(auxSpendByType[STATS_TYPE[0]][type]);
-          let purchasePersonal = parseFloat(auxSpendByType[STATS_TYPE[1]][type]);
-          auxPurchaseSpendByType.push({ x: type, y: purchaseTotal + purchasePersonal });
+          auxPurchaseSpendByType.push({ x: type, y: purchaseTotal });
         }
 
         setPurchaseTotalByDate({ currentYear: auxPurchaseTotalByDate["currentYear"], lastYear: value });
@@ -86,6 +89,7 @@ export default function Stats({ navigation }) {
   );
 
   const getMaxArrayObject = (arr, offset) => {
+    if (!arr || arr.length == 0) return 0;
     let max = arr.reduce((acc, value) => {
       if (value.y > acc) {
         return value.y;
@@ -109,7 +113,7 @@ export default function Stats({ navigation }) {
           <View style={{ alignSelf: "center", flexDirection: "row", gap: 10 }}>
             <TypeCard setItem={setCurrentYear} itemList={[2024, 2023]} />
             <CardWrapper style={{ width: verticalScale(100), alignItems: "center" }}>
-              <Text>Split: {getSumArrayObject(purchaseTotalByDate["currentYear"])}€</Text>
+              <Text>Split: {getSumArrayObject(purchaseTotalByDate["currentYear"]).toFixed(0)}€</Text>
             </CardWrapper>
           </View>
           <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
@@ -125,7 +129,7 @@ export default function Stats({ navigation }) {
                   categories={{ x: months }}
                   data={purchaseTotalByDate["currentYear"]}
                   interpolation="natural"
-                  labels={({ datum }) => datum.x + "\n" + datum.y + "€"}
+                  labels={({ datum }) => datum.x + "\n" + datum.y.toFixed(0) + "€"}
                 />
               </View>
               {purchaseTotalByDate["lastYear"].length != 0 && (
@@ -135,7 +139,7 @@ export default function Stats({ navigation }) {
                     size={3}
                     categories={{ x: months }}
                     data={purchaseTotalByDate["lastYear"]}
-                    labels={({ datum }) => datum.x + "\n" + datum.y + "€"}
+                    labels={({ datum }) => datum.x + "\n" + datum.y.toFixed(0) + "€"}
                   />
                 </View>
               )}
@@ -151,11 +155,12 @@ export default function Stats({ navigation }) {
                 padding={30}
                 style={{
                   data: { stroke: "#c43a31" },
+                  labels: { fontSize: 8 },
                   parent: { border: "1px solid #ccc" },
                 }}
                 data={spendByType}
                 interpolation="natural"
-                labels={({ datum }) => datum.y + "€\n" + datum.x}
+                labels={({ datum }) => datum.x + " " + datum.y.toFixed(0) + "€"}
               />
             </View>
           </CardWrapper>
