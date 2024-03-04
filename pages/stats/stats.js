@@ -39,7 +39,7 @@ export default function Stats({ navigation }) {
           auxSpendByType = {};
 
         for (let type of Object.values(STATS_TYPE)) {
-          // Current Year Data
+          // Current Year Spend by Type
           let resPurchaseStats = await getPurchaseStats(email, currentYear, type).catch((error) => console.log(error));
           auxSpendByType[type] = resPurchaseStats;
 
@@ -97,7 +97,7 @@ export default function Stats({ navigation }) {
       return acc;
     }, 0);
 
-    return max + offset;
+    return max * offset;
   };
 
   const getSumArrayObject = (arr) => {
@@ -119,8 +119,11 @@ export default function Stats({ navigation }) {
           <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
             <View style={styles.chart}>
               <View style={{ position: "absolute" }}>
+                <View style={{ position: "absolute", padding: 20, alignSelf: "center" }}>
+                  <Text>Total Purchase by Month</Text>
+                </View>
                 <VictoryLine
-                  domain={{ x: [0, 13], y: [-40, getMaxArrayObject(purchaseTotalByDate["currentYear"], 200)] }}
+                  domain={{ x: [0, 13], y: [-40, getMaxArrayObject(purchaseTotalByDate["currentYear"], 1.4)] }}
                   padding={20}
                   style={{
                     data: { stroke: "#c43a31" },
@@ -147,10 +150,13 @@ export default function Stats({ navigation }) {
           </CardWrapper>
           <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
             <View style={styles.chart}>
+              <View style={{ position: "absolute", top: 15 }}>
+                <Text>Total Purchase by Type</Text>
+              </View>
               <VictoryBar
                 horizontal
                 cornerRadius={{ top: 5 }}
-                domain={{ y: [-40, getMaxArrayObject(spendByType, 2000)] }}
+                domain={{ y: [-40, getMaxArrayObject(spendByType, 1.3)] }}
                 domainPadding={20}
                 padding={30}
                 style={{
