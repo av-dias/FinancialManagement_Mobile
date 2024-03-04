@@ -96,7 +96,14 @@ export default function Home({ navigation }) {
 
           setPieChartAverageData(auxPieChartData);
           setPurchaseAverageTotal(auxPurchaseTotal);
-          setSpendAverageByType(auxSpendByType);
+          setSpendAverageByType({
+            [STATS_TYPE[0]]: auxSpendByType[STATS_TYPE[0]].sort((a, b) => {
+              return b[2] - a[2];
+            }),
+            [STATS_TYPE[1]]: auxSpendByType[STATS_TYPE[1]].sort((a, b) => {
+              return b[2] - a[2];
+            }),
+          });
         } catch (e) {
           console.log(e);
         }
@@ -151,9 +158,14 @@ export default function Home({ navigation }) {
                     <ScrollView style={{ height: "100%", background: "transparent" }}>
                       {loadSpendTableData(statsMode, statsType, spendByType, spendAverageByType).map((rowData, index) => (
                         <TableWrapper key={index} style={styles.rowTable}>
-                          {rowData.map((cellData, cellIndex) => (
-                            <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
-                          ))}
+                          {rowData.map((cellData, cellIndex) => {
+                            if (cellIndex == 2) {
+                              cellData = cellData + " €";
+                            }
+                            return (
+                              <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
+                            );
+                          })}
                         </TableWrapper>
                       ))}
                     </ScrollView>
