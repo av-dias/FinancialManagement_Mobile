@@ -109,3 +109,23 @@ export const getPurchaseCount = async (email) => {
 
   return purchases.length;
 };
+
+/*
+ * Get total amount purchased by type in a year
+ */
+export const getTotalPurchaseByType = async (email, lastYear) => {
+  let purchases = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
+
+  const res = purchases.reduce((acc, { type, value, dop, split }) => {
+    if (split) {
+      value = (value * (100 - split.weight)) / 100;
+    }
+
+    if (new Date(dop).getFullYear() == lastYear) {
+      acc[type] = parseFloat(acc[type] || 0) + parseFloat(value);
+    }
+    return acc;
+  }, {});
+
+  return res;
+};
