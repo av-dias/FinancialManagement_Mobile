@@ -21,6 +21,10 @@ export const handlePurchase = async (
     alert("Please fill all fields.");
     return;
   }
+  if (isNaN(newPurchase.value)) {
+    alert("Value is not a number.");
+    return;
+  }
   if (!newPurchase.name || newPurchase.name == "") newPurchase.name = newPurchase.type;
 
   try {
