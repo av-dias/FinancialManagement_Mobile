@@ -11,7 +11,7 @@ export const color = {
 };
 
 export const categoryColorsBackground = {
-  Supermarket: "rgba(221, 57, 57, 1)",
+  Supermarket: "rgba(238, 66, 66, 1)",
   Travel: "rgba(255, 92, 70, 1)",
   Rent: "rgba(244, 123, 71, 1)",
   Work: "rgba(219, 155, 109, 1)",
@@ -22,11 +22,11 @@ export const categoryColorsBackground = {
   LifeStyle: "rgba(109, 219, 199, 1)",
   Restaurant: "rgba(109, 193, 219, 1)",
   Gadgets: "rgba(109, 146, 219, 1)",
-  Medic: "rgba(20, 70, 199, 1)",
+  Medic: "rgba(51, 100, 224, 1)",
   Gift: "rgba(105, 85, 229, 1)",
-  Cloth: "rgba(187, 22, 187, 1)",
+  Cloth: "rgba(246, 107, 246, 1)",
   Subscription: "rgba(184, 109, 219, 1)",
   Home: "rgba(219, 109, 182, 1)",
-  Uber: "rgba(246, 77, 118, 1)",
-  Other: "rgba(255, 119, 143, 1)",
+  Uber: "rgba(255, 115, 148, 1)",
+  Other: "rgba(249, 166, 171, 1)",
 };
