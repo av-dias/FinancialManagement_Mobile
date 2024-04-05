@@ -1,98 +1,98 @@
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Feather } from "@expo/vector-icons";
 import { horizontalScale, verticalScale, moderateScale } from "../functions/responsive";
-import { categoryCollors } from "../utility/colors";
+import { categoryColorsBackground } from "../utility/colors";
 export const categoryIcons = (icon_size = 25, color = "black") => {
   const iconSize = verticalScale(icon_size);
 
   return [
     {
       label: "Supermarket",
-      color: categoryCollors.Coral,
+      color: categoryColorsBackground.Supermarket,
       icon: <FontAwesome name="shopping-basket" style={{ alignSelf: "center" }} size={iconSize - verticalScale(5)} color={color} />,
     },
     {
       label: "Travel",
-      color: categoryCollors.Gold,
+      color: categoryColorsBackground.Travel,
       icon: <MaterialIcons name="flight-takeoff" style={{ alignSelf: "center" }} size={iconSize} color={color} />,
     },
     {
       label: "Rent",
-      color: categoryCollors.ForestGreen,
+      color: categoryColorsBackground.Rent,
       icon: <AntDesign name="home" style={{ alignSelf: "center" }} size={iconSize - verticalScale(4)} color={color} />,
     },
     {
       label: "Work",
-      color: categoryCollors.DarkOrange,
+      color: categoryColorsBackground.Work,
       icon: <MaterialIcons name="food-bank" style={{ alignSelf: "center" }} size={iconSize + verticalScale(5)} color={color} />,
     },
     {
       label: "Coffee-Pub",
-      color: categoryCollors.MediumVioletRed,
+      color: categoryColorsBackground.CoffeePub,
       icon: <FontAwesome5 name="store" style={{ alignSelf: "center" }} size={iconSize - verticalScale(8)} color={color} />,
     },
     {
       label: "Fun",
-      color: categoryCollors.DeepSkyBlue,
+      color: categoryColorsBackground.Fun,
       icon: <MaterialIcons name="nightlife" style={{ alignSelf: "center" }} size={iconSize} color={color} />,
     },
     {
       label: "Car",
-      color: categoryCollors.Firebrick,
+      color: categoryColorsBackground.Car,
       icon: <FontAwesome5 name="car-side" style={{ alignSelf: "center" }} size={iconSize - verticalScale(5)} color={color} />,
     },
     {
       label: "Transport",
-      color: categoryCollors.DarkViolet,
+      color: categoryColorsBackground.Transport,
       icon: <Ionicons name="train-outline" style={{ alignSelf: "center" }} size={iconSize - verticalScale(5)} color={color} />,
     },
     {
       label: "Lifestyle",
-      color: categoryCollors.Crimson,
+      color: categoryColorsBackground.LifeStyle,
       icon: <Ionicons name="person-add-outline" style={{ alignSelf: "center" }} size={iconSize - verticalScale(5)} color={color} />,
     },
     {
       label: "Restaurant",
-      color: categoryCollors.Indigo,
+      color: categoryColorsBackground.Restaurant,
       icon: <MaterialIcons name="restaurant" style={{ alignSelf: "center" }} size={iconSize - verticalScale(5)} color={color} />,
     },
     {
       label: "Gadgets",
-      color: categoryCollors.MidnightBlue,
+      color: categoryColorsBackground.Gadgets,
       icon: <MaterialCommunityIcons name="devices" style={{ alignSelf: "center" }} size={iconSize} color={color} />,
     },
     {
       label: "Medic",
-      color: categoryCollors.DarkSlateGray,
+      color: categoryColorsBackground.Medic,
       icon: <FontAwesome5 name="hand-holding-medical" style={{ alignSelf: "center" }} size={iconSize - verticalScale(7)} color={color} />,
     },
     {
       label: "Gift",
-      color: categoryCollors.DarkOrchid,
+      color: categoryColorsBackground.Gift,
       icon: <AntDesign name="gift" style={{ alignSelf: "center" }} size={iconSize - verticalScale(4)} color={color} />,
     },
     {
       label: "Cloth",
-      color: categoryCollors.SeaGreen,
+      color: categoryColorsBackground.Cloth,
       icon: <Ionicons name="shirt-outline" style={{ alignSelf: "center" }} size={iconSize - verticalScale(5)} color={color} />,
     },
     {
       label: "Subscription",
-      color: categoryCollors.SaddleBrown,
+      color: categoryColorsBackground.Subscription,
       icon: <MaterialCommunityIcons name="calendar-month-outline" style={{ alignSelf: "center" }} size={iconSize - verticalScale(5)} color={color} />,
     },
     {
       label: "Home",
-      color: categoryCollors.Peru,
+      color: categoryColorsBackground.Home,
       icon: <MaterialCommunityIcons name="sofa" style={{ alignSelf: "center" }} size={iconSize} color={color} />,
     },
     {
       label: "Uber",
-      color: categoryCollors.SlateBlue,
+      color: categoryColorsBackground.Uber,
       icon: <FontAwesome5 name="taxi" style={{ alignSelf: "center" }} size={iconSize - verticalScale(5)} color={color} />,
     },
     {
       label: "Other",
-      color: categoryCollors.DarkGreen,
+      color: categoryColorsBackground.Other,
       icon: <FontAwesome name="plus-square-o" style={{ alignSelf: "center" }} size={iconSize - verticalScale(5)} color={color} />,
     },
   ];
