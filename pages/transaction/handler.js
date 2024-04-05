@@ -2,7 +2,7 @@ import { addToStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 import { getSplitEmail } from "../../functions/split";
 
-export const handleTransaction = async (newTransaction, setNewTransaction, destination, email) => {
+export const handleTransaction = async (newTransaction, setNewTransaction, destination, receivedActive, email) => {
   let _destination = getSplitEmail(destination);
   if (
     _destination == "" ||
@@ -22,7 +22,14 @@ export const handleTransaction = async (newTransaction, setNewTransaction, desti
     return;
   }
 
-  newTransaction = { ...newTransaction, user_destination_id: _destination };
+  if (!newTransaction.type || newTransaction.type == "") newTransaction.type = "Other";
+
+  if (!receivedActive) {
+    newTransaction = { ...newTransaction, user_destination_id: _destination };
+  } else {
+    newTransaction = { ...newTransaction, user_origin_id: _destination, user_destination_id: email };
+  }
+
   await addToStorage(KEYS.TRANSACTION, JSON.stringify([newTransaction]), email);
 
   setNewTransaction({ ...newTransaction, amount: "", description: "" });

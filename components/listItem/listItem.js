@@ -11,8 +11,16 @@ import commonStyles from "../../utility/commonStyles";
 export default ListItem = ({ innerData, handleSplit, handleEdit, showAlert, keys, gray = false }) => {
   const styles = _styles;
   let iconComponent;
-  if (innerData.type) iconComponent = categoryIcons(20).find((category) => category.label === innerData.type);
-  else iconComponent = utilIcons().find((type) => type.label === "Transaction");
+  if (innerData.type && innerData.dop) iconComponent = categoryIcons(20).find((category) => category.label === innerData.type);
+  else {
+    if (!innerData.user_origin_id) {
+      iconComponent = utilIcons().find((type) => type.label === "Transaction");
+      innerData.amount = "-" + innerData.amount;
+    } else {
+      iconComponent = utilIcons().find((type) => type.label === "Received");
+      innerData.amount = "+" + innerData.amount;
+    }
+  }
   return (
     <Pressable
       key={keys + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
