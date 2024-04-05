@@ -42,9 +42,14 @@ export default function Budget({ navigation }) {
     tableFlex: [1, 2, 1],
   };
 
-  const getMonthProgress = (type, monthValue, monthAverage) => {
+  const getYearProgress = (type, monthValue, monthAverage) => {
     if (!monthValue || !Object.keys(monthValue).includes(type)) return 0;
     return monthValue[type] / monthAverage[type];
+  };
+
+  const getMonthProgress = (type, monthValue, monthAverage) => {
+    if (!monthValue || !Object.keys(monthValue).includes(type)) return 0;
+    return monthValue[type] / monthAverage;
   };
 
   const getTotalProgress = (monthValue, monthAverage) => {
@@ -111,8 +116,13 @@ export default function Budget({ navigation }) {
               resPurchaseLastYearAverageByType[type] = resPurchaseAverageByType[type];
             }
           });
-          setSpendAverageByType(resPurchaseLastYearAverageByType);
+          let sortedPurchaseLastYearAverageByType = [];
+          for (let purchase in resPurchaseLastYearAverageByType) {
+            sortedPurchaseLastYearAverageByType.push([purchase, resPurchaseLastYearAverageByType[purchase]]);
+          }
 
+          sortedPurchaseLastYearAverageByType.sort((a, b) => b[1] - a[1]);
+          setSpendAverageByType(sortedPurchaseLastYearAverageByType);
         } catch (e) {
           console.log(e);
         }
@@ -139,8 +149,7 @@ export default function Budget({ navigation }) {
           )}
           {spendAverageByType &&
             purchaseTotalLastYearByType &&
-            Object.keys(spendAverageByType).map((type) => {
-              [];
+            spendAverageByType.map(([type, value]) => {
               return (
                 <View
                   key={type + "View"}
@@ -162,15 +171,15 @@ export default function Budget({ navigation }) {
                       </Text>
                       <ProgressBar
                         key={"PT" + type}
-                        progress={getMonthProgress(type, purchaseCurrentTotalByType, purchaseTotalLastYearByType)}
+                        progress={getYearProgress(type, purchaseCurrentTotalByType, purchaseTotalLastYearByType)}
                         color={"red"}
                       />
                     </View>
                     <View>
                       <Text key={type + "TextM"}>
-                        {"Monthly " + getCurrentValueType(purchaseCurrentStats, type).toFixed(0) + "/" + spendAverageByType[type].toFixed(0)}
+                        {"Monthly " + getCurrentValueType(purchaseCurrentStats, type).toFixed(0) + "/" + value.toFixed(0)}
                       </Text>
-                      <ProgressBar key={"PM" + type} progress={getMonthProgress(type, purchaseCurrentStats, spendAverageByType)} color={"blue"} />
+                      <ProgressBar key={"PM" + type} progress={getMonthProgress(type, purchaseCurrentStats, value)} color={"blue"} />
                     </View>
                   </View>
                 </View>
