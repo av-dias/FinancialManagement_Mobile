@@ -44,8 +44,10 @@ export const loadPieChartData = (statsMode, statsType, pieChartData, pieChartAve
 };
 
 export const loadPurchaseTotalData = (statsMode, statsType, purchaseTotal, purchaseAverageTotal) => {
-  if (statsMode == STATS_MODE[0]) return Number(purchaseTotal[statsType]).toFixed(1) + "€";
-  else return Number(purchaseAverageTotal[statsType]).toFixed(1) + "€";
+  if (statsMode == STATS_MODE[0]) {
+    console.log(purchaseTotal);
+    return Number(purchaseTotal[statsType]).toFixed(1) + "€";
+  } else return Number(purchaseAverageTotal[statsType]).toFixed(1) + "€";
 };
 
 export const loadSpendTableData = (statsMode, statsType, spendByType, spendAverageByType) => {

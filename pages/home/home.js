@@ -17,6 +17,8 @@ import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
 
 //Functions
 import { getMonthPurchaseStats, getMonthPurchaseTotal, getPurchaseAverage, getPurchaseAverageTotal } from "../../functions/purchase";
+import { getTransactions, getMonthTransactionStats, getMonthTransactionTotal } from "../../functions/transaction";
+
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { getUser } from "../../functions/basic";
 import { refinePurchaseStats, loadCalendarCard, loadPieChartData, loadPurchaseTotalData, loadSpendTableData } from "./handler";
@@ -47,20 +49,35 @@ export default function Home({ navigation }) {
       async function fetchData() {
         let email = await getUser();
         setEmail(email);
+        let transactions = await getTransactions(email);
+
         try {
           let auxPieChartData = {},
             auxSpendByType = {},
-            auxPurchaseTotal = {};
+            auxPurchaseTotal = {},
+            resTransactionStats;
 
           for (let type of Object.values(STATS_TYPE)) {
             // Current Month Data
             let resPurchaseStats = await getMonthPurchaseStats(email, currentMonth, currentYear, type).catch((error) => console.log(error));
+            if (type == STATS_TYPE[0]) {
+              resTransactionStats = await getMonthTransactionStats(transactions, currentMonth, currentYear).catch((error) => console.log(error));
+              for (let tType of Object.keys(resTransactionStats)) {
+                resPurchaseStats[tType] = (resPurchaseStats[tType] || 0) + resTransactionStats[tType];
+              }
+            }
             let [chartDataArray, tableDataArray] = refinePurchaseStats(resPurchaseStats);
             auxPieChartData[type] = chartDataArray;
             auxSpendByType[type] = tableDataArray;
 
             let resPurchaseTotal = await getMonthPurchaseTotal(email, currentMonth, currentYear, type).catch((error) => console.log(error));
-            auxPurchaseTotal[type] = resPurchaseTotal;
+            let resTransactionTotal = await getMonthTransactionTotal(transactions, currentMonth, currentYear).catch((error) => console.log(error));
+
+            if (type == STATS_TYPE[0]) {
+              auxPurchaseTotal[type] = parseFloat(resPurchaseTotal) + parseFloat(resTransactionTotal);
+            } else {
+              auxPurchaseTotal[type] = resPurchaseTotal;
+            }
           }
 
           setPieChartData(auxPieChartData);
