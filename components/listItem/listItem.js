@@ -15,10 +15,10 @@ export default ListItem = ({ innerData, handleSplit, handleEdit, showAlert, keys
   else {
     if (!innerData.user_origin_id) {
       iconComponent = utilIcons().find((type) => type.label === "Transaction");
-      innerData.amount = "-" + innerData.amount;
+      innerData.amount = innerData.amount;
     } else {
       iconComponent = utilIcons().find((type) => type.label === "Received");
-      innerData.amount = "+" + innerData.amount;
+      innerData.amount = innerData.amount;
     }
   }
   return (
