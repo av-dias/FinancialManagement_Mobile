@@ -17,6 +17,7 @@ import { months } from "../../utility/calendar";
 import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { getUser } from "../../functions/basic";
+import { getTransactions, getTransactionStats, getTransactionTotal } from "../../functions/transaction";
 
 export default function Stats({ navigation }) {
   const styles = _styles;
@@ -33,10 +34,13 @@ export default function Stats({ navigation }) {
         console.log("Fetching data...");
         let email = await getUser();
         setEmail(email);
+        let transactions = await getTransactions(email);
 
         let auxCurrentPurchaseTotal = {},
           auxPreviousPurchaseTotal = {},
-          auxSpendByType = {};
+          auxSpendByType = {},
+          resTransationStats,
+          resTransationTotal;
 
         for (let type of Object.values(STATS_TYPE)) {
           // Current Year Spend by Type
@@ -54,14 +58,24 @@ export default function Stats({ navigation }) {
 
         if (Object.keys(auxSpendByType["Personal"]).length == 0 || Object.keys(auxSpendByType["Total"]).length == 0) return;
 
+        // Reconcile values with transactions
+        resTransationTotal = await getTransactionTotal(transactions, currentYear);
+        resTransationStats = await getTransactionStats(transactions, currentYear);
+
         let auxPurchaseTotalByDate = { currentYear: [], lastYear: [] };
         let auxPurchaseSpendByType = [];
         let value = [];
+        let transactionTotal;
 
         for (let date of Object.keys(auxCurrentPurchaseTotal[STATS_TYPE[0]])) {
           let purchaseTotal = parseFloat(auxCurrentPurchaseTotal[STATS_TYPE[0]][date]);
           let purchasePersonal = parseFloat(auxCurrentPurchaseTotal[STATS_TYPE[1]][date]);
-          auxPurchaseTotalByDate["currentYear"].push({ x: months[date], y: purchaseTotal - purchasePersonal });
+
+          // Reconcile values with transactions
+          if (resTransationTotal.hasOwnProperty(date)) transactionTotal = parseFloat(resTransationTotal[date]);
+          else transactionTotal = 0;
+
+          auxPurchaseTotalByDate["currentYear"].push({ x: months[date], y: purchaseTotal - purchasePersonal + transactionTotal });
         }
 
         if (auxPreviousPurchaseTotal[STATS_TYPE[0]] != {}) {
@@ -76,8 +90,14 @@ export default function Stats({ navigation }) {
           );
         }
 
+        // Reconcile values with transactions
+        for (let tType of Object.keys(resTransationStats)) {
+          auxSpendByType[STATS_TYPE[0]][tType] = (auxSpendByType[STATS_TYPE[0]][tType] || 0) + resTransationStats[tType];
+        }
+
         for (let type of Object.keys(auxSpendByType[STATS_TYPE[0]])) {
           let purchaseTotal = parseFloat(auxSpendByType[STATS_TYPE[0]][type]);
+
           auxPurchaseSpendByType.push({ x: type, y: purchaseTotal });
         }
 
@@ -98,6 +118,17 @@ export default function Stats({ navigation }) {
     }, 0);
 
     return max * offset;
+  };
+
+  const getMinArrayObject = (arr, offset) => {
+    if (!arr || arr.length == 0) return 0;
+    let min = arr.reduce((acc, value) => {
+      if (value.y < acc) {
+        return value.y;
+      }
+      return acc;
+    }, 0);
+    return min * offset;
   };
 
   const getSumArrayObject = (arr) => {
@@ -123,7 +154,10 @@ export default function Stats({ navigation }) {
                   <Text>Total Purchase by Month</Text>
                 </View>
                 <VictoryLine
-                  domain={{ x: [0, 13], y: [-40, getMaxArrayObject(purchaseTotalByDate["currentYear"], 1.4)] }}
+                  domain={{
+                    x: [0, 13],
+                    y: [getMinArrayObject(purchaseTotalByDate["currentYear"], 10), getMaxArrayObject(purchaseTotalByDate["currentYear"], 1.5)],
+                  }}
                   padding={20}
                   style={{
                     data: { stroke: "#c43a31" },
