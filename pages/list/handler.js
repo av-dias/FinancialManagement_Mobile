@@ -25,6 +25,25 @@ export const handleEditPurchase = async (email, selectedPurchase, sliderStatus, 
 };
 
 export const handleEditTransaction = async (email, selectedTransaction, setRefreshTrigger, setEditVisible) => {
+  if (
+    !selectedTransaction.amount ||
+    selectedTransaction.amount == "" ||
+    !selectedTransaction.description ||
+    selectedTransaction.description == "" ||
+    !selectedTransaction.dot ||
+    selectedTransaction.dot == ""
+  ) {
+    alert("Please fill all fields.");
+    return;
+  }
+
+  if (!_destination || _destination == "" || _destination == "Not Registed") {
+    alert("Please register a split user on the settings.");
+    return;
+  }
+
+  if (!selectedTransaction.type || selectedTransaction.type == "") selectedTransaction.type = "Other";
+
   let index = selectedTransaction["index"];
   delete selectedTransaction["index"];
   await editOnStorage(KEYS.TRANSACTION, JSON.stringify(selectedTransaction), index, email);

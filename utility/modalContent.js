@@ -107,6 +107,14 @@ export const ModalList = (
             }}
           />
           <View style={{ flex: 7, gap: verticalScale(20), paddingTop: verticalScale(20) }}>
+            <Carrossel
+              type={selectedItem.type}
+              setType={(_type) => {
+                setSelectedItem({ ...selectedItem, type: _type });
+              }}
+              size={verticalScale(90)}
+              iconSize={30}
+            />
             <CustomCalendarStrip
               pickerCurrentDate={selectedItem.dot}
               setPickerCurrentDate={(_dot) => {
