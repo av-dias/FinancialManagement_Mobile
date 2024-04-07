@@ -37,11 +37,6 @@ export const handleEditTransaction = async (email, selectedTransaction, setRefre
     return;
   }
 
-  if (!_destination || _destination == "" || _destination == "Not Registed") {
-    alert("Please register a split user on the settings.");
-    return;
-  }
-
   if (!selectedTransaction.type || selectedTransaction.type == "") selectedTransaction.type = "Other";
 
   let index = selectedTransaction["index"];
