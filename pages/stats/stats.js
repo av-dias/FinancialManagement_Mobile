@@ -17,7 +17,7 @@ import { months } from "../../utility/calendar";
 import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { getUser } from "../../functions/basic";
-import { getTransactions, getTransactionStats, getTransactionTotal } from "../../functions/transaction";
+import { getTransactions, getTransactionStats, getTransactionTotalReceived } from "../../functions/transaction";
 
 export default function Stats({ navigation }) {
   const styles = _styles;
@@ -59,7 +59,7 @@ export default function Stats({ navigation }) {
         if (Object.keys(auxSpendByType["Personal"]).length == 0 || Object.keys(auxSpendByType["Total"]).length == 0) return;
 
         // Reconcile values with transactions
-        resTransationTotal = await getTransactionTotal(transactions, currentYear);
+        resTransationTotal = await getTransactionTotalReceived(transactions, currentYear);
         resTransationStats = await getTransactionStats(transactions, currentYear);
 
         let auxPurchaseTotalByDate = { currentYear: [], lastYear: [] };
@@ -128,7 +128,10 @@ export default function Stats({ navigation }) {
       }
       return acc;
     }, 0);
-    return min * offset;
+
+    let resMin = min * offset;
+
+    return resMin == 0 ? -200 : resMin;
   };
 
   const getSumArrayObject = (arr) => {
