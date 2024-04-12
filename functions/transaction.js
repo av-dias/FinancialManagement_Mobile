@@ -87,3 +87,18 @@ export const getTransactionTotalReceived = async (transactions, currentYear) => 
 
   return res;
 };
+
+export const getTransactionTotalSent = async (transactions, currentYear) => {
+  const res = transactions.reduce((acc, t) => {
+    if (!t.type) {
+      return acc;
+    }
+    if (new Date(t.dot).getFullYear() == currentYear) {
+      let month = new Date(t.dot).getMonth();
+      if (!t.user_origin_id) acc[month] = parseFloat(acc[month] || 0) + parseFloat(t.amount);
+    }
+    return acc;
+  }, {});
+
+  return res;
+};

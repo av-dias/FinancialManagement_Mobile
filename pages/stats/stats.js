@@ -15,9 +15,9 @@ import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
 import { months } from "../../utility/calendar";
 //Functions
 import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
-import { horizontalScale, verticalScale } from "../../functions/responsive";
+import { heightTreshold, horizontalScale, verticalScale } from "../../functions/responsive";
 import { getUser } from "../../functions/basic";
-import { getTransactions, getTransactionStats, getTransactionTotalReceived } from "../../functions/transaction";
+import { getTransactions, getTransactionStats, getTransactionTotalReceived, getTransactionTotalSent } from "../../functions/transaction";
 
 export default function Stats({ navigation }) {
   const styles = _styles;
@@ -27,6 +27,11 @@ export default function Stats({ navigation }) {
   const [purchaseTotalByDate, setPurchaseTotalByDate] = useState({ currentYear: [{ x: "Jan", y: 0 }], lastYear: [{ x: "Jan", y: 0 }] });
   const [spendByType, setSpendByType] = useState([{ x: "Supermarket", y: 0 }]);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [transactionsTotalReceived, setTransactionsTotalReceived] = useState({
+    Received: [{ x: "Jan", y: 0 }],
+    Sent: [{ x: "Jan", y: 0 }],
+    Total: [{ x: "Jan", y: 0 }],
+  });
 
   useFocusEffect(
     React.useCallback(() => {
@@ -40,7 +45,8 @@ export default function Stats({ navigation }) {
           auxPreviousPurchaseTotal = {},
           auxSpendByType = {},
           resTransationStats,
-          resTransationTotal;
+          resTransationTotal,
+          resTransationTotalSent;
 
         for (let type of Object.values(STATS_TYPE)) {
           // Current Year Spend by Type
@@ -60,6 +66,7 @@ export default function Stats({ navigation }) {
 
         // Reconcile values with transactions
         resTransationTotal = await getTransactionTotalReceived(transactions, currentYear);
+        resTransationTotalSent = await getTransactionTotalSent(transactions, currentYear);
         resTransationStats = await getTransactionStats(transactions, currentYear);
 
         let auxPurchaseTotalByDate = { currentYear: [], lastYear: [] };
@@ -101,6 +108,37 @@ export default function Stats({ navigation }) {
           auxPurchaseSpendByType.push({ x: type, y: purchaseTotal });
         }
 
+        let auxReceived = [],
+          auxSent = [],
+          auxTotal = [];
+
+        for (let month of Object.keys(resTransationTotal)) {
+          let purchaseTotal = parseFloat(resTransationTotal[month]);
+
+          //auxTotal.push({ x: months[month], y: purchaseTotal });
+          auxReceived.push({ x: months[month], y: purchaseTotal });
+        }
+
+        for (let month of Object.keys(resTransationTotalSent)) {
+          let purchaseTotal = parseFloat(resTransationTotalSent[month]);
+
+          auxSent.push({ x: months[month], y: purchaseTotal });
+        }
+
+        for (let month of months) {
+          let received = findKeyJsonArray(auxReceived, month);
+          let sent = findKeyJsonArray(auxSent, month);
+
+          if (received.length > 0 || sent.length > 0) {
+            if (received.length == 0) received = [{ y: 0 }];
+            if (sent.length == 0) sent = [{ y: 0 }];
+
+            auxTotal.push({ x: month, y: -(received[0].y + sent[0].y) });
+          }
+        }
+
+        setTransactionsTotalReceived({ Received: auxReceived, Sent: auxSent, Total: auxTotal });
+
         setPurchaseTotalByDate({ currentYear: auxPurchaseTotalByDate["currentYear"], lastYear: value });
         setSpendByType(auxPurchaseSpendByType);
       }
@@ -108,30 +146,62 @@ export default function Stats({ navigation }) {
     }, [currentYear])
   );
 
-  const getMaxArrayObject = (arr, offset) => {
-    if (!arr || arr.length == 0) return 0;
-    let max = arr.reduce((acc, value) => {
-      if (value.y > acc) {
-        return value.y;
-      }
-      return acc;
-    }, 0);
+  useFocusEffect(
+    React.useCallback(() => {
+      async function checkTransaction() {
+        if (transactionsTotalReceived["Total"].length == 1) {
+          let indexMonth = months.findIndex((str, index) => {
+            if (str === transactionsTotalReceived["Total"][0].x) {
+              return index;
+            }
+          });
 
-    return max * offset;
+          if (indexMonth == 0) {
+            indexMonth = 1;
+          } else if (indexMonth == 11) {
+            indexMonth = 10;
+          } else {
+            indexMonth--;
+          }
+
+          transactionsTotalReceived["Total"].push({ x: months[indexMonth], y: 0 });
+        }
+      }
+
+      checkTransaction();
+    }, [transactionsTotalReceived])
+  );
+
+  const calculateArrayVariation = (arr) => {
+    let maxArray = arr.sort(function (a, b) {
+      return b.y - a.y;
+    });
+
+    let variation = Math.abs(maxArray[0].y - maxArray[maxArray.length - 1].y);
+    return variation;
   };
 
-  const getMinArrayObject = (arr, offset) => {
+  const getMaxArrayObject = (arr) => {
     if (!arr || arr.length == 0) return 0;
-    let min = arr.reduce((acc, value) => {
-      if (value.y < acc) {
-        return value.y;
-      }
-      return acc;
-    }, 0);
+    let maxArray = arr.sort(function (a, b) {
+      return b.y - a.y;
+    });
 
-    let resMin = min * offset;
+    let max = maxArray[0].y;
 
-    return resMin == 0 ? -200 : resMin;
+    return max + calculateArrayVariation(arr) * 0.6;
+  };
+
+  const getMinArrayObject = (arr) => {
+    if (!arr || arr.length == 0) return 0;
+
+    let minArray = arr.sort(function (a, b) {
+      return a.y - b.y;
+    });
+
+    let min = minArray[0].y;
+
+    return min - calculateArrayVariation(arr) * 0.3;
   };
 
   const getSumArrayObject = (arr) => {
@@ -139,29 +209,36 @@ export default function Stats({ navigation }) {
     return arr.reduce((acc, value) => acc + parseFloat(value.y), 0);
   };
 
+  const findKeyJsonArray = (arr, value) => {
+    let found = arr.filter((data) => {
+      return data.x == value;
+    });
+    return found;
+  };
+
   return (
     <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
-        <View style={{ flex: 1, gap: verticalScale(10) }}>
-          <View style={{ alignSelf: "center", flexDirection: "row", gap: 10 }}>
-            <TypeCard setItem={setCurrentYear} itemList={[2024, 2023]} />
-            <CardWrapper style={{ width: verticalScale(100), alignItems: "center" }}>
-              <Text>Split: {getSumArrayObject(purchaseTotalByDate["currentYear"]).toFixed(0)}€</Text>
-            </CardWrapper>
-          </View>
-          <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
-            <View style={styles.chart}>
-              <View style={{ position: "absolute" }}>
-                <View style={{ position: "absolute", padding: 20, alignSelf: "center" }}>
+        <View style={{ alignSelf: "center", flexDirection: "row", paddingBottom: 10, gap: 10 }}>
+          <TypeCard setItem={setCurrentYear} itemList={[2024, 2023]} />
+          <CardWrapper style={{ width: verticalScale(100), alignItems: "center" }}>
+            <Text>Split: {getSumArrayObject(purchaseTotalByDate["currentYear"]).toFixed(0)}€</Text>
+          </CardWrapper>
+        </View>
+        <View style={{ flex: 1 }}>
+          <ScrollView horizontal={false} contentContainerStyle={{ flexGrow: 1, gap: verticalScale(10) }}>
+            <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
+              <View style={styles.chart}>
+                <View style={{ position: "absolute", top: 15 }}>
                   <Text>Total Purchase by Month</Text>
                 </View>
                 <VictoryLine
                   domain={{
                     x: [0, 13],
-                    y: [getMinArrayObject(purchaseTotalByDate["currentYear"], 10), getMaxArrayObject(purchaseTotalByDate["currentYear"], 1.5)],
+                    y: [getMinArrayObject(purchaseTotalByDate["currentYear"]), getMaxArrayObject(purchaseTotalByDate["currentYear"])],
                   }}
-                  padding={20}
+                  padding={{ left: 20 }}
                   style={{
                     data: { stroke: "#c43a31" },
                     parent: { border: "1px solid #ccc" },
@@ -171,42 +248,130 @@ export default function Stats({ navigation }) {
                   interpolation="natural"
                   labels={({ datum }) => datum.x + "\n" + datum.y.toFixed(0) + "€"}
                 />
+                {purchaseTotalByDate["lastYear"].length != 0 && (
+                  <View style={{ position: "absolute" }}>
+                    <VictoryLine
+                      domain={{
+                        x: [0, 13],
+                        y: [getMinArrayObject(purchaseTotalByDate["lastYear"]), getMaxArrayObject(purchaseTotalByDate["lastYear"])],
+                      }}
+                      padding={{ left: 20 }}
+                      style={{
+                        data: { stroke: "blue" },
+                        parent: { border: "1px solid #ccc" },
+                      }}
+                      categories={{ x: months }}
+                      data={purchaseTotalByDate["lastYear"]}
+                      interpolation="natural"
+                      labels={({ datum }) => datum.x + "\n" + datum.y.toFixed(0) + "€"}
+                    />
+                  </View>
+                )}
               </View>
-              {purchaseTotalByDate["lastYear"].length != 0 && (
-                <View style={{ position: "absolute" }}>
-                  <VictoryScatter
-                    style={{ data: { fill: "blue" }, labels: { fontSize: 8 } }}
-                    size={3}
-                    categories={{ x: months }}
-                    data={purchaseTotalByDate["lastYear"]}
-                    labels={({ datum }) => datum.x + "\n" + datum.y.toFixed(0) + "€"}
-                  />
+            </CardWrapper>
+            <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
+              <View style={styles.chart}>
+                <View style={{ position: "absolute", top: 15 }}>
+                  <Text>Total Purchase by Type</Text>
                 </View>
-              )}
-            </View>
-          </CardWrapper>
-          <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
-            <View style={styles.chart}>
-              <View style={{ position: "absolute", top: 15 }}>
-                <Text>Total Purchase by Type</Text>
+                <VictoryBar
+                  horizontal
+                  cornerRadius={{ top: 5 }}
+                  domain={{ y: [-40, getMaxArrayObject(spendByType)] }}
+                  domainPadding={20}
+                  padding={30}
+                  style={{
+                    data: { stroke: "#c43a31" },
+                    labels: { fontSize: 8 },
+                    parent: { border: "1px solid #ccc" },
+                  }}
+                  data={spendByType}
+                  interpolation="natural"
+                  labels={({ datum }) => datum.x + " " + datum.y.toFixed(0) + "€"}
+                />
               </View>
-              <VictoryBar
-                horizontal
-                cornerRadius={{ top: 5 }}
-                domain={{ y: [-40, getMaxArrayObject(spendByType, 1.3)] }}
-                domainPadding={20}
-                padding={30}
-                style={{
-                  data: { stroke: "#c43a31" },
-                  labels: { fontSize: 8 },
-                  parent: { border: "1px solid #ccc" },
-                }}
-                data={spendByType}
-                interpolation="natural"
-                labels={({ datum }) => datum.x + " " + datum.y.toFixed(0) + "€"}
-              />
-            </View>
-          </CardWrapper>
+            </CardWrapper>
+            <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingVertical: 20, elevation: 0 }}>
+              <View style={{ flex: 1, flexDirection: "row" }}>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <Text style={{ fontWeight: "bold" }}>Months</Text>
+                </View>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <Text style={{ fontWeight: "bold", color: "darkred" }}>Sent</Text>
+                </View>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <Text style={{ fontWeight: "bold", color: "darkgreen" }}>Received</Text>
+                </View>
+              </View>
+              <View style={styles.chart}>
+                <View style={{ flex: 1, flexDirection: "row" }}>
+                  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    {months.map((month, i) => (
+                      <Text style={{ color: i % 2 ? "black" : "gray" }} key={"M" + month}>
+                        {month}
+                      </Text>
+                    ))}
+                  </View>
+                  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    {months.map((month, i) => {
+                      let itemSent = findKeyJsonArray(transactionsTotalReceived["Sent"], month);
+                      if (itemSent.length > 0)
+                        return (
+                          <Text key={"R" + month} style={{ color: i % 2 ? "black" : "gray" }}>
+                            {-itemSent[0].y}
+                          </Text>
+                        );
+                      else
+                        return (
+                          <Text key={"R" + month} style={{ color: i % 2 ? "black" : "gray" }}>
+                            0
+                          </Text>
+                        );
+                    })}
+                  </View>
+                  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    {months.map((month, i) => {
+                      let itemReceived = findKeyJsonArray(transactionsTotalReceived["Received"], month);
+                      if (itemReceived.length > 0)
+                        return (
+                          <Text key={"R" + month} style={{ color: i % 2 ? "black" : "gray" }}>
+                            {-itemReceived[0].y}
+                          </Text>
+                        );
+                      else
+                        return (
+                          <Text key={"R" + month} style={{ color: i % 2 ? "black" : "gray" }}>
+                            0
+                          </Text>
+                        );
+                    })}
+                  </View>
+                </View>
+              </View>
+            </CardWrapper>
+            <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
+              <View style={styles.chart}>
+                <View style={{ position: "absolute", top: 15 }}>
+                  <Text>Total Transaction by Month</Text>
+                </View>
+                <VictoryLine
+                  domain={{
+                    x: [0, 13],
+                    y: [getMinArrayObject(transactionsTotalReceived["Total"]), getMaxArrayObject(transactionsTotalReceived["Total"])],
+                  }}
+                  padding={{ left: 20 }}
+                  style={{
+                    data: { stroke: "#c43a31" },
+                    parent: { border: "1px solid #ccc" },
+                  }}
+                  categories={{ x: months }}
+                  data={transactionsTotalReceived["Total"]}
+                  interpolation="natural"
+                  labels={({ datum }) => datum.x + "\n" + datum.y.toFixed(0) + "€"}
+                />
+              </View>
+            </CardWrapper>
+          </ScrollView>
         </View>
       </View>
     </LinearGradient>
