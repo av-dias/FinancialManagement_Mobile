@@ -14,6 +14,9 @@ import Transaction from "./pages/transaction/transaction";
 import Stats from "./pages/stats/stats";
 import Budget from "./pages/budget/budget";
 
+import AppContextProvider from "./store/app-context";
+import UserContextProvider from "./store/user-context";
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -71,13 +74,17 @@ function HomeTabs() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <StatusBar style="light" backgroundColor="black" hidden={false} />
-      <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} options={{ headerShown: false /* , orientation: "all" */ }} />
-        <Stack.Screen name="Home" component={HomeTabs} options={{ headerShown: false /* , orientation: "all" */ }} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <UserContextProvider>
+      <AppContextProvider>
+        <NavigationContainer>
+          <StatusBar style="light" backgroundColor="black" hidden={false} />
+          <Stack.Navigator>
+            <Stack.Screen name="Login" component={Login} options={{ headerShown: false /* , orientation: "all" */ }} />
+            <Stack.Screen name="Home" component={HomeTabs} options={{ headerShown: false /* , orientation: "all" */ }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AppContextProvider>
+    </UserContextProvider>
   );
 }
 

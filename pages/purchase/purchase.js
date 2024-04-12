@@ -1,7 +1,8 @@
 import { Text, View, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
+import { AppContext } from "../../store/app-context";
 
 //Custom Components
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
@@ -39,6 +40,8 @@ export default function Purchase({ navigation }) {
   const [list, setList] = useState([]);
 
   const [refundActive, setRefundActive] = useState(false);
+
+  const appCtx = useContext(AppContext);
 
   useEffect(() => {
     async function fetchData() {
