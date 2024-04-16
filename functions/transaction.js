@@ -16,6 +16,15 @@ export const getTransactions = async (email) => {
   }
 };
 
+export const getAllTransactionsStats = async (email) => {
+  try {
+    let transactions = JSON.parse(await getFromStorage(KEYS.TRANSACTION, email));
+    return transactions;
+  } catch (e) {
+    return [];
+  }
+};
+
 export const getMonthTransactionStats = async (transactions, currentMonth, currentYear) => {
   const res = transactions.reduce((acc, t) => {
     if (!t.type) {

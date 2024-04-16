@@ -22,69 +22,69 @@ const Tab = createBottomTabNavigator();
 
 function HomeTabs() {
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarStyle: {
-          height: 50,
-          paddingHorizontal: 5,
-          paddingTop: 5,
-          backgroundColor: "black",
-          position: "absolute",
-          borderTopWidth: 0,
-          navigationBarColor: "gold",
-        },
-        navigationBarColor: "gold",
-      })}
-    >
-      <Tab.Screen
-        name="Dashboard"
-        component={Home}
-        options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="dashboard" size={24} color="white" /> }}
-      />
-      <Tab.Screen
-        name="Stats"
-        component={Stats}
-        options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={24} color="white" /> }}
-      />
-      <Tab.Screen
-        name="Budget"
-        component={Budget}
-        options={{ headerShown: false, tabBarIcon: ({ color, size }) => <AntDesign name="piechart" size={20} color="white" /> }}
-      />
-      <Tab.Screen
-        name="Purchase"
-        component={Purchase}
-        options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="add-circle-outline" size={24} color="white" /> }}
-      />
-      <Tab.Screen
-        name="Transaction"
-        component={Transaction}
-        options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="compare-arrows" size={25} color="white" /> }}
-      />
-      <Tab.Screen
-        name="List"
-        component={List}
-        options={{ headerShown: false, tabBarIcon: ({ color, size }) => <FontAwesome5 name="clipboard-list" size={20} color="white" /> }}
-      />
-      <Tab.Screen name="Settings" component={Settings} options={{ headerShown: false, tabBarButton: (props) => null }} />
-    </Tab.Navigator>
+    <UserContextProvider>
+      <AppContextProvider>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            headerShown: false,
+            tabBarStyle: {
+              height: 50,
+              paddingHorizontal: 5,
+              paddingTop: 5,
+              backgroundColor: "black",
+              position: "absolute",
+              borderTopWidth: 0,
+              navigationBarColor: "gold",
+            },
+            navigationBarColor: "gold",
+          })}
+        >
+          <Tab.Screen
+            name="Dashboard"
+            component={Home}
+            options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="dashboard" size={24} color="white" /> }}
+          />
+          <Tab.Screen
+            name="Stats"
+            component={Stats}
+            options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={24} color="white" /> }}
+          />
+          <Tab.Screen
+            name="Budget"
+            component={Budget}
+            options={{ headerShown: false, tabBarIcon: ({ color, size }) => <AntDesign name="piechart" size={20} color="white" /> }}
+          />
+          <Tab.Screen
+            name="Purchase"
+            component={Purchase}
+            options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="add-circle-outline" size={24} color="white" /> }}
+          />
+          <Tab.Screen
+            name="Transaction"
+            component={Transaction}
+            options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="compare-arrows" size={25} color="white" /> }}
+          />
+          <Tab.Screen
+            name="List"
+            component={List}
+            options={{ headerShown: false, tabBarIcon: ({ color, size }) => <FontAwesome5 name="clipboard-list" size={20} color="white" /> }}
+          />
+          <Tab.Screen name="Settings" component={Settings} options={{ headerShown: false, tabBarButton: (props) => null }} />
+        </Tab.Navigator>
+      </AppContextProvider>
+    </UserContextProvider>
   );
 }
 
 export default function App() {
   return (
-    <UserContextProvider>
-      <AppContextProvider>
-        <NavigationContainer>
-          <StatusBar style="light" backgroundColor="black" hidden={false} />
-          <Stack.Navigator>
-            <Stack.Screen name="Login" component={Login} options={{ headerShown: false /* , orientation: "all" */ }} />
-            <Stack.Screen name="Home" component={HomeTabs} options={{ headerShown: false /* , orientation: "all" */ }} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </AppContextProvider>
-    </UserContextProvider>
+    <NavigationContainer>
+      <StatusBar style="light" backgroundColor="black" hidden={false} />
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false /* , orientation: "all" */ }} />
+        <Stack.Screen name="Home" component={HomeTabs} options={{ headerShown: false /* , orientation: "all" */ }} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 

@@ -2,6 +2,8 @@ import { Text, View, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState, useEffect, useContext } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
+
+//Context
 import { AppContext } from "../../store/app-context";
 
 //Custom Components
