@@ -6,14 +6,14 @@ import { UserContext } from "./user-context";
 import { STATS_TYPE, TRANSACTION_TYPE } from "../utility/keys";
 
 export const AppContext = createContext({
-  purchaseTotal: [],
-  transactionTotal: [],
-  expensesByDate: [],
-  totalExpense: [],
-  expenseByType: [],
-  totalExpensesAverage: [],
-  totalExpensesByTypeAverage: [],
-  splitDept: [],
+  purchaseTotal: {},
+  transactionTotal: {},
+  expensesByDate: {},
+  totalExpense: {},
+  expenseByType: {},
+  totalExpensesAverage: {},
+  totalExpensesByTypeAverage: {},
+  splitDept: {},
 });
 
 const calcExpensesByType = (resPurchases, resTransactions) => {
@@ -248,16 +248,16 @@ const groupExpensesByDate = (purchases, transactions) => {
 };
 
 const AppContextProvider = ({ children }) => {
-  const [purchases, setPurchases] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [purchaseTotal, setPurchaseTotal] = useState([]);
-  const [transactionTotal, setTransactionTotal] = useState([]);
-  const [expensesByDate, setExpensesByDate] = useState([]);
-  const [expenseTotal, setExpenseTotal] = useState([]);
-  const [expensesByType, setExpensesByType] = useState([]);
-  const [totalExpensesAverage, setTotalExpensesAverage] = useState([]);
-  const [totalExpensesByTypeAverage, setTotalExpensesByTypeAverage] = useState([]);
-  const [splitDept, setSplitDept] = useState([]);
+  const [purchases, setPurchases] = useState({});
+  const [transactions, setTransactions] = useState({});
+  const [purchaseTotal, setPurchaseTotal] = useState({});
+  const [transactionTotal, setTransactionTotal] = useState({});
+  const [expensesByDate, setExpensesByDate] = useState({});
+  const [expenseTotal, setExpenseTotal] = useState({});
+  const [expensesByType, setExpensesByType] = useState({});
+  const [totalExpensesAverage, setTotalExpensesAverage] = useState({});
+  const [totalExpensesByTypeAverage, setTotalExpensesByTypeAverage] = useState({});
+  const [splitDept, setSplitDept] = useState({});
   const [update, setUpdate] = useState({});
 
   const userCtx = useContext(UserContext);

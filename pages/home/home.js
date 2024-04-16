@@ -1,9 +1,12 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { Text, View, ScrollView } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { VictoryPie, VictoryLabel } from "victory-native";
 import { Table, TableWrapper, Cell } from "react-native-table-component";
 import { LinearGradient } from "expo-linear-gradient";
+
+//Context
+import { AppContext } from "../../store/app-context";
 
 //Custom Components
 import CalendarCard from "../../components/calendarCard/calendarCard";
@@ -21,7 +24,15 @@ import { getTransactions, getMonthTransactionStats, getMonthTransactionTotal } f
 
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { getUser } from "../../functions/basic";
-import { refinePurchaseStats, loadCalendarCard, loadPieChartData, loadPurchaseTotalData, loadSpendTableData } from "./handler";
+import {
+  refinePurchaseStats,
+  loadCalendarCard,
+  loadPieChartData,
+  loadPurchaseTotalData,
+  loadSpendTableData,
+  loadExpenses,
+  isCtxLoaded,
+} from "./handler";
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -32,12 +43,15 @@ export default function Home({ navigation }) {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
+  const [ctxValue, setCtxValue] = useState({});
   const [pieChartData, setPieChartData] = useState({ [STATS_TYPE[0]]: [] });
   const [spendByType, setSpendByType] = useState({ [STATS_TYPE[0]]: [[""]] });
   const [purchaseTotal, setPurchaseTotal] = useState({ [STATS_TYPE[0]]: "0.00" });
   const [pieChartAverageData, setPieChartAverageData] = useState({ [STATS_TYPE[0]]: [] });
   const [spendAverageByType, setSpendAverageByType] = useState({ [STATS_TYPE[0]]: [[""]] });
   const [purchaseAverageTotal, setPurchaseAverageTotal] = useState({ [STATS_TYPE[0]]: "0.00" });
+
+  const appCtx = useContext(AppContext);
 
   const state = {
     tableHead: ["Color", "Type", "Value"],
@@ -46,87 +60,48 @@ export default function Home({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      async function fetchData() {
-        let email = await getUser();
-        setEmail(email);
-        let transactions = await getTransactions(email);
-
-        try {
-          let auxPieChartData = {},
-            auxSpendByType = {},
-            auxPurchaseTotal = {},
-            resTransactionStats;
-
-          for (let type of Object.values(STATS_TYPE)) {
-            // Current Month Data
-            let resPurchaseStats = await getMonthPurchaseStats(email, currentMonth, currentYear, type).catch((error) => console.log(error));
-            if (type == STATS_TYPE[0]) {
-              resTransactionStats = await getMonthTransactionStats(transactions, currentMonth, currentYear).catch((error) => console.log(error));
-              for (let tType of Object.keys(resTransactionStats)) {
-                resPurchaseStats[tType] = (resPurchaseStats[tType] || 0) + resTransactionStats[tType];
-              }
-            }
-            let [chartDataArray, tableDataArray] = refinePurchaseStats(resPurchaseStats);
-            auxPieChartData[type] = chartDataArray;
-            auxSpendByType[type] = tableDataArray;
-
-            let resPurchaseTotal = await getMonthPurchaseTotal(email, currentMonth, currentYear, type).catch((error) => console.log(error));
-            let resTransactionTotal = await getMonthTransactionTotal(transactions, currentMonth, currentYear).catch((error) => console.log(error));
-
-            if (type == STATS_TYPE[0]) {
-              auxPurchaseTotal[type] = parseFloat(resPurchaseTotal) + parseFloat(resTransactionTotal);
-            } else {
-              auxPurchaseTotal[type] = resPurchaseTotal;
-            }
-          }
-
-          setPieChartData(auxPieChartData);
-          setPurchaseTotal(auxPurchaseTotal);
-          setSpendByType(auxSpendByType);
-        } catch (e) {
-          console.log(e);
+      function fetchData() {
+        if (isCtxLoaded(appCtx)) {
+          const value = {
+            totalExpense: appCtx.totalExpense,
+            expenseByType: appCtx.expenseByType,
+            totalExpensesAverage: appCtx.totalExpensesAverage,
+            totalExpensesByTypeAverage: appCtx.totalExpensesByTypeAverage,
+          };
+          setCtxValue(value);
         }
       }
       fetchData();
-    }, [currentMonth, currentYear])
+    }, [appCtx])
   );
 
   useFocusEffect(
     React.useCallback(() => {
-      async function fetchData() {
-        let email = await getUser();
-        setEmail(email);
-        try {
-          let auxPieChartData = {},
-            auxSpendByType = {},
-            auxPurchaseTotal = {};
-
-          for (let type of Object.values(STATS_TYPE)) {
-            let resPurchaseAverage = await getPurchaseAverage(email, currentYear, type).catch((error) => console.log(error));
-            let [chartAverageDataArray, tableAverageDataArray] = refinePurchaseStats(resPurchaseAverage);
-            auxPieChartData[type] = chartAverageDataArray;
-            auxSpendByType[type] = tableAverageDataArray;
-
-            let resPurchaseAverageTotal = await getPurchaseAverageTotal(email, currentYear, type);
-            auxPurchaseTotal[type] = resPurchaseAverageTotal;
-          }
-
-          setPieChartAverageData(auxPieChartData);
-          setPurchaseAverageTotal(auxPurchaseTotal);
-          setSpendAverageByType({
-            [STATS_TYPE[0]]: auxSpendByType[STATS_TYPE[0]].sort((a, b) => {
-              return b[2] - a[2];
-            }),
-            [STATS_TYPE[1]]: auxSpendByType[STATS_TYPE[1]].sort((a, b) => {
-              return b[2] - a[2];
-            }),
-          });
-        } catch (e) {
-          console.log(e);
+      let currDateYear = currentYear.toString();
+      let currDateMonth = currentMonth.toString();
+      if (isCtxLoaded(ctxValue)) {
+        if (Object.keys(ctxValue["totalExpense"][currDateYear]).includes(currDateMonth)) {
+          // Load data for total expense
+          setPurchaseTotal(ctxValue["totalExpense"][currDateYear][currDateMonth]);
+          // Load data to fill chart and table
+          let [auxPieChartData, auxTableData] = loadExpenses(ctxValue["expenseByType"][currDateYear][currDateMonth]);
+          setPieChartData(auxPieChartData);
+          setSpendByType(auxTableData);
+          // Load Average data to fill chart and table
+          setPurchaseAverageTotal(ctxValue["totalExpensesAverage"][currDateYear]);
+          let [auxPieChartAverageData, auxSpendAverageByType] = loadExpenses(ctxValue["totalExpensesByTypeAverage"][currDateYear]);
+          setPieChartAverageData(auxPieChartAverageData);
+          setSpendAverageByType(auxSpendAverageByType);
+        } else {
+          // If data is not available for the current month
+          setPurchaseTotal({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
+          setPieChartData({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
+          setSpendByType({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
+          setPieChartAverageData({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
+          setSpendAverageByType({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
         }
       }
-      fetchData();
-    }, [currentYear])
+    }, [ctxValue, currentMonth, currentYear])
   );
 
   return (
@@ -194,7 +169,7 @@ export default function Home({ navigation }) {
         ) : (
           <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
             <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
-            <Text>NO DATA</Text>
+            <Text style={{ color: "white" }}>NO DATA</Text>
           </View>
         )}
       </View>
