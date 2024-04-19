@@ -96,55 +96,6 @@ export default function List({ navigation }) {
     }, [refreshTrigger, email])
   );
 
-  useFocusEffect(
-    React.useCallback(() => {
-      async function fetchData() {
-        if (refreshTrigger == "reset") {
-          let list = Object.keys(expensesGroupedByDate)
-            .concat(Object.keys(groupedArchivedPurchases))
-            .concat(Object.keys(groupedArchivedTransactions))
-            .sort();
-          setListDays([...new Set(list)]);
-        }
-      }
-      fetchData();
-    }, [refreshTrigger])
-  );
-
-  /*   useFocusEffect(
-    React.useCallback(() => {
-      async function fetchData() {
-        //var startTime = performance.now();
-        let _email = await getUser();
-        let purchaseCount = await getPurchaseCount(_email);
-        let transactionCount = await getTransactionCount(_email);
-
-        if (email != _email) {
-          setEmail(_email);
-          await getSplitUser(setSplitUser, _email);
-        }
-
-        if (_email && itemsCounts.purchaseCount != purchaseCount && itemsCounts.transactionCount != transactionCount) {
-          setRefreshTrigger();
-          setItemsCounts(() => {
-            return { purchaseCount: purchaseCount, transactionCount: transactionCount };
-          });
-        } else if (_email && itemsCounts.purchaseCount != purchaseCount) {
-          setRefreshTrigger(KEYS_SERIALIZER.PURCHASE);
-          setItemsCounts((prev) => {
-            return { purchaseCount: purchaseCount, transactionCount: prev.transactionCount };
-          });
-        } else if (_email && itemsCounts.transactionCount != transactionCount) {
-          setRefreshTrigger(KEYS_SERIALIZER.TRANSACTION);
-          setItemsCounts((prev) => {
-            return { purchaseCount: prev.purchaseCount, transactionCount: transactionCount };
-          });
-        }
-      }
-      fetchData();
-    }, [itemsCounts.purchaseCount, itemsCounts.transactionCount, email])
-  ); */
-
   return (
     <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
       <Header email={email} navigation={navigation} />
@@ -193,12 +144,7 @@ export default function List({ navigation }) {
                               }}
                               keys={innerData.key}
                               showAlert={() => {
-                                showAlert(
-                                  innerData.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
-                                  innerData,
-                                  email,
-                                  setRefreshTrigger,
-                                );
+                                showAlert(innerData.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index, innerData, email, setRefreshTrigger);
                               }}
                             />
                           ))}

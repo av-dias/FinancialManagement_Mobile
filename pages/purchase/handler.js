@@ -58,7 +58,7 @@ export const handlePurchase = async (
     setNewPurchase({ value: "", note: "", name: "", description: "", dop: newPurchase.dop });
     setSplitStatus(false);
     setRefundActive(false);
-    triggerReloadPurchase(new Date(newTransaction.dop).getMonth(), new Date(newTransaction.dop).getFullYear());
+    triggerReloadPurchase(new Date(newPurchase.dop).getMonth(), new Date(newPurchase.dop).getFullYear());
   } catch (err) {
     console.log("Purchase: " + err);
   }
