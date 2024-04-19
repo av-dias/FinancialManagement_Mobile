@@ -33,7 +33,6 @@ export default showAlert = (key, array, email, setRefreshTrigger) => {
   } else {
     console.log("error: " + identifier);
   }
-  console.log(element, id, email);
   Alert.alert(
     title,
     description,

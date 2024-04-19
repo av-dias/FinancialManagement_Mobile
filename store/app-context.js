@@ -51,7 +51,7 @@ const calcExpensesByType = (resPurchases, resTransactions) => {
     return acc;
   }, {});
 
-  resTransactions.forEach((curr) => {
+  resTransactions.forEach((curr, index) => {
     let currDate = new Date(curr.dot);
     let currMonth = currDate.getMonth().toString();
     let currYear = currDate.getFullYear().toString();
@@ -63,7 +63,7 @@ const calcExpensesByType = (resPurchases, resTransactions) => {
     }
 
     // Verify if month already exists
-    if (!expensesByType[currYear]) {
+    if (!expensesByType[currYear][currMonth]) {
       expensesByType[currYear][currMonth] = { [STATS_TYPE[0]]: {}, [STATS_TYPE[1]]: {} };
     }
 
@@ -88,12 +88,24 @@ const calcExpensesByType = (resPurchases, resTransactions) => {
 const calcExpensesTotal = (purchases, transaction) => {
   let expenses = { ...purchases };
   let transactionYearList = Object.keys(transaction);
+
   for (year of transactionYearList) {
     Object.keys(transaction[year]).forEach((month) => {
+      // Verify if year already exists
+      if (!expenses[year]) {
+        expenses[year] = { [month]: { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 } };
+      }
+
+      // Verify if month already exists
+      if (!expenses[year][month]) {
+        expenses[year][month] = { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 };
+      }
+
       expenses[year][month][STATS_TYPE[0]] += parseFloat(transaction[year][month][TRANSACTION_TYPE[0]]);
       expenses[year][month][STATS_TYPE[1]] += parseFloat(transaction[year][month][TRANSACTION_TYPE[1]]);
     });
   }
+
   return expenses;
 };
 
