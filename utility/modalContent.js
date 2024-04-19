@@ -9,6 +9,7 @@ import CustomCalendarStrip from "../components/customCalendarStrip/customCalenda
 import MoneyInputHeader from "../components/moneyInputHeader/moneyInputHeader";
 import SplitSlider from "../components/splitSlider/splitSlider";
 import CustomButton from "../components/customButton/customButton";
+import { KEYS as KEYS_SERIALIZER } from "../utility/keys";
 
 export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider, styles) => {
   const state = {
@@ -85,7 +86,6 @@ export const ModalList = (
   sliderStatus,
   setSliderStatus,
   setRefreshTrigger,
-  modalContentFlag,
   handleEditPurchase,
   handleEditTransaction,
   setEditVisible,
@@ -93,8 +93,8 @@ export const ModalList = (
 ) => {
   let content;
 
-  switch (modalContentFlag) {
-    case "Transaction":
+  switch (selectedItem.key) {
+    case KEYS_SERIALIZER.TRANSACTION:
       content = (
         <View style={{ flex: 1 }}>
           <MoneyInputHeader

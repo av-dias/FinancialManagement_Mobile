@@ -20,7 +20,6 @@ import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
 
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import {
-  refinePurchaseStats,
   loadCalendarCard,
   loadPieChartData,
   loadPurchaseTotalData,

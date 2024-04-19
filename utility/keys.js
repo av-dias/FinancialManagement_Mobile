@@ -1,4 +1,5 @@
 export const KEYS = {
+  EXPENSE:"PE",
   PURCHASE: "PK",
   TRANSACTION: "TK",
   ARCHIVE_PURCHASE: "APK",

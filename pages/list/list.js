@@ -6,18 +6,16 @@ import { _styles } from "./style";
 
 //Context
 import { AppContext } from "../../store/app-context";
+import { UserContext } from "../../store/user-context";
 
 import { verticalScale } from "../../functions/responsive";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
-import { getSplitUser, getSplitEmail } from "../../functions/split";
-import { handleSplit, handleEditPurchase, groupByDate, handleEditTransaction } from "./handler";
+import { getSplitEmail } from "../../functions/split";
+import { handleSplit, handleEditPurchase, groupByDate, handleEditTransaction, isCtxLoaded } from "./handler";
 import { getFromStorage } from "../../functions/secureStorage";
-import { getUser } from "../../functions/basic";
 import { months } from "../../utility/calendar";
 import { ModalList } from "../../utility/modalContent";
-import { getPurchaseCount } from "../../functions/purchase";
-import { getTransactionCount } from "../../functions/transaction";
 import showAlert from "./showAlert";
 
 import Header from "../../components/header/header";
@@ -29,48 +27,51 @@ import ListItem from "../../components/listItem/listItem";
 export default function List({ navigation }) {
   const styles = _styles;
 
-  const [email, setEmail] = useState("");
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
-  const [groupedPurchases, setGroupedPurchases] = useState([]);
-  const [groupedTransactions, setGroupedTransactions] = useState([]);
   const [groupedArchivedPurchases, setGroupedArchivedPurchases] = useState([]);
   const [groupedArchivedTransactions, setGroupedArchivedTransactions] = useState([]);
+  const [expensesGroupedByDate, setExpensesGroupedByDate] = useState([]);
 
   const [selectedItem, setSelectedItem] = useState({ date: new Date().toISOString().split("T")[0] });
   const [splitUser, setSplitUser] = useState("");
   const [sliderStatus, setSliderStatus] = useState(false);
 
   const [listDays, setListDays] = useState([]);
-  const [itemsCounts, setItemsCounts] = useState({ purchaseCount: 0, transactionCount: 0 });
 
   const [refreshTrigger, setRefreshTrigger] = useState();
   const [editVisible, setEditVisible] = useState(false);
-  const [modalContentFlag, setModalContentFlag] = useState("");
 
   const appCtx = useContext(AppContext);
+  const email = useContext(UserContext).email;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      function fetchData() {
+        if (isCtxLoaded(appCtx)) {
+          setExpensesGroupedByDate(appCtx.expensesByDate);
+          let list = Object.keys(appCtx.expensesByDate)
+            .concat(Object.keys(groupedArchivedPurchases))
+            .concat(Object.keys(groupedArchivedTransactions))
+            .sort();
+          setListDays([...new Set(list)]);
+        }
+      }
+      fetchData();
+    }, [appCtx])
+  );
 
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
         if (!email) return;
-
-        //var startTime = performance.now();
         try {
           if (!refreshTrigger || refreshTrigger == KEYS_SERIALIZER.PURCHASE) {
-            let resPurchase = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
-            if (!resPurchase) resPurchase = [];
-            setGroupedPurchases(groupByDate(resPurchase));
             appCtx.triggerReloadPurchase(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear());
-            console.log("Purchase len: " + resPurchase.length);
           }
           if (!refreshTrigger || refreshTrigger == KEYS_SERIALIZER.TRANSACTION) {
-            let resTransaction = JSON.parse(await getFromStorage(KEYS.TRANSACTION, email));
-            if (!resTransaction) resTransaction = [];
-            setGroupedTransactions(groupByDate(resTransaction));
             appCtx.triggerReloadTransaction(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear());
-            console.log("Transaction len: " + resTransaction.length);
           }
           if (!refreshTrigger || refreshTrigger == KEYS_SERIALIZER.ARCHIVE_PURCHASE) {
             let resArchivePurchase = JSON.parse(await getFromStorage(KEYS.ARCHIVE_PURCHASE, email));
@@ -90,9 +91,6 @@ export default function List({ navigation }) {
         } catch (e) {
           console.log("Archive: " + e);
         }
-
-        //var endTime = performance.now();
-        //console.log("\x1b[36m%s\x1b[0m", `Call to update items ${(endTime - startTime).toFixed(2)} milliseconds.`);
       }
       fetchData();
     }, [refreshTrigger, email])
@@ -102,23 +100,18 @@ export default function List({ navigation }) {
     React.useCallback(() => {
       async function fetchData() {
         if (refreshTrigger == "reset") {
-          //var startTime = performance.now();
-
-          let list = Object.keys(groupedPurchases)
-            .concat(Object.keys(groupedTransactions))
+          let list = Object.keys(expensesGroupedByDate)
             .concat(Object.keys(groupedArchivedPurchases))
             .concat(Object.keys(groupedArchivedTransactions))
             .sort();
           setListDays([...new Set(list)]);
-          //var endTime = performance.now();
-          //console.log("\x1b[36m%s\x1b[0m", `Call to sort items in ordered list took ${(endTime - startTime).toFixed(2)} milliseconds.`);
         }
       }
       fetchData();
     }, [refreshTrigger])
   );
 
-  useFocusEffect(
+  /*   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
         //var startTime = performance.now();
@@ -127,37 +120,30 @@ export default function List({ navigation }) {
         let transactionCount = await getTransactionCount(_email);
 
         if (email != _email) {
-          //console.log("Load Email...");
           setEmail(_email);
           await getSplitUser(setSplitUser, _email);
         }
 
         if (_email && itemsCounts.purchaseCount != purchaseCount && itemsCounts.transactionCount != transactionCount) {
-          //console.log("Triggering full data reload...");
           setRefreshTrigger();
           setItemsCounts(() => {
             return { purchaseCount: purchaseCount, transactionCount: transactionCount };
           });
         } else if (_email && itemsCounts.purchaseCount != purchaseCount) {
-          //console.log("Triggering purchase data reload...");
           setRefreshTrigger(KEYS_SERIALIZER.PURCHASE);
           setItemsCounts((prev) => {
             return { purchaseCount: purchaseCount, transactionCount: prev.transactionCount };
           });
         } else if (_email && itemsCounts.transactionCount != transactionCount) {
-          //console.log("Triggering transaction data reload...");
           setRefreshTrigger(KEYS_SERIALIZER.TRANSACTION);
           setItemsCounts((prev) => {
             return { purchaseCount: prev.purchaseCount, transactionCount: transactionCount };
           });
         }
-
-        //var endTime = performance.now();
-        //console.log("\x1b[36m%s\x1b[0m", `Call to check data is up-to-date took ${(endTime - startTime).toFixed(2)} milliseconds.`);
       }
       fetchData();
     }, [itemsCounts.purchaseCount, itemsCounts.transactionCount, email])
-  );
+  ); */
 
   return (
     <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
@@ -174,7 +160,6 @@ export default function List({ navigation }) {
                 sliderStatus,
                 setSliderStatus,
                 setRefreshTrigger,
-                modalContentFlag,
                 handleEditPurchase,
                 handleEditTransaction,
                 setEditVisible,
@@ -188,57 +173,31 @@ export default function List({ navigation }) {
                 (date) =>
                   new Date(date).getMonth() == currentMonth &&
                   new Date(date).getFullYear() == currentYear && (
-                    <View key={KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date} style={{ paddingHorizontal: 5 }}>
+                    <View key={KEYS_SERIALIZER.EXPENSE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date} style={{ paddingHorizontal: 5 }}>
                       <View style={styles.listDateBox}>
                         <Text style={styles.listDate}>{new Date(date).getDate() + " " + months[new Date(date).getMonth()]}</Text>
                       </View>
                       <CardWrapper key={date} style={styles.listBox}>
-                        {groupedPurchases[date] &&
-                          groupedPurchases[date].map((innerData) => (
+                        {expensesGroupedByDate[date] &&
+                          expensesGroupedByDate[date].map((innerData) => (
                             <ListItem
-                              key={innerData.index + KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
+                              key={innerData.index + innerData.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
                               innerData={innerData}
                               handleSplit={async () => {
                                 await handleSplit(email, innerData, getSplitEmail(splitUser), setRefreshTrigger);
                               }}
                               handleEdit={async () => {
-                                setModalContentFlag("Purchase");
                                 setSelectedItem({ ...innerData });
                                 setSliderStatus("split" in innerData ? true : false);
                                 setEditVisible(true);
                               }}
-                              keys={KEYS_SERIALIZER.PURCHASE}
+                              keys={innerData.key}
                               showAlert={() => {
                                 showAlert(
-                                  KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
+                                  innerData.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
                                   innerData,
-                                  KEYS.PURCHASE,
                                   email,
                                   setRefreshTrigger,
-                                  setItemsCounts
-                                );
-                              }}
-                            />
-                          ))}
-                        {groupedTransactions[date] &&
-                          groupedTransactions[date].map((innerData) => (
-                            <ListItem
-                              key={innerData.index + KEYS_SERIALIZER.PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
-                              innerData={innerData}
-                              handleEdit={async () => {
-                                setModalContentFlag("Transaction");
-                                setSelectedItem({ ...innerData });
-                                setEditVisible(true);
-                              }}
-                              keys={KEYS_SERIALIZER.TRANSACTION}
-                              showAlert={() => {
-                                showAlert(
-                                  KEYS_SERIALIZER.TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index,
-                                  innerData,
-                                  KEYS.TRANSACTION,
-                                  email,
-                                  setRefreshTrigger,
-                                  setItemsCounts
                                 );
                               }}
                             />

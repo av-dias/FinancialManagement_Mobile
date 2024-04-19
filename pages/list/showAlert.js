@@ -1,17 +1,17 @@
 import { Alert } from "react-native";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
+import { KEYS } from "../../utility/storageKeys";
 import { removeFromStorage } from "../../functions/secureStorage";
 
-export default showAlert = (key, array, storageKey, email, setRefreshTrigger, setItemsCounts) => {
+export default showAlert = (key, array, email, setRefreshTrigger) => {
   let [identifier, id] = key.split(KEYS_SERIALIZER.TOKEN_SEPARATOR);
-  let element = storageKey,
+  let element = identifier == KEYS_SERIALIZER.PURCHASE ? KEYS.PURCHASE : KEYS.TRANSACTION,
     elementArray = array,
     title = "",
     description = "",
     body = `Name: ${elementArray.name}\n`,
     leftButton = "Ok",
     rightButton = "Cancel";
-
   if (identifier == KEYS_SERIALIZER.PURCHASE) {
     title = "Delete Purchase";
     body = `Name: ${elementArray.name}\n`;
@@ -33,7 +33,7 @@ export default showAlert = (key, array, storageKey, email, setRefreshTrigger, se
   } else {
     console.log("error: " + identifier);
   }
-
+  console.log(element, id, email);
   Alert.alert(
     title,
     description,
@@ -45,20 +45,8 @@ export default showAlert = (key, array, storageKey, email, setRefreshTrigger, se
             await removeFromStorage(element, id, email);
             if (identifier == KEYS_SERIALIZER.PURCHASE) {
               setRefreshTrigger(KEYS_SERIALIZER.PURCHASE);
-              setItemsCounts((prev) => {
-                return {
-                  purchaseCount: prev.purchaseCount - 1,
-                  transactionCount: prev.transactionCount,
-                };
-              });
             } else if (identifier == KEYS_SERIALIZER.TRANSACTION) {
               setRefreshTrigger(KEYS_SERIALIZER.TRANSACTION);
-              setItemsCounts((prev) => {
-                return {
-                  purchaseCount: prev.purchaseCount,
-                  transactionCount: prev.transactionCount - 1,
-                };
-              });
             }
           }
         },

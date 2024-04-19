@@ -2,6 +2,10 @@ import { editOnStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 
+export const isCtxLoaded = (ctx) => {
+  return Object.keys(ctx).length > 0 && Object.keys(ctx["expensesByDate"]).length > 0;
+};
+
 export const handleSplit = async (email, innerData, splitUser, setRefreshTrigger) => {
   let selectedValue = {
     ...innerData,

@@ -4,7 +4,7 @@ import { getAllPurchaseStats } from "../functions/purchase";
 import { getAllTransactionsStats } from "../functions/transaction";
 import { getUser } from "../functions/basic";
 import { UserContext } from "./user-context";
-import { STATS_TYPE, TRANSACTION_TYPE } from "../utility/keys";
+import { STATS_TYPE, TRANSACTION_TYPE, KEYS as KEYS_SERIALIZER } from "../utility/keys";
 
 export const AppContext = createContext({
   purchaseTotal: {},
@@ -235,13 +235,17 @@ const calcSplitDept = (expenses) => {
 const groupExpensesByDate = (purchases, transactions) => {
   let groupedPurchases = {};
 
-  purchases.forEach((curr) => {
-    let dateValue = curr["dot"];
+  purchases.forEach((curr, index) => {
+    let dateValue = curr["dop"];
+    curr["index"] = index;
+    curr["key"] = KEYS_SERIALIZER.PURCHASE;
     (groupedPurchases[dateValue] = groupedPurchases[dateValue] || []).push(curr);
   });
 
-  transactions.forEach((curr) => {
+  transactions.forEach((curr, index) => {
     let dateValue = curr["dot"];
+    curr["index"] = index;
+    curr["key"] = KEYS_SERIALIZER.TRANSACTION;
     (groupedPurchases[dateValue] = groupedPurchases[dateValue] || []).push(curr);
   });
 
@@ -279,8 +283,8 @@ const AppContextProvider = ({ children }) => {
           let resCalcTransactionTotal = calcTransactionTotal(resTransactions);
           setTransactionTotal(resCalcTransactionTotal);
           // EXPENSES
-          let resGroupedExensesByDate = groupExpensesByDate(resPurchases, resTransactions);
-          setExpensesByDate(resGroupedExensesByDate);
+          let resGroupedExpensesByDate = groupExpensesByDate(resPurchases, resTransactions);
+          setExpensesByDate(resGroupedExpensesByDate);
           let resExpensesTotal = calcExpensesTotal(resCalcPurchaseTotal, resCalcTransactionTotal);
           setExpenseTotal(resExpensesTotal);
           let resExpensesByType = calcExpensesByType(resPurchases, resTransactions);
