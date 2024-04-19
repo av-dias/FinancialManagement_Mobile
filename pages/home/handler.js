@@ -30,7 +30,9 @@ export const loadExpenses = (expenses) => {
         }
       });
 
-      array[stats].push({ x: " ", y: expenses[stats][type], color: _color });
+      let pieChartValue = expenses[stats][type] < 0 ? 1 : expenses[stats][type];
+
+      array[stats].push({ x: " ", y: pieChartValue, color: _color });
       arrayTables[stats].push([
         <FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />,
         type,
