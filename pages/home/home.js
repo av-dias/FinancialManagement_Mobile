@@ -18,12 +18,7 @@ import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { _styles } from "./style";
 import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
 
-//Functions
-import { getMonthPurchaseStats, getMonthPurchaseTotal, getPurchaseAverage, getPurchaseAverageTotal } from "../../functions/purchase";
-import { getTransactions, getMonthTransactionStats, getMonthTransactionTotal } from "../../functions/transaction";
-
 import { horizontalScale, verticalScale } from "../../functions/responsive";
-import { getUser } from "../../functions/basic";
 import {
   refinePurchaseStats,
   loadCalendarCard,

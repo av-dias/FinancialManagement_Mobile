@@ -2,6 +2,10 @@ import { addToStorage } from "../../functions/secureStorage";
 import { categoryIcons } from "../../assets/icons";
 import { KEYS } from "../../utility/storageKeys";
 
+//Context
+import { AppContext } from "../../store/app-context";
+import { useContext } from "react";
+
 const TABLE_ICON_SIZE = 15;
 
 export const handlePurchase = async (
@@ -15,7 +19,8 @@ export const handlePurchase = async (
   list,
   setList,
   refundActive,
-  setRefundActive
+  setRefundActive,
+  triggerReloadPurchase
 ) => {
   if (!newPurchase.type || newPurchase.type == "" || !newPurchase.value || newPurchase.value == "" || !newPurchase.dop || newPurchase.dop == "") {
     alert("Please fill all fields.");
@@ -53,6 +58,7 @@ export const handlePurchase = async (
     setNewPurchase({ value: "", note: "", name: "", description: "", dop: newPurchase.dop });
     setSplitStatus(false);
     setRefundActive(false);
+    triggerReloadPurchase(new Date(newTransaction.dop).getMonth(), new Date(newTransaction.dop).getFullYear());
   } catch (err) {
     console.log("Purchase: " + err);
   }

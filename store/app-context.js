@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { getAllPurchaseStats } from "../functions/purchase";
 import { getAllTransactionsStats } from "../functions/transaction";
 import { getUser } from "../functions/basic";
@@ -258,82 +259,74 @@ const AppContextProvider = ({ children }) => {
   const [totalExpensesAverage, setTotalExpensesAverage] = useState({});
   const [totalExpensesByTypeAverage, setTotalExpensesByTypeAverage] = useState({});
   const [splitDept, setSplitDept] = useState({});
-  const [update, setUpdate] = useState({});
+  const [updatePurchase, setUpdatePurchase] = useState({ updateCount: 0 });
+  const [updateTransaction, setUpdateTransaction] = useState({ updateCount: 0 });
 
   const userCtx = useContext(UserContext);
 
-  useEffect(() => {
-    async function fetchData() {
-      if (userCtx.email) {
-        console.log("App-Context: Fetching app data...");
-        startTime = performance.now();
-        // PURCHASE
-        let resPurchases = await getAllPurchaseStats(userCtx.email);
-        let resCalcPurchaseTotal = calcPurchaseTotal(resPurchases);
-        setPurchaseTotal(resCalcPurchaseTotal);
-        // TRANSACTION
-        let resTransactions = await getAllTransactionsStats(userCtx.email);
-        let resCalcTransactionTotal = calcTransactionTotal(resTransactions);
-        setTransactionTotal(resCalcTransactionTotal);
-        // EXPENSES
-        let resGroupedExensesByDate = groupExpensesByDate(resPurchases, resTransactions);
-        setExpensesByDate(resGroupedExensesByDate);
-        let resExpensesTotal = calcExpensesTotal(resCalcPurchaseTotal, resCalcTransactionTotal);
-        setExpenseTotal(resExpensesTotal);
-        let resExpensesByType = calcExpensesByType(resPurchases, resTransactions);
-        setExpensesByType(resExpensesByType);
-        // EXPENSES AVERAGE
-        let resExpensesTotalAverage = calcExpensesTotalAverage(resExpensesTotal);
-        setTotalExpensesAverage(resExpensesTotalAverage);
-        let resExpensesByTypeAverage = calcExpensesByTypeAverage(resExpensesByType);
-        setTotalExpensesByTypeAverage(resExpensesByTypeAverage);
-        // SPLIT
-        let resSplitDept = calcSplitDept(resExpensesTotal);
-        setSplitDept(resSplitDept);
-        endTime = performance.now();
-        console.log(`--> Call to App-Context useFocusEffect took ${endTime - startTime} milliseconds.`);
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        if (userCtx.email) {
+          console.log("App-Context: Fetching app data...");
+          startTime = performance.now();
+          // PURCHASE
+          let resPurchases = await getAllPurchaseStats(userCtx.email);
+          let resCalcPurchaseTotal = calcPurchaseTotal(resPurchases);
+          setPurchaseTotal(resCalcPurchaseTotal);
+          // TRANSACTION
+          let resTransactions = await getAllTransactionsStats(userCtx.email);
+          let resCalcTransactionTotal = calcTransactionTotal(resTransactions);
+          setTransactionTotal(resCalcTransactionTotal);
+          // EXPENSES
+          let resGroupedExensesByDate = groupExpensesByDate(resPurchases, resTransactions);
+          setExpensesByDate(resGroupedExensesByDate);
+          let resExpensesTotal = calcExpensesTotal(resCalcPurchaseTotal, resCalcTransactionTotal);
+          setExpenseTotal(resExpensesTotal);
+          let resExpensesByType = calcExpensesByType(resPurchases, resTransactions);
+          setExpensesByType(resExpensesByType);
+          // EXPENSES AVERAGE
+          let resExpensesTotalAverage = calcExpensesTotalAverage(resExpensesTotal);
+          setTotalExpensesAverage(resExpensesTotalAverage);
+          let resExpensesByTypeAverage = calcExpensesByTypeAverage(resExpensesByType);
+          setTotalExpensesByTypeAverage(resExpensesByTypeAverage);
+          // SPLIT
+          let resSplitDept = calcSplitDept(resExpensesTotal);
+          setSplitDept(resSplitDept);
+          endTime = performance.now();
+          console.log(`--> Call to App-Context useFocusEffect took ${endTime - startTime} milliseconds.`);
+        }
       }
-    }
-    fetchData();
-  }, [userCtx]);
+      fetchData();
+    }, [userCtx.email, updatePurchase.updateCount, updateTransaction.updateCount])
+  );
 
-  useEffect(() => {
-    async function fetchData() {
-      if (userCtx.email) {
-        console.log("App-Context: Fetching app data...");
-        startTime = performance.now();
-        // PURCHASE
-        let resPurchases = await getAllPurchaseStats(userCtx.email);
-        let resCalcPurchaseTotal = calcPurchaseTotal(resPurchases);
-        setPurchaseTotal(resCalcPurchaseTotal);
-        // TRANSACTION
-        let resTransactions = await getAllTransactionsStats(userCtx.email);
-        let resCalcTransactionTotal = calcTransactionTotal(resTransactions);
-        setTransactionTotal(resCalcTransactionTotal);
-        // EXPENSES
-        let resGroupedExensesByDate = groupExpensesByDate(resPurchases, resTransactions);
-        setExpensesByDate(resGroupedExensesByDate);
-        let resExpensesTotal = calcExpensesTotal(resCalcPurchaseTotal, resCalcTransactionTotal);
-        setExpenseTotal(resExpensesTotal);
-        let resExpensesByType = calcExpensesByType(resPurchases, resTransactions);
-        setExpensesByType(resExpensesByType);
-        // EXPENSES AVERAGE
-        let resExpensesTotalAverage = calcExpensesTotalAverage(resExpensesTotal);
-        setTotalExpensesAverage(resExpensesTotalAverage);
-        let resExpensesByTypeAverage = calcExpensesByTypeAverage(resExpensesByType);
-        setTotalExpensesByTypeAverage(resExpensesByTypeAverage);
-        // SPLIT
-        let resSplitDept = calcSplitDept(resExpensesTotal);
-        setSplitDept(resSplitDept);
-        endTime = performance.now();
-        console.log(`--> Call to App-Context useFocusEffect took ${endTime - startTime} milliseconds.`);
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        console.log("App-Context: Updating purchase data...");
       }
-    }
-    fetchData();
-  }, [update]);
+      fetchData();
+    }, [updatePurchase.updateCount])
+  );
 
-  const addPurchase = () => {};
-  const removePurchase = () => {};
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        console.log("App-Context: Updating transaction data...");
+      }
+      fetchData();
+    }, [updateTransaction.updateCount])
+  );
+
+  const triggerReloadPurchase = (month, year) => {
+    setUpdatePurchase({ month: month, year: year, updateCount: updatePurchase.updateCount + 1 });
+    console.log("Triggered Reload...");
+  };
+
+  const triggerReloadTransaction = (month, year) => {
+    setUpdateTransaction({ month: month, year: year, updateCount: updateTransaction.updateCount + 1 });
+  };
 
   const value = {
     purchaseTotal: purchaseTotal,
@@ -344,6 +337,8 @@ const AppContextProvider = ({ children }) => {
     totalExpensesAverage: totalExpensesAverage,
     totalExpensesByTypeAverage: totalExpensesByTypeAverage,
     splitDept: splitDept,
+    triggerReloadPurchase: triggerReloadPurchase,
+    triggerReloadTransaction: triggerReloadTransaction,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

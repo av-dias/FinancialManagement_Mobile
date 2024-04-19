@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, Pressable, Text } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
@@ -11,6 +11,9 @@ import CustomInput from "../../components/customInput/customInput";
 import CustomCalendarStrip from "../../components/customCalendarStrip/customCalendarStrip";
 import CustomButton from "../../components/customButton/customButton";
 import Carrossel from "../../components/carrossel/carrossel";
+
+//Context
+import { AppContext } from "../../store/app-context";
 
 //Custom Constants
 import { _styles } from "./style";
@@ -27,6 +30,8 @@ export default function Purchase({ navigation }) {
   const [receivedActive, setReceivedActive] = useState(false);
   const [destination, setDestination] = useState("");
   const [newTransaction, setNewTransaction] = useState({ dot: new Date().toISOString().split("T")[0] });
+
+  const appCtx = useContext(AppContext);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -103,7 +108,7 @@ export default function Purchase({ navigation }) {
           </View>
           <CustomButton
             handlePress={() => {
-              handleTransaction(newTransaction, setNewTransaction, destination, receivedActive, email);
+              handleTransaction(newTransaction, setNewTransaction, destination, receivedActive, email, appCtx.triggerReloadTransaction);
             }}
           />
         </View>

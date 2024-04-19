@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Text, View, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { _styles } from "./style";
+
+//Context
+import { AppContext } from "../../store/app-context";
 
 import { verticalScale } from "../../functions/responsive";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
@@ -46,6 +49,8 @@ export default function List({ navigation }) {
   const [editVisible, setEditVisible] = useState(false);
   const [modalContentFlag, setModalContentFlag] = useState("");
 
+  const appCtx = useContext(AppContext);
+
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
@@ -57,24 +62,28 @@ export default function List({ navigation }) {
             let resPurchase = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
             if (!resPurchase) resPurchase = [];
             setGroupedPurchases(groupByDate(resPurchase));
+            appCtx.triggerReloadPurchase(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear());
             console.log("Purchase len: " + resPurchase.length);
           }
           if (!refreshTrigger || refreshTrigger == KEYS_SERIALIZER.TRANSACTION) {
             let resTransaction = JSON.parse(await getFromStorage(KEYS.TRANSACTION, email));
             if (!resTransaction) resTransaction = [];
             setGroupedTransactions(groupByDate(resTransaction));
+            appCtx.triggerReloadTransaction(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear());
             console.log("Transaction len: " + resTransaction.length);
           }
           if (!refreshTrigger || refreshTrigger == KEYS_SERIALIZER.ARCHIVE_PURCHASE) {
             let resArchivePurchase = JSON.parse(await getFromStorage(KEYS.ARCHIVE_PURCHASE, email));
             if (!resArchivePurchase) resArchivePurchase = [];
             setGroupedArchivedPurchases(groupByDate(resArchivePurchase));
+            appCtx.triggerReloadPurchase(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear());
             console.log("Archive Purchase  len: " + resArchivePurchase.length);
           }
           if (!refreshTrigger || refreshTrigger == KEYS_SERIALIZER.ARCHIVE_TRANSACTION) {
             let resArchiveTransaction = JSON.parse(await getFromStorage(KEYS.ARCHIVE_TRANSACTION, email));
             if (!resArchiveTransaction) resArchiveTransaction = [];
             setGroupedArchivedTransactions(groupByDate(resArchiveTransaction));
+            appCtx.triggerReloadTransaction(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear());
             console.log("Archive Transaction  len: " + resArchiveTransaction.length);
           }
           setRefreshTrigger("reset"); // Reset refresh trigger
