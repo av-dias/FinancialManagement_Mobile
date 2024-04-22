@@ -7,13 +7,24 @@ import { STATS_MODE, STATS_TYPE } from "../../utility/keys";
 
 const styles = _styles;
 
-export const isCtxLoaded = (ctx) => {
+export const isCtxLoaded = (ctx, year, month) => {
   return (
+    ctx &&
     Object.keys(ctx).length > 0 &&
+    ctx["totalExpense"] &&
+    ctx["expenseByType"] &&
+    ctx["totalExpensesAverage"] &&
+    ctx["totalExpensesByTypeAverage"] &&
     Object.keys(ctx["totalExpense"]).length > 0 &&
     Object.keys(ctx["expenseByType"]).length > 0 &&
     Object.keys(ctx["totalExpensesAverage"]).length > 0 &&
-    Object.keys(ctx["totalExpensesByTypeAverage"]).length > 0
+    Object.keys(ctx["totalExpensesByTypeAverage"]).length > 0 &&
+    ctx["totalExpense"][year] &&
+    ctx["expenseByType"][year] &&
+    ctx["totalExpensesAverage"][year] &&
+    ctx["totalExpensesByTypeAverage"][year] &&
+    ctx["totalExpense"][year][month] &&
+    ctx["expenseByType"][year][month]
   );
 };
 

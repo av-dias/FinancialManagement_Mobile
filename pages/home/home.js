@@ -47,8 +47,10 @@ export default function Home({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
+      let currDateYear = currentYear.toString();
+      let currDateMonth = currentMonth.toString();
       function fetchData() {
-        if (isCtxLoaded(appCtx)) {
+        if (isCtxLoaded(appCtx, currDateYear, currDateMonth)) {
           const value = {
             totalExpense: appCtx.totalExpense,
             expenseByType: appCtx.expenseByType,
@@ -66,27 +68,25 @@ export default function Home({ navigation }) {
     React.useCallback(() => {
       let currDateYear = currentYear.toString();
       let currDateMonth = currentMonth.toString();
-      if (isCtxLoaded(ctxValue)) {
-        if (Object.keys(ctxValue["totalExpense"][currDateYear]).includes(currDateMonth)) {
-          // Load data for total expense
-          setPurchaseTotal(ctxValue["totalExpense"][currDateYear][currDateMonth]);
-          // Load data to fill chart and table
-          let [auxPieChartData, auxTableData] = loadExpenses(ctxValue["expenseByType"][currDateYear][currDateMonth]);
-          setPieChartData(auxPieChartData);
-          setSpendByType(auxTableData);
-          // Load Average data to fill chart and table
-          setPurchaseAverageTotal(ctxValue["totalExpensesAverage"][currDateYear]);
-          let [auxPieChartAverageData, auxSpendAverageByType] = loadExpenses(ctxValue["totalExpensesByTypeAverage"][currDateYear]);
-          setPieChartAverageData(auxPieChartAverageData);
-          setSpendAverageByType(auxSpendAverageByType);
-        } else {
-          // If data is not available for the current month
-          setPurchaseTotal({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
-          setPieChartData({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
-          setSpendByType({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
-          setPieChartAverageData({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
-          setSpendAverageByType({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
-        }
+      if (isCtxLoaded(ctxValue, currDateYear, currDateMonth)) {
+        // Load data for total expense
+        setPurchaseTotal(ctxValue["totalExpense"][currDateYear][currDateMonth]);
+        // Load data to fill chart and table
+        let [auxPieChartData, auxTableData] = loadExpenses(ctxValue["expenseByType"][currDateYear][currDateMonth]);
+        setPieChartData(auxPieChartData);
+        setSpendByType(auxTableData);
+        // Load Average data to fill chart and table
+        setPurchaseAverageTotal(ctxValue["totalExpensesAverage"][currDateYear]);
+        let [auxPieChartAverageData, auxSpendAverageByType] = loadExpenses(ctxValue["totalExpensesByTypeAverage"][currDateYear]);
+        setPieChartAverageData(auxPieChartAverageData);
+        setSpendAverageByType(auxSpendAverageByType);
+      } else {
+        // If data is not available for the current month
+        setPurchaseTotal({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
+        setPieChartData({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
+        setSpendByType({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
+        setPieChartAverageData({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
+        setSpendAverageByType({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
       }
     }, [ctxValue, currentMonth, currentYear])
   );
