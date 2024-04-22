@@ -19,14 +19,7 @@ import { _styles } from "./style";
 import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
 
 import { horizontalScale, verticalScale } from "../../functions/responsive";
-import {
-  loadCalendarCard,
-  loadPieChartData,
-  loadPurchaseTotalData,
-  loadSpendTableData,
-  loadExpenses,
-  isCtxLoaded,
-} from "./handler";
+import { loadCalendarCard, loadPieChartData, loadPurchaseTotalData, loadSpendTableData, loadExpenses, isCtxLoaded } from "./handler";
 
 export default function Home({ navigation }) {
   const styles = _styles;
