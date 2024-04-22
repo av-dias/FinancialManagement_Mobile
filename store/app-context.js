@@ -154,12 +154,10 @@ const calcExpensesTotal = (purchases, transaction, expenses, update) => {
 
 const calcPurchaseTotal = (purchases, purchaseTotal, update) => {
   let res = { ...purchaseTotal };
-
   // If updating clear data from that year and month
   if (update.month && update.year) {
     res[update.year][update.month] = { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 };
   }
-
   purchases.forEach((curr) => {
     let month = new Date(curr.dop).getMonth();
     let year = new Date(curr.dop).getFullYear();

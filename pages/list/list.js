@@ -68,10 +68,10 @@ export default function List({ navigation }) {
         if (!email) return;
         try {
           if (refreshTrigger == KEYS_SERIALIZER.PURCHASE) {
-            appCtx.triggerReloadPurchase(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear());
+            appCtx.triggerReloadPurchase(new Date(selectedItem.dop).getMonth(), new Date(selectedItem.dop).getFullYear());
           }
           if (refreshTrigger == KEYS_SERIALIZER.TRANSACTION) {
-            appCtx.triggerReloadTransaction(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear());
+            appCtx.triggerReloadTransaction(new Date(selectedItem.dot).getMonth(), new Date(selectedItem.dot).getFullYear());
           }
           if (refreshTrigger == KEYS_SERIALIZER.ARCHIVE_PURCHASE) {
             let resArchivePurchase = JSON.parse(await getFromStorage(KEYS.ARCHIVE_PURCHASE, email));
@@ -135,6 +135,7 @@ export default function List({ navigation }) {
                               key={innerData.index + innerData.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
                               innerData={innerData}
                               handleSplit={async () => {
+                                setSelectedItem({ ...innerData });
                                 await handleSplit(email, innerData, getSplitEmail(splitUser), setRefreshTrigger);
                               }}
                               handleEdit={async () => {
