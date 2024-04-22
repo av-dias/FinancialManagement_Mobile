@@ -231,7 +231,6 @@ const calcExpensesTotalAverage = (expenses, update) => {
   let expensesAverage = {};
   let expensesYearList = Object.keys(expenses);
   for (year of expensesYearList) {
-    if (update.year && update.year != year) continue;
     let monthCount = 0;
     Object.keys(expenses[year]).forEach((month) => {
       monthCount++;
@@ -254,8 +253,6 @@ const calcExpensesByTypeAverage = (expenses, update) => {
   let expensesByTypeAverage = {};
   let expensesYearList = Object.keys(expenses);
   for (year of expensesYearList) {
-    if (update.year && update.year != year) continue;
-
     let monthCount = 0;
     Object.keys(expenses[year]).forEach((month) => {
       monthCount++;
