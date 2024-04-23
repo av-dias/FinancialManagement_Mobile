@@ -85,7 +85,7 @@ export default function Budget({ navigation }) {
         }
       }
       fetchData();
-    }, [appCtx])
+    }, [appCtx.reload])
   );
 
   useFocusEffect(

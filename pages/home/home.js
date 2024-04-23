@@ -60,7 +60,7 @@ export default function Home({ navigation }) {
         }
       }
       fetchData();
-    }, [appCtx])
+    }, [appCtx.reload])
   );
 
   useFocusEffect(

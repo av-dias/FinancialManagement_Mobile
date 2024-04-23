@@ -16,6 +16,7 @@ export const AppContext = createContext({
   totalExpensesAverage: {},
   totalExpensesByTypeAverage: {},
   splitDept: {},
+  reload: false,
 });
 
 const calcExpensesByType = (resPurchases, resTransactions, expensesByType, update) => {
@@ -372,6 +373,7 @@ const AppContextProvider = ({ children }) => {
   const [update, setUpdate] = useState({ updateCount: 0 });
   const [updatePurchase, setUpdatePurchase] = useState(true);
   const [updateTransaction, setUpdateTransaction] = useState(true);
+  const [reload, setReload] = useState(true);
 
   const userCtx = useContext(UserContext);
 
@@ -425,6 +427,7 @@ const AppContextProvider = ({ children }) => {
           console.log(`--> Call to App-Context useFocusEffect took ${endTime - startTime} milliseconds.`);
           setUpdatePurchase(false);
           setUpdateTransaction(false);
+          setReload((prev) => !prev);
         }
       }
       fetchData();
@@ -456,6 +459,7 @@ const AppContextProvider = ({ children }) => {
     splitDept: splitDept,
     triggerReloadPurchase: triggerReloadPurchase,
     triggerReloadTransaction: triggerReloadTransaction,
+    reload: reload,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

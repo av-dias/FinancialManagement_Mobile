@@ -63,7 +63,7 @@ export default function List({ navigation }) {
         }
       }
       fetchData();
-    }, [appCtx])
+    }, [appCtx.reload])
   );
 
   useFocusEffect(
@@ -73,18 +73,15 @@ export default function List({ navigation }) {
         try {
           if (refreshTrigger == KEYS_SERIALIZER.PURCHASE) {
             appCtx.triggerReloadPurchase(new Date(selectedItem.dop).getMonth(), new Date(selectedItem.dop).getFullYear());
-          }
-          if (refreshTrigger == KEYS_SERIALIZER.TRANSACTION) {
+          } else if (refreshTrigger == KEYS_SERIALIZER.TRANSACTION) {
             appCtx.triggerReloadTransaction(new Date(selectedItem.dot).getMonth(), new Date(selectedItem.dot).getFullYear());
-          }
-          if (refreshTrigger == KEYS_SERIALIZER.ARCHIVE_PURCHASE) {
+          } else if (refreshTrigger == KEYS_SERIALIZER.ARCHIVE_PURCHASE) {
             let resArchivePurchase = JSON.parse(await getFromStorage(KEYS.ARCHIVE_PURCHASE, email));
             if (!resArchivePurchase) resArchivePurchase = [];
             setGroupedArchivedPurchases(groupByDate(resArchivePurchase));
             appCtx.triggerReloadPurchase(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear());
             console.log("Archive Purchase  len: " + resArchivePurchase.length);
-          }
-          if (refreshTrigger == KEYS_SERIALIZER.ARCHIVE_TRANSACTION) {
+          } else if (refreshTrigger == KEYS_SERIALIZER.ARCHIVE_TRANSACTION) {
             let resArchiveTransaction = JSON.parse(await getFromStorage(KEYS.ARCHIVE_TRANSACTION, email));
             if (!resArchiveTransaction) resArchiveTransaction = [];
             setGroupedArchivedTransactions(groupByDate(resArchiveTransaction));

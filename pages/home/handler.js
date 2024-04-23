@@ -18,13 +18,7 @@ export const isCtxLoaded = (ctx, year, month) => {
     Object.keys(ctx["totalExpense"]).length > 0 &&
     Object.keys(ctx["expenseByType"]).length > 0 &&
     Object.keys(ctx["totalExpensesAverage"]).length > 0 &&
-    Object.keys(ctx["totalExpensesByTypeAverage"]).length > 0 &&
-    ctx["totalExpense"][year] &&
-    ctx["expenseByType"][year] &&
-    ctx["totalExpensesAverage"][year] &&
-    ctx["totalExpensesByTypeAverage"][year] &&
-    ctx["totalExpense"][year][month] &&
-    ctx["expenseByType"][year][month]
+    Object.keys(ctx["totalExpensesByTypeAverage"]).length > 0
   );
 };
 

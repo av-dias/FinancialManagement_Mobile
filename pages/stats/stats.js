@@ -1,7 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { Text, View, ScrollView } from "react-native";
 import React, { useState, useContext } from "react";
-import { VictoryChart, VictoryLine, VictoryBar, VictoryScatter } from "victory-native";
+import { VictoryLine, VictoryBar } from "victory-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 //Context
@@ -14,14 +14,11 @@ import TypeCard from "../../components/typeCard/typeCard";
 
 //Custom Constants
 import { _styles } from "./style";
-import { STATS_TYPE, STATS_MODE, TRANSACTION_TYPE } from "../../utility/keys";
+import { TRANSACTION_TYPE } from "../../utility/keys";
 import { months } from "../../utility/calendar";
 
 //Functions
-import { getPurchaseStats, getPurchaseTotal } from "../../functions/purchase";
 import { heightTreshold, horizontalScale, verticalScale } from "../../functions/responsive";
-import { getUser } from "../../functions/basic";
-import { getTransactions, getTransactionStats, getTransactionTotalReceived, getTransactionTotalSent } from "../../functions/transaction";
 import { isCtxLoaded } from "./handler";
 
 export default function Stats({ navigation }) {
@@ -44,16 +41,21 @@ export default function Stats({ navigation }) {
 
       function fetchData() {
         if (isCtxLoaded(appCtx, currDateYear, currDateMonth)) {
+          console.log("Stats: Fetching app data...");
+          startTime = performance.now();
           const value = {
             expenseByType: appCtx.expenseByType,
             transactionTotal: appCtx.transactionTotal,
             splitDept: appCtx.splitDept,
+            totalExpensesByType: appCtx.totalExpensesByType,
           };
           setCtxValue(value);
+          endTime = performance.now();
+          console.log(`--> Call to Stats useFocusEffect took ${endTime - startTime} milliseconds.`);
         }
       }
       fetchData();
-    }, [appCtx])
+    }, [appCtx.reload])
   );
 
   useFocusEffect(
@@ -66,7 +68,6 @@ export default function Stats({ navigation }) {
           console.log("Stats: Fetching app data...");
           startTime = performance.now();
           let resSplitDeptData = {},
-            resAggregateSpendByType = {},
             resSpendByType = {},
             resTransactionTotal = ctxValue.transactionTotal;
 
@@ -91,30 +92,14 @@ export default function Stats({ navigation }) {
           }
           setSplitDeptData(resSplitDeptData);
 
-          // Aggregate Spend by Type
-          for (let year of Object.keys(ctxValue.expenseByType)) {
-            for (let month of Object.keys(ctxValue.expenseByType[year])) {
-              for (let type of Object.keys(ctxValue.expenseByType[year][month][STATS_TYPE[0]])) {
-                if (!resAggregateSpendByType[year]) {
-                  resAggregateSpendByType[year] = { [type]: 0 };
-                }
-
-                if (!resAggregateSpendByType[year][type]) {
-                  resAggregateSpendByType[year][type] = 0;
-                }
-
-                resAggregateSpendByType[year][type] += ctxValue.expenseByType[year][month][STATS_TYPE[0]][type];
-              }
-            }
-          }
           // Load Split Dept Data
-          for (let year of Object.keys(resAggregateSpendByType)) {
-            for (let type of Object.keys(resAggregateSpendByType[year])) {
+          for (let year of Object.keys(ctxValue.totalExpensesByType)) {
+            for (let type of Object.keys(ctxValue.totalExpensesByType[year])) {
               if (!resSpendByType[year]) {
                 resSpendByType[year] = [];
               }
 
-              resSpendByType[year].push({ x: type, y: resAggregateSpendByType[year][type] });
+              resSpendByType[year].push({ x: type, y: ctxValue.totalExpensesByType[year][type] });
             }
           }
           setSpendByType(resSpendByType);
