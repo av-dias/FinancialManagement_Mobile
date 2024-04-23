@@ -24,7 +24,6 @@ import { loadCalendarCard, loadPieChartData, loadPurchaseTotalData, loadSpendTab
 export default function Home({ navigation }) {
   const styles = _styles;
 
-  const [email, setEmail] = useState("");
   const [statsType, setStatsType] = useState(STATS_TYPE[0]);
   const [statsMode, setStatsMode] = useState(STATS_MODE[0]);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());

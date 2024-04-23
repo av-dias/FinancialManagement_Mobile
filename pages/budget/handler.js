@@ -5,6 +5,10 @@ import { STATS_MODE } from "../../utility/keys";
 
 const styles = _styles;
 
+export const isCtxLoaded = (ctx, year, month) => {
+  return ctx && Object.keys(ctx).length > 0;
+};
+
 export const refinePurchaseStats = (purchasesStats) => {
   let array = [];
   let arrayTables = [];

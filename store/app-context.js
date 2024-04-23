@@ -95,6 +95,10 @@ const calcExpensesByType = (resPurchases, resTransactions, expensesByType, updat
   return res;
 };
 
+const calcTotalExpensesByType = (resExpensesByType, totalExpensesByType, update) => {
+  return {};
+};
+
 const calcExpensesTotal = (purchases, transaction, expenses, update) => {
   let res = { ...expenses };
   let purchaseYearList = Object.keys(purchases);
@@ -337,6 +341,7 @@ const AppContextProvider = ({ children }) => {
   const [expensesByDate, setExpensesByDate] = useState({});
   const [expenseTotal, setExpenseTotal] = useState({});
   const [expensesByType, setExpensesByType] = useState({});
+  const [totalExpensesByType, setTotalExpensesByType] = useState({});
   const [totalExpensesAverage, setTotalExpensesAverage] = useState({});
   const [totalExpensesByTypeAverage, setTotalExpensesByTypeAverage] = useState({});
   const [splitDept, setSplitDept] = useState({});
@@ -382,6 +387,8 @@ const AppContextProvider = ({ children }) => {
           setExpenseTotal(resExpensesTotal);
           let resExpensesByType = calcExpensesByType(resPurchases, resTransactions, expensesByType, update);
           setExpensesByType(resExpensesByType);
+          let resTotalExpensesByType = calcTotalExpensesByType(resExpensesByType, totalExpensesByType, update);
+          setTotalExpensesByType(resTotalExpensesByType);
           // EXPENSES AVERAGE
           let resExpensesTotalAverage = calcExpensesTotalAverage(resExpensesTotal, update);
           setTotalExpensesAverage(resExpensesTotalAverage);
