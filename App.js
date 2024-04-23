@@ -17,6 +17,11 @@ import Budget from "./pages/budget/budget";
 import AppContextProvider from "./store/app-context";
 import UserContextProvider from "./store/user-context";
 
+// Removing annoying warning from VictoryChart
+import { LogBox } from "react-native";
+const IGNORED_LOGS = ["Warning: Failed prop type: Invalid prop `domain` supplied to `VictoryLine`."];
+LogBox.ignoreLogs(IGNORED_LOGS);
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 

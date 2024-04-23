@@ -69,6 +69,8 @@ export default function Home({ navigation }) {
       let currDateYear = currentYear.toString();
       let currDateMonth = currentMonth.toString();
       if (isCtxLoaded(ctxValue, currDateYear, currDateMonth)) {
+        console.log("Home: Fetching app data...");
+        startTime = performance.now();
         // Load data for total expense
         setPurchaseTotal(ctxValue["totalExpense"][currDateYear][currDateMonth]);
         // Load data to fill chart and table
@@ -80,6 +82,8 @@ export default function Home({ navigation }) {
         let [auxPieChartAverageData, auxSpendAverageByType] = loadExpenses(ctxValue["totalExpensesByTypeAverage"][currDateYear]);
         setPieChartAverageData(auxPieChartAverageData);
         setSpendAverageByType(auxSpendAverageByType);
+        endTime = performance.now();
+        console.log(`--> Call to Home useFocusEffect took ${endTime - startTime} milliseconds.`);
       } else {
         // If data is not available for the current month
         setPurchaseTotal({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
@@ -93,7 +97,7 @@ export default function Home({ navigation }) {
 
   return (
     <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
-      <Header email={email} navigation={navigation} />
+      <Header email={appCtx.email} navigation={navigation} />
       <View style={styles.usableScreen}>
         {loadPieChartData(statsMode, statsType, pieChartData, pieChartAverageData).length !== 0 ? (
           <View style={{ flex: 8, gap: verticalScale(10) }}>

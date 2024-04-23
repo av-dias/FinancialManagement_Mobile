@@ -72,6 +72,8 @@ export default function Budget({ navigation }) {
       async function fetchData() {
         let email = await getUser();
         setEmail(email);
+        console.log("Budget: Fetching app data...");
+        startTime = performance.now();
         try {
           let resPurchaseAverageByType,
             resPurchaseAverageTotal,
@@ -123,6 +125,9 @@ export default function Budget({ navigation }) {
 
           sortedPurchaseLastYearAverageByType.sort((a, b) => b[1] - a[1]);
           setSpendAverageByType(sortedPurchaseLastYearAverageByType);
+
+          endTime = performance.now();
+          console.log(`--> Call to Budget useFocusEffect took ${endTime - startTime} milliseconds.`);
         } catch (e) {
           console.log(e);
         }

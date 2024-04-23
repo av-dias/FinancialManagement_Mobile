@@ -50,12 +50,16 @@ export default function List({ navigation }) {
     React.useCallback(() => {
       function fetchData() {
         if (isCtxLoaded(appCtx)) {
+          console.log("List: Fetching app data...");
+          startTime = performance.now();
           setExpensesGroupedByDate(appCtx.expensesByDate);
           let list = Object.keys(appCtx.expensesByDate)
             .concat(Object.keys(groupedArchivedPurchases))
             .concat(Object.keys(groupedArchivedTransactions))
             .sort();
           setListDays([...new Set(list)]);
+          endTime = performance.now();
+          console.log(`--> Call to List useFocusEffect took ${endTime - startTime} milliseconds.`);
         }
       }
       fetchData();
