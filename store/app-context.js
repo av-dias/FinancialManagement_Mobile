@@ -197,8 +197,8 @@ const calcTransactionTotal = (transactions, transactionTotal, update) => {
   }
 
   transactions.forEach((curr) => {
-    let month = new Date(curr.dot).getMonth();
-    let year = new Date(curr.dot).getFullYear();
+    let month = new Date(curr.dot).getMonth().toString();
+    let year = new Date(curr.dot).getFullYear().toString();
 
     if (update.month && update.year && (month != update.month || year != update.year)) return;
 
@@ -413,6 +413,7 @@ const AppContextProvider = ({ children }) => {
   };
 
   const value = {
+    email: userCtx.email,
     purchaseTotal: purchaseTotal,
     transactionTotal: transactionTotal,
     totalExpense: expenseTotal,
