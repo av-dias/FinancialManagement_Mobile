@@ -12,6 +12,7 @@ export const AppContext = createContext({
   expensesByDate: {},
   totalExpense: {},
   expenseByType: {},
+  totalExpensesByType: {},
   totalExpensesAverage: {},
   totalExpensesByTypeAverage: {},
   splitDept: {},
@@ -96,7 +97,30 @@ const calcExpensesByType = (resPurchases, resTransactions, expensesByType, updat
 };
 
 const calcTotalExpensesByType = (resExpensesByType, totalExpensesByType, update) => {
-  return {};
+  let resTotal = { ...totalExpensesByType };
+
+  // If updating clear data from that year and month
+  if (update.month && update.year) {
+    resTotal[update.year] = {};
+  }
+
+  for (let year of Object.keys(resExpensesByType)) {
+    if (update.year && year != update.year) continue;
+    for (let month of Object.keys(resExpensesByType[year])) {
+      for (let type of Object.keys(resExpensesByType[year][month][STATS_TYPE[0]])) {
+        if (!resTotal[year]) {
+          resTotal[year] = { [type]: 0 };
+        }
+
+        if (!resTotal[year][type]) {
+          resTotal[year][type] = 0;
+        }
+
+        resTotal[year][type] += resExpensesByType[year][month][STATS_TYPE[0]][type];
+      }
+    }
+  }
+  return resTotal;
 };
 
 const calcExpensesTotal = (purchases, transaction, expenses, update) => {
@@ -426,6 +450,7 @@ const AppContextProvider = ({ children }) => {
     totalExpense: expenseTotal,
     expensesByDate: expensesByDate,
     expenseByType: expensesByType,
+    totalExpensesByType: totalExpensesByType,
     totalExpensesAverage: totalExpensesAverage,
     totalExpensesByTypeAverage: totalExpensesByTypeAverage,
     splitDept: splitDept,

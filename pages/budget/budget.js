@@ -30,6 +30,7 @@ export default function Budget({ navigation }) {
   const [purchaseAverageTotal, setPurchaseAverageTotal] = useState({});
   const [purchaseTotal, setPurchaseTotal] = useState({});
   const [purchaseCurrentStats, setPurchaseCurrentStats] = useState({});
+  const [expensesTotalByType, setExpensesTotalByType] = useState({});
 
   const appCtx = useContext(AppContext);
 
@@ -43,23 +44,27 @@ export default function Budget({ navigation }) {
     return Number(value).toFixed(0) || 0;
   };
 
-  const getLastAvailableAverageValue = (data, currentYear, type) => {
+  const getLastAvailableAverageTypeValue = (data, currentYear, type) => {
     if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1][STATS_TYPE[1]].hasOwnProperty(type)) {
-      return data[currentYear - 1][STATS_TYPE[1]][type];
+      return parseFloat(data[currentYear - 1][STATS_TYPE[1]][type]).toFixed(0);
     } else {
-      return data[currentYear][STATS_TYPE[1]][type];
+      return parseFloat(data[currentYear][STATS_TYPE[1]][type]).toFixed(0);
     }
   };
 
-  const getLastAvailableValue = (data, currentYear, currentMonth, type) => {
-    if (
-      data[parseFloat(currentYear) - 1] &&
-      data[parseFloat(currentYear) - 1][currentMonth] &&
-      data[parseFloat(currentYear) - 1][currentMonth][STATS_TYPE[1]].hasOwnProperty(type)
-    ) {
-      return data[currentYear - 1][currentMonth][STATS_TYPE[1]][type];
+  const getLastAvailableAverageValue = (data, currentYear) => {
+    if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1][STATS_TYPE[1]]) {
+      return parseFloat(data[currentYear - 1][STATS_TYPE[1]]).toFixed(0);
     } else {
-      return data[currentYear][currentMonth][STATS_TYPE[1]][type];
+      return parseFloat(data[currentYear][STATS_TYPE[1]]).toFixed(0);
+    }
+  };
+
+  const getLastAvailableTypeValue = (data, currentYear, type) => {
+    if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1].hasOwnProperty(type)) {
+      return parseFloat(data[currentYear - 1][type]).toFixed(0);
+    } else {
+      return parseFloat(data[currentYear][type]).toFixed(0);
     }
   };
 
@@ -73,6 +78,7 @@ export default function Budget({ navigation }) {
             totalExpense: appCtx.totalExpense,
             expenseByType: appCtx.expenseByType,
             totalExpensesAverage: appCtx.totalExpensesAverage,
+            totalExpensesByType: appCtx.totalExpensesByType,
             totalExpensesByTypeAverage: appCtx.totalExpensesByTypeAverage,
           };
           setCtxValue(value);
@@ -94,6 +100,7 @@ export default function Budget({ navigation }) {
         setPurchaseAverageTotal(ctxValue.totalExpensesAverage);
         setPurchaseCurrentStats(ctxValue.expenseByType);
         setPurchaseTotal(ctxValue.totalExpense);
+        setExpensesTotalByType(ctxValue.totalExpensesByType);
 
         endTime = performance.now();
         console.log(`--> Call to Budget useFocusEffect took ${endTime - startTime} milliseconds.`);
@@ -115,23 +122,34 @@ export default function Budget({ navigation }) {
                 {"Average " +
                   getCurrentValue(purchaseTotal[currentYear][currentMonth][STATS_TYPE[1]]) +
                   "/" +
-                  purchaseAverageTotal[currentYear][STATS_TYPE[1]].toFixed(0)}
+                  getLastAvailableAverageValue(purchaseAverageTotal, currentYear)}
               </Text>
               <ProgressBar
                 key={"PTtotal"}
-                progress={getTotalProgress(purchaseTotal[currentYear][currentMonth][STATS_TYPE[1]], purchaseAverageTotal[currentYear][STATS_TYPE[1]])}
+                progress={getTotalProgress(
+                  getCurrentValue(purchaseTotal[currentYear][currentMonth][STATS_TYPE[1]]),
+                  getLastAvailableAverageValue(purchaseAverageTotal, currentYear)
+                )}
                 color={"red"}
               />
             </View>
           )}
           {spendAverageByType[currentYear] &&
             purchaseCurrentStats[currentYear] &&
+            expensesTotalByType[currentYear] &&
             Object.keys(spendAverageByType[currentYear][STATS_TYPE[1]]).map((type) => {
-              let lastAverageTypeValue = parseFloat(getLastAvailableAverageValue(spendAverageByType, currentYear, type)).toFixed(0);
-              let currentTypeValue = 0;
+              let lastAverageTypeValue = getLastAvailableAverageTypeValue(spendAverageByType, currentYear, type);
+              let lastTotalTypeValue = getLastAvailableTypeValue(expensesTotalByType, currentYear, type);
+              let currentTypeValue = 0,
+                currentTotalTypeValue = 0;
+
               if (purchaseCurrentStats[currentYear][currentMonth][STATS_TYPE[1]].hasOwnProperty(type)) {
                 currentTypeValue = parseFloat(purchaseCurrentStats[currentYear][currentMonth][STATS_TYPE[1]][type]).toFixed(0);
               }
+              if (expensesTotalByType[currentYear].hasOwnProperty(type)) {
+                currentTotalTypeValue = parseFloat(expensesTotalByType[currentYear][type]).toFixed(0);
+              }
+
               return (
                 <View
                   key={type + "View"}
@@ -145,8 +163,8 @@ export default function Budget({ navigation }) {
                   </View>
                   <View style={{ flex: 1, backgroundColor: "transparent", justifyContent: "center", gap: 5 }}>
                     <View>
-                      <Text key={type + "TextT"}>{"Total " + currentTypeValue + "/" + lastAverageTypeValue}</Text>
-                      <ProgressBar key={"PT" + type} progress={getTotalProgress(currentTypeValue, lastAverageTypeValue)} color={"red"} />
+                      <Text key={type + "TextT"}>{"Total " + currentTotalTypeValue + "/" + lastTotalTypeValue}</Text>
+                      <ProgressBar key={"PT" + type} progress={getTotalProgress(currentTotalTypeValue, lastTotalTypeValue)} color={"red"} />
                     </View>
                     <View>
                       <Text key={type + "TextM"}>{"Monthly " + currentTypeValue + "/" + lastAverageTypeValue}</Text>
