@@ -92,6 +92,7 @@ export const ModalList = (
   styles
 ) => {
   let content;
+  let beforeEditItem = { ...selectedItem };
 
   switch (selectedItem.key) {
     case KEYS_SERIALIZER.TRANSACTION:
@@ -144,7 +145,7 @@ export const ModalList = (
           </View>
           <CustomButton
             handlePress={() => {
-              handleEditTransaction(email, selectedItem, setRefreshTrigger, setEditVisible);
+              handleEditTransaction(email, selectedItem, setRefreshTrigger, setEditVisible, beforeEditItem);
             }}
           />
         </View>
@@ -225,7 +226,7 @@ export const ModalList = (
           <CustomButton
             text="Save"
             handlePress={() => {
-              handleEditPurchase(email, selectedItem, sliderStatus, setRefreshTrigger, setEditVisible);
+              handleEditPurchase(email, selectedItem, sliderStatus, setRefreshTrigger, setEditVisible, beforeEditItem);
             }}
           />
         </View>

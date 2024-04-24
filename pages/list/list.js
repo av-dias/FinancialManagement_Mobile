@@ -9,7 +9,7 @@ import { AppContext } from "../../store/app-context";
 import { UserContext } from "../../store/user-context";
 
 import { verticalScale } from "../../functions/responsive";
-import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
+import { KEYS as KEYS_SERIALIZER, TRIGGER_KEYS } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
 import { getSplitEmail } from "../../functions/split";
 import { handleSplit, handleEditPurchase, groupByDate, handleEditTransaction, isCtxLoaded } from "./handler";
@@ -40,7 +40,7 @@ export default function List({ navigation }) {
 
   const [listDays, setListDays] = useState([]);
 
-  const [refreshTrigger, setRefreshTrigger] = useState();
+  const [refreshTrigger, setRefreshTrigger] = useState({});
   const [editVisible, setEditVisible] = useState(false);
 
   const appCtx = useContext(AppContext);
@@ -71,30 +71,30 @@ export default function List({ navigation }) {
       async function fetchData() {
         if (!email) return;
         try {
-          if (refreshTrigger == KEYS_SERIALIZER.PURCHASE) {
-            appCtx.triggerReloadPurchase(new Date(selectedItem.dop).getMonth(), new Date(selectedItem.dop).getFullYear());
-          } else if (refreshTrigger == KEYS_SERIALIZER.TRANSACTION) {
-            appCtx.triggerReloadTransaction(new Date(selectedItem.dot).getMonth(), new Date(selectedItem.dot).getFullYear());
-          } else if (refreshTrigger == KEYS_SERIALIZER.ARCHIVE_PURCHASE) {
+          if (refreshTrigger[TRIGGER_KEYS[0]] == KEYS_SERIALIZER.PURCHASE) {
+            appCtx.triggerReloadPurchase(new Date(selectedItem.dop).getMonth(), new Date(selectedItem.dop).getFullYear(), refreshTrigger);
+          } else if (refreshTrigger[TRIGGER_KEYS[0]] == KEYS_SERIALIZER.TRANSACTION) {
+            appCtx.triggerReloadTransaction(new Date(selectedItem.dot).getMonth(), new Date(selectedItem.dot).getFullYear(), refreshTrigger);
+          } else if (refreshTrigger[TRIGGER_KEYS[0]] == KEYS_SERIALIZER.ARCHIVE_PURCHASE) {
             let resArchivePurchase = JSON.parse(await getFromStorage(KEYS.ARCHIVE_PURCHASE, email));
             if (!resArchivePurchase) resArchivePurchase = [];
             setGroupedArchivedPurchases(groupByDate(resArchivePurchase));
-            appCtx.triggerReloadPurchase(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear());
+            appCtx.triggerReloadPurchase(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear(), refreshTrigger);
             console.log("Archive Purchase  len: " + resArchivePurchase.length);
-          } else if (refreshTrigger == KEYS_SERIALIZER.ARCHIVE_TRANSACTION) {
+          } else if (refreshTrigger[TRIGGER_KEYS[0]] == KEYS_SERIALIZER.ARCHIVE_TRANSACTION) {
             let resArchiveTransaction = JSON.parse(await getFromStorage(KEYS.ARCHIVE_TRANSACTION, email));
             if (!resArchiveTransaction) resArchiveTransaction = [];
             setGroupedArchivedTransactions(groupByDate(resArchiveTransaction));
-            appCtx.triggerReloadTransaction(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear());
+            appCtx.triggerReloadTransaction(new Date(selectedItem.date).getMonth(), new Date(selectedItem.date).getFullYear(), refreshTrigger);
             console.log("Archive Transaction  len: " + resArchiveTransaction.length);
           }
-          setRefreshTrigger("reset"); // Reset refresh trigger
+          setRefreshTrigger({ [TRIGGER_KEYS[0]]: "reset" }); // Reset refresh trigger
         } catch (e) {
           console.log("Archive: " + e);
         }
       }
       fetchData();
-    }, [refreshTrigger, email])
+    }, [refreshTrigger[TRIGGER_KEYS[0]], email])
   );
 
   return (

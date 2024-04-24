@@ -4,7 +4,7 @@ import { getAllPurchaseStats } from "../functions/purchase";
 import { getAllTransactionsStats } from "../functions/transaction";
 import { getUser } from "../functions/basic";
 import { UserContext } from "./user-context";
-import { STATS_TYPE, TRANSACTION_TYPE, KEYS as KEYS_SERIALIZER } from "../utility/keys";
+import { STATS_TYPE, TRANSACTION_TYPE, KEYS as KEYS_SERIALIZER, RELOAD_TYPE, TRIGGER_KEYS } from "../utility/keys";
 
 export const AppContext = createContext({
   purchaseTotal: {},
@@ -19,19 +19,12 @@ export const AppContext = createContext({
   reload: false,
 });
 
-const calcExpensesByType = (resPurchases, resTransactions, expensesByType, update) => {
-  let res = { ...expensesByType };
-
-  // If updating clear data from that year and month
-  if (update.month && update.year) {
-    res[update.year][update.month] = { [STATS_TYPE[0]]: {}, [STATS_TYPE[1]]: {} };
-  }
+const calcExpensesByType = (resPurchases, resTransactions) => {
+  let res = {};
 
   resPurchases.forEach((purchase) => {
     let month = new Date(purchase.dop).getMonth();
     let year = new Date(purchase.dop).getFullYear();
-
-    if (update.month && update.year && (month != update.month || year != update.year)) return;
 
     let curr = purchase;
 
@@ -64,8 +57,6 @@ const calcExpensesByType = (resPurchases, resTransactions, expensesByType, updat
     let month = new Date(transaction.dot).getMonth();
     let year = new Date(transaction.dot).getFullYear();
 
-    if (update.month && update.year && (month != update.month || year != update.year)) return;
-
     let curr = transaction;
     let value = parseFloat(curr.amount);
 
@@ -97,16 +88,10 @@ const calcExpensesByType = (resPurchases, resTransactions, expensesByType, updat
   return res;
 };
 
-const calcTotalExpensesByType = (resExpensesByType, totalExpensesByType, update) => {
-  let resTotal = { ...totalExpensesByType };
-
-  // If updating clear data from that year and month
-  if (update.month && update.year) {
-    resTotal[update.year] = {};
-  }
+const calcTotalExpensesByType = (resExpensesByType) => {
+  let resTotal = {};
 
   for (let year of Object.keys(resExpensesByType)) {
-    if (update.year && year != update.year) continue;
     for (let month of Object.keys(resExpensesByType[year])) {
       for (let type of Object.keys(resExpensesByType[year][month][STATS_TYPE[0]])) {
         if (!resTotal[year]) {
@@ -124,21 +109,13 @@ const calcTotalExpensesByType = (resExpensesByType, totalExpensesByType, update)
   return resTotal;
 };
 
-const calcExpensesTotal = (purchases, transaction, expenses, update) => {
-  let res = { ...expenses };
+const calcExpensesTotal = (purchases, transaction) => {
+  let res = {};
   let purchaseYearList = Object.keys(purchases);
   let transactionYearList = Object.keys(transaction);
 
-  // If updating clear data from that year and month
-  if (update.month && update.year) {
-    res[update.year][update.month] = { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 };
-  }
-
   for (year of purchaseYearList) {
-    if (update.year && year != update.year) continue;
     Object.keys(purchases[year]).forEach((month) => {
-      if (update.month && month != update.month) return;
-
       let curr = purchases[year][month];
 
       // Verify if year already exists
@@ -157,10 +134,7 @@ const calcExpensesTotal = (purchases, transaction, expenses, update) => {
   }
 
   for (year of transactionYearList) {
-    if (update.year && year != update.year) continue;
     Object.keys(transaction[year]).forEach((month) => {
-      if (update.month && month != update.month) return;
-
       let curr = transaction[year][month];
 
       // Verify if year already exists
@@ -181,17 +155,12 @@ const calcExpensesTotal = (purchases, transaction, expenses, update) => {
   return res;
 };
 
-const calcPurchaseTotal = (purchases, purchaseTotal, update) => {
-  let res = { ...purchaseTotal };
-  // If updating clear data from that year and month
-  if (update.month && update.year) {
-    res[update.year][update.month] = { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 };
-  }
+const calcPurchaseTotal = (purchases) => {
+  let res = {};
+
   purchases.forEach((curr) => {
     let month = new Date(curr.dop).getMonth();
     let year = new Date(curr.dop).getFullYear();
-
-    if (update.month && update.year && (month != update.month || year != update.year)) return;
 
     // Verify if year already exists
     if (!res[year]) {
@@ -217,19 +186,12 @@ const calcPurchaseTotal = (purchases, purchaseTotal, update) => {
   return res;
 };
 
-const calcTransactionTotal = (transactions, transactionTotal, update) => {
-  let res = { ...transactionTotal };
-
-  // If updating clear data from that year and month
-  if (update.month && update.year) {
-    res[update.year][update.month] = { [TRANSACTION_TYPE[0]]: 0, [TRANSACTION_TYPE[1]]: 0, [TRANSACTION_TYPE[2]]: 0 };
-  }
+const calcTransactionTotal = (transactions) => {
+  let res = {};
 
   transactions.forEach((curr) => {
     let month = new Date(curr.dot).getMonth().toString();
     let year = new Date(curr.dot).getFullYear().toString();
-
-    if (update.month && update.year && (month != update.month || year != update.year)) return;
 
     let value = parseFloat(curr.amount);
 
@@ -256,7 +218,7 @@ const calcTransactionTotal = (transactions, transactionTotal, update) => {
   return res;
 };
 
-const calcExpensesTotalAverage = (expenses, update) => {
+const calcExpensesTotalAverage = (expenses) => {
   let expensesAverage = {};
   let expensesYearList = Object.keys(expenses);
   for (year of expensesYearList) {
@@ -278,7 +240,7 @@ const calcExpensesTotalAverage = (expenses, update) => {
   return expensesAverage;
 };
 
-const calcExpensesByTypeAverage = (expenses, update) => {
+const calcExpensesByTypeAverage = (expenses) => {
   let expensesByTypeAverage = {};
   let expensesYearList = Object.keys(expenses);
   for (year of expensesYearList) {
@@ -313,20 +275,12 @@ const calcExpensesByTypeAverage = (expenses, update) => {
   return expensesByTypeAverage;
 };
 
-const calcSplitDept = (expenses, splitDept, update) => {
-  let res = { ...splitDept };
+const calcSplitDept = (expenses, splitDept) => {
+  let res = {};
   let expensesYearList = Object.keys(expenses);
 
-  // If updating clear data from that year and month
-  if (update.month && update.year) {
-    res[update.year][update.month] = { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 };
-  }
-
   for (year of expensesYearList) {
-    if (update.year && update.year != year) continue;
     Object.keys(expenses[year]).forEach((month) => {
-      if (update.month && month != update.month) return;
-
       // Verify if year already exists
       if (!res[year]) {
         res[year] = { [month]: 0 };
@@ -385,64 +339,127 @@ const AppContextProvider = ({ children }) => {
           startTime = performance.now();
           let resPurchases, resCalcPurchaseTotal, resTransactions, resCalcTransactionTotal;
           // PURCHASE
-          if (updatePurchase) {
-            resPurchases = await getAllPurchaseStats(userCtx.email);
-            resCalcPurchaseTotal = calcPurchaseTotal(resPurchases, purchaseTotal, update);
-          } else {
-            resPurchases = purchases;
-            resCalcPurchaseTotal = purchaseTotal;
-            console.log("App-Context: Using purchase data cache...");
-          }
+          resPurchases = await getAllPurchaseStats(userCtx.email);
+          resCalcPurchaseTotal = calcPurchaseTotal(resPurchases);
           setPurchases(resPurchases);
           setPurchaseTotal(resCalcPurchaseTotal);
+          let purchaseTime = performance.now();
+          console.log(`--> Load Purchase useFocusEffect took ${purchaseTime - startTime} milliseconds.`);
           // TRANSACTION
-          if (updateTransaction) {
-            resTransactions = await getAllTransactionsStats(userCtx.email);
-            resCalcTransactionTotal = calcTransactionTotal(resTransactions, transactionTotal, update);
-          } else {
-            resTransactions = transactions;
-            resCalcTransactionTotal = transactionTotal;
-            console.log("App-Context: Using transaction data cache...");
-          }
+          resTransactions = await getAllTransactionsStats(userCtx.email);
+          resCalcTransactionTotal = calcTransactionTotal(resTransactions);
           setTransactions(resTransactions);
           setTransactionTotal(resCalcTransactionTotal);
+          let transactionTime = performance.now();
+          console.log(`--> Load Transaction useFocusEffect took ${transactionTime - purchaseTime} milliseconds.`);
           // EXPENSES
           let resGroupedExpensesByDate = groupExpensesByDate(resPurchases, resTransactions);
           setExpensesByDate(resGroupedExpensesByDate);
-          let resExpensesTotal = calcExpensesTotal(resCalcPurchaseTotal, resCalcTransactionTotal, expenseTotal, update);
+          let resExpensesTotal = calcExpensesTotal(resCalcPurchaseTotal, resCalcTransactionTotal);
           setExpenseTotal(resExpensesTotal);
-          let resExpensesByType = calcExpensesByType(resPurchases, resTransactions, expensesByType, update);
+          let resExpensesByType = calcExpensesByType(resPurchases, resTransactions);
           setExpensesByType(resExpensesByType);
-          let resTotalExpensesByType = calcTotalExpensesByType(resExpensesByType, totalExpensesByType, update);
+          let resTotalExpensesByType = calcTotalExpensesByType(resExpensesByType);
           setTotalExpensesByType(resTotalExpensesByType);
-          // EXPENSES AVERAGE
-          let resExpensesTotalAverage = calcExpensesTotalAverage(resExpensesTotal, update);
+          let expensesTime = performance.now();
+          console.log(`--> Load Expenses useFocusEffect took ${expensesTime - transactionTime} milliseconds.`);
+          // AVERAGE
+          let resExpensesTotalAverage = calcExpensesTotalAverage(resExpensesTotal);
           setTotalExpensesAverage(resExpensesTotalAverage);
-          let resExpensesByTypeAverage = calcExpensesByTypeAverage(resExpensesByType, update);
+          let resExpensesByTypeAverage = calcExpensesByTypeAverage(resExpensesByType);
           setTotalExpensesByTypeAverage(resExpensesByTypeAverage);
+          let averageTime = performance.now();
+          console.log(`--> Load Average useFocusEffect took ${averageTime - expensesTime} milliseconds.`);
           // SPLIT
-          let resSplitDept = calcSplitDept(resExpensesTotal, splitDept, update);
+          let resSplitDept = calcSplitDept(resExpensesTotal);
           setSplitDept(resSplitDept);
+          let splitTime = performance.now();
+          console.log(`--> Load Split useFocusEffect took ${splitTime - averageTime} milliseconds.`);
+          setUpdatePurchase(false);
+          setUpdateTransaction(false);
+          console.log(`-----> Load useFocusEffect took ${performance.now() - startTime} milliseconds.`);
+          setReload((prev) => !prev);
+        }
+      }
+      fetchData();
+    }, [userCtx.email])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        if (userCtx.email) {
+          console.log("App-Context Update: Fetching app data...");
+          startTime = performance.now();
+
+          let resPurchases, resTransactions;
+          // PURCHASE
+          if (updatePurchase) {
+            resPurchases = await getAllPurchaseStats(userCtx.email);
+          } else {
+            resPurchases = purchases;
+          }
+          let purchaseTime = performance.now();
+          console.log(`--> Load Purchase useFocusEffect took ${purchaseTime - startTime} milliseconds.`);
+          // TRANSACTION
+          if (updateTransaction) {
+            resTransactions = await getAllTransactionsStats(userCtx.email);
+          } else {
+            resTransactions = transactions;
+          }
+          let transactionTime = performance.now();
+          console.log(`--> Load Transaction useFocusEffect took ${transactionTime - purchaseTime} milliseconds.`);
+
+          // EXPENSES
+          let resGroupedExpensesByDate = groupExpensesByDate(resPurchases, resTransactions);
+          setExpensesByDate(resGroupedExpensesByDate);
+
+          console.log(update.trigger);
+          if (update.trigger[TRIGGER_KEYS[1]] == RELOAD_TYPE[0]) {
+            // Add
+            console.log("Add");
+          } else if (update.trigger[TRIGGER_KEYS[1]] == RELOAD_TYPE[1]) {
+            // Update
+            console.log("Update");
+            let curr = update.trigger[TRIGGER_KEYS[2]];
+            let prev = update.trigger[TRIGGER_KEYS[3]];
+            let index = update.trigger[TRIGGER_KEYS[2]].index;
+            console.log(purchases[index]);
+          } else if (update.trigger[TRIGGER_KEYS[1]] == RELOAD_TYPE[2]) {
+            // Delete
+            console.log("Delete");
+          } else if (update.trigger[TRIGGER_KEYS[1]] == RELOAD_TYPE[3]) {
+            // Split
+            console.log("Split");
+            let value = update.trigger[TRIGGER_KEYS[2]].value;
+            let type = update.trigger[TRIGGER_KEYS[2]].type;
+            let index = update.trigger[TRIGGER_KEYS[2]].index;
+            console.log(purchases[index]);
+          }
+
           endTime = performance.now();
-          console.log(`--> Call to App-Context useFocusEffect took ${endTime - startTime} milliseconds.`);
+          console.log(`--> Load useFocusEffect took ${endTime - startTime} milliseconds.`);
           setUpdatePurchase(false);
           setUpdateTransaction(false);
           setReload((prev) => !prev);
         }
       }
       fetchData();
-    }, [userCtx.email, update.updateCount])
+    }, [update.updateCount])
   );
 
-  const triggerReloadPurchase = (month, year) => {
+  // (month, year, refreshTrigger);
+  // {key: _key, type: RELOAD_TYPE, curr: _curr, prev:_prev}
+
+  const triggerReloadPurchase = (month, year, trigger) => {
     setUpdatePurchase(true);
-    setUpdate({ month: month, year: year, updateCount: update.updateCount + 1 });
+    setUpdate({ month: month, year: year, updateCount: update.updateCount + 1, trigger: trigger });
     console.log("Triggered Purchase Reload...");
   };
 
-  const triggerReloadTransaction = (month, year) => {
+  const triggerReloadTransaction = (month, year, trigger) => {
     setUpdateTransaction(true);
-    setUpdate({ month: month, year: year, updateCount: update.updateCount + 1 });
+    setUpdate({ month: month, year: year, updateCount: update.updateCount + 1, trigger: trigger });
     console.log("Triggered Transaction Reload...");
   };
 
