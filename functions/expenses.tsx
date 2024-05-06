@@ -1,5 +1,5 @@
 import { Expense, Purchase, Transaction } from "../models/types";
-import { KEYS, STATS_TYPE } from "../utility/keys";
+import { KEYS, STATS_TYPE, TRANSACTION_TYPE } from "../utility/keys";
 
 export const calcExpensesByType = (expenses: Expense[]) => {
   let res = {};
@@ -159,4 +159,64 @@ export const calcExpensesAverage = (expenses: any, year: number) => {
   });
 
   return [resTotal, resType];
+};
+
+/* 
+    Total: [Purchase, TransactionSent]
+    Personal: [Purchase, TransactionSent, TransactionReceived]
+    Dept: The difference between total and personal is 
+        how much still remains to be received.
+*/
+export const calcSplitDept = (expenses: any, year: number) => {
+  let res = {};
+
+  Object.keys(expenses[year]).forEach((month) => {
+    // Verify if year already exists
+    if (!res[year]) {
+      res[year] = { [month]: 0 };
+    }
+
+    res[year][month] = expenses[year][month][STATS_TYPE[0]] - expenses[year][month][STATS_TYPE[1]];
+  });
+
+  return res;
+};
+
+export const calcTransactionStats = (expenses: any) => {
+  let res = {};
+
+  // Check only transactions
+  Object.keys(expenses).forEach((month) => {
+    expenses[month].forEach(({ element, index, key }) => {
+      if (key == KEYS.TRANSACTION) {
+        element = element as Transaction;
+
+        let month = new Date(element.dot).getMonth();
+        let year = new Date(element.dot).getFullYear();
+
+        let value = parseFloat(element.amount);
+
+        // Verify if year already exists
+        if (!res[year]) {
+          res[year] = { [month]: { [TRANSACTION_TYPE[0]]: 0, [TRANSACTION_TYPE[1]]: 0, [TRANSACTION_TYPE[2]]: 0 } };
+        }
+
+        // Verify if month already exists
+        if (!res[year][month]) {
+          res[year][month] = { [TRANSACTION_TYPE[0]]: 0, [TRANSACTION_TYPE[1]]: 0, [TRANSACTION_TYPE[2]]: 0 };
+        }
+
+        // if transaction received expenses are reduced
+        if (element.user_origin_id) {
+          res[year][month][TRANSACTION_TYPE[0]] -= value;
+          res[year][month][TRANSACTION_TYPE[2]] += value;
+        } else {
+          res[year][month][TRANSACTION_TYPE[0]] += value;
+          res[year][month][TRANSACTION_TYPE[1]] += value;
+        }
+      }
+    });
+  });
+
+  return res;
 };

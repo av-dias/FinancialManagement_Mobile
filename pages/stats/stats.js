@@ -20,79 +20,81 @@ import { months } from "../../utility/calendar";
 //Functions
 import { heightTreshold, horizontalScale, verticalScale } from "../../functions/responsive";
 import { isCtxLoaded } from "./handler";
+import { calcExpensesByType, calcExpensesTotalFromType, calcSplitDept, calcTransactionStats } from "../../functions/expenses";
 
 export default function Stats({ navigation }) {
   const styles = _styles;
 
-  const [ctxValue, setCtxValue] = useState({});
 
   const [splitDeptData, setSplitDeptData] = useState({});
   const [spendByType, setSpendByType] = useState({});
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear().toString());
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth().toString());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [transactionStats, setTransactionStats] = useState({});
 
   const appCtx = useContext(AppContext);
 
   useFocusEffect(
     React.useCallback(() => {
-      let currDateYear = currentYear.toString();
-      let currDateMonth = currentMonth.toString();
-
       function fetchData() {
-        if (isCtxLoaded(appCtx, currDateYear, currDateMonth)) {
-          console.log("Stats: Fetching app data...");
-          startTime = performance.now();
-          const value = {
-            expenseByType: appCtx.expenseByType,
-            transactionTotal: appCtx.transactionTotal,
-            splitDept: appCtx.splitDept,
-            totalExpensesByType: appCtx.totalExpensesByType,
-          };
-          setCtxValue(value);
-          endTime = performance.now();
-          console.log(`--> Call to Stats useFocusEffect took ${endTime - startTime} milliseconds.`);
-        }
-      }
-      fetchData();
-    }, [appCtx.reload])
-  );
+        /* 
+            TODO: Enable Previous Year Data
+        */
+        if (appCtx && appCtx.expenses && appCtx.expenses.hasOwnProperty(currentYear)) {
+          let resExpensesTotal = { [currentYear]: {} },
+            month = 0;
 
-  useFocusEffect(
-    React.useCallback(() => {
-      let currDateYear = currentYear.toString();
-      let currDateMonth = currentMonth.toString();
+          Object.keys(appCtx.expenses[currentYear]).forEach((month) => {
+            let resExpensesByType = calcExpensesByType(appCtx.expenses[currentYear][month]);
+            let res = calcExpensesTotalFromType(resExpensesByType[currentYear][month]);
+            resExpensesTotal[currentYear][month] = res;
+          });
 
-      function fetchData() {
-        if (isCtxLoaded(ctxValue, currDateYear, currDateMonth)) {
-          console.log("Stats: Fetching app data...");
-          startTime = performance.now();
+          let resDept = calcSplitDept(resExpensesTotal, currentYear);
+
           let resSplitDeptData = {},
             resSpendByType = {},
-            resTransactionTotal = ctxValue.transactionTotal;
+            resTransactionTotal = {};
 
           // Load Split Dept Data
-          for (let year of Object.keys(ctxValue.splitDept)) {
-            let monthsList = Object.keys(ctxValue.splitDept[year]);
-            // Add dummy data when only one months data is available
-            if (monthsList.length == 1) {
-              let indexMonth;
-              if (monthsList[0] == 0) {
-                indexMonth = 1;
-              } else indexMonth = monthsList[0] - 1;
-              resSplitDeptData[year] = [{ x: months[indexMonth], y: 10 }];
+          let monthsList = Object.keys(resDept[currentYear]);
+          // Add dummy data when only one months data is available
+          if (monthsList.length == 1) {
+            let indexMonth;
+            if (monthsList[0] == 0) {
+              indexMonth = 1;
+            } else indexMonth = monthsList[0] - 1;
+            resSplitDeptData[currentYear] = [{ x: months[indexMonth], y: 10 }];
+          }
+          for (let month of Object.keys(resDept[currentYear])) {
+            if (!resSplitDeptData[currentYear]) {
+              resSplitDeptData[currentYear] = [];
             }
-            for (let month of Object.keys(ctxValue.splitDept[year])) {
-              if (!resSplitDeptData[year]) {
-                resSplitDeptData[year] = [];
-              }
 
-              resSplitDeptData[year].push({ x: months[month], y: ctxValue.splitDept[year][month] });
-            }
+            resSplitDeptData[currentYear].push({ x: months[month], y: resDept[currentYear][month] });
           }
           setSplitDeptData(resSplitDeptData);
 
-          // Load Split Dept Data
+          /* 
+            Load Transaction Data
+            TODO: Improve json data storage consistency
+          */
+          resTransactionTotal = calcTransactionStats(appCtx.expenses[currentYear]);
+          for (let year of Object.keys(resTransactionTotal)) {
+            resTransactionTotal[year][TRANSACTION_TYPE[0]] = [];
+            for (let month of Object.keys(resTransactionTotal[year])) {
+              if (month == TRANSACTION_TYPE[0]) continue;
+              if (!resTransactionTotal[year][TRANSACTION_TYPE[0]]) resTransactionTotal[year][TRANSACTION_TYPE[0]] = [];
+
+              resTransactionTotal[year][TRANSACTION_TYPE[0]].push({
+                x: months[month],
+                y: parseFloat(resTransactionTotal[year][month][TRANSACTION_TYPE[0]]),
+              });
+            }
+          }
+          setTransactionStats(resTransactionTotal);
+
+          /* // Load Split Dept Data
           for (let year of Object.keys(ctxValue.totalExpensesByType)) {
             for (let type of Object.keys(ctxValue.totalExpensesByType[year])) {
               if (!resSpendByType[year]) {
@@ -102,28 +104,14 @@ export default function Stats({ navigation }) {
               resSpendByType[year].push({ x: type, y: ctxValue.totalExpensesByType[year][type] });
             }
           }
-          setSpendByType(resSpendByType);
-
-          // Load Transaction Stats
-          for (let year of Object.keys(ctxValue.transactionTotal)) {
-            resTransactionTotal[year][TRANSACTION_TYPE[0]] = [];
-            for (let month of Object.keys(ctxValue.transactionTotal[year])) {
-              if (month == TRANSACTION_TYPE[0]) continue;
-              if (!resTransactionTotal[year][TRANSACTION_TYPE[0]]) resTransactionTotal[year][TRANSACTION_TYPE[0]] = [];
-
-              resTransactionTotal[year][TRANSACTION_TYPE[0]].push({
-                x: months[month],
-                y: parseFloat(ctxValue.transactionTotal[year][month][TRANSACTION_TYPE[0]]),
-              });
-            }
-          }
-          setTransactionStats(resTransactionTotal);
-          endTime = performance.now();
-          console.log(`--> Call to Stats useFocusEffect took ${endTime - startTime} milliseconds.`);
+          setSpendByType(resSpendByType); */
         }
       }
+      let startTime = performance.now();
       fetchData();
-    }, [ctxValue])
+      let endTime = performance.now();
+      console.log(`Stats: Fetch took ${endTime - startTime} milliseconds.`);
+    }, [appCtx, currentYear])
   );
 
   const calculateArrayVariation = (arr) => {
