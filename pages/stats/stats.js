@@ -101,7 +101,6 @@ export default function Stats({ navigation }) {
 
           // Load Split Dept Data
           let resTotalExpensesByType = calcTotalExpensesByType(appCtx.expenses, currentYear);
-          console.log(resTotalExpensesByType);
           for (let year of Object.keys(resTotalExpensesByType)) {
             for (let type of Object.keys(resTotalExpensesByType[year][STATS_TYPE[1]])) {
               if (!resSpendByType[year]) {
