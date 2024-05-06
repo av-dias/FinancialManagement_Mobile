@@ -14,17 +14,22 @@ import TypeCard from "../../components/typeCard/typeCard";
 
 //Custom Constants
 import { _styles } from "./style";
-import { TRANSACTION_TYPE } from "../../utility/keys";
+import { STATS_TYPE, TRANSACTION_TYPE } from "../../utility/keys";
 import { months } from "../../utility/calendar";
 
 //Functions
 import { heightTreshold, horizontalScale, verticalScale } from "../../functions/responsive";
 import { isCtxLoaded } from "./handler";
-import { calcExpensesByType, calcExpensesTotalFromType, calcSplitDept, calcTransactionStats } from "../../functions/expenses";
+import {
+  calcExpensesByType,
+  calcExpensesTotalFromType,
+  calcSplitDept,
+  calcTotalExpensesByType,
+  calcTransactionStats,
+} from "../../functions/expenses";
 
 export default function Stats({ navigation }) {
   const styles = _styles;
-
 
   const [splitDeptData, setSplitDeptData] = useState({});
   const [spendByType, setSpendByType] = useState({});
@@ -94,17 +99,18 @@ export default function Stats({ navigation }) {
           }
           setTransactionStats(resTransactionTotal);
 
-          /* // Load Split Dept Data
-          for (let year of Object.keys(ctxValue.totalExpensesByType)) {
-            for (let type of Object.keys(ctxValue.totalExpensesByType[year])) {
+          // Load Split Dept Data
+          let resTotalExpensesByType = calcTotalExpensesByType(appCtx.expenses, currentYear);
+          console.log(resTotalExpensesByType);
+          for (let year of Object.keys(resTotalExpensesByType)) {
+            for (let type of Object.keys(resTotalExpensesByType[year][STATS_TYPE[1]])) {
               if (!resSpendByType[year]) {
                 resSpendByType[year] = [];
               }
-
-              resSpendByType[year].push({ x: type, y: ctxValue.totalExpensesByType[year][type] });
+              resSpendByType[year].push({ x: type, y: resTotalExpensesByType[year][STATS_TYPE[1]][type] });
             }
           }
-          setSpendByType(resSpendByType); */
+          setSpendByType(resSpendByType);
         }
       }
       let startTime = performance.now();
