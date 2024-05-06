@@ -4,6 +4,8 @@ import { categoryIcons } from "../../assets/icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { _styles } from "./style";
 import { STATS_MODE, STATS_TYPE } from "../../utility/keys";
+import { Expense } from "../../models/types";
+import { Chart, Table } from "../../models/charts";
 
 const styles = _styles;
 
@@ -22,7 +24,7 @@ export const isCtxLoaded = (ctx, year, month) => {
   );
 };
 
-export const loadExpenses = (expenses) => {
+export const loadExpenses = (expenses: string) => {
   let array = { [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] };
   let arrayTables = { [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] };
   Object.keys(expenses).forEach((stats) => {
@@ -37,17 +39,19 @@ export const loadExpenses = (expenses) => {
 
       let pieChartValue = expenses[stats][type] < 0 ? 1 : expenses[stats][type];
 
-      array[stats].push({ x: " ", y: pieChartValue, color: _color });
+      array[stats].push({ x: " ", y: pieChartValue, color: _color } as Chart);
       arrayTables[stats].push([
         <FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />,
         type,
         parseFloat(expenses[stats][type]).toFixed(0),
-      ]);
+      ] as Table);
     });
+
     arrayTables[stats] = arrayTables[stats].sort(function (a, b) {
       return b[2] - a[2];
     });
   });
+
   return [array, arrayTables];
 };
 
@@ -82,12 +86,12 @@ export const loadCalendarCard = (statsMode, currentMonth, setCurrentMonth, curre
   if (statsMode == STATS_MODE[0]) return <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />;
 };
 
-export const loadPieChartData = (statsMode, statsType, pieChartData, pieChartAverageData) => {
+export const loadPieChartData = (statsMode: any, statsType: any, pieChartData: any, pieChartAverageData: any) => {
   if (statsMode == STATS_MODE[0]) return pieChartData[statsType];
   else return pieChartAverageData[statsType];
 };
 
-export const loadPurchaseTotalData = (statsMode, statsType, purchaseTotal, purchaseAverageTotal) => {
+export const loadPurchaseTotalData = (statsMode: any, statsType: any, purchaseTotal: any, purchaseAverageTotal: any) => {
   if (statsMode == STATS_MODE[0]) {
     return Number(purchaseTotal[statsType]).toFixed(1) + "€";
   } else return Number(purchaseAverageTotal[statsType]).toFixed(1) + "€";

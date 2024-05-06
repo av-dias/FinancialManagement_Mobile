@@ -20,6 +20,7 @@ import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
 
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { loadCalendarCard, loadPieChartData, loadPurchaseTotalData, loadSpendTableData, loadExpenses, isCtxLoaded } from "./handler";
+import { calcExpensesByType, calcExpensesAverage, calcExpensesTotalFromType } from "../../functions/expenses";
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -29,10 +30,10 @@ export default function Home({ navigation }) {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
-  const [ctxValue, setCtxValue] = useState({});
   const [pieChartData, setPieChartData] = useState({ [STATS_TYPE[0]]: [] });
   const [spendByType, setSpendByType] = useState({ [STATS_TYPE[0]]: [[""]] });
-  const [purchaseTotal, setPurchaseTotal] = useState({ [STATS_TYPE[0]]: "0.00" });
+  const [expenseTotal, setExpenseTotal] = useState({ [STATS_TYPE[0]]: "0.00" });
+
   const [pieChartAverageData, setPieChartAverageData] = useState({ [STATS_TYPE[0]]: [] });
   const [spendAverageByType, setSpendAverageByType] = useState({ [STATS_TYPE[0]]: [[""]] });
   const [purchaseAverageTotal, setPurchaseAverageTotal] = useState({ [STATS_TYPE[0]]: "0.00" });
@@ -46,52 +47,27 @@ export default function Home({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      let currDateYear = currentYear.toString();
-      let currDateMonth = currentMonth.toString();
       function fetchData() {
-        if (isCtxLoaded(appCtx, currDateYear, currDateMonth)) {
-          const value = {
-            totalExpense: appCtx.totalExpense,
-            expenseByType: appCtx.expenseByType,
-            totalExpensesAverage: appCtx.totalExpensesAverage,
-            totalExpensesByTypeAverage: appCtx.totalExpensesByTypeAverage,
-          };
-          setCtxValue(value);
+        if (appCtx && appCtx.expenses && appCtx.expenses.hasOwnProperty(currentYear) && appCtx.expenses[currentYear].hasOwnProperty(currentMonth)) {
+          let resExpensesByType = calcExpensesByType(appCtx.expenses[currentYear][currentMonth]);
+          let [resPieChart, resTableChart] = loadExpenses(resExpensesByType[currentYear][currentMonth]);
+          setPieChartData(resPieChart);
+          setSpendByType(resTableChart);
+          setExpenseTotal(calcExpensesTotalFromType(resExpensesByType[currentYear][currentMonth]));
+
+          //Average
+          let [resTotal, resType] = calcExpensesAverage(appCtx.expenses, currentYear);
+          let [resAveragePieChart, resAverageTableChart] = loadExpenses(resType[currentYear]);
+          setPieChartAverageData(resAveragePieChart);
+          setSpendAverageByType(resAverageTableChart);
+          setPurchaseAverageTotal(resTotal[currentYear]);
         }
       }
+      let startTime = performance.now();
       fetchData();
-    }, [appCtx.reload])
-  );
-
-  useFocusEffect(
-    React.useCallback(() => {
-      let currDateYear = currentYear.toString();
-      let currDateMonth = currentMonth.toString();
-      if (isCtxLoaded(ctxValue, currDateYear, currDateMonth)) {
-        console.log("Home: Fetching app data...");
-        startTime = performance.now();
-        // Load data for total expense
-        setPurchaseTotal(ctxValue["totalExpense"][currDateYear][currDateMonth]);
-        // Load data to fill chart and table
-        let [auxPieChartData, auxTableData] = loadExpenses(ctxValue["expenseByType"][currDateYear][currDateMonth]);
-        setPieChartData(auxPieChartData);
-        setSpendByType(auxTableData);
-        // Load Average data to fill chart and table
-        setPurchaseAverageTotal(ctxValue["totalExpensesAverage"][currDateYear]);
-        let [auxPieChartAverageData, auxSpendAverageByType] = loadExpenses(ctxValue["totalExpensesByTypeAverage"][currDateYear]);
-        setPieChartAverageData(auxPieChartAverageData);
-        setSpendAverageByType(auxSpendAverageByType);
-        endTime = performance.now();
-        console.log(`--> Call to Home useFocusEffect took ${endTime - startTime} milliseconds.`);
-      } else {
-        // If data is not available for the current month
-        setPurchaseTotal({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
-        setPieChartData({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
-        setSpendByType({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
-        setPieChartAverageData({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
-        setSpendAverageByType({ [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] });
-      }
-    }, [ctxValue, currentMonth, currentYear])
+      let endTime = performance.now();
+      console.log(`Home: Fetch took ${endTime - startTime} milliseconds.`);
+    }, [appCtx, currentMonth, currentYear])
   );
 
   return (
@@ -123,7 +99,7 @@ export default function Home({ navigation }) {
                 />
                 <View style={{ position: "absolute", justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}>
                   <Text style={{ alignSelf: "center", fontSize: verticalScale(40), color: "white" }}>
-                    {loadPurchaseTotalData(statsMode, statsType, purchaseTotal, purchaseAverageTotal)}
+                    {loadPurchaseTotalData(statsMode, statsType, expenseTotal, purchaseAverageTotal)}
                   </Text>
                   {loadCalendarCard(statsMode, currentMonth, setCurrentMonth, currentYear, setCurrentYear)}
                 </View>
