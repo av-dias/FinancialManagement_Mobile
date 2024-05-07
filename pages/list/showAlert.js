@@ -1,12 +1,13 @@
 import { Alert } from "react-native";
-import { KEYS as KEYS_SERIALIZER,  } from "../../utility/keys";
+import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
 import { removeFromStorage } from "../../functions/secureStorage";
+import { deleteExpenses } from "../../functions/expenses";
 
-export default showAlert = (key, array, email) => {
+export default showAlert = (key, expense, email, setExpenses) => {
   let [identifier, id] = key.split(KEYS_SERIALIZER.TOKEN_SEPARATOR);
   let element = identifier == KEYS_SERIALIZER.PURCHASE ? KEYS.PURCHASE : KEYS.TRANSACTION,
-    elementArray = array,
+    elementArray = expense.element,
     title = "",
     description = "",
     body = `Name: ${elementArray.name}\n`,
@@ -42,6 +43,7 @@ export default showAlert = (key, array, email) => {
         onPress: async () => {
           if (identifier == KEYS_SERIALIZER.PURCHASE || identifier == KEYS_SERIALIZER.TRANSACTION) {
             await removeFromStorage(element, id, email);
+            deleteExpenses(expense, setExpenses);
           }
         },
         style: "yes",

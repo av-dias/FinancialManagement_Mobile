@@ -93,22 +93,22 @@ export default function List({ navigation }) {
                   </View>
                   <CardWrapper key={date} style={styles.listBox}>
                     {expensesGroupedByDate[date] &&
-                      expensesGroupedByDate[date].map((innerData) => (
+                      expensesGroupedByDate[date].map((expenses) => (
                         <ListItem
-                          key={innerData.index + innerData.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
-                          innerData={innerData.element}
+                          key={expenses.index + expenses.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
+                          innerData={expenses.element}
                           handleSplit={async () => {
-                            setSelectedItem({ ...innerData });
-                            await handleSplit(email, innerData, getSplitEmail(splitUser), setExpenses);
+                            setSelectedItem({ ...expenses });
+                            await handleSplit(email, expenses, getSplitEmail(splitUser), setExpenses);
                           }}
                           handleEdit={async () => {
-                            setSelectedItem({ ...innerData });
-                            setSliderStatus("split" in innerData.element ? true : false);
+                            setSelectedItem({ ...expenses });
+                            setSliderStatus("split" in expenses.element ? true : false);
                             setEditVisible(true);
                           }}
-                          keys={innerData.key}
+                          keys={expenses.key}
                           showAlert={() => {
-                            showAlert(innerData.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index, innerData.element, email);
+                            showAlert(expenses.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + expenses.index, expenses, email, setExpenses);
                           }}
                         />
                       ))}

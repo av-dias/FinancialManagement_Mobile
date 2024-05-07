@@ -328,3 +328,27 @@ export const updateExpenses = (expense: Expense, setExpenses: any) => {
     return updatedState;
   });
 };
+
+export const deleteExpenses = (expense: Expense, setExpenses: any) => {
+  let year: number, month: number, updatedState: any;
+  setExpenses((prev: any) => {
+    updatedState = { ...prev };
+    if (KEYS.PURCHASE == expense.key) {
+      let purchase = expense.element as Purchase;
+      month = new Date(purchase.dop).getMonth();
+      year = new Date(purchase.dop).getFullYear();
+    } else if (KEYS.TRANSACTION == expense.key) {
+      let transaction = expense.element as Transaction;
+      month = new Date(transaction.dot).getMonth();
+      year = new Date(transaction.dot).getFullYear();
+    } else {
+      alert("Invalid Expense Element");
+      return prev;
+    }
+
+    let index = prev[year][month].findIndex((e: Expense) => e.index == expense.index && e.key == expense.key);
+    delete updatedState[year][month][index];
+
+    return updatedState;
+  });
+};
