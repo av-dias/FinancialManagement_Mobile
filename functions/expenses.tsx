@@ -4,6 +4,8 @@ import { KEYS, STATS_TYPE, TRANSACTION_TYPE } from "../utility/keys";
 export const calcExpensesByType = (expenses: Expense[]) => {
   let res = {};
 
+  console.log(expenses);
+
   expenses.forEach(({ element, index, key }) => {
     let year: number, month: number;
     if (key == KEYS.TRANSACTION) {

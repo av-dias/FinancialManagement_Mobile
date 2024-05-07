@@ -17,6 +17,7 @@ import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
 //Functions
 import { categoryIcons, utilIcons } from "../../assets/icons";
 import { isCtxLoaded } from "./handler";
+import { calcExpensesAverage, calcExpensesByType, calcExpensesTotalFromType, calcTotalExpensesByType } from "../../functions/expenses";
 
 export default function Budget({ navigation }) {
   const styles = _styles;
@@ -24,7 +25,6 @@ export default function Budget({ navigation }) {
   const [email, setEmail] = useState("");
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth().toString());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear().toString());
-  const [ctxValue, setCtxValue] = useState({});
 
   const [spendAverageByType, setSpendAverageByType] = useState({});
   const [purchaseAverageTotal, setPurchaseAverageTotal] = useState({});
@@ -35,7 +35,7 @@ export default function Budget({ navigation }) {
   const appCtx = useContext(AppContext);
 
   const getTotalProgress = (monthValue, monthAverage) => {
-    if (!monthValue) return 0;
+    if (!monthValue || !monthAverage || monthAverage == 0 || monthValue == 0) return 0;
     return monthValue / monthAverage;
   };
 
@@ -61,51 +61,62 @@ export default function Budget({ navigation }) {
   };
 
   const getLastAvailableTypeValue = (data, currentYear, type) => {
-    if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1].hasOwnProperty(type)) {
-      return parseFloat(data[currentYear - 1][type]).toFixed(0);
+    if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1][STATS_TYPE[1]].hasOwnProperty(type)) {
+      return parseFloat(data[currentYear - 1][STATS_TYPE[1]][type]).toFixed(0);
     } else {
-      return parseFloat(data[currentYear][type]).toFixed(0);
+      return parseFloat(data[currentYear][STATS_TYPE[1]][type]).toFixed(0);
     }
   };
 
   useFocusEffect(
     React.useCallback(() => {
-      let currDateYear = currentYear.toString();
-      let currDateMonth = currentMonth.toString();
-      function fetchData() {
-        if (isCtxLoaded(appCtx, currDateYear, currDateMonth)) {
-          const value = {
-            totalExpense: appCtx.totalExpense,
-            expenseByType: appCtx.expenseByType,
-            totalExpensesAverage: appCtx.totalExpensesAverage,
-            totalExpensesByType: appCtx.totalExpensesByType,
-            totalExpensesByTypeAverage: appCtx.totalExpensesByTypeAverage,
-          };
-          setCtxValue(value);
-        }
-      }
-      fetchData();
-    }, [appCtx.reload])
-  );
-
-  useFocusEffect(
-    React.useCallback(() => {
-      let currDateYear = currentYear.toString();
-      let currDateMonth = currentMonth.toString();
-      if (isCtxLoaded(ctxValue, currDateYear, currDateMonth)) {
+      if (appCtx) {
         console.log("Budget: Fetching app data...");
         startTime = performance.now();
 
-        setSpendAverageByType(ctxValue.totalExpensesByTypeAverage);
-        setPurchaseAverageTotal(ctxValue.totalExpensesAverage);
-        setPurchaseCurrentStats(ctxValue.expenseByType);
-        setPurchaseTotal(ctxValue.totalExpense);
-        setExpensesTotalByType(ctxValue.totalExpensesByType);
+        /* 
+            TODO: Enable Previous Year Data
+            TODO: If the average previous year does not have a type make the current one
+        */
+        let [resTotal, resType] = calcExpensesAverage(appCtx.expenses, currentYear);
+        let resTotalExpensesByType = calcTotalExpensesByType(appCtx.expenses, currentYear);
+
+        let resExpensesByType = { ...resType },
+          resExpensesTotal;
+
+        if (appCtx.expenses[currentYear][currentMonth]) {
+          resExpensesByType = calcExpensesByType(appCtx.expenses[currentYear][currentMonth]);
+          resExpensesTotal = calcExpensesTotalFromType(resExpensesByType[currentYear][currentMonth]);
+        } else {
+          // TODO: If no data for current year and month
+          Object.keys(resType[currentYear]).forEach((statsType) => {
+            Object.keys(resType[currentYear][statsType]).forEach((type) => {
+              resExpensesByType[currentYear][statsType][type] = 0;
+            });
+          });
+
+          resExpensesTotal = { [currentYear]: { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 } };
+        }
+
+        if (appCtx.expenses[currentYear - 1]) {
+          let [resTotalPrev, resTypePrev] = calcExpensesAverage(appCtx.expenses, currentYear - 1);
+          let resTotalExpensesByTypePrev = calcTotalExpensesByType(appCtx.expenses, currentYear - 1);
+
+          resTotal = { ...resTotal, ...resTotalPrev };
+          resType = { ...resType, ...resTypePrev };
+          resTotalExpensesByType = { ...resTotalExpensesByType, ...resTotalExpensesByTypePrev };
+        }
+
+        setSpendAverageByType(resType);
+        setPurchaseAverageTotal(resTotal);
+        setPurchaseCurrentStats(resExpensesByType);
+        setPurchaseTotal(resExpensesTotal);
+        setExpensesTotalByType(resTotalExpensesByType);
 
         endTime = performance.now();
         console.log(`--> Call to Budget useFocusEffect took ${endTime - startTime} milliseconds.`);
       }
-    }, [ctxValue])
+    }, [appCtx])
   );
 
   return (
@@ -118,20 +129,21 @@ export default function Budget({ navigation }) {
               key={"TotalView"}
               style={{ height: 50, backgroundColor: "lightgray", padding: 5, borderRadius: 5, justifyContent: "center", gap: 5 }}
             >
-              <Text key={"TotalText"} style={{ fontWeight: "bold" }}>
-                {"Average " +
-                  getCurrentValue(purchaseTotal[currentYear][currentMonth][STATS_TYPE[1]]) +
-                  "/" +
-                  getLastAvailableAverageValue(purchaseAverageTotal, currentYear)}
-              </Text>
-              <ProgressBar
-                key={"PTtotal"}
-                progress={getTotalProgress(
-                  getCurrentValue(purchaseTotal[currentYear][currentMonth][STATS_TYPE[1]]),
-                  getLastAvailableAverageValue(purchaseAverageTotal, currentYear)
-                )}
-                color={"red"}
-              />
+              {
+                <Text key={"TotalText"} style={{ fontWeight: "bold" }}>
+                  {"Average " + getCurrentValue(purchaseTotal[STATS_TYPE[1]]) + "/" + getLastAvailableAverageValue(purchaseAverageTotal, currentYear)}
+                </Text>
+              }
+              {
+                <ProgressBar
+                  key={"PTtotal"}
+                  progress={getTotalProgress(
+                    getCurrentValue(purchaseTotal[STATS_TYPE[1]]),
+                    getLastAvailableAverageValue(purchaseAverageTotal, currentYear)
+                  )}
+                  color={"red"}
+                />
+              }
             </View>
           )}
           {spendAverageByType[currentYear] &&
@@ -143,13 +155,12 @@ export default function Budget({ navigation }) {
               let currentTypeValue = 0,
                 currentTotalTypeValue = 0;
 
-              if (purchaseCurrentStats[currentYear][currentMonth][STATS_TYPE[1]].hasOwnProperty(type)) {
-                currentTypeValue = parseFloat(purchaseCurrentStats[currentYear][currentMonth][STATS_TYPE[1]][type]).toFixed(0);
+              if (purchaseCurrentStats[currentYear][STATS_TYPE[1]].hasOwnProperty(type)) {
+                currentTypeValue = parseFloat(purchaseCurrentStats[currentYear][STATS_TYPE[1]][type]).toFixed(0);
               }
-              if (expensesTotalByType[currentYear].hasOwnProperty(type)) {
-                currentTotalTypeValue = parseFloat(expensesTotalByType[currentYear][type]).toFixed(0);
+              if (expensesTotalByType[currentYear][STATS_TYPE[1]].hasOwnProperty(type)) {
+                currentTotalTypeValue = parseFloat(expensesTotalByType[currentYear][STATS_TYPE[1]][type]).toFixed(0);
               }
-
               return (
                 <View
                   key={type + "View"}
@@ -168,7 +179,7 @@ export default function Budget({ navigation }) {
                     </View>
                     <View>
                       <Text key={type + "TextM"}>{"Monthly " + currentTypeValue + "/" + lastAverageTypeValue}</Text>
-                      <ProgressBar key={"PM" + type} progress={getTotalProgress(currentTypeValue, lastAverageTypeValue)} color={"blue"} />
+                      {<ProgressBar key={"PM" + type} progress={getTotalProgress(currentTypeValue, lastAverageTypeValue)} color={"blue"} />}
                     </View>
                   </View>
                 </View>
