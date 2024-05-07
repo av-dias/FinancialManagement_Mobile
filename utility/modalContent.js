@@ -2,14 +2,14 @@ import { Text, View, Pressable, ScrollView } from "react-native";
 import { verticalScale } from "../functions/responsive";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
 import { Table, TableWrapper, Row, Cell } from "react-native-table-component";
-import commonStyles from "../utility/commonStyles";
+import commonStyles from "./commonStyles";
 import CustomInput from "../components/customInput/customInput";
 import Carrossel from "../components/carrossel/carrossel";
 import CustomCalendarStrip from "../components/customCalendarStrip/customCalendarStrip";
 import MoneyInputHeader from "../components/moneyInputHeader/moneyInputHeader";
 import SplitSlider from "../components/splitSlider/splitSlider";
 import CustomButton from "../components/customButton/customButton";
-import { KEYS as KEYS_SERIALIZER } from "../utility/keys";
+import { KEYS as KEYS_SERIALIZER } from "./keys";
 
 export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider, styles) => {
   const state = {
@@ -80,7 +80,7 @@ export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible
 
 export const ModalList = (
   email,
-  selectedItem,
+  expense,
   setSelectedItem,
   splitUser,
   sliderStatus,
@@ -92,9 +92,9 @@ export const ModalList = (
   styles
 ) => {
   let content;
-  let beforeEditItem = { ...selectedItem };
 
-  switch (selectedItem.key) {
+  let selectedItem = expense.element;
+  switch (expense.key) {
     case KEYS_SERIALIZER.TRANSACTION:
       content = (
         <View style={{ flex: 1 }}>
@@ -102,8 +102,11 @@ export const ModalList = (
             value={String(selectedItem.amount)}
             setValue={(_amout) => {
               setSelectedItem({
-                ...selectedItem,
-                amount: _amout,
+                ...expense,
+                element: {
+                  ...selectedItem,
+                  amount: _amout,
+                },
               });
             }}
           />
@@ -111,7 +114,7 @@ export const ModalList = (
             <Carrossel
               type={selectedItem.type}
               setType={(_type) => {
-                setSelectedItem({ ...selectedItem, type: _type });
+                setSelectedItem({ ...expense, element: { ...selectedItem, type: _type } });
               }}
               size={verticalScale(90)}
               iconSize={30}
@@ -120,8 +123,11 @@ export const ModalList = (
               pickerCurrentDate={selectedItem.dot}
               setPickerCurrentDate={(_dot) => {
                 setSelectedItem({
-                  ...selectedItem,
-                  dot: new Date(_dot).toISOString().split("T")[0],
+                  ...expense,
+                  element: {
+                    ...selectedItem,
+                    dot: new Date(_dot).toISOString().split("T")[0],
+                  },
                 });
               }}
             />
@@ -136,8 +142,11 @@ export const ModalList = (
               placeholder="Description"
               setValue={(_description) => {
                 setSelectedItem({
-                  ...selectedItem,
-                  description: _description,
+                  ...expense,
+                  element: {
+                    ...selectedItem,
+                    description: _description,
+                  },
                 });
               }}
               value={selectedItem.description}
@@ -145,7 +154,7 @@ export const ModalList = (
           </View>
           <CustomButton
             handlePress={() => {
-              handleEditTransaction(email, selectedItem, setRefreshTrigger, setEditVisible, beforeEditItem);
+              handleEditTransaction(email, expense, setRefreshTrigger, setEditVisible);
             }}
           />
         </View>
@@ -157,10 +166,7 @@ export const ModalList = (
           <MoneyInputHeader
             value={selectedItem.value}
             setValue={(_value) => {
-              setSelectedItem({
-                ...selectedItem,
-                value: _value,
-              });
+              setSelectedItem({ ...expense, element: { ...selectedItem, value: _value } });
             }}
             verticalHeight={65}
           />
@@ -169,10 +175,13 @@ export const ModalList = (
               type={selectedItem.type}
               setType={(_type) => {
                 setSelectedItem({
-                  ...selectedItem,
-                  type: _type,
-                  name: "",
-                  note: "",
+                  ...expense,
+                  element: {
+                    ...selectedItem,
+                    type: _type,
+                    name: "",
+                    note: "",
+                  },
                 });
               }}
               size={verticalScale(90)}
@@ -182,8 +191,11 @@ export const ModalList = (
               pickerCurrentDate={selectedItem.dop}
               setPickerCurrentDate={(_dop) => {
                 setSelectedItem({
-                  ...selectedItem,
-                  dop: new Date(_dop).toISOString().split("T")[0],
+                  ...expense,
+                  element: {
+                    ...selectedItem,
+                    dop: new Date(_dop).toISOString().split("T")[0],
+                  },
                 });
               }}
             />
@@ -193,8 +205,11 @@ export const ModalList = (
               placeholder="Name"
               setValue={(_name) => {
                 setSelectedItem({
-                  ...selectedItem,
-                  name: _name,
+                  ...expense,
+                  element: {
+                    ...selectedItem,
+                    name: _name,
+                  },
                 });
               }}
               value={selectedItem.name}
@@ -205,8 +220,11 @@ export const ModalList = (
               placeholder="Notes"
               setValue={(_note) => {
                 setSelectedItem({
-                  ...selectedItem,
-                  note: _note,
+                  ...expense,
+                  element: {
+                    ...selectedItem,
+                    note: _note,
+                  },
                 });
               }}
               value={selectedItem.note}
@@ -218,7 +236,7 @@ export const ModalList = (
               setSplitStatus={setSliderStatus}
               slider={"split" in selectedItem ? selectedItem.split.weight : 50}
               setSlider={(_slider) => {
-                setSelectedItem({ ...selectedItem, split: { weight: _slider, userId: splitUser } });
+                setSelectedItem({ ...expense, element: { ...selectedItem, split: { weight: _slider, userId: splitUser } } });
               }}
               size={verticalScale(90)}
             />
@@ -226,7 +244,7 @@ export const ModalList = (
           <CustomButton
             text="Save"
             handlePress={() => {
-              handleEditPurchase(email, selectedItem, sliderStatus, setRefreshTrigger, setEditVisible, beforeEditItem);
+              handleEditPurchase(email, expense, sliderStatus, setRefreshTrigger, setEditVisible);
             }}
           />
         </View>

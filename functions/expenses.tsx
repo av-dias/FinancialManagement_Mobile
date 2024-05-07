@@ -284,3 +284,23 @@ export const calcTotalExpensesByType = (expenses: any, year: number) => {
 
   return resType;
 };
+
+export const groupExpensesByDate = (expenses: any, year: number, month: number) => {
+  let groupedPurchases = {};
+
+  expenses[year][month].forEach(({ element, index, key }: Expense) => {
+    if (key == KEYS.TRANSACTION) {
+      element = element as Transaction;
+      let dateValue = element.dot;
+      (groupedPurchases[dateValue] = groupedPurchases[dateValue] || []).push({ element, index, key });
+    } else if (key == KEYS.PURCHASE) {
+      element = element as Purchase;
+      let dateValue = element.dop;
+      (groupedPurchases[dateValue] = groupedPurchases[dateValue] || []).push({ element, index, key });
+    } else {
+      alert("Invalid Expense Element");
+    }
+  });
+
+  return groupedPurchases;
+};

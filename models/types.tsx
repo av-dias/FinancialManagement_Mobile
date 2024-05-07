@@ -9,6 +9,7 @@ export type Purchase = {
 };
 
 export type Split = {
+  userId: string;
   weight: string;
 };
 

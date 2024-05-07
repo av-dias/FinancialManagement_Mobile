@@ -23,6 +23,7 @@ import CalendarCard from "../../components/calendarCard/calendarCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import ModalCustom from "../../components/modal/modal";
 import ListItem from "../../components/listItem/listItem";
+import { groupExpensesByDate } from "../../functions/expenses";
 
 export default function List({ navigation }) {
   const styles = _styles;
@@ -30,8 +31,6 @@ export default function List({ navigation }) {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
-  const [groupedArchivedPurchases, setGroupedArchivedPurchases] = useState([]);
-  const [groupedArchivedTransactions, setGroupedArchivedTransactions] = useState([]);
   const [expensesGroupedByDate, setExpensesGroupedByDate] = useState([]);
 
   const [selectedItem, setSelectedItem] = useState({ date: new Date().toISOString().split("T")[0] });
@@ -49,24 +48,23 @@ export default function List({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       function fetchData() {
-        if (isCtxLoaded(appCtx)) {
+        if (appCtx && appCtx.expenses && appCtx.expenses.hasOwnProperty(currentYear) && appCtx.expenses[currentYear].hasOwnProperty(currentMonth)) {
           console.log("List: Fetching app data...");
           startTime = performance.now();
-          setExpensesGroupedByDate(appCtx.expensesByDate);
-          let list = Object.keys(appCtx.expensesByDate)
-            .concat(Object.keys(groupedArchivedPurchases))
-            .concat(Object.keys(groupedArchivedTransactions))
-            .sort();
+
+          let resExpensesGroupedByDate = groupExpensesByDate(appCtx.expenses, currentYear, currentMonth);
+          setExpensesGroupedByDate(resExpensesGroupedByDate);
+          let list = Object.keys(resExpensesGroupedByDate).sort();
           setListDays([...new Set(list)]);
           endTime = performance.now();
           console.log(`--> Call to List useFocusEffect took ${endTime - startTime} milliseconds.`);
         }
       }
       fetchData();
-    }, [appCtx.reload])
+    }, [appCtx, currentYear, currentMonth, refreshTrigger])
   );
 
-  useFocusEffect(
+  /* useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
         if (!email) return;
@@ -95,7 +93,7 @@ export default function List({ navigation }) {
       }
       fetchData();
     }, [refreshTrigger[TRIGGER_KEYS[0]], email])
-  );
+  ); */
 
   return (
     <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
@@ -121,59 +119,35 @@ export default function List({ navigation }) {
           )}
           <View style={{ flex: verticalScale(7), backgroundColor: "transparent" }}>
             <ScrollView>
-              {listDays.map(
-                (date) =>
-                  new Date(date).getMonth() == currentMonth &&
-                  new Date(date).getFullYear() == currentYear && (
-                    <View key={KEYS_SERIALIZER.EXPENSE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date} style={{ paddingHorizontal: 5 }}>
-                      <View style={styles.listDateBox}>
-                        <Text style={styles.listDate}>{new Date(date).getDate() + " " + months[new Date(date).getMonth()]}</Text>
-                      </View>
-                      <CardWrapper key={date} style={styles.listBox}>
-                        {expensesGroupedByDate[date] &&
-                          expensesGroupedByDate[date].map((innerData) => (
-                            <ListItem
-                              key={innerData.index + innerData.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
-                              innerData={innerData}
-                              handleSplit={async () => {
-                                setSelectedItem({ ...innerData });
-                                await handleSplit(email, innerData, getSplitEmail(splitUser), setRefreshTrigger);
-                              }}
-                              handleEdit={async () => {
-                                setSelectedItem({ ...innerData });
-                                setSliderStatus("split" in innerData ? true : false);
-                                setEditVisible(true);
-                              }}
-                              keys={innerData.key}
-                              showAlert={() => {
-                                showAlert(innerData.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index, innerData, email, setRefreshTrigger);
-                              }}
-                            />
-                          ))}
-                        {groupedArchivedPurchases[date] &&
-                          groupedArchivedPurchases[date].map((innerData) => (
-                            <ListItem
-                              key={innerData.index + KEYS_SERIALIZER.ARCHIVE_PURCHASE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
-                              innerData={innerData}
-                              keys={KEYS_SERIALIZER.ARCHIVE_PURCHASE}
-                              gray={true}
-                              showAlert={() => {}}
-                            />
-                          ))}
-                        {groupedArchivedTransactions[date] &&
-                          groupedArchivedTransactions[date].map((innerData) => (
-                            <ListItem
-                              key={innerData.index + KEYS_SERIALIZER.ARCHIVE_TRANSACTION + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
-                              innerData={innerData}
-                              keys={KEYS_SERIALIZER.ARCHIVE_TRANSACTION}
-                              gray={true}
-                              showAlert={() => {}}
-                            />
-                          ))}
-                      </CardWrapper>
-                    </View>
-                  )
-              )}
+              {listDays.map((date) => (
+                <View key={KEYS_SERIALIZER.EXPENSE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date} style={{ paddingHorizontal: 5 }}>
+                  <View style={styles.listDateBox}>
+                    <Text style={styles.listDate}>{new Date(date).getDate() + " " + months[new Date(date).getMonth()]}</Text>
+                  </View>
+                  <CardWrapper key={date} style={styles.listBox}>
+                    {expensesGroupedByDate[date] &&
+                      expensesGroupedByDate[date].map((innerData) => (
+                        <ListItem
+                          key={innerData.index + innerData.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
+                          innerData={innerData.element}
+                          handleSplit={async () => {
+                            setSelectedItem({ ...innerData });
+                            await handleSplit(email, innerData, getSplitEmail(splitUser), setRefreshTrigger);
+                          }}
+                          handleEdit={async () => {
+                            setSelectedItem({ ...innerData });
+                            setSliderStatus("split" in innerData.element ? true : false);
+                            setEditVisible(true);
+                          }}
+                          keys={innerData.key}
+                          showAlert={() => {
+                            showAlert(innerData.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index, innerData.element, email, setRefreshTrigger);
+                          }}
+                        />
+                      ))}
+                  </CardWrapper>
+                </View>
+              ))}
             </ScrollView>
           </View>
           <View style={styles.calendar}>
