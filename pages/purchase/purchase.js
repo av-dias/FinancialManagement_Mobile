@@ -186,7 +186,6 @@ export default function Purchase({ navigation }) {
                 setList,
                 refundActive,
                 setRefundActive,
-                appCtx.triggerReloadPurchase
               );
             }}
           />

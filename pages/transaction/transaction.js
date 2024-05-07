@@ -108,7 +108,7 @@ export default function Purchase({ navigation }) {
           </View>
           <CustomButton
             handlePress={() => {
-              handleTransaction(newTransaction, setNewTransaction, destination, receivedActive, email, appCtx.triggerReloadTransaction);
+              handleTransaction(newTransaction, setNewTransaction, destination, receivedActive, email, );
             }}
           />
         </View>

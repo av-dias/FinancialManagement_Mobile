@@ -4,24 +4,20 @@ import { getAllPurchaseStats } from "../functions/purchase";
 import { getAllTransactionsStats } from "../functions/transaction";
 import { getUser } from "../functions/basic";
 import { UserContext } from "./user-context";
-import { STATS_TYPE, TRANSACTION_TYPE, KEYS as KEYS_SERIALIZER, RELOAD_TYPE, TRIGGER_KEYS, KEYS } from "../utility/keys";
+import { STATS_TYPE, TRANSACTION_TYPE, KEYS as KEYS_SERIALIZER, KEYS } from "../utility/keys";
 import { Expense, Purchase, Transaction } from "../models/types";
 import { ExpensesByYear } from "../models/interfaces";
 
 interface AppContext {
   email: any;
-  purchase: any;
-  transaction: any;
-  setPurchases: any;
-  setTransactions: any;
+  expenses: any;
+  setExpenses: any;
 }
 
 export const AppContext = createContext<AppContext>({
   email: "",
-  purchase: [],
-  transaction: [],
-  setPurchases: () => {},
-  setTransactions: () => {},
+  expenses: {},
+  setExpenses: () => {},
 });
 
 const calcExpensesByType = (resPurchases, resTransactions) => {
@@ -405,11 +401,7 @@ const AppContextProvider = ({ children }) => {
 
   const value = {
     email: userCtx.email,
-    purchase: purchases,
-    transaction: transactions,
     expenses: expenses,
-    setPurchases: setPurchases,
-    setTransactions: setTransactions,
     setExpenses: setExpenses,
   };
 

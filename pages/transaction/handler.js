@@ -1,9 +1,8 @@
 import { addToStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 import { getSplitEmail } from "../../functions/split";
-import { RELOAD_TYPE, TRIGGER_KEYS } from "../../utility/keys";
 
-export const handleTransaction = async (newTransaction, setNewTransaction, destination, receivedActive, email, triggerReloadTransaction) => {
+export const handleTransaction = async (newTransaction, setNewTransaction, destination, receivedActive, email, ) => {
   let _destination = getSplitEmail(destination);
   if (
     _destination == "" ||
@@ -34,10 +33,7 @@ export const handleTransaction = async (newTransaction, setNewTransaction, desti
   await addToStorage(KEYS.TRANSACTION, JSON.stringify([newTransaction]), email);
 
   setNewTransaction({ ...newTransaction, amount: "", description: "" });
-  triggerReloadTransaction(new Date(newTransaction.dot).getMonth(), new Date(newTransaction.dot).getFullYear(), {
-    [TRIGGER_KEYS[2]]: newTransaction,
-    [TRIGGER_KEYS[1]]: RELOAD_TYPE[0],
-  });
+
 
   console.log("Transaction Added: " + newTransaction);
 };

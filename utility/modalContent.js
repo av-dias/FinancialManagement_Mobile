@@ -10,6 +10,7 @@ import MoneyInputHeader from "../components/moneyInputHeader/moneyInputHeader";
 import SplitSlider from "../components/splitSlider/splitSlider";
 import CustomButton from "../components/customButton/customButton";
 import { KEYS as KEYS_SERIALIZER } from "./keys";
+import { handleEditPurchase, handleEditTransaction } from "../pages/list/handler";
 
 export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider, styles) => {
   const state = {
@@ -78,19 +79,7 @@ export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible
   return content;
 };
 
-export const ModalList = (
-  email,
-  expense,
-  setSelectedItem,
-  splitUser,
-  sliderStatus,
-  setSliderStatus,
-  setRefreshTrigger,
-  handleEditPurchase,
-  handleEditTransaction,
-  setEditVisible,
-  styles
-) => {
+export const ModalList = (email, expense, setSelectedItem, splitUser, sliderStatus, setSliderStatus, setEditVisible, styles, setExpenses) => {
   let content;
 
   let selectedItem = expense.element;
@@ -154,7 +143,7 @@ export const ModalList = (
           </View>
           <CustomButton
             handlePress={() => {
-              handleEditTransaction(email, expense, setRefreshTrigger, setEditVisible);
+              handleEditTransaction(email, expense, setEditVisible, setExpenses);
             }}
           />
         </View>
@@ -244,7 +233,7 @@ export const ModalList = (
           <CustomButton
             text="Save"
             handlePress={() => {
-              handleEditPurchase(email, expense, sliderStatus, setRefreshTrigger, setEditVisible);
+              handleEditPurchase(email, expense, sliderStatus, setEditVisible, setExpenses);
             }}
           />
         </View>

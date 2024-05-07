@@ -1,7 +1,6 @@
 import { addToStorage } from "../../functions/secureStorage";
 import { categoryIcons } from "../../assets/icons";
 import { KEYS } from "../../utility/storageKeys";
-import { RELOAD_TYPE, TRIGGER_KEYS } from "../../utility/keys";
 
 //Context
 import { AppContext } from "../../store/app-context";
@@ -21,7 +20,6 @@ export const handlePurchase = async (
   setList,
   refundActive,
   setRefundActive,
-  triggerReloadPurchase
 ) => {
   if (!newPurchase.type || newPurchase.type == "" || !newPurchase.value || newPurchase.value == "" || !newPurchase.dop || newPurchase.dop == "") {
     alert("Please fill all fields.");
@@ -59,10 +57,6 @@ export const handlePurchase = async (
     setNewPurchase({ value: "", note: "", name: "", description: "", dop: newPurchase.dop });
     setSplitStatus(false);
     setRefundActive(false);
-    triggerReloadPurchase(new Date(newPurchase.dop).getMonth(), new Date(newPurchase.dop).getFullYear(), {
-      [TRIGGER_KEYS[2]]: newPurchase,
-      [TRIGGER_KEYS[1]]: RELOAD_TYPE[0],
-    });
   } catch (err) {
     console.log("Purchase: " + err);
   }

@@ -1,9 +1,9 @@
 import { Alert } from "react-native";
-import { KEYS as KEYS_SERIALIZER, RELOAD_TYPE, TRIGGER_KEYS } from "../../utility/keys";
+import { KEYS as KEYS_SERIALIZER,  } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
 import { removeFromStorage } from "../../functions/secureStorage";
 
-export default showAlert = (key, array, email, setRefreshTrigger) => {
+export default showAlert = (key, array, email) => {
   let [identifier, id] = key.split(KEYS_SERIALIZER.TOKEN_SEPARATOR);
   let element = identifier == KEYS_SERIALIZER.PURCHASE ? KEYS.PURCHASE : KEYS.TRANSACTION,
     elementArray = array,
@@ -42,11 +42,6 @@ export default showAlert = (key, array, email, setRefreshTrigger) => {
         onPress: async () => {
           if (identifier == KEYS_SERIALIZER.PURCHASE || identifier == KEYS_SERIALIZER.TRANSACTION) {
             await removeFromStorage(element, id, email);
-            if (identifier == KEYS_SERIALIZER.PURCHASE) {
-              setRefreshTrigger({ [TRIGGER_KEYS[0]]: KEYS_SERIALIZER.PURCHASE, [TRIGGER_KEYS[1]]: RELOAD_TYPE[2], [TRIGGER_KEYS[2]]: element });
-            } else if (identifier == KEYS_SERIALIZER.TRANSACTION) {
-              setRefreshTrigger({ [TRIGGER_KEYS[0]]: KEYS_SERIALIZER.TRANSACTION, [TRIGGER_KEYS[1]]: RELOAD_TYPE[2], [TRIGGER_KEYS[2]]: element });
-            }
           }
         },
         style: "yes",
