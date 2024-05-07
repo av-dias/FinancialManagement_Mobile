@@ -58,6 +58,9 @@ export default function List({ navigation }) {
           setListDays([...new Set(list)]);
           endTime = performance.now();
           console.log(`--> Call to List useFocusEffect took ${endTime - startTime} milliseconds.`);
+        } else {
+          // There is no data for the selected month
+          setListDays([]);
         }
       }
       fetchData();
