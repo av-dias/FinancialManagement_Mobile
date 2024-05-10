@@ -1,10 +1,9 @@
+import { ExpensesByYear } from "../models/interfaces";
 import { Expense, Purchase, Transaction } from "../models/types";
 import { KEYS, STATS_TYPE, TRANSACTION_TYPE } from "../utility/keys";
 
 export const calcExpensesByType = (expenses: Expense[]) => {
   let res = {};
-
-  console.log(expenses);
 
   expenses.forEach(({ element, index, key }) => {
     let year: number, month: number;
@@ -348,6 +347,41 @@ export const deleteExpenses = (expense: Expense, setExpenses: any) => {
 
     let index = prev[year][month].findIndex((e: Expense) => e.index == expense.index && e.key == expense.key);
     delete updatedState[year][month][index];
+
+    return updatedState;
+  });
+};
+
+export const addExpenses = (newElement: Purchase | Transaction, key: any, setExpenses: any) => {
+  let year: number, month: number, index: number, updatedState: ExpensesByYear;
+  setExpenses((prev: ExpensesByYear) => {
+    updatedState = { ...prev };
+    if (KEYS.PURCHASE == key) {
+      let purchase = newElement as Purchase;
+      month = new Date(purchase.dop).getMonth();
+      year = new Date(purchase.dop).getFullYear();
+      index = ++updatedState.purchaseIndex;
+    } else if (KEYS.TRANSACTION == key) {
+      let transaction = newElement as Transaction;
+      month = new Date(transaction.dot).getMonth();
+      year = new Date(transaction.dot).getFullYear();
+      index = ++prev.transactionIndex;
+    } else {
+      alert("Invalid Expense Element");
+      return prev;
+    }
+
+    let expense: Expense = { element: newElement, key: key, index: index };
+
+    if (prev.hasOwnProperty(year)) {
+      if (prev[year].hasOwnProperty(month)) {
+        updatedState[year][month].push(expense);
+      } else {
+        updatedState[year][month] = [expense];
+      }
+    } else {
+      updatedState[year] = { [month]: [expense] };
+    }
 
     return updatedState;
   });

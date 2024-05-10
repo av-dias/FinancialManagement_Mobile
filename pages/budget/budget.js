@@ -116,7 +116,7 @@ export default function Budget({ navigation }) {
         endTime = performance.now();
         console.log(`--> Call to Budget useFocusEffect took ${endTime - startTime} milliseconds.`);
       }
-    }, [appCtx])
+    }, [appCtx.expenses])
   );
 
   return (
@@ -155,12 +155,13 @@ export default function Budget({ navigation }) {
               let currentTypeValue = 0,
                 currentTotalTypeValue = 0;
 
-              if (purchaseCurrentStats[currentYear][STATS_TYPE[1]].hasOwnProperty(type)) {
-                currentTypeValue = parseFloat(purchaseCurrentStats[currentYear][STATS_TYPE[1]][type]).toFixed(0);
+              if (purchaseCurrentStats[currentYear][currentMonth][STATS_TYPE[1]].hasOwnProperty(type)) {
+                currentTypeValue = parseFloat(purchaseCurrentStats[currentYear][currentMonth][STATS_TYPE[1]][type]).toFixed(0);
               }
               if (expensesTotalByType[currentYear][STATS_TYPE[1]].hasOwnProperty(type)) {
                 currentTotalTypeValue = parseFloat(expensesTotalByType[currentYear][STATS_TYPE[1]][type]).toFixed(0);
               }
+
               return (
                 <View
                   key={type + "View"}

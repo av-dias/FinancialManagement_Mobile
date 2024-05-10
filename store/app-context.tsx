@@ -14,6 +14,15 @@ interface AppContext {
   setExpenses: any;
 }
 
+/* 
+  Expenses
+  {
+    year: { month: Expenses[] }
+    ...
+    purchaseIndex: number,
+    transactionIndex: number,
+  }
+*/
 export const AppContext = createContext<AppContext>({
   email: "",
   expenses: {},
@@ -315,6 +324,8 @@ const groupExpensesByDate = (purchases, transactions) => {
 
 const loadPurchases = (purchases: Purchase[], expenses: ExpensesByYear) => {
   let resPurchases = {};
+  let lastIndex = 0;
+
   purchases.forEach((curr: Purchase, index) => {
     let year = new Date(curr.dop).getFullYear();
     let month = new Date(curr.dop).getMonth();
@@ -329,13 +340,17 @@ const loadPurchases = (purchases: Purchase[], expenses: ExpensesByYear) => {
 
     let e: Expense = { index: index, key: KEYS.PURCHASE, element: curr };
     expenses[year][month].push(e);
+    lastIndex = index;
   });
 
+  expenses.purchaseIndex = lastIndex;
   return resPurchases;
 };
 
 const loadTransactions = (transactions: Transaction[], expenses: ExpensesByYear) => {
   let resTransactions = {};
+  let lastIndex = 0;
+
   transactions.forEach((curr: Transaction, index) => {
     let year = new Date(curr.dot).getFullYear();
     let month = new Date(curr.dot).getMonth();
@@ -350,8 +365,10 @@ const loadTransactions = (transactions: Transaction[], expenses: ExpensesByYear)
 
     let e: Expense = { index: index, key: KEYS.TRANSACTION, element: curr };
     expenses[year][month].push(e);
+    lastIndex = index;
   });
 
+  expenses.transactionIndex = lastIndex;
   return resTransactions;
 };
 
@@ -373,7 +390,7 @@ const AppContextProvider = ({ children }) => {
     React.useCallback(() => {
       async function fetchData() {
         if (userCtx.email) {
-          let resExpense = {};
+          let resExpense = { [new Date().getFullYear()]: { [new Date().getMonth()]: [] }, purchaseIndex: 0, transactionIndex: 0 };
           console.log("App-Context: Fetching app data...");
           let startTime = performance.now();
           // PURCHASE

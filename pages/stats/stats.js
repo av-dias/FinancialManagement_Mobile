@@ -116,7 +116,7 @@ export default function Stats({ navigation }) {
       fetchData();
       let endTime = performance.now();
       console.log(`Stats: Fetch took ${endTime - startTime} milliseconds.`);
-    }, [appCtx, currentYear])
+    }, [appCtx.expenses, currentYear])
   );
 
   const calculateArrayVariation = (arr) => {

@@ -6,4 +6,6 @@ export interface ExpensesByMonth {
 
 export interface ExpensesByYear {
   [year: number]: ExpensesByMonth;
+  purchaseIndex: number;
+  transactionIndex: number;
 }

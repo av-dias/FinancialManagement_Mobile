@@ -1,10 +1,12 @@
 import { addToStorage } from "../../functions/secureStorage";
 import { categoryIcons } from "../../assets/icons";
 import { KEYS } from "../../utility/storageKeys";
+import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 
 //Context
 import { AppContext } from "../../store/app-context";
 import { useContext } from "react";
+import { addExpenses } from "../../functions/expenses";
 
 const TABLE_ICON_SIZE = 15;
 
@@ -16,10 +18,10 @@ export const handlePurchase = async (
   setSplitStatus,
   splitEmail,
   slider,
-  list,
   setList,
   refundActive,
   setRefundActive,
+  setExpenses
 ) => {
   if (!newPurchase.type || newPurchase.type == "" || !newPurchase.value || newPurchase.value == "" || !newPurchase.dop || newPurchase.dop == "") {
     alert("Please fill all fields.");
@@ -42,9 +44,10 @@ export const handlePurchase = async (
     }
 
     await addToStorage(KEYS.PURCHASE, JSON.stringify([newPurchase]), email);
+    addExpenses(newPurchase, KEYS_SERIALIZER.PURCHASE, setExpenses);
 
     // History List
-    setList([
+    setList((list) => [
       [
         categoryIcons(TABLE_ICON_SIZE).find((category) => category.label === newPurchase.type).icon,
         newPurchase.name,

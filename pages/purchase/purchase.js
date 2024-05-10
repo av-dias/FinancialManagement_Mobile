@@ -182,10 +182,10 @@ export default function Purchase({ navigation }) {
                 setSplitStatus,
                 getSplitEmail(splitUser),
                 slider,
-                list,
                 setList,
                 refundActive,
                 setRefundActive,
+                appCtx.setExpenses
               );
             }}
           />

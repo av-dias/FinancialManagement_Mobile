@@ -64,7 +64,7 @@ export default function List({ navigation }) {
         }
       }
       fetchData();
-    }, [expenses, currentYear, currentMonth])
+    }, [appCtx.expenses, expenses, currentYear, currentMonth])
   );
 
   return (
