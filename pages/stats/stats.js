@@ -77,7 +77,7 @@ export default function Stats({ navigation }) {
             if (monthsList[0] == 0) {
               indexMonth = 1;
             } else indexMonth = monthsList[0] - 1;
-            resSplitDeptData[currentYear] = [{ x: months[indexMonth], y: 10 }];
+            resSplitDeptData[currentYear] = [{ x: months[indexMonth], y: 0 }];
           }
           for (let month of Object.keys(resDept[currentYear])) {
             if (!resSplitDeptData[currentYear]) {
