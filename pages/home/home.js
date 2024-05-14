@@ -68,6 +68,14 @@ export default function Home({ navigation }) {
           setPieChartAverageData(resAveragePieChart);
           setSpendAverageByType(resAverageTableChart);
           setPurchaseAverageTotal(resTotal[currentYear]);
+        } else {
+          setPieChartData({ [STATS_TYPE[0]]: [] });
+          setSpendByType({ [STATS_TYPE[0]]: [[""]] });
+          setExpenseTotal({ [STATS_TYPE[0]]: "0.00" });
+
+          setPieChartAverageData({ [STATS_TYPE[0]]: [] });
+          setSpendAverageByType({ [STATS_TYPE[0]]: [[""]] });
+          setPurchaseAverageTotal({ [STATS_TYPE[0]]: "0.00" });
         }
       }
       let startTime = performance.now();
