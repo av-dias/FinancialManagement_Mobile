@@ -8,7 +8,7 @@ import { horizontalScale, verticalScale, moderateScale, heightTreshold } from ".
 import { LinearGradient } from "expo-linear-gradient";
 import commonStyles from "../../utility/commonStyles";
 
-import { getSplitUser, getSplitUsers, getSplitEmail, getSplitFirstName } from "../../functions/split";
+import { getSplitUser, getSplitUsers, getSplitEmail } from "../../functions/split";
 import { saveToStorage, getFromStorage, addToStorage } from "../../functions/secureStorage";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
