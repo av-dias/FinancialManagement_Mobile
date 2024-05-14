@@ -70,7 +70,13 @@ export default function Budget({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      if (appCtx) {
+      if (
+        appCtx &&
+        appCtx.expenses &&
+        appCtx.expenses.hasOwnProperty(currentYear) &&
+        appCtx.expenses[currentYear].hasOwnProperty(currentMonth) &&
+        appCtx.expenses[currentYear][currentMonth].length > 0
+      ) {
         console.log("Budget: Fetching app data...");
         startTime = performance.now();
 
@@ -186,6 +192,11 @@ export default function Budget({ navigation }) {
                 </View>
               );
             })}
+          {!spendAverageByType[currentYear] && !purchaseCurrentStats[currentYear] && !expensesTotalByType[currentYear] && (
+            <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
+              <Text style={{ color: "white" }}>NO DATA</Text>
+            </View>
+          )}
         </ScrollView>
       </View>
     </LinearGradient>

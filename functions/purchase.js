@@ -19,8 +19,13 @@ export const getMonthPurchaseStats = async (email, currentMonth, currentYear, st
 };
 
 export const getAllPurchaseStats = async (email) => {
-  let purchases = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
-  return purchases;
+  try {
+    let purchases = JSON.parse(await getFromStorage(KEYS.PURCHASE, email));
+    if (!purchases) return [];
+    return purchases;
+  } catch (e) {
+    return [];
+  }
 };
 
 export const getPurchaseStats = async (email, currentYear, statsType) => {

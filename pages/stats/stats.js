@@ -50,10 +50,18 @@ export default function Stats({ navigation }) {
             month = 0;
 
           Object.keys(appCtx.expenses[currentYear]).forEach((month) => {
-            let resExpensesByType = calcExpensesByType(appCtx.expenses[currentYear][month]);
-            let res = calcExpensesTotalFromType(resExpensesByType[currentYear][month]);
-            resExpensesTotal[currentYear][month] = res;
+            if (appCtx.expenses[currentYear][month].length > 0) {
+              let resExpensesByType = calcExpensesByType(appCtx.expenses[currentYear][month]);
+              let res = calcExpensesTotalFromType(resExpensesByType[currentYear][month]);
+              resExpensesTotal[currentYear][month] = res;
+            }
           });
+
+          console.log(resExpensesTotal);
+
+          if (Object.keys(resExpensesTotal[currentYear]).length == 0) {
+            return;
+          }
 
           let resDept = calcSplitDept(resExpensesTotal, currentYear);
 

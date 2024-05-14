@@ -48,9 +48,14 @@ export default function Home({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       function fetchData() {
-        if (appCtx && appCtx.expenses && appCtx.expenses.hasOwnProperty(currentYear) && appCtx.expenses[currentYear].hasOwnProperty(currentMonth)) {
-          console.log(appCtx.expenses[currentYear][currentMonth]);
-
+        console.log(appCtx.expenses);
+        if (
+          appCtx &&
+          appCtx.expenses &&
+          appCtx.expenses.hasOwnProperty(currentYear) &&
+          appCtx.expenses[currentYear].hasOwnProperty(currentMonth) &&
+          appCtx.expenses[currentYear][currentMonth].length > 0
+        ) {
           let resExpensesByType = calcExpensesByType(appCtx.expenses[currentYear][currentMonth]);
           let [resPieChart, resTableChart] = loadExpenses(resExpensesByType[currentYear][currentMonth]);
           setPieChartData(resPieChart);
