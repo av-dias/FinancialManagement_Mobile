@@ -365,14 +365,14 @@ export const addExpenses = (newElement: Purchase | Transaction, key: any, setExp
       let transaction = newElement as Transaction;
       month = new Date(transaction.dot).getMonth();
       year = new Date(transaction.dot).getFullYear();
-      index = ++prev.transactionIndex;
+      index = ++updatedState.transactionIndex;
     } else {
       alert("Invalid Expense Element");
       return prev;
     }
 
     let expense: Expense = { element: newElement, key: key, index: index };
-
+    
     if (prev.hasOwnProperty(year)) {
       if (prev[year].hasOwnProperty(month)) {
         updatedState[year][month].push(expense);
