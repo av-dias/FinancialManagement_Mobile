@@ -344,7 +344,7 @@ export const deleteExpenses = (expense: Expense, setExpenses: any) => {
       alert("Invalid Expense Element");
       return prev;
     }
-    
+
     let index = prev[year][month].findIndex((e: Expense) => e.index == expense.index && e.key == expense.key);
     updatedState[year][month].splice(index, 1);
 

@@ -1,8 +1,10 @@
 import { addToStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 import { getSplitEmail } from "../../functions/split";
+import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
+import { addExpenses } from "../../functions/expenses";
 
-export const handleTransaction = async (newTransaction, setNewTransaction, destination, receivedActive, email, ) => {
+export const handleTransaction = async (newTransaction, setNewTransaction, destination, receivedActive, email, setExpenses) => {
   let _destination = getSplitEmail(destination);
   if (
     _destination == "" ||
@@ -31,9 +33,9 @@ export const handleTransaction = async (newTransaction, setNewTransaction, desti
   }
 
   await addToStorage(KEYS.TRANSACTION, JSON.stringify([newTransaction]), email);
+  addExpenses(newTransaction, KEYS_SERIALIZER.TRANSACTION, setExpenses);
 
   setNewTransaction({ ...newTransaction, amount: "", description: "" });
-
 
   console.log("Transaction Added: " + newTransaction);
 };
