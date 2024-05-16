@@ -16,16 +16,17 @@ import SplitSlider from "../../components/splitSlider/splitSlider";
 import CustomInput from "../../components/customInput/customInput";
 import Carrossel from "../../components/carrossel/carrossel";
 import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
-import { ModalPurchase } from "../../utility/modalContent";
+import ModalHistory from "../../components/modalHistory/modalHistory";
 
 //Custom Constants
 import { _styles } from "./style";
 
 //Functions
 import { getUser } from "../../functions/basic";
-import { handlePurchase } from "./handler";
+import { handlePurchase, modalContent } from "./handler";
 import { getSplitUser, getSplitEmail } from "../../functions/split";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
+import ModalSplit from "../../components/modalSplit/modalSplit";
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
@@ -70,7 +71,7 @@ export default function Purchase({ navigation }) {
         <View style={{ flex: 1 }}>
           {modalVisible && (
             <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible}>
-              {ModalPurchase(
+              {modalContent(
                 list,
                 newPurchase.value,
                 email,

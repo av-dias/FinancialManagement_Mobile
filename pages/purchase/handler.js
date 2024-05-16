@@ -7,8 +7,18 @@ import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { AppContext } from "../../store/app-context";
 import { useContext } from "react";
 import { addExpenses } from "../../functions/expenses";
+import ModalHistory from "../../components/modalHistory/modalHistory";
+import ModalSplit from "../../components/modalSplit/modalSplit";
 
 const TABLE_ICON_SIZE = 15;
+
+export const modalContent = (list, value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider, styles) => {
+  if (modalContentFlag == "split_info") {
+    return ModalSplit(list, value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider, styles);
+  } else {
+    return ModalHistory(list, value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider, styles);
+  }
+};
 
 export const handlePurchase = async (
   email,

@@ -15,14 +15,15 @@ import { getSplitEmail } from "../../functions/split";
 import { handleSplit, handleEditPurchase, groupByDate, handleEditTransaction, isCtxLoaded } from "./handler";
 import { getFromStorage } from "../../functions/secureStorage";
 import { months } from "../../utility/calendar";
-import { ModalList } from "../../utility/modalContent";
 import showAlert from "./showAlert";
 
+import ModalList from "../../components/modalList/modalList";
 import Header from "../../components/header/header";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import ModalCustom from "../../components/modal/modal";
 import ListItem from "../../components/listItem/listItem";
+
 import { groupExpensesByDate } from "../../functions/expenses";
 
 export default function List({ navigation }) {

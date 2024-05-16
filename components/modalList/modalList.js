@@ -1,91 +1,26 @@
-import { Text, View, Pressable, ScrollView } from "react-native";
-import { verticalScale } from "../functions/responsive";
+import { View } from "react-native";
+import { verticalScale } from "../../functions/responsive";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
-import { Table, TableWrapper, Row, Cell } from "react-native-table-component";
-import commonStyles from "./commonStyles";
-import CustomInput from "../components/customInput/customInput";
-import Carrossel from "../components/carrossel/carrossel";
-import CustomCalendarStrip from "../components/customCalendarStrip/customCalendarStrip";
-import MoneyInputHeader from "../components/moneyInputHeader/moneyInputHeader";
-import SplitSlider from "../components/splitSlider/splitSlider";
-import CustomButton from "../components/customButton/customButton";
-import { KEYS as KEYS_SERIALIZER } from "./keys";
-import { handleEditPurchase, handleEditTransaction } from "../pages/list/handler";
 
-export const ModalPurchase = (list, value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider, styles) => {
-  const state = {
-    tableHead: ["Type", "Name", "Value", "Date"],
-  };
+// Components
+import CustomInput from "../customInput/customInput";
+import Carrossel from "../carrossel/carrossel";
+import CustomCalendarStrip from "../customCalendarStrip/customCalendarStrip";
+import MoneyInputHeader from "../moneyInputHeader/moneyInputHeader";
+import SplitSlider from "../splitSlider/splitSlider";
+import CustomButton from "../customButton/customButton";
 
-  let content;
+// Handler
+import { handleEditPurchase, handleEditTransaction } from "../../pages/list/handler";
 
-  switch (modalContentFlag) {
-    case "split_info":
-      content = (
-        <View style={{ flex: 4, backgroundColor: "transparent", borderRadius: commonStyles.borderRadius, padding: verticalScale(30), gap: 20 }}>
-          <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
-            <Pressable style={{}} onPress={() => setModalVisible(!modalVisible)}>
-              <Entypo name="cross" size={verticalScale(20)} color="black" />
-            </Pressable>
-          </View>
-          <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
-            <Text style={{ fontSize: 15 }}>Split with</Text>
-            <Text style={{ fontSize: 15 }}>{splitName}</Text>
-            <Text style={{ fontSize: 15 }}>Amount: {(value * slider) / 100}</Text>
-            <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
-          </View>
-          <View style={{ flex: 1, padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
-            <Text style={{ fontSize: 15 }}>You</Text>
-            <Text style={{ fontSize: 15 }}>{email}</Text>
-            <Text style={{ fontSize: 15 }}>Amount: {(value * (100 - slider)) / 100}</Text>
-            <View style={{ flex: 1, justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}></View>
-          </View>
-        </View>
-      );
-      break;
-    default:
-      content = (
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "white",
-            borderRadius: commonStyles.borderRadius,
-            padding: verticalScale(20),
-            marginVertical: verticalScale(10),
-          }}
-        >
-          <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
-            <Pressable style={{}} onPress={() => setModalVisible(!modalVisible)}>
-              <Entypo name="cross" size={verticalScale(20)} color="black" />
-            </Pressable>
-          </View>
-          <View style={styles.tableInfo}>
-            <Table style={styles.textCenter} borderStyle={{ borderColor: "transparent" }}>
-              <Row data={state.tableHead} style={{ alignContent: "center" }} textStyle={styles.textCenterHead} />
-              <ScrollView style={styles.scrollTable}>
-                {list.map((rowData, index) => (
-                  <TableWrapper key={index} style={styles.rowTable}>
-                    {rowData.map((cellData, cellIndex) => (
-                      <Cell textStyle={styles.tableText} key={cellIndex} data={cellData} />
-                    ))}
-                  </TableWrapper>
-                ))}
-              </ScrollView>
-            </Table>
-          </View>
-        </View>
-      );
-  }
-  return content;
-};
+// Contants
+import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 
-export const ModalList = (email, expense, setSelectedItem, splitUser, sliderStatus, setSliderStatus, setEditVisible, styles, setExpenses) => {
-  let content;
-
+export default function ModalList(email, expense, setSelectedItem, splitUser, sliderStatus, setSliderStatus, setEditVisible, styles, setExpenses) {
   let selectedItem = expense.element;
   switch (expense.key) {
     case KEYS_SERIALIZER.TRANSACTION:
-      content = (
+      return (
         <View style={{ flex: 1 }}>
           <MoneyInputHeader
             value={String(selectedItem.amount)}
@@ -148,9 +83,8 @@ export const ModalList = (email, expense, setSelectedItem, splitUser, sliderStat
           />
         </View>
       );
-      break;
     default:
-      content = (
+      return (
         <View style={{ flex: 1 }}>
           <MoneyInputHeader
             value={selectedItem.value}
@@ -238,8 +172,5 @@ export const ModalList = (email, expense, setSelectedItem, splitUser, sliderStat
           />
         </View>
       );
-      break;
   }
-
-  return content;
-};
+}
