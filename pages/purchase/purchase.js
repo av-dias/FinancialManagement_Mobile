@@ -71,17 +71,7 @@ export default function Purchase({ navigation }) {
         <View style={{ flex: 1 }}>
           {modalVisible && (
             <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible}>
-              {modalContent(
-                list,
-                newPurchase.value,
-                email,
-                modalContentFlag,
-                modalVisible,
-                setModalVisible,
-                getSplitEmail(splitUser),
-                slider,
-                styles
-              )}
+              {modalContent(list, newPurchase.value, email, modalContentFlag, modalVisible, setModalVisible, getSplitEmail(splitUser), slider)}
             </ModalCustom>
           )}
           <View style={{ position: "absolute", right: 0, paddingVertical: 10, gap: 10 }}>

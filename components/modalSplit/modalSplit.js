@@ -3,7 +3,7 @@ import { verticalScale } from "../../functions/responsive";
 import { Entypo } from "@expo/vector-icons";
 import commonStyles from "../../utility/commonStyles";
 
-export default function ModalSplit(list, value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider, styles) {
+export default function ModalSplit(value, email, modalVisible, setModalVisible, splitName, slider) {
   return (
     <View style={{ flex: 4, backgroundColor: "transparent", borderRadius: commonStyles.borderRadius, padding: verticalScale(30), gap: 20 }}>
       <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>

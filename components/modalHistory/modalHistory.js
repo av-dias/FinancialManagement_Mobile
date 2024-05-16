@@ -4,7 +4,12 @@ import { Entypo } from "@expo/vector-icons";
 import { Table, TableWrapper, Row, Cell } from "react-native-table-component";
 import commonStyles from "./../../utility/commonStyles";
 
-export default function modalHistory(list, value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider, styles) {
+//Custom Constants
+import { _styles } from "../../pages/purchase/style";
+
+export default function modalHistory(list, modalVisible, setModalVisible) {
+  const styles = _styles;
+
   const state = {
     tableHead: ["Type", "Name", "Value", "Date"],
   };
