@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { Text, View, TextInput } from "react-native";
 import { _styles } from "./style";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
+import { verticalScale } from "../../functions/responsive";
 
 export default function MoneyInputHeader({ value = "", setValue, signal = "+", verticalHeight = 150 }) {
   const styles = _styles;

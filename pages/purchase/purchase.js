@@ -16,7 +16,6 @@ import SplitSlider from "../../components/splitSlider/splitSlider";
 import CustomInput from "../../components/customInput/customInput";
 import Carrossel from "../../components/carrossel/carrossel";
 import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
-import ModalHistory from "../../components/modalHistory/modalHistory";
 
 //Custom Constants
 import { _styles } from "./style";
@@ -26,7 +25,6 @@ import { getUser } from "../../functions/basic";
 import { handlePurchase, modalContent } from "./handler";
 import { getSplitUser, getSplitEmail } from "../../functions/split";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
-import ModalSplit from "../../components/modalSplit/modalSplit";
 
 export default function Purchase({ navigation }) {
   const styles = _styles;
