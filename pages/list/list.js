@@ -11,8 +11,8 @@ import { UserContext } from "../../store/user-context";
 import { verticalScale } from "../../functions/responsive";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { KEYS } from "../../utility/storageKeys";
-import { getSplitEmail } from "../../functions/split";
-import { handleSplit, handleEditPurchase, groupByDate, handleEditTransaction, isCtxLoaded } from "./handler";
+import { getSplitEmail, getSplitUser } from "../../functions/split";
+import { handleSplit, handleEditPurchase, groupByDate, handleEditTransaction, isCtxLoaded, handleSettleSplit } from "./handler";
 import { getFromStorage } from "../../functions/secureStorage";
 import { months } from "../../utility/calendar";
 import showAlert from "./showAlert";
@@ -25,6 +25,8 @@ import ModalCustom from "../../components/modal/modal";
 import ListItem from "../../components/listItem/listItem";
 
 import { groupExpensesByDate } from "../../functions/expenses";
+import { handleTransaction } from "../transaction/handler";
+import { getUser } from "../../functions/basic";
 
 export default function List({ navigation }) {
   const appCtx = useContext(AppContext);
@@ -40,11 +42,25 @@ export default function List({ navigation }) {
   const [selectedItem, setSelectedItem] = useState({ date: new Date().toISOString().split("T")[0] });
   const [splitUser, setSplitUser] = useState("");
   const [sliderStatus, setSliderStatus] = useState(false);
+  const [destination, setDestination] = useState("");
 
   const [listDays, setListDays] = useState([]);
   const [editVisible, setEditVisible] = useState(false);
 
   const [expenses, setExpenses] = useState(appCtx.expenses);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        await getSplitUser(setDestination, email);
+        try {
+        } catch (e) {
+          console.log("Transaction: " + e);
+        }
+      }
+      fetchData();
+    }, [email])
+  );
 
   useFocusEffect(
     React.useCallback(() => {
@@ -109,6 +125,9 @@ export default function List({ navigation }) {
                             setSelectedItem({ ...expenses });
                             setSliderStatus("split" in expenses.element ? true : false);
                             setEditVisible(true);
+                          }}
+                          handleSettleSplit={async () => {
+                            await handleSettleSplit(email, expenses, handleTransaction, destination, setExpenses);
                           }}
                           keys={expenses.key}
                           showAlert={() => {

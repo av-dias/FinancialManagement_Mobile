@@ -63,3 +63,19 @@ export const groupByDate = (data: any) => {
     }, {});
   return grouped_data;
 };
+
+export const handleSettleSplit = async (email, expense: Expense, handleTransaction, destination, setExpenses) => {
+  let selectedPurchase = expense.element as Purchase;
+  let splitPercentage = Number(selectedPurchase.split.weight) / 100;
+  let settleValue = Number(selectedPurchase.value) * splitPercentage;
+
+  let newTransaction: Transaction = {
+    amount: settleValue.toString(),
+    description: selectedPurchase.name,
+    type: selectedPurchase.type,
+    dot: new Date().toISOString().split("T")[0],
+    user_destination_id: "",
+    user_origin_id: "",
+  };
+  await handleTransaction(newTransaction, () => {}, destination, true, email, setExpenses);
+};
