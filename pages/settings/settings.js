@@ -128,7 +128,6 @@ export default function Settings({ navigation }) {
     async function fetchData() {
       let email = await getUser();
       setEmail(email);
-      console.log(email);
       await getSplitUsers(setSplitUsers, email);
     }
     // write your code here, it's like componentWillMount

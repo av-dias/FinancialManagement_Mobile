@@ -48,7 +48,6 @@ export default function Home({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       function fetchData() {
-        console.log(appCtx.expenses);
         if (
           appCtx &&
           appCtx.expenses &&

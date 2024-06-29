@@ -7,11 +7,6 @@ import commonStyles from "../../utility/commonStyles";
 const statusBarHeight = StatusBar.currentHeight;
 const naviagtionBarHeight = verticalScale(90);
 
-/* console.log(Dimensions.get("screen").height);
-console.log(Dimensions.get("window").height);
-console.log(statusBarHeight);
-console.log(naviagtionBarHeight); */
-
 const borderRadius = commonStyles.borderRadius;
 
 export const _styles = StyleSheet.create({

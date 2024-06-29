@@ -57,8 +57,6 @@ export default function Stats({ navigation }) {
             }
           });
 
-          console.log(resExpensesTotal);
-
           if (Object.keys(resExpensesTotal[currentYear]).length == 0) {
             return;
           }
@@ -302,7 +300,7 @@ export default function Stats({ navigation }) {
                         let itemSent = 0;
                         i = i.toString();
                         if (transactionStats[getCurrentYear(currentYear)] && transactionStats[getCurrentYear(currentYear)].hasOwnProperty(i)) {
-                          itemSent = transactionStats[getCurrentYear(currentYear)][i][TRANSACTION_TYPE[1]];
+                          itemSent = transactionStats[getCurrentYear(currentYear)][i][TRANSACTION_TYPE[1]].toFixed(2);
                         }
                         return (
                           <Text key={"R" + month} style={{ color: i % 2 ? "black" : "gray" }}>
@@ -316,7 +314,7 @@ export default function Stats({ navigation }) {
                         let itemReceived = 0;
                         i = i.toString();
                         if (transactionStats[getCurrentYear(currentYear)] && transactionStats[getCurrentYear(currentYear)].hasOwnProperty(i)) {
-                          itemReceived = transactionStats[getCurrentYear(currentYear)][i][TRANSACTION_TYPE[2]];
+                          itemReceived = transactionStats[getCurrentYear(currentYear)][i][TRANSACTION_TYPE[2]].toFixed(2);
                         }
                         return (
                           <Text key={"R" + month} style={{ color: i % 2 ? "black" : "gray" }}>

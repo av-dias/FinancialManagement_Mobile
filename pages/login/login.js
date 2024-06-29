@@ -61,7 +61,6 @@ export default function Login({ navigation }) {
               console.log("Connected to the main server");
             })
             .catch(function (res) {
-              console.log(res);
               saveToStorage(KEYS.SERVER, "off");
             });
         })

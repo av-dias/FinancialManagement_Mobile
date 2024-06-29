@@ -2,11 +2,6 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-nativ
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import commonStyles from "../../utility/commonStyles";
 
-/* console.log(Dimensions.get("screen").height);
-console.log(Dimensions.get("window").height);
-console.log(statusBarHeight);
-console.log(naviagtionBarHeight); */
-
 const borderRadius = commonStyles.borderRadius;
 
 export const _styles = StyleSheet.create({

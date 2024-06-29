@@ -1,4 +1,4 @@
-import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Feather } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Feather, FontAwesome6 } from "@expo/vector-icons";
 import { horizontalScale, verticalScale, moderateScale } from "../functions/responsive";
 import { categoryColorsBackground } from "../utility/colors";
 export const categoryIcons = (icon_size = 25, color = "black") => {
@@ -106,6 +106,16 @@ export const utilIcons = (size = 25) => {
     {
       label: "Edit",
       icon: <Feather name="edit" style={{ alignSelf: "center" }} size={size} color="black" />,
+      color: "white",
+    },
+    {
+      label: "Settle",
+      icon: <FontAwesome5 name="arrow-right" style={{ alignSelf: "center" }} size={size} color="black" />,
+      color: "white",
+    },
+    {
+      label: "Settled",
+      icon: <FontAwesome5 name="check" style={{ alignSelf: "center" }} size={size} color="black" />,
       color: "white",
     },
     {

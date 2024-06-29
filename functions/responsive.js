@@ -11,8 +11,6 @@ const horizontalScale = (size) => {
   return (width / guidelineBaseWidth) * size;
 };
 const verticalScale = (size) => {
-  /* let vertical = (height / guidelineBaseHeight) * size;
-  console.log("Vertical " + vertical); */
   return (height / guidelineBaseHeight) * size;
 };
 

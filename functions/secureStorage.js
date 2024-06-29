@@ -10,7 +10,6 @@ export async function getFromStorage(key, user) {
   if (!user) user = "";
   user = user.split("@")[0];
   let result = await SecureStore.getItemAsync(user + key);
-  //console.log(`%csecureStorage: %c${result}`, "color:#bada55", "color:#bada55");
   return result;
 }
 
