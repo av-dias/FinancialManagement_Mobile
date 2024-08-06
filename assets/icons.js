@@ -1,7 +1,7 @@
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Feather, FontAwesome6 } from "@expo/vector-icons";
 import { horizontalScale, verticalScale, moderateScale } from "../functions/responsive";
 import { categoryColorsBackground, dark } from "../utility/colors";
-export const categoryIcons = (icon_size = 25, color = dark.textPrimary) => {
+export const categoryIcons = (icon_size = 25, color = "black") => {
   const iconSize = verticalScale(icon_size);
 
   return [

@@ -19,6 +19,8 @@ import { categoryIcons, utilIcons } from "../../assets/icons";
 import { isCtxLoaded } from "./handler";
 import { calcExpensesAverage, calcExpensesByType, calcExpensesTotalFromType, calcTotalExpensesByType } from "../../functions/expenses";
 import { dark } from "../../utility/colors";
+import { verticalScale } from "../../functions/responsive";
+import commonStyles from "../../utility/commonStyles";
 
 export default function Budget({ navigation }) {
   const styles = _styles;
@@ -172,10 +174,24 @@ export default function Budget({ navigation }) {
               return (
                 <View
                   key={type + "View"}
-                  style={{ flexDirection: "row", height: "auto", backgroundColor: dark.complementary, gap: 5, padding: 5, borderRadius: 5 }}
+                  style={{ flexDirection: "row", height: "auto", backgroundColor: dark.complementary, gap: 5, padding: 10, borderRadius: 5 }}
                 >
                   <View style={{ justifyContent: "center", width: 50, backgroundColor: "transparent" }}>
-                    <View>{categoryIcons(25).find((category) => category.label === type).icon}</View>
+                    <View
+                      style={{
+                        width: verticalScale(40),
+                        maxWidth: 50,
+                        height: verticalScale(40),
+                        maxHeight: 50,
+                        backgroundColor: categoryIcons(25).find((category) => category.label === type).color,
+                        borderRadius: commonStyles.borderRadius,
+                        borderWidth: 1,
+                        justifyContent: "center",
+                        alignSelf: "center",
+                      }}
+                    >
+                      {categoryIcons(25).find((category) => category.label === type).icon}
+                    </View>
                     <Text
                       key={type + "TextA"}
                       style={{ fontSize: 10, alignContent: "center", justifyContent: "center", textAlign: "center", color: dark.textPrimary }}
@@ -194,7 +210,7 @@ export default function Budget({ navigation }) {
                       <Text key={type + "TextM"} style={{ color: dark.textPrimary }}>
                         {"Monthly " + currentTypeValue + "/" + lastAverageTypeValue}
                       </Text>
-                      {<ProgressBar key={"PM" + type} progress={getTotalProgress(currentTypeValue, lastAverageTypeValue)} color={"blue"} />}
+                      <ProgressBar key={"PM" + type} progress={getTotalProgress(currentTypeValue, lastAverageTypeValue)} color={"blue"} />
                     </View>
                   </View>
                 </View>

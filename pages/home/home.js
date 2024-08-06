@@ -148,7 +148,7 @@ export default function Home({ navigation }) {
         ) : (
           <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
             <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
-            <Text style={{ color: "white" }}>NO DATA</Text>
+            <Text style={{ color: dark.textPrimary }}>NO DATA</Text>
           </View>
         )}
       </View>
