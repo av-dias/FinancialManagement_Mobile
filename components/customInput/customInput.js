@@ -3,6 +3,7 @@ import { _styles } from "./style";
 import { MaterialIcons } from "@expo/vector-icons";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import CardWrapper from "../cardWrapper/cardWrapper";
+import { dark } from "../../utility/colors";
 
 export default function CustomInput({ Icon, placeholder, value = "", editable = true, setValue, noStyle = false }) {
   const styles = _styles;
@@ -14,6 +15,7 @@ export default function CustomInput({ Icon, placeholder, value = "", editable = 
         <TextInput
           style={styles.textInput}
           placeholder={placeholder}
+          placeholderTextColor={"gray"}
           ref={(input) => {
             this.textInputName = input;
           }}

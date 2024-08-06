@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 const statusBarHeight = StatusBar.currentHeight;

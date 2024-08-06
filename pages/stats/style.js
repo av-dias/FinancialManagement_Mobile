@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 const statusBarHeight = StatusBar.currentHeight;
@@ -8,7 +8,7 @@ import commonStyles from "../../utility/commonStyles";
 
 export const _styles = StyleSheet.create({
   page: {
-    backgroundColor: color.backgroundLight,
+    backgroundColor: dark.backgroundLight,
     //alignItems: "center",
     //justifyContent: "center",
     height: "97%",
@@ -29,11 +29,12 @@ export const _styles = StyleSheet.create({
     zIndex: -1,
   },
   rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", gap: 20 },
-  text: { fontSize: 20, textAlign: "center" },
+  text: { fontSize: 15, textAlign: "center", color: dark.textPrimary },
   chart: {
     justifyContent: "center",
     alignItems: "center",
   },
+  chartContainer: { flex: 1, justifyContent: "center", alignItems: "center", elevation: 0, backgroundColor: dark.complementary },
   tableInfo: {
     width: "100%",
     height: "100%",
@@ -48,7 +49,7 @@ export const _styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
-    borderColor: color.complementary,
+    borderColor: dark.complementary,
     borderWidth: verticalScale(1),
   },
   colorIcon: { textAlign: "center", fontSize: verticalScale(20), padding: 5, margin: 5 },

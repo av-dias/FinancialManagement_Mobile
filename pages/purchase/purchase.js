@@ -16,6 +16,7 @@ import SplitSlider from "../../components/splitSlider/splitSlider";
 import CustomInput from "../../components/customInput/customInput";
 import Carrossel from "../../components/carrossel/carrossel";
 import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
+import { dark } from "../../utility/colors";
 
 //Custom Constants
 import { _styles } from "./style";
@@ -63,7 +64,7 @@ export default function Purchase({ navigation }) {
   }, [refundActive]);
 
   return (
-    <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
+    <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1 }}>
@@ -77,7 +78,7 @@ export default function Purchase({ navigation }) {
               style={{
                 paddingHorizontal: 10,
                 paddingVertical: 5,
-                backgroundColor: refundActive ? "lightblue" : "lightgray",
+                backgroundColor: refundActive ? "lightblue" : dark.complementary,
                 borderRadius: 10,
                 zIndex: 1,
               }}
@@ -91,7 +92,7 @@ export default function Purchase({ navigation }) {
               style={{
                 paddingHorizontal: 10,
                 paddingVertical: 5,
-                backgroundColor: modalContentFlag == "history" && modalVisible ? "lightblue" : "lightgray",
+                backgroundColor: modalContentFlag == "history" && modalVisible ? "lightblue" : dark.complementary,
                 borderRadius: 10,
                 zIndex: 1,
               }}
@@ -133,7 +134,7 @@ export default function Purchase({ navigation }) {
             >
               <CustomInput
                 noStyle={true}
-                Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color="black" />}
+                Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
                 placeholder="Name"
                 setValue={(_name) => {
                   setNewPurchase({ ...newPurchase, name: _name });
@@ -142,7 +143,7 @@ export default function Purchase({ navigation }) {
               />
               <CustomInput
                 noStyle={true}
-                Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color="black" />}
+                Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color={dark.textPrimary} />}
                 placeholder="Notes"
                 setValue={(_note) => {
                   setNewPurchase({ ...newPurchase, note: _note });

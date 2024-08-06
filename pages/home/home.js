@@ -21,6 +21,7 @@ import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { loadCalendarCard, loadPieChartData, loadPurchaseTotalData, loadSpendTableData, loadExpenses, isCtxLoaded } from "./handler";
 import { calcExpensesByType, calcExpensesAverage, calcExpensesTotalFromType } from "../../functions/expenses";
+import { dark } from "../../utility/colors";
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -85,14 +86,12 @@ export default function Home({ navigation }) {
   );
 
   return (
-    <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
+    <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={appCtx.email} navigation={navigation} />
       <View style={styles.usableScreen}>
         {loadPieChartData(statsMode, statsType, pieChartData, pieChartAverageData).length !== 0 ? (
           <View style={{ flex: 8, gap: verticalScale(10) }}>
-            <CardWrapper
-              style={{ flex: verticalScale(8), justifyContent: "center", alignItems: "center", backgroundColor: "transparent", elevation: 0 }}
-            >
+            <CardWrapper style={{ flex: verticalScale(8), justifyContent: "center", alignItems: "center", backgroundColor: "transparent" }}>
               <View style={styles.chart}>
                 <VictoryPie
                   height={horizontalScale(320)}
@@ -126,7 +125,7 @@ export default function Home({ navigation }) {
             <View style={{ flex: 4 }}>
               <CardWrapper style={{ height: "95%" }}>
                 <View style={styles.tableInfo}>
-                  <Table style={{ ...styles.textCenter }} borderStyle={{ borderColor: "transparent" }}>
+                  <Table style={{ ...styles.textCenter }} borderStyle={{ borderColor: "transparent", borderWidth: 0 }}>
                     <ScrollView style={{ height: "100%", background: "transparent" }}>
                       {loadSpendTableData(statsMode, statsType, spendByType, spendAverageByType).map((rowData, index) => (
                         <TableWrapper key={index} style={styles.rowTable}>

@@ -1,7 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { Text, View, ScrollView } from "react-native";
 import React, { useState, useContext } from "react";
-import { VictoryLine, VictoryBar } from "victory-native";
+import { VictoryLine, VictoryBar, VictoryLabel } from "victory-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 //Context
@@ -16,6 +16,7 @@ import TypeCard from "../../components/typeCard/typeCard";
 import { _styles } from "./style";
 import { STATS_TYPE, TRANSACTION_TYPE } from "../../utility/keys";
 import { months } from "../../utility/calendar";
+import { dark } from "../../utility/colors";
 
 //Functions
 import { heightTreshold, horizontalScale, verticalScale } from "../../functions/responsive";
@@ -184,21 +185,21 @@ export default function Stats({ navigation }) {
   };
 
   return (
-    <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
+    <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={appCtx.email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ alignSelf: "center", flexDirection: "row", paddingBottom: 10, gap: 10 }}>
           <TypeCard setItem={setCurrentYear} itemList={[2024, 2023]} />
-          <CardWrapper style={{ width: verticalScale(100), alignItems: "center" }}>
-            <Text>Split: {getSumArrayObject(splitDeptData[getCurrentYear(currentYear)]).toFixed(0)}€</Text>
+          <CardWrapper style={{ width: verticalScale(100), alignItems: "center", backgroundColor: dark.complementary }}>
+            <Text style={styles.text}>Split: {getSumArrayObject(splitDeptData[getCurrentYear(currentYear)]).toFixed(0)}€</Text>
           </CardWrapper>
         </View>
         <View style={{ flex: 1 }}>
           <ScrollView horizontal={false} contentContainerStyle={{ flexGrow: 1, gap: verticalScale(10) }}>
-            <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
+            <CardWrapper style={styles.chartContainer}>
               <View style={styles.chart}>
                 <View style={{ position: "absolute", top: 15 }}>
-                  <Text>Total Purchase by Month</Text>
+                  <Text style={styles.text}>Total Purchase by Month</Text>
                 </View>
                 <VictoryLine
                   domain={{
@@ -210,13 +211,14 @@ export default function Stats({ navigation }) {
                   }}
                   padding={{ left: 20 }}
                   style={{
-                    data: { stroke: "#c43a31" },
+                    data: { stroke: "darkred" },
                     parent: { border: "1px solid #ccc" },
                   }}
                   categories={{ x: months }}
                   data={splitDeptData[getCurrentYear(currentYear)] || []}
                   interpolation="natural"
                   labels={({ datum }) => datum.x + "\n" + datum.y.toFixed(0) + "€"}
+                  labelComponent={<VictoryLabel style={{ fill: dark.textPrimary, fontSize: 10 }} />}
                 />
 
                 {splitDeptData[getPreviousYear(currentYear)] && (
@@ -242,16 +244,17 @@ export default function Stats({ navigation }) {
                       data={splitDeptData[getPreviousYear(currentYear)]}
                       interpolation="natural"
                       labels={({ datum }) => datum.x + "\n" + datum.y.toFixed(0) + "€"}
+                      labelComponent={<VictoryLabel style={{ fill: dark.textPrimary, fontSize: 10 }} />}
                     />
                   </View>
                 )}
               </View>
             </CardWrapper>
             {
-              <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
+              <CardWrapper style={styles.chartContainer}>
                 <View style={styles.chart}>
                   <View style={{ position: "absolute", top: 15 }}>
-                    <Text>Total Purchase by Type</Text>
+                    <Text style={styles.text}>Total Purchase by Type</Text>
                   </View>
                   {spendByType[getCurrentYear(currentYear)] && (
                     <VictoryBar
@@ -261,23 +264,23 @@ export default function Stats({ navigation }) {
                       domainPadding={20}
                       padding={30}
                       style={{
-                        data: { stroke: "#c43a31" },
-                        labels: { fontSize: 8 },
+                        data: { fill: dark.textPrimary, stroke: dark.textPrimary }, // Set both fill and stroke to white
                         parent: { border: "1px solid #ccc" },
                       }}
                       data={spendByType[getCurrentYear(currentYear)]}
                       interpolation="natural"
                       labels={({ datum }) => datum.x + " " + datum.y.toFixed(0) + "€"}
+                      labelComponent={<VictoryLabel style={{ fill: dark.textPrimary, fontSize: 10 }} />}
                     />
                   )}
                 </View>
               </CardWrapper>
             }
             {
-              <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingVertical: 20, elevation: 0 }}>
+              <CardWrapper style={{ ...styles.chartContainer, paddingVertical: 20 }}>
                 <View style={{ flex: 1, flexDirection: "row" }}>
                   <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text style={{ fontWeight: "bold" }}>Months</Text>
+                    <Text style={{ fontWeight: "bold", color: dark.textPrimary }}>Months</Text>
                   </View>
                   <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                     <Text style={{ fontWeight: "bold", color: "darkred" }}>Sent</Text>
@@ -290,7 +293,7 @@ export default function Stats({ navigation }) {
                   <View style={{ flex: 1, flexDirection: "row" }}>
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                       {months.map((month, i) => (
-                        <Text style={{ color: i % 2 ? "black" : "gray" }} key={"M" + month}>
+                        <Text style={{ color: i % 2 ? dark.textPrimary : "lightgray" }} key={"M" + month}>
                           {month}
                         </Text>
                       ))}
@@ -303,7 +306,7 @@ export default function Stats({ navigation }) {
                           itemSent = transactionStats[getCurrentYear(currentYear)][i][TRANSACTION_TYPE[1]].toFixed(2);
                         }
                         return (
-                          <Text key={"R" + month} style={{ color: i % 2 ? "black" : "gray" }}>
+                          <Text key={"R" + month} style={{ color: i % 2 ? dark.textPrimary : "lightgray" }}>
                             {itemSent}
                           </Text>
                         );
@@ -317,7 +320,7 @@ export default function Stats({ navigation }) {
                           itemReceived = transactionStats[getCurrentYear(currentYear)][i][TRANSACTION_TYPE[2]].toFixed(2);
                         }
                         return (
-                          <Text key={"R" + month} style={{ color: i % 2 ? "black" : "gray" }}>
+                          <Text key={"R" + month} style={{ color: i % 2 ? dark.textPrimary : "lightgray" }}>
                             {-itemReceived}
                           </Text>
                         );
@@ -331,7 +334,7 @@ export default function Stats({ navigation }) {
               <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
                 <View style={styles.chart}>
                   <View style={{ position: "absolute", top: 15 }}>
-                    <Text>Total Transaction by Month</Text>
+                    <Text style={{ color: dark.textPrimary }}>Total Transaction by Month</Text>
                   </View>
                   {transactionStats[getCurrentYear(currentYear)] && (
                     <VictoryLine

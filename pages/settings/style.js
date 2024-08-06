@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 const statusBarHeight = StatusBar.currentHeight;
@@ -8,7 +8,7 @@ import commonStyles from "../../utility/commonStyles";
 
 export const _styles = StyleSheet.create({
   page: {
-    backgroundColor: color.backgroundLight,
+    backgroundColor: dark.backgroundLight,
     //alignItems: "center",
     //justifyContent: "center",
     height: "97%",
@@ -19,7 +19,7 @@ export const _styles = StyleSheet.create({
     paddingVertical: verticalScale(15),
     width: "100%",
     borderRadius: commonStyles.borderRadius,
-    backgroundColor: color.button,
+    backgroundColor: dark.button,
     elevation: 1,
   },
   buttonChoice: {
@@ -27,7 +27,7 @@ export const _styles = StyleSheet.create({
     paddingVertical: verticalScale(15),
     width: "100%",
     borderRadius: commonStyles.borderRadius,
-    backgroundColor: color.secundary,
+    backgroundColor: dark.secundary,
     elevation: 1,
   },
   buttonText: {

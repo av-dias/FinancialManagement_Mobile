@@ -1,7 +1,7 @@
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Feather, FontAwesome6 } from "@expo/vector-icons";
 import { horizontalScale, verticalScale, moderateScale } from "../functions/responsive";
-import { categoryColorsBackground } from "../utility/colors";
-export const categoryIcons = (icon_size = 25, color = "black") => {
+import { categoryColorsBackground, dark } from "../utility/colors";
+export const categoryIcons = (icon_size = 25, color = dark.textPrimary) => {
   const iconSize = verticalScale(icon_size);
 
   return [
@@ -100,27 +100,27 @@ export const categoryIcons = (icon_size = 25, color = "black") => {
 
 export const utilIcons = (size = 25) => {
   return [
-    { label: "Split", icon: <MaterialIcons name="call-split" style={{ alignSelf: "center" }} size={size} color="black" />, color: "white" },
+    { label: "Split", icon: <MaterialIcons name="call-split" style={{ alignSelf: "center" }} size={size} color="white" />, color: "white" },
     { label: "Transaction", icon: <AntDesign name="arrowleft" style={{ alignSelf: "center" }} size={size} color="darkred" />, color: "white" },
     { label: "Received", icon: <AntDesign name="arrowright" style={{ alignSelf: "center" }} size={size} color="darkgreen" />, color: "white" },
     {
       label: "Edit",
-      icon: <Feather name="edit" style={{ alignSelf: "center" }} size={size} color="black" />,
+      icon: <Feather name="edit" style={{ alignSelf: "center" }} size={size} color="white" />,
       color: "white",
     },
     {
       label: "Settle",
-      icon: <FontAwesome5 name="arrow-right" style={{ alignSelf: "center" }} size={size} color="black" />,
+      icon: <FontAwesome5 name="arrow-right" style={{ alignSelf: "center" }} size={size} color="white" />,
       color: "white",
     },
     {
       label: "Settled",
-      icon: <FontAwesome5 name="check" style={{ alignSelf: "center" }} size={size} color="black" />,
+      icon: <FontAwesome5 name="check" style={{ alignSelf: "center" }} size={size} color="white" />,
       color: "white",
     },
     {
       label: "Default",
-      icon: <MaterialIcons name="compare-arrows" style={{ alignSelf: "center" }} size={size} color="black" />,
+      icon: <MaterialIcons name="compare-arrows" style={{ alignSelf: "center" }} size={size} color="white" />,
       color: "white",
     },
   ];

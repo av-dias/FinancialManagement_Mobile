@@ -4,7 +4,7 @@ import { horizontalScale, verticalScale, moderateScale, heightTreshold } from ".
 import CardWrapper from "../cardWrapper/cardWrapper";
 import { categoryIcons } from "../../assets/icons";
 const BORDER_RADIUS = 10;
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 
 export default function Carrossel({ type, setType, size, iconSize }) {
   const styles = _styles;
@@ -23,7 +23,7 @@ export default function Carrossel({ type, setType, size, iconSize }) {
           return (
             <CardWrapper
               key={iconComponent.label}
-              style={{ backgroundColor: type == iconComponent.label ? color.secundary : color.complementary, width: size }}
+              style={{ backgroundColor: type == iconComponent.label ? dark.secundary : dark.complementary, width: size }}
             >
               <Pressable
                 key={iconComponent.label}

@@ -3,7 +3,7 @@ import { _styles } from "./style";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import CalendarStrip from "react-native-calendar-strip";
 import React, { useState, useEffect } from "react";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Entypo } from "@expo/vector-icons";
 import CustomCalendarPicker from "../customCalendarPicker/customCalendarPicker";
@@ -50,24 +50,24 @@ export default function CustomCalendarStrip({ pickerCurrentDate, setPickerCurren
         ref={(component) => (this._calendar = component)}
         selectedDate={pickerCurrentDate}
         calendarAnimation={{ type: "sequence", duration: 15 }}
-        daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: color.calendarBorder }}
-        style={{ height: verticalScale(90), backgroundColor: color.complementary, borderRadius: BORDER_RADIUS, elevation: 2 }}
+        daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: dark.calendarBorder }}
+        style={{ height: verticalScale(90), backgroundColor: dark.complementary, borderRadius: BORDER_RADIUS, elevation: 2 }}
         calendarHeaderStyle={{
-          color: "black",
+          color: dark.textPrimary,
           marginTop: 5,
           padding: horizontalScale(3),
           fontSize: verticalScale(15),
           borderWidth: 1,
           borderRadius: BORDER_RADIUS,
-          borderColor: color.complementary,
-          backgroundColor: color.complementary,
+          borderColor: dark.complementary,
+          backgroundColor: dark.complementary,
           elevation: 2,
         }}
         calendarColor={"transparent"}
-        dateNumberStyle={{ color: "black", fontSize: verticalScale(15) }}
-        dateNameStyle={{ color: "black", fontSize: verticalScale(10) }}
-        highlightDateNumberStyle={{ color: color.secundary, fontSize: verticalScale(20) }}
-        highlightDateNameStyle={{ color: color.secundary }}
+        dateNumberStyle={{ color: dark.textPrimary, fontSize: verticalScale(15) }}
+        dateNameStyle={{ color: dark.textPrimary, fontSize: verticalScale(10) }}
+        highlightDateNumberStyle={{ color: dark.secundary, fontSize: verticalScale(20) }}
+        highlightDateNameStyle={{ color: dark.secundary }}
         disabledDateNameStyle={{ color: "grey" }}
         disabledDateNumberStyle={{ color: "grey" }}
         iconContainer={{ flex: 0.1 }}

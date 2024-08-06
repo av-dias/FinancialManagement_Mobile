@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 import commonStyles from "../../utility/commonStyles";
@@ -14,7 +14,7 @@ export const _styles = StyleSheet.create({
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
   page: {
-    backgroundColor: color.backgroundLight,
+    backgroundColor: dark.backgroundLight,
     //alignItems: "center",
     //justifyContent: "center",
     height: "97%",

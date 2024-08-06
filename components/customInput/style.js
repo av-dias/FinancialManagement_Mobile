@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import commonStyles from "../../utility/commonStyles";
+import { dark } from "../../utility/colors";
 
 const borderRadius = commonStyles.borderRadius;
 
@@ -22,5 +23,6 @@ export const _styles = StyleSheet.create({
     width: "87%",
     alignSelf: "center",
     backgroundColor: "transparent",
+    color: dark.textPrimary,
   },
 });

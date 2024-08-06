@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale, inverseScale } from "../../functions/responsive";
 import { StatusBar } from "react-native";
 const borderRadius = 5;
@@ -7,7 +7,7 @@ const borderRadius = 5;
 export const _styles = StyleSheet.create({
   pageLogin: {
     flex: 1,
-    backgroundColor: color.backgroundDark,
+    backgroundColor: dark.backgroundDark,
     alignItems: "center",
     justifyContent: "center",
     padding: 30,
@@ -29,7 +29,7 @@ export const _styles = StyleSheet.create({
     alignContent: "center",
     justifyContent: "center",
     padding: verticalScale(20),
-    backgroundColor: color.glass,
+    backgroundColor: dark.glass,
     borderRadius: borderRadius,
   },
   logo: {
@@ -92,7 +92,7 @@ export const _styles = StyleSheet.create({
     paddingVertical: 12,
     marginVertical: 10,
     borderRadius: borderRadius,
-    backgroundColor: color.button,
+    backgroundColor: dark.button,
     elevation: 1,
   },
   submitSection: { flex: 1, backgroundColor: "transparent", justifyContent: "center", alignItems: "center", paddingHorizontal: moderateScale(5) },

@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import commonStyles from "../../utility/commonStyles";
 
@@ -22,7 +22,7 @@ export const _styles = StyleSheet.create({
     paddingVertical: verticalScale(15),
     width: "100%",
     borderRadius: commonStyles.borderRadius,
-    backgroundColor: color.button,
+    backgroundColor: dark.button,
     elevation: 1,
   },
 });

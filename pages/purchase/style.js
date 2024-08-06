@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 import commonStyles from "../../utility/commonStyles";
@@ -16,7 +16,7 @@ export const _styles = StyleSheet.create({
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
   page: {
-    backgroundColor: color.backgroundLight,
+    backgroundColor: dark.backgroundLight,
     //alignItems: "center",
     //justifyContent: "center",
     height: "97%",
@@ -57,7 +57,7 @@ export const _styles = StyleSheet.create({
     paddingVertical: verticalScale(15),
     width: "100%",
     borderRadius: borderRadius,
-    backgroundColor: color.button,
+    backgroundColor: dark.button,
     elevation: 1,
   },
   submitButton: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "transparent " },

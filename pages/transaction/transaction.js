@@ -17,6 +17,7 @@ import { AppContext } from "../../store/app-context";
 
 //Custom Constants
 import { _styles } from "./style";
+import { dark } from "../../utility/colors";
 
 //Functions
 import { verticalScale } from "../../functions/responsive";
@@ -50,7 +51,7 @@ export default function Purchase({ navigation }) {
   );
 
   return (
-    <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
+    <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ position: "absolute", right: 15, paddingVertical: 10, gap: 10 }}>
@@ -92,7 +93,7 @@ export default function Purchase({ navigation }) {
               }}
             />
             <CustomInput
-              Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color="black" />}
+              Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
               placeholder="Description"
               setValue={(_description) => {
                 setNewTransaction({ ...newTransaction, description: _description });
@@ -100,7 +101,7 @@ export default function Purchase({ navigation }) {
               value={newTransaction.description}
             />
             <CustomInput
-              Icon={<Entypo style={styles.iconCenter} name="email" size={verticalScale(20)} color="black" />}
+              Icon={<Entypo style={styles.iconCenter} name="email" size={verticalScale(20)} color={dark.textPrimary} />}
               placeholder="Email"
               value={getSplitEmail(destination)}
               editable={false}

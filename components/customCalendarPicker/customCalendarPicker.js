@@ -2,7 +2,7 @@ import { _styles } from "./style";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import React from "react";
 import CalendarPicker from "react-native-calendar-picker";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 
 const BORDER_RADIUS = 10;
 
@@ -26,8 +26,8 @@ export default function CustomCalendarPicker({ pickerCurrentDate, changeDateCale
         borderWidth: 1,
         borderRadius: BORDER_RADIUS,
         padding: horizontalScale(3),
-        borderColor: color.complementary,
-        backgroundColor: color.complementary,
+        borderColor: dark.complementary,
+        backgroundColor: dark.complementary,
       }}
       monthTitleStyle={{ fontWeight: "bold", fontSize: verticalScale(15) }}
       yearTitleStyle={{ fontWeight: "bold", fontSize: verticalScale(15) }}

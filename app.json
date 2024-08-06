@@ -27,7 +27,7 @@
       "package": "com.avdias.fm_mobile"
     },
     "androidNavigationBar": {
-      "backgroundColor": "#000000"
+      "backgroundColor": "#12102E"
     },
     "web": {
       "favicon": "./assets/favicon.png"

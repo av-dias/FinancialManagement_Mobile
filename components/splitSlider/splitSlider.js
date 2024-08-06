@@ -3,7 +3,7 @@ import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwes
 import { Slider } from "@rneui/themed";
 
 import { _styles } from "./style";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import commonStyles from "../../utility/commonStyles";
 
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
@@ -23,7 +23,7 @@ export default function SplitSlider({
   const styles = _styles;
 
   return (
-    <CardWrapper style={{ ...styles.cardWrapperSlider, backgroundColor: splitStatus ? color.complementary : "#333333", height: size }}>
+    <CardWrapper style={{ ...styles.cardWrapperSlider, backgroundColor: splitStatus ? dark.complementary : dark.complementaryDisable, height: size }}>
       <View style={{ ...styles.row, justifyContent: "space-evenly", zIndex: -1, backgroundColor: "transparent" }}>
         {userInfo && (
           <Pressable
@@ -42,13 +42,13 @@ export default function SplitSlider({
               zIndex: 1,
             }}
           >
-            <AntDesign name="plus" size={verticalScale(20)} color="black" />
+            <AntDesign name="plus" size={verticalScale(20)} color={dark.textPrimary} />
           </Pressable>
         )}
         <Pressable
           style={{
             ...styles.button,
-            backgroundColor: splitStatus ? color.secundary : "gray",
+            backgroundColor: splitStatus ? dark.secundary : dark.complementary,
 
             width: "25%",
             maxWidth: 100,
@@ -60,7 +60,7 @@ export default function SplitSlider({
             setSlider(50);
           }}
         >
-          <Text>Split {splitStatus ? slider + "%" : ""}</Text>
+          <Text style={{ color: dark.textPrimary }}>Split {splitStatus ? slider + "%" : ""}</Text>
         </Pressable>
         <Pressable
           disabled={splitStatus ? false : true}
@@ -77,7 +77,7 @@ export default function SplitSlider({
             zIndex: 1,
           }}
         >
-          <MaterialCommunityIcons name="fraction-one-half" size={verticalScale(15)} color="black" />
+          <MaterialCommunityIcons name="fraction-one-half" size={verticalScale(15)} color={dark.textPrimary} />
         </Pressable>
       </View>
 
@@ -91,7 +91,7 @@ export default function SplitSlider({
             width: verticalScale(70),
           }}
         >
-          <Text style={{ fontSize: verticalScale(8), textAlign: "center" }}>{(value * (100 - slider)) / 100}</Text>
+          <Text style={{ fontSize: verticalScale(8), textAlign: "center", color: dark.textPrimary }}>{(value * (100 - slider)) / 100}</Text>
         </View>
         <Slider
           value={slider}
@@ -117,7 +117,7 @@ export default function SplitSlider({
             width: verticalScale(70),
           }}
         >
-          <Text style={{ fontSize: verticalScale(8), textAlign: "center" }}>{(value * slider) / 100}</Text>
+          <Text style={{ fontSize: verticalScale(8), textAlign: "center", color: dark.textPrimary }}>{(value * slider) / 100}</Text>
         </View>
       </View>
     </CardWrapper>

@@ -6,7 +6,7 @@ import { months } from "../../utility/calendar";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import Carousel from "react-native-reanimated-carousel";
 import ModalCustom from "../../components/modal/modal";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import commonStyles from "../../utility/commonStyles";
 
 export default function CalendarCard({ monthState: [currentMonth, setCurrentMonth], yearState: [currentYear, setCurrentYear] }) {
@@ -44,7 +44,7 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
                 }}
               >
                 <Pressable onPress={() => setDatePicker(true)}>
-                  <Text style={{ textAlign: "center", fontSize: verticalScale(15) }}>{dateItem(index)}</Text>
+                  <Text style={styles.text}>{dateItem(index)}</Text>
                 </Pressable>
               </View>
             )}
@@ -60,7 +60,7 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
                 flex: 1,
                 alignItems: "center",
                 gap: verticalScale(20),
-                backgroundColor: color.complementary,
+                backgroundColor: dark.complementary,
                 borderRadius: commonStyles.borderRadius,
               }}
             >
@@ -70,7 +70,7 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
                     return (
                       <Pressable
                         key={"P" + month}
-                        style={{ backgroundColor: color.complementary, paddingVertical: verticalScale(5), marginVertical: verticalScale(5) }}
+                        style={{ backgroundColor: dark.complementary, paddingVertical: verticalScale(5), marginVertical: verticalScale(5) }}
                         onPress={() => {
                           setCurrentMonth(index);
                         }}
@@ -89,7 +89,7 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
                     return (
                       <Pressable
                         key={"P" + year}
-                        style={{ backgroundColor: color.complementary, paddingVertical: verticalScale(5), marginVertical: verticalScale(5) }}
+                        style={{ backgroundColor: dark.complementary, paddingVertical: verticalScale(5), marginVertical: verticalScale(5) }}
                         onPress={() => {
                           setCurrentYear(year);
                           setDatePicker(!datePicker);

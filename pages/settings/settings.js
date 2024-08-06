@@ -14,6 +14,7 @@ import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 import { KEYS } from "../../utility/storageKeys";
 import Header from "../../components/header/header";
+import { dark } from "../../utility/colors";
 
 const MODAL_DEFAULT_SIZE = 6;
 const MODAL_LARGE_SIZE = 9;
@@ -163,7 +164,7 @@ export default function Settings({ navigation }) {
     );
 
   return (
-    <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
+    <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <ModalCustom size={modalSize} modalVisible={modalVisible} setModalVisible={setModalVisible}>
         {ModalContent()}

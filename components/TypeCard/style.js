@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import commonStyles from "../../utility/commonStyles";
 
 export const _styles = StyleSheet.create({
@@ -18,7 +18,7 @@ export const _styles = StyleSheet.create({
     height: "100%",
     maxWidth: 175,
     maxHeight: 50,
-    backgroundColor: color.complementary,
+    backgroundColor: dark.complementary,
     padding: verticalScale(0),
     justifyContent: "center",
     borderRadius: commonStyles.borderRadius,
@@ -26,7 +26,7 @@ export const _styles = StyleSheet.create({
   },
   iconCenterLeft: { display: "flex", justifyContent: "center", alignSelf: "flex-end" },
   iconCenterRight: { display: "flex", justifyContent: "center", alignSelf: "flex-start" },
-  text: { fontSize: verticalScale(15), textAlign: "center", justifyContent: "center" },
+  text: { fontSize: verticalScale(15), textAlign: "center", justifyContent: "center", color: dark.textPrimary },
   rowGap: {
     flexDirection: "row",
     justifyContent: "center",

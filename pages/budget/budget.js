@@ -18,6 +18,7 @@ import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
 import { categoryIcons, utilIcons } from "../../assets/icons";
 import { isCtxLoaded } from "./handler";
 import { calcExpensesAverage, calcExpensesByType, calcExpensesTotalFromType, calcTotalExpensesByType } from "../../functions/expenses";
+import { dark } from "../../utility/colors";
 
 export default function Budget({ navigation }) {
   const styles = _styles;
@@ -126,17 +127,17 @@ export default function Budget({ navigation }) {
   );
 
   return (
-    <LinearGradient colors={["#121212", "#121212", "#121212", "#000000"]} style={styles.page}>
+    <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <ScrollView horizontal={false} style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, paddingVertical: 20, gap: 10 }}>
           {purchaseAverageTotal[currentYear] && (
             <View
               key={"TotalView"}
-              style={{ height: 50, backgroundColor: "lightgray", padding: 5, borderRadius: 5, justifyContent: "center", gap: 5 }}
+              style={{ height: 50, backgroundColor: dark.complementary, padding: 5, borderRadius: 5, justifyContent: "center", gap: 5 }}
             >
               {
-                <Text key={"TotalText"} style={{ fontWeight: "bold" }}>
+                <Text key={"TotalText"} style={{ fontWeight: "bold", color: dark.textPrimary }}>
                   {"Average " + getCurrentValue(purchaseTotal[STATS_TYPE[1]]) + "/" + getLastAvailableAverageValue(purchaseAverageTotal, currentYear)}
                 </Text>
               }
@@ -147,7 +148,7 @@ export default function Budget({ navigation }) {
                     getCurrentValue(purchaseTotal[STATS_TYPE[1]]),
                     getLastAvailableAverageValue(purchaseAverageTotal, currentYear)
                   )}
-                  color={"red"}
+                  color={"darkred"}
                 />
               }
             </View>
@@ -171,21 +172,28 @@ export default function Budget({ navigation }) {
               return (
                 <View
                   key={type + "View"}
-                  style={{ flexDirection: "row", height: "auto", backgroundColor: "lightgray", gap: 5, padding: 5, borderRadius: 5 }}
+                  style={{ flexDirection: "row", height: "auto", backgroundColor: dark.complementary, gap: 5, padding: 5, borderRadius: 5 }}
                 >
                   <View style={{ justifyContent: "center", width: 50, backgroundColor: "transparent" }}>
                     <View>{categoryIcons(25).find((category) => category.label === type).icon}</View>
-                    <Text key={type + "TextA"} style={{ fontSize: 10, alignContent: "center", justifyContent: "center", textAlign: "center" }}>
+                    <Text
+                      key={type + "TextA"}
+                      style={{ fontSize: 10, alignContent: "center", justifyContent: "center", textAlign: "center", color: dark.textPrimary }}
+                    >
                       {type.substring(0, 7)}
                     </Text>
                   </View>
                   <View style={{ flex: 1, backgroundColor: "transparent", justifyContent: "center", gap: 5 }}>
                     <View>
-                      <Text key={type + "TextT"}>{"Total " + currentTotalTypeValue + "/" + lastTotalTypeValue}</Text>
-                      <ProgressBar key={"PT" + type} progress={getTotalProgress(currentTotalTypeValue, lastTotalTypeValue)} color={"red"} />
+                      <Text key={type + "TextT"} style={{ color: dark.textPrimary }}>
+                        {"Total " + currentTotalTypeValue + "/" + lastTotalTypeValue}
+                      </Text>
+                      <ProgressBar key={"PT" + type} progress={getTotalProgress(currentTotalTypeValue, lastTotalTypeValue)} color={"darkred"} />
                     </View>
                     <View>
-                      <Text key={type + "TextM"}>{"Monthly " + currentTypeValue + "/" + lastAverageTypeValue}</Text>
+                      <Text key={type + "TextM"} style={{ color: dark.textPrimary }}>
+                        {"Monthly " + currentTypeValue + "/" + lastAverageTypeValue}
+                      </Text>
                       {<ProgressBar key={"PM" + type} progress={getTotalProgress(currentTypeValue, lastAverageTypeValue)} color={"blue"} />}
                     </View>
                   </View>

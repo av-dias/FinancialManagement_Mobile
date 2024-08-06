@@ -4,7 +4,7 @@ import { categoryIcons, utilIcons } from "../../assets/icons";
 import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
 import { _styles } from "./style";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import commonStyles from "../../utility/commonStyles";
 
 const getLabel = (innerData) => {
@@ -38,7 +38,7 @@ export default ListItem = ({ innerData, handleSplit, handleEdit, showAlert, keys
   return (
     <Pressable
       key={keys + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
-      style={{ ...styles.button, backgroundColor: color.complementary, borderRadius: commonStyles.borderRadius }}
+      style={{ ...styles.button, backgroundColor: dark.complementary, borderRadius: commonStyles.borderRadius }}
       onPress={showAlert}
     >
       <View style={styles.rowGap}>

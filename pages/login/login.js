@@ -18,6 +18,14 @@ export default function Login({ navigation }) {
   const [ip3, setip3] = useState("");
   const [ip4, setip4] = useState("");
 
+  const lastLogin = async () => {
+    if ((await getFromStorage(KEYS.EMAIL)) != "" && (await getFromStorage(KEYS.PASSWORD)) != "") {
+      navigation.navigate("Home");
+    }
+  };
+
+  lastLogin();
+
   const handleLogin = async () => {
     try {
       await saveToStorage(KEYS.EMAIL, email.toLowerCase());

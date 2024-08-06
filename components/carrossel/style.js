@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import commonStyles from "../../utility/commonStyles";
+import { dark } from "../../utility/colors";
 
 export const _styles = StyleSheet.create({
   categoryScrollContainer: { backgroundColor: "transparent" },
@@ -13,7 +14,7 @@ export const _styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     justifyContent: "center",
   },
-  iconLabel: { fontSize: verticalScale(8) },
+  iconLabel: { fontSize: verticalScale(8), color: dark.textPrimary },
   labelContainer: {
     backgroundColor: "transparent",
     alignItems: "center",

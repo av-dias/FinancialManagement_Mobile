@@ -29,7 +29,7 @@ export default function TypeCard({ setItem, itemList }) {
                   backgroundColor: "transparent",
                 }}
               >
-                <Text style={{ textAlign: "center", fontSize: verticalScale(15) }}>{itemList[index]}</Text>
+                <Text style={styles.text}>{itemList[index]}</Text>
               </View>
             )}
           />

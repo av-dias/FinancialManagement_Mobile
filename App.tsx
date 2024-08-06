@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, MaterialIcons, FontAwesome5, AntDesign } from "@expo/vector-icons";
+import { ThemeProvider } from "react-native-elements";
 
 import Login from "./pages/login/login";
 import Home from "./pages/home/home";
@@ -19,6 +20,7 @@ import UserContextProvider from "./store/user-context";
 
 // Removing annoying warning from VictoryChart
 import { LogBox } from "react-native";
+
 const IGNORED_LOGS = ["Warning: Failed prop type: Invalid prop `domain` supplied to `VictoryLine`."];
 LogBox.ignoreLogs(IGNORED_LOGS);
 
@@ -36,7 +38,7 @@ function HomeTabs() {
               height: 50,
               paddingHorizontal: 5,
               paddingTop: 5,
-              backgroundColor: "black",
+              backgroundColor: "#12102E",
               position: "absolute",
               borderTopWidth: 0,
               navigationBarColor: "gold",

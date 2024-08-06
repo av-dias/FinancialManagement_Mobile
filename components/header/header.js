@@ -7,6 +7,7 @@ import { _styles } from "./style";
 import { saveToStorage, getFromStorage } from "../../functions/secureStorage";
 import { getServerStatus } from "../../functions/basic";
 import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
+import { KEYS } from "../../utility/storageKeys";
 
 export default function Header(props) {
   const styles = _styles;
@@ -86,7 +87,8 @@ export default function Header(props) {
             name="logout"
             size={20}
             color="white"
-            onPress={() => {
+            onPress={async () => {
+              await saveToStorage(KEYS.PASSWORD, "");
               props.navigation.navigate("Login");
             }}
           />

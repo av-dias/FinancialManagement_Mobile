@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
-import { color } from "../../utility/colors";
+import { dark } from "../../utility/colors";
 import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 const statusBarHeight = StatusBar.currentHeight;
@@ -8,7 +8,7 @@ import commonStyles from "../../utility/commonStyles";
 
 export const _styles = StyleSheet.create({
   page: {
-    backgroundColor: color.backgroundLight,
+    backgroundColor: dark.backgroundLight,
     //alignItems: "center",
     //justifyContent: "center",
     height: "97%",
@@ -40,16 +40,17 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: verticalScale(10),
     paddingHorizontal: commonStyles.boxPaddingHorizontal,
-    backgroundColor: "transparent",
+    backgroundColor: dark.complementary,
+    borderRadius: commonStyles.borderRadius,
   },
-  textCenter: { textAlign: "center", fontSize: verticalScale(12), gap: 10 },
+  textCenter: { textAlign: "center", fontSize: verticalScale(12), gap: 10, color: dark.textPrimary },
   textCenterHead: { textAlign: "center", fontWeight: "bold", fontSize: verticalScale(15) },
   rowTable: {
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
-    borderColor: color.complementary,
-    borderWidth: verticalScale(1),
+    borderColor: "transparent",
+    borderWidth: 0,
   },
   colorIcon: { textAlign: "center", fontSize: verticalScale(20), padding: 5, margin: 5 },
 });
