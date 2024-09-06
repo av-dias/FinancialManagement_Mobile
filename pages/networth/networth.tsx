@@ -13,11 +13,55 @@ import { CustomTitle } from "../../components/customTitle/CustomTitle";
 import { IconButton } from "../../components/iconButton/IconButton";
 import ModalCustom from "../../components/modal/modal";
 import { AddForm } from "./components/addForm";
+import { useFocusEffect } from "@react-navigation/native";
+import React from "react";
+import { getPortfolio } from "../../functions/portfolio";
 
 export default function Networth({ navigation }) {
   const appCtx = useContext(AppContext);
   const styles = _styles;
   const [modalVisible, setModalVisible] = useState(false);
+  const [items, setItems] = useState([]);
+  const [portfolio, setPortfolio] = useState([]);
+  const [portfolioStatus, setPortfolioStatus] = useState({ networth: 0, grossworth: 0 });
+
+  const loadPortfolioCarrosselItems = (portfolio) => {
+    let carrosselItems = [];
+    if (portfolio != undefined) {
+      portfolio?.map((item) => carrosselItems.push({ label: item.name, color: "black" }));
+    }
+    setItems(carrosselItems);
+  };
+
+  const loadPortfolioStatus = (portfolio) => {
+    let networth = 0;
+    portfolio.map((item) => (networth += Number(item.value)));
+    setPortfolioStatus({ networth: networth, grossworth: networth });
+  };
+
+  const onSubmiteCallback = () => {
+    setModalVisible(false);
+  };
+
+  const onIconPressCallback = () => {
+    setModalVisible(true);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        const portfolio = await getPortfolio(appCtx.email);
+        loadPortfolioCarrosselItems(portfolio);
+        loadPortfolioStatus(portfolio);
+        setPortfolio(portfolio);
+        try {
+        } catch (e) {
+          console.log("Networth AddForm: " + e);
+        }
+      }
+      fetchData();
+    }, [appCtx.email, modalVisible])
+  );
 
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
@@ -25,21 +69,21 @@ export default function Networth({ navigation }) {
       <View style={styles.usableScreen}>
         {modalVisible && (
           <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible} size={15} hasColor={true}>
-            <AddForm />
+            <AddForm items={items} onSubmit={onSubmiteCallback} />
           </ModalCustom>
         )}
         <View style={styles.mainContainer}>
           <MainCard
-            value={"42000"}
-            absoluteIncrease={"500€"}
-            relativeIncrease={"15%"}
+            value={portfolioStatus.networth}
+            absoluteIncrease={500}
+            relativeIncrease={15}
             title={"Grossworth"}
             icon={<FontAwesome5 name="money-check" size={24} color={dark.secundary} />}
           />
           <MainCard
-            value={"36000"}
-            absoluteIncrease={"200€"}
-            relativeIncrease={"5%"}
+            value={portfolioStatus.networth}
+            absoluteIncrease={200}
+            relativeIncrease={5}
             title={"Networth"}
             icon={<FontAwesome5 name="money-check-alt" size={24} color="lightblue" />}
           />
@@ -47,24 +91,10 @@ export default function Networth({ navigation }) {
         <View style={{ flex: 1, gap: 10, padding: 5 }}>
           <View style={styles.dividerContainer}>
             <CustomTitle title="Portefolio" icon={<FontAwesome name="book" size={24} color="white" />} />
-            <IconButton
-              icon={<Entypo name="add-to-list" size={18} color={"white"} />}
-              onPressHandle={() => {
-                setModalVisible(true);
-              }}
-            />
+            <IconButton icon={<Entypo name="add-to-list" size={18} color={"white"} />} onPressHandle={onIconPressCallback} />
           </View>
           <ScrollView contentContainerStyle={{ gap: 5 }}>
-            {[
-              { name: "Bond", value: 2000 },
-              { name: "TR Cash", value: 11000 },
-              { name: "TR Wealth", value: 2000 },
-              { name: "AIB", value: 2000 },
-              { name: "REV", value: 11000 },
-              { name: "Caution", value: 2000 },
-              { name: "Crypto", value: 2000 },
-              { name: "Aon", value: 11000 },
-            ].map((item) => (
+            {portfolio?.map((item) => (
               <FlatItem key={item.name} name={item.name} value={item.value} />
             ))}
           </ScrollView>

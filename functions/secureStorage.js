@@ -49,3 +49,28 @@ export async function removeFromStorage(key, index, user) {
 
   await SecureStore.setItemAsync(user + key, JSON.stringify(newValue));
 }
+
+export async function addOrUpdateOnStorage(key, element, user) {
+  if (!user) user = "";
+  user = user.split("@")[0];
+  let oldValueString = await getFromStorage(user + key);
+  let oldValue = JSON.parse(oldValueString);
+  let newValue = [];
+
+  if (!oldValue || oldValue.length === 0) {
+    // Add new item
+    newValue.push(element);
+  } else {
+    let foundIndex = oldValue.findIndex((v) => v.name == element.name);
+    if (foundIndex != -1) {
+      // Update existing element
+      oldValue[foundIndex].value = element.value;
+    } else {
+      // Add new element
+      oldValue.push(element);
+    }
+    newValue = oldValue;
+  }
+
+  await SecureStore.setItemAsync(user + key, JSON.stringify(newValue));
+}

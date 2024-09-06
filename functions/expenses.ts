@@ -372,7 +372,7 @@ export const addExpenses = (newElement: Purchase | Transaction, key: any, setExp
     }
 
     let expense: Expense = { element: newElement, key: key, index: index };
-    
+
     if (prev.hasOwnProperty(year)) {
       if (prev[year].hasOwnProperty(month)) {
         updatedState[year][month].push(expense);

@@ -12,8 +12,10 @@ type CarrosselProps = {
   setType: any;
   size: any;
   iconSize: any;
-  items: { label: string; color: string; icon?: ReactNode }[];
+  items: CarrosselItemsType[];
 };
+
+export type CarrosselItemsType = { label: string; color: string; icon?: ReactNode };
 
 export default function Carrossel({ type, setType, size, iconSize, items = categoryIcons(iconSize) }: CarrosselProps) {
   const styles = _styles;

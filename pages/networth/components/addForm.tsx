@@ -1,20 +1,35 @@
 import { View, StyleSheet } from "react-native";
-import { useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import { ReactNode, useContext, useState } from "react";
 import MoneyInputHeader from "../../../components/moneyInputHeader/moneyInputHeader";
 import CustomInput from "../../../components/customInput/customInput";
 import { verticalScale } from "../../../functions/responsive";
 import { dark } from "../../../utility/colors";
 import CustomButton from "../../../components/customButton/customButton";
-import Carrossel from "../../../components/carrossel/carrossel";
+import Carrossel, { CarrosselItemsType } from "../../../components/carrossel/carrossel";
+import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Feather } from "@expo/vector-icons";
+import { AppContext } from "../../../store/app-context";
+import React from "react";
+import { addOrUpdateOnStorage } from "../../../functions/secureStorage";
+import { KEYS } from "../../../utility/storageKeys";
 
 const styles = StyleSheet.create({
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center", backgroundColor: "transparent" },
 });
 
-export const AddForm = () => {
+type AddFormProps = {
+  items: CarrosselItemsType[];
+  onSubmit: () => void;
+};
+
+export const AddForm = (props: AddFormProps) => {
   const [value, setValue] = useState();
   const [name, setName] = useState();
+  const appCtx = useContext(AppContext);
+
+  const onHandlePressCallback = async () => {
+    await addOrUpdateOnStorage(KEYS.PORTFOLIO, { name: name, value: value }, appCtx.email);
+    props.onSubmit();
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -26,9 +41,11 @@ export const AddForm = () => {
           value={name}
           Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
         />
-        <Carrossel type={name} setType={setName} size={verticalScale(90)} iconSize={30} items={[]} />
+        <Carrossel type={name} setType={setName} size={verticalScale(90)} iconSize={30} items={props.items} />
       </View>
-      <CustomButton handlePress={() => {}} />
+      <CustomButton handlePress={onHandlePressCallback} />
     </View>
   );
+
+  //  items: { label: string; color: string; icon?: ReactNode }[];
 };
