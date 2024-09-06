@@ -59,7 +59,7 @@ export default function Purchase({ navigation }) {
             style={{
               paddingHorizontal: 10,
               paddingVertical: 5,
-              backgroundColor: receivedActive ? "lightblue" : "lightgray",
+              backgroundColor: receivedActive ? "lightblue" : dark.complementary,
               borderRadius: 10,
               zIndex: 1,
             }}
