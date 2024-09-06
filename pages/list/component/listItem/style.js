@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
-import commonStyles from "../../utility/commonStyles";
-import { dark } from "../../utility/colors";
+import { horizontalScale, verticalScale, moderateScale } from "../../../../functions/responsive";
+import commonStyles from "../../../../utility/commonStyles";
+import { dark } from "../../../../utility/colors";
 
 export const _styles = StyleSheet.create({
   button: {

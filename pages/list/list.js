@@ -17,12 +17,12 @@ import { getFromStorage } from "../../functions/secureStorage";
 import { months } from "../../utility/calendar";
 import showAlert from "./showAlert";
 
-import ModalList from "../../components/modalList/modalList";
+import ModalList from "./component/modalList/modalList";
 import Header from "../../components/header/header";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import ModalCustom from "../../components/modal/modal";
-import ListItem from "../../components/listItem/listItem";
+import ListItem from "./component/listItem/listItem";
 
 import { groupExpensesByDate } from "../../functions/expenses";
 import { handleTransaction } from "../transaction/handler";

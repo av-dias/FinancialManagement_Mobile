@@ -1,11 +1,11 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
-import { categoryIcons, utilIcons } from "../../assets/icons";
-import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
+import { categoryIcons, utilIcons } from "../../../../assets/icons";
+import { horizontalScale, verticalScale, moderateScale } from "../../../../functions/responsive";
 import { _styles } from "./style";
-import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
-import { dark } from "../../utility/colors";
-import commonStyles from "../../utility/commonStyles";
+import { KEYS as KEYS_SERIALIZER } from "../../../../utility/keys";
+import { dark } from "../../../../utility/colors";
+import commonStyles from "../../../../utility/commonStyles";
 
 const getLabel = (innerData) => {
   let name = innerData.name || innerData.description;

@@ -1,20 +1,20 @@
 import { View } from "react-native";
-import { verticalScale } from "../../functions/responsive";
+import { verticalScale } from "../../../../functions/responsive";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
 
 // Components
-import CustomInput from "../customInput/customInput";
-import Carrossel from "../carrossel/carrossel";
-import CustomCalendarStrip from "../customCalendarStrip/customCalendarStrip";
-import MoneyInputHeader from "../moneyInputHeader/moneyInputHeader";
-import SplitSlider from "../splitSlider/splitSlider";
-import CustomButton from "../customButton/customButton";
+import CustomInput from "../../../../components/customInput/customInput";
+import Carrossel from "../../../../components/carrossel/carrossel";
+import CustomCalendarStrip from "../../../../components/customCalendarStrip/customCalendarStrip";
+import MoneyInputHeader from "../../../../components/moneyInputHeader/moneyInputHeader";
+import SplitSlider from "../../../../components/splitSlider/splitSlider";
+import CustomButton from "../../../../components/customButton/customButton";
 
 // Handler
-import { handleEditPurchase, handleEditTransaction } from "../../pages/list/handler";
+import { handleEditPurchase, handleEditTransaction } from "../../handler";
 
 // Contants
-import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
+import { KEYS as KEYS_SERIALIZER } from "../../../../utility/keys";
 
 export default function ModalList(email, expense, setSelectedItem, splitUser, sliderStatus, setSliderStatus, setEditVisible, styles, setExpenses) {
   let selectedItem = expense.element;
