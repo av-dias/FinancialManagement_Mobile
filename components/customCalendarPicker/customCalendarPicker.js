@@ -15,22 +15,24 @@ export default function CustomCalendarPicker({ pickerCurrentDate, changeDateCale
       }}
       todayBackgroundColor="transparent"
       todayTextStyle={{
-        color: "gray",
+        color: "white",
         fontWeight: "bold",
         padding: 5,
         textAlign: "center",
         justifyContent: "center",
       }}
       monthYearHeaderWrapperStyle={{
-        color: "black",
+        color: dark.textPrimary,
         borderWidth: 1,
         borderRadius: BORDER_RADIUS,
         padding: horizontalScale(3),
         borderColor: dark.complementary,
         backgroundColor: dark.complementary,
       }}
-      monthTitleStyle={{ fontWeight: "bold", fontSize: verticalScale(15) }}
-      yearTitleStyle={{ fontWeight: "bold", fontSize: verticalScale(15) }}
+      monthTitleStyle={{ fontWeight: "bold", fontSize: verticalScale(15), color: dark.textPrimary }}
+      yearTitleStyle={{ fontWeight: "bold", fontSize: verticalScale(15), color: dark.textPrimary }}
+      textStyle={{ color: dark.textPrimary }}
+      customDatesStyles={{ color: dark.textPrimary }}
       selectedDayColor="red"
       startFromMonday={true}
       initialDate={pickerCurrentDate}

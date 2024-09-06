@@ -31,6 +31,7 @@ export default function CustomCalendarStrip({ pickerCurrentDate, setPickerCurren
             position: "absolute",
             alignSelf: "center",
             zIndex: 1,
+            backgroundColor: dark.complementarySolid,
           }}
         >
           <CustomCalendarPicker pickerCurrentDate={pickerCurrentDate} changeDateCalendar={changeDateCalendar} />

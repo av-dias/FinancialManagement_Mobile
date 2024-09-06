@@ -104,7 +104,7 @@ export default function SplitSlider({
           trackStyle={{ height: 5, backgroundColor: "transparent" }}
           thumbStyle={{ height: verticalScale(32), width: verticalScale(32), backgroundColor: "transparent" }}
           thumbProps={{
-            children: <AntDesign name="pausecircle" size={verticalScale(30)} color="black" />,
+            children: <FontAwesome name="circle" size={verticalScale(30)} color="black" />,
           }}
           style={{ flex: 1, backgroundColor: "transparent", height: "100%" }}
         />

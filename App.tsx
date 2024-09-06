@@ -14,12 +14,14 @@ import Settings from "./pages/settings/settings";
 import Transaction from "./pages/transaction/transaction";
 import Stats from "./pages/stats/stats";
 import Budget from "./pages/budget/budget";
+import StatsMenu from "./pages/statsMenu/statsMenu";
 
 import AppContextProvider from "./store/app-context";
 import UserContextProvider from "./store/user-context";
 
 // Removing annoying warning from VictoryChart
 import { LogBox } from "react-native";
+import Networth from "./pages/networth/networth";
 
 const IGNORED_LOGS = ["Warning: Failed prop type: Invalid prop `domain` supplied to `VictoryLine`."];
 LogBox.ignoreLogs(IGNORED_LOGS);
@@ -53,6 +55,18 @@ function HomeTabs() {
           />
           <Tab.Screen
             name="Stats"
+            component={StatsMenu}
+            options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={24} color="white" /> }}
+          />
+          <Tab.Screen
+            name="Networth"
+            component={Networth}
+            options={{ headerShown: false, tabBarIcon: ({ color, size }) => <AntDesign name="piechart" size={20} color="white" /> }}
+          />
+          <Tab.Screen name="Statistics" component={Stats} options={{ headerShown: false, tabBarButton: (props) => null }} />
+          <Tab.Screen name="Budget" component={Budget} options={{ headerShown: false, tabBarButton: (props) => null }} />
+          {/*<Tab.Screen
+            name="Stats"
             component={Stats}
             options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={24} color="white" /> }}
           />
@@ -60,7 +74,7 @@ function HomeTabs() {
             name="Budget"
             component={Budget}
             options={{ headerShown: false, tabBarIcon: ({ color, size }) => <AntDesign name="piechart" size={20} color="white" /> }}
-          />
+          /> */}
           <Tab.Screen
             name="Purchase"
             component={Purchase}

@@ -136,10 +136,10 @@ export default function Budget({ navigation }) {
           {purchaseAverageTotal[currentYear] && (
             <View
               key={"TotalView"}
-              style={{ height: 50, backgroundColor: dark.complementary, padding: 5, borderRadius: 5, justifyContent: "center", gap: 5 }}
+              style={{ height: 70, backgroundColor: dark.complementary, padding: 15, borderRadius: 5, justifyContent: "center", gap: 10 }}
             >
               {
-                <Text key={"TotalText"} style={{ fontWeight: "bold", color: dark.textPrimary }}>
+                <Text key={"TotalText"} style={{ fontWeight: "bold", color: dark.textPrimary, fontSize: 20 }}>
                   {"Average " + getCurrentValue(purchaseTotal[STATS_TYPE[1]]) + "/" + getLastAvailableAverageValue(purchaseAverageTotal, currentYear)}
                 </Text>
               }
@@ -176,12 +176,12 @@ export default function Budget({ navigation }) {
                   key={type + "View"}
                   style={{ flexDirection: "row", height: "auto", backgroundColor: dark.complementary, gap: 5, padding: 10, borderRadius: 5 }}
                 >
-                  <View style={{ justifyContent: "center", width: 50, backgroundColor: "transparent" }}>
+                  <View style={{ justifyContent: "center", width: 50, backgroundColor: "transparent", gap: 5 }}>
                     <View
                       style={{
-                        width: verticalScale(40),
+                        width: verticalScale(50),
                         maxWidth: 50,
-                        height: verticalScale(40),
+                        height: verticalScale(50),
                         maxHeight: 50,
                         backgroundColor: categoryIcons(25).find((category) => category.label === type).color,
                         borderRadius: commonStyles.borderRadius,
@@ -199,14 +199,14 @@ export default function Budget({ navigation }) {
                       {type.substring(0, 7)}
                     </Text>
                   </View>
-                  <View style={{ flex: 1, backgroundColor: "transparent", justifyContent: "center", gap: 5 }}>
-                    <View>
+                  <View style={{ flex: 1, backgroundColor: "transparent", gap: 10, padding: 5 }}>
+                    <View style={{ gap: 2 }}>
                       <Text key={type + "TextT"} style={{ color: dark.textPrimary }}>
                         {"Total " + currentTotalTypeValue + "/" + lastTotalTypeValue}
                       </Text>
                       <ProgressBar key={"PT" + type} progress={getTotalProgress(currentTotalTypeValue, lastTotalTypeValue)} color={"darkred"} />
                     </View>
-                    <View>
+                    <View style={{ gap: 2 }}>
                       <Text key={type + "TextM"} style={{ color: dark.textPrimary }}>
                         {"Monthly " + currentTypeValue + "/" + lastAverageTypeValue}
                       </Text>

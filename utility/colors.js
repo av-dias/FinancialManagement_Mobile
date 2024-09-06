@@ -2,6 +2,7 @@ export const dark = {
   backgroundDark: "rgba(26, 34, 56,1)",
   backgroundLight: "#121212",
   complementary: "rgba(48, 51, 85, 0.8)",
+  complementarySolid: "rgba(48, 51, 85, 1)",
   complementaryDisable: "rgba(20, 29, 43, 0.8)",
   glass: "rgba(184, 191, 214, 0.1)",
   glassBorder: "rgba(211, 211, 211, 1)",
@@ -11,6 +12,7 @@ export const dark = {
   button: "rgba(236, 158, 91, 1)",
   gradientColourLight: ["#010103", "#12102E"],
   textPrimary: "rgba(214, 210, 230, 1)",
+  textSecundary: "lightgray",
 };
 
 export const categoryColorsBackground = {
