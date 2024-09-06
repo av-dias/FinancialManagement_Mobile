@@ -1,9 +1,6 @@
-import { Text, View, TextInput } from "react-native";
+import { View, TextInput } from "react-native";
 import { _styles } from "./style";
-import { MaterialIcons } from "@expo/vector-icons";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import CardWrapper from "../cardWrapper/cardWrapper";
-import { dark } from "../../utility/colors";
 
 export default function CustomInput({ Icon, placeholder, value = "", editable = true, setValue, noStyle = false }) {
   const styles = _styles;

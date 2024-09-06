@@ -4,22 +4,30 @@ import { Entypo, FontAwesome5, FontAwesome } from "@expo/vector-icons";
 import { Table, TableWrapper, Cell, Row, Rows, Col } from "react-native-table-component";
 import { dark } from "../../utility/colors";
 import Header from "../../components/header/header";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AppContext } from "../../store/app-context";
 import { _styles } from "./style";
 import { FlatItem } from "../../components/flatItem/flatItem";
 import { MainCard } from "./components/mainCard";
 import { CustomTitle } from "../../components/customTitle/CustomTitle";
 import { IconButton } from "../../components/iconButton/IconButton";
+import ModalCustom from "../../components/modal/modal";
+import { AddForm } from "./components/addForm";
 
 export default function Networth({ navigation }) {
   const appCtx = useContext(AppContext);
   const styles = _styles;
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={appCtx.email} navigation={navigation} />
       <View style={styles.usableScreen}>
+        {modalVisible && (
+          <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible} size={15} hasColor={true}>
+            <AddForm />
+          </ModalCustom>
+        )}
         <View style={styles.mainContainer}>
           <MainCard
             value={"42000"}
@@ -42,7 +50,7 @@ export default function Networth({ navigation }) {
             <IconButton
               icon={<Entypo name="add-to-list" size={18} color={"white"} />}
               onPressHandle={() => {
-                alert("Implement");
+                setModalVisible(true);
               }}
             />
           </View>

@@ -5,8 +5,17 @@ import CardWrapper from "../cardWrapper/cardWrapper";
 import { categoryIcons } from "../../assets/icons";
 const BORDER_RADIUS = 10;
 import { dark } from "../../utility/colors";
+import { ReactNode } from "react";
 
-export default function Carrossel({ type, setType, size, iconSize }) {
+type CarrosselProps = {
+  type: any;
+  setType: any;
+  size: any;
+  iconSize: any;
+  items: { label: string; color: string; icon?: ReactNode }[];
+};
+
+export default function Carrossel({ type, setType, size, iconSize, items = categoryIcons(iconSize) }: CarrosselProps) {
   const styles = _styles;
 
   return (
@@ -19,7 +28,7 @@ export default function Carrossel({ type, setType, size, iconSize }) {
           paddingHorizontal: 1,
         }}
       >
-        {categoryIcons(iconSize).map((iconComponent) => {
+        {items.map((iconComponent) => {
           return (
             <CardWrapper
               key={iconComponent.label}
@@ -34,7 +43,9 @@ export default function Carrossel({ type, setType, size, iconSize }) {
                   setType(iconComponent.label);
                 }}
               >
-                <View style={{ ...styles.categoryIconContainer, backgroundColor: iconComponent.color }}>{iconComponent.icon}</View>
+                {iconComponent?.icon && (
+                  <View style={{ ...styles.categoryIconContainer, backgroundColor: iconComponent.color }}>{iconComponent.icon}</View>
+                )}
                 <View style={styles.labelContainer}>
                   <Text style={styles.iconLabel}>{iconComponent.label}</Text>
                 </View>
