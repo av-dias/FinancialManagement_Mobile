@@ -38,5 +38,5 @@ export const _styles = StyleSheet.create({
   },
   iconButton: { backgroundColor: dark.button, padding: 10, borderRadius: 100 },
   dividerContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 10, paddingBottom: 0, paddingRight: 0 },
-  mainContainer: { gap: 20, padding: 10 },
+  mainContainer: { gap: 20, padding: 5 },
 });

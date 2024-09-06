@@ -22,6 +22,7 @@ import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { loadCalendarCard, loadPieChartData, loadPurchaseTotalData, loadSpendTableData, loadExpenses, isCtxLoaded } from "./handler";
 import { calcExpensesByType, calcExpensesAverage, calcExpensesTotalFromType } from "../../functions/expenses";
 import { dark } from "../../utility/colors";
+import { FlatItem } from "../../components/flatItem/flatItem";
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -118,35 +119,22 @@ export default function Home({ navigation }) {
                 </View>
               </View>
             </CardWrapper>
-            <View style={{ flex: 1, alignSelf: "flex-end", flexDirection: "row", maxHeight: 35, gap: 10 }}>
+            <View style={{ flex: 1, alignSelf: "flex-end", flexDirection: "row", maxHeight: 35, gap: 10, paddingHorizontal: 5 }}>
               <TypeCard setItem={setStatsType} itemList={Object.values(STATS_TYPE)} />
               <TypeCard setItem={setStatsMode} itemList={Object.values(STATS_MODE)} />
             </View>
             <View style={{ flex: 4 }}>
-              <CardWrapper style={{ height: "95%" }}>
-                <View style={styles.tableInfo}>
-                  <Table style={{ ...styles.textCenter }} borderStyle={{ borderColor: "transparent", borderWidth: 0 }}>
-                    <ScrollView style={{ height: "100%", background: "transparent" }}>
-                      {loadSpendTableData(statsMode, statsType, spendByType, spendAverageByType).map((rowData, index) => (
-                        <TableWrapper key={index} style={styles.rowTable}>
-                          {rowData.map((cellData, cellIndex) => {
-                            if (cellIndex == 2) {
-                              cellData = cellData + " €";
-                            }
-                            return (
-                              <Cell style={{ flex: state.tableFlex[cellIndex] }} key={cellIndex} data={cellData} textStyle={styles.textCenter} />
-                            );
-                          })}
-                        </TableWrapper>
-                      ))}
-                    </ScrollView>
-                  </Table>
-                </View>
-              </CardWrapper>
+              <View style={{ flex: 4 }}>
+                <ScrollView contentContainerStyle={{ gap: 5, paddingHorizontal: 5 }}>
+                  {loadSpendTableData(statsMode, statsType, spendByType, spendAverageByType).map((rowData) => (
+                    <FlatItem key={rowData[1]} icon={rowData[0]} name={rowData[1]} value={rowData[2]} />
+                  ))}
+                </ScrollView>
+              </View>
             </View>
           </View>
         ) : (
-          <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
+          <View style={{ flex: 8, justifyContent: "center", alignItems: "center", gap: 10 }}>
             <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
             <Text style={{ color: dark.textPrimary }}>NO DATA</Text>
           </View>

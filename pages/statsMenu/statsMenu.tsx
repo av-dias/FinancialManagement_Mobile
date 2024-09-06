@@ -15,7 +15,7 @@ export default function StatsMenu({ navigation }) {
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={appCtx.email} navigation={navigation} />
       <View style={styles.usableScreen}>
-        <View style={{ gap: 15, padding: 15 }}>
+        <View style={{ gap: 15, padding: 5, paddingTop: 20 }}>
           <CustomButton
             text="Statistics"
             handlePress={() => {

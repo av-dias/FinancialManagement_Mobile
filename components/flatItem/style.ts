@@ -4,6 +4,9 @@ import commonStyles from "../../utility/commonStyles";
 import { dark } from "../../utility/colors";
 
 export const _styles = StyleSheet.create({
-  text: { zIndex: 1, fontSize: verticalScale(12), textAlign: "center", backgroundColor: "transparent", alignSelf: "center", color: dark.textPrimary },
-  row: { flexDirection: "row", justifyContent: "space-between", borderRadius: commonStyles.borderRadius },
+  text: { zIndex: 1, fontSize: verticalScale(12), backgroundColor: "transparent", color: dark.textPrimary },
+  row: { flexDirection: "row", borderRadius: commonStyles.borderRadius },
+  center: { flex: 1, alignItems: "center" },
+  left: { flex: 1, alignItems: "flex-start" },
+  right: { flex: 1, alignItems: "flex-end" },
 });

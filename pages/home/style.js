@@ -52,5 +52,5 @@ export const _styles = StyleSheet.create({
     borderColor: "transparent",
     borderWidth: 0,
   },
-  colorIcon: { textAlign: "center", fontSize: verticalScale(20), padding: 5, margin: 5 },
+  colorIcon: { textAlign: "center", fontSize: verticalScale(15), padding: 0, margin: 0 },
 });

@@ -11,16 +11,15 @@ type FlatItemType = {
 
 export const FlatItem = (content: FlatItemType) => {
   const styles = _styles;
-
   return (
-    <CardWrapper style={{ paddingVertical: 20, paddingHorizontal: 30 }}>
+    <CardWrapper style={{ paddingVertical: 20, paddingHorizontal: 30, maxHeight: 100 }}>
       <Pressable>
         <View style={styles.row}>
-          {content.icon && <View>{content?.icon}</View>}
-          <View>
+          {content.icon && <View style={styles.left}>{content?.icon}</View>}
+          <View style={content.icon ? styles.center : styles.left}>
             <Text style={styles.text}>{content.name}</Text>
           </View>
-          <View>
+          <View style={styles.right}>
             <Text style={styles.text}>{`${content.value} €`}</Text>
           </View>
         </View>

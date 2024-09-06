@@ -36,7 +36,7 @@ export default function Networth({ navigation }) {
             icon={<FontAwesome5 name="money-check-alt" size={24} color="lightblue" />}
           />
         </View>
-        <View style={{ flex: 1, gap: 10, padding: 10 }}>
+        <View style={{ flex: 1, gap: 10, padding: 5 }}>
           <View style={styles.dividerContainer}>
             <CustomTitle title="Portefolio" icon={<FontAwesome name="book" size={24} color="white" />} />
             <IconButton
@@ -46,7 +46,7 @@ export default function Networth({ navigation }) {
               }}
             />
           </View>
-          <ScrollView contentContainerStyle={{ gap: 10 }}>
+          <ScrollView contentContainerStyle={{ gap: 5 }}>
             {[
               { name: "Bond", value: 2000 },
               { name: "TR Cash", value: 11000 },
