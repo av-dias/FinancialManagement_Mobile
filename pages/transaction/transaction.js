@@ -85,7 +85,7 @@ export default function Purchase({ navigation }) {
             size={verticalScale(90)}
             iconSize={30}
           />
-          <View style={{ flex: 7, gap: verticalScale(20), paddingTop: verticalScale(20) }}>
+          <View style={styles.form}>
             <CustomCalendarStrip
               pickerCurrentDate={newTransaction.dot}
               setPickerCurrentDate={(_date) => {

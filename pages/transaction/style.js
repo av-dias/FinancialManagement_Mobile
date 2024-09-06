@@ -33,4 +33,10 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
   },
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center", backgroundColor: "transparent" },
+  form: {
+    flex: 7,
+    gap: verticalScale(20),
+    //paddingVertical: verticalScale(10),
+    paddingTop: verticalScale(20),
+  },
 });
