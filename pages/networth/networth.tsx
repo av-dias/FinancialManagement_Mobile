@@ -17,26 +17,85 @@ import { useFocusEffect } from "@react-navigation/native";
 import React from "react";
 import { getPortfolio } from "../../functions/portfolio";
 
+type PortfolioStatusType = { networth: { absolute: number; relative: number }; grossworth: { absolute: number; relative: number } };
+
 export default function Networth({ navigation }) {
   const appCtx = useContext(AppContext);
   const styles = _styles;
   const [modalVisible, setModalVisible] = useState(false);
   const [items, setItems] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
-  const [portfolioStatus, setPortfolioStatus] = useState({ networth: 0, grossworth: 0 });
+  const [portfolioWorth, setPortfolioWorth] = useState({ networth: 0, grossworth: 0 });
+  const [portfolioStatus, setPortfolioStatus] = useState<PortfolioStatusType>({
+    networth: { absolute: 0, relative: 0 },
+    grossworth: { absolute: 0, relative: 0 },
+  });
+  const [currenMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   const loadPortfolioCarrosselItems = (portfolio) => {
     let carrosselItems = [];
     if (portfolio != undefined) {
-      portfolio?.map((item) => carrosselItems.push({ label: item.name, color: "black" }));
+      portfolio?.map((item) => item.month === currenMonth && item.year === currentYear && carrosselItems.push({ label: item.name, color: "black" }));
     }
     setItems(carrosselItems);
   };
 
-  const loadPortfolioStatus = (portfolio) => {
-    let networth = 0;
-    portfolio.map((item) => (networth += Number(item.value)));
-    setPortfolioStatus({ networth: networth, grossworth: networth });
+  const loadPortfolioWorth = (portfolio) => {
+    let networth = 0,
+      grossworth = 0;
+    portfolio.map((item) => {
+      item.networth && (networth += Number(item.value));
+      item.grossworth && (grossworth += Number(item.value));
+    });
+    return { networth: networth, grossworth: grossworth };
+  };
+
+  const loadPrevPortfolioWorth = (lastPortolio) => {
+    let prevPortfolio = [];
+    Object.keys(lastPortolio).forEach((key) => {
+      if (lastPortolio[key].length > 1) {
+        prevPortfolio.push(lastPortolio[key][1]);
+      }
+    });
+
+    return loadPortfolioWorth(prevPortfolio);
+  };
+
+  const loadPortfolioList = (portfolio) => {
+    let portfolioList = [];
+    portfolio?.map((item) => item.month === currenMonth && item.year === currentYear && portfolioList.push(item));
+    return portfolioList;
+  };
+
+  const loadLastPortfolio = (portfolio) => {
+    let portfolioListSorted = {};
+    portfolio?.map((item) => {
+      if (Object.keys(portfolioListSorted).includes(item.name)) portfolioListSorted[item.name].push(item);
+      else portfolioListSorted[item.name] = [item];
+    });
+    Object.keys(portfolioListSorted).forEach((key) =>
+      portfolioListSorted[key].sort((a, b) => {
+        if (a.year !== b.year) {
+          return b.year - a.year;
+        }
+        return b.month - a.month;
+      })
+    );
+    return portfolioListSorted;
+  };
+
+  const loadPortfolioAnalyses = (currWorth, prevWorth) => {
+    const networthAbsolute = currWorth.networth - prevWorth.networth;
+    const grossworthAbsolute = currWorth.grossworth - prevWorth.grossworth;
+
+    const networthRelative = (currWorth.networth / prevWorth.networth) * 100 - 100;
+    const grosswortRelative = (currWorth.grossworth / prevWorth.grossworth) * 100 - 100;
+
+    return {
+      networth: { absolute: networthAbsolute, relative: Number(networthRelative.toFixed(0)) },
+      grossworth: { absolute: grossworthAbsolute, relative: Number(grosswortRelative.toFixed(0)) },
+    };
   };
 
   const onSubmiteCallback = () => {
@@ -50,10 +109,18 @@ export default function Networth({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
-        const portfolio = await getPortfolio(appCtx.email);
-        loadPortfolioCarrosselItems(portfolio);
-        loadPortfolioStatus(portfolio);
+        const portfolioFromStorage = await getPortfolio(appCtx.email);
+        const lastPortolio = loadLastPortfolio(portfolioFromStorage);
+        const portfolio = loadPortfolioList(portfolioFromStorage);
         setPortfolio(portfolio);
+
+        loadPortfolioCarrosselItems(portfolio);
+        const currWorth = loadPortfolioWorth(portfolio);
+        setPortfolioWorth(currWorth);
+        loadPortfolioList(portfolioFromStorage);
+        const prevWorth = loadPrevPortfolioWorth(lastPortolio);
+        const worthAnalyses = loadPortfolioAnalyses(currWorth, prevWorth);
+        setPortfolioStatus(worthAnalyses);
         try {
         } catch (e) {
           console.log("Networth AddForm: " + e);
@@ -62,6 +129,14 @@ export default function Networth({ navigation }) {
       fetchData();
     }, [appCtx.email, modalVisible])
   );
+
+  /*
+   * Networth and Grossworth switch should be global to type
+   * and should not vary by date
+   *
+   * Makes everything consisten on load functions
+   * return value and only then set data
+   */
 
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
@@ -74,16 +149,16 @@ export default function Networth({ navigation }) {
         )}
         <View style={styles.mainContainer}>
           <MainCard
-            value={portfolioStatus.networth}
-            absoluteIncrease={500}
-            relativeIncrease={15}
+            value={portfolioWorth.grossworth}
+            absoluteIncrease={portfolioStatus.networth.absolute}
+            relativeIncrease={portfolioStatus.networth.relative}
             title={"Grossworth"}
             icon={<FontAwesome5 name="money-check" size={24} color={dark.secundary} />}
           />
           <MainCard
-            value={portfolioStatus.networth}
-            absoluteIncrease={200}
-            relativeIncrease={5}
+            value={portfolioWorth.networth}
+            absoluteIncrease={portfolioStatus.grossworth.absolute}
+            relativeIncrease={portfolioStatus.grossworth.relative}
             title={"Networth"}
             icon={<FontAwesome5 name="money-check-alt" size={24} color="lightblue" />}
           />

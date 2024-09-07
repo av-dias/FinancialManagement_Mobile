@@ -50,7 +50,7 @@ export async function removeFromStorage(key, index, user) {
   await SecureStore.setItemAsync(user + key, JSON.stringify(newValue));
 }
 
-export async function addOrUpdateOnStorage(key, element, user) {
+export async function addOrUpdateOnDateStorage(key, element, user) {
   if (!user) user = "";
   user = user.split("@")[0];
   let oldValueString = await getFromStorage(user + key);
@@ -61,10 +61,10 @@ export async function addOrUpdateOnStorage(key, element, user) {
     // Add new item
     newValue.push(element);
   } else {
-    let foundIndex = oldValue.findIndex((v) => v.name == element.name);
+    let foundIndex = oldValue.findIndex((v) => v.name == element.name && v.month == element.month && v.year == element.year);
     if (foundIndex != -1) {
       // Update existing element
-      oldValue[foundIndex].value = element.value;
+      oldValue[foundIndex] = element;
     } else {
       // Add new element
       oldValue.push(element);
