@@ -1,7 +1,6 @@
-import { View, Text, ScrollView, StyleSheet, Pressable } from "react-native";
+import { View, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Entypo, FontAwesome5, FontAwesome } from "@expo/vector-icons";
-import { Table, TableWrapper, Cell, Row, Rows, Col } from "react-native-table-component";
 import { dark } from "../../utility/colors";
 import Header from "../../components/header/header";
 import { useContext, useState } from "react";
@@ -15,16 +14,19 @@ import ModalCustom from "../../components/modal/modal";
 import { AddForm } from "./components/addForm";
 import { useFocusEffect } from "@react-navigation/native";
 import React from "react";
-import { getPortfolio } from "../../functions/portfolio";
+import { useDatabaseConnection } from "../../store/database-context";
+import { PortfolioEntity } from "../../store/database/Portfolio/PortfolioEntity";
 
 type PortfolioStatusType = { networth: { absolute: number; relative: number }; grossworth: { absolute: number; relative: number } };
 
 export default function Networth({ navigation }) {
   const appCtx = useContext(AppContext);
+  const { portfolioRepository } = useDatabaseConnection();
+
   const styles = _styles;
   const [modalVisible, setModalVisible] = useState(false);
   const [items, setItems] = useState([]);
-  const [portfolio, setPortfolio] = useState([]);
+  const [portfolio, setPortfolio] = useState<PortfolioEntity[]>([]);
   const [portfolioWorth, setPortfolioWorth] = useState({ networth: 0, grossworth: 0 });
   const [portfolioStatus, setPortfolioStatus] = useState<PortfolioStatusType>({
     networth: { absolute: 0, relative: 0 },
@@ -36,17 +38,17 @@ export default function Networth({ navigation }) {
   const loadPortfolioCarrosselItems = (portfolio) => {
     let carrosselItems = [];
     if (portfolio != undefined) {
-      portfolio?.map((item) => item.month === currenMonth && item.year === currentYear && carrosselItems.push({ label: item.name, color: "black" }));
+      portfolio?.map((item) => !carrosselItems.find((c) => c.label == item.name) && carrosselItems.push({ label: item.name, color: "black" }));
     }
     setItems(carrosselItems);
   };
 
-  const loadPortfolioWorth = (portfolio) => {
+  const loadPortfolioWorth = (portfolio: PortfolioEntity[]) => {
     let networth = 0,
       grossworth = 0;
     portfolio.map((item) => {
-      item.networth && (networth += Number(item.value));
-      item.grossworth && (grossworth += Number(item.value));
+      item.networthFlag && (networth += Number(item.value));
+      item.grossworthFlag && (grossworth += Number(item.value));
     });
     return { networth: networth, grossworth: grossworth };
   };
@@ -62,13 +64,13 @@ export default function Networth({ navigation }) {
     return loadPortfolioWorth(prevPortfolio);
   };
 
-  const loadPortfolioList = (portfolio) => {
+  const loadPortfolioList = (portfolio: PortfolioEntity[]) => {
     let portfolioList = [];
     portfolio?.map((item) => item.month === currenMonth && item.year === currentYear && portfolioList.push(item));
     return portfolioList;
   };
 
-  const loadLastPortfolio = (portfolio) => {
+  const loadLastPortfolio = (portfolio: PortfolioEntity[]) => {
     let portfolioListSorted = {};
     portfolio?.map((item) => {
       if (Object.keys(portfolioListSorted).includes(item.name)) portfolioListSorted[item.name].push(item);
@@ -106,19 +108,31 @@ export default function Networth({ navigation }) {
     setModalVisible(true);
   };
 
+  /* TODO BUG
+   * Portefolio Calculation is wrong
+   * when lastest item does not exist in current month
+   */
+
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
-        const portfolioFromStorage = await getPortfolio(appCtx.email);
-        const lastPortolio = loadLastPortfolio(portfolioFromStorage);
+        const portfolioFromStorage = await portfolioRepository.getAll(appCtx.email);
+        loadPortfolioCarrosselItems(portfolioFromStorage);
+
+        console.log("----------------");
+        portfolioFromStorage.map((item) => console.log(item));
+
+        // Load most recent portfolio
         const portfolio = loadPortfolioList(portfolioFromStorage);
         setPortfolio(portfolio);
-
-        loadPortfolioCarrosselItems(portfolio);
         const currWorth = loadPortfolioWorth(portfolio);
         setPortfolioWorth(currWorth);
-        loadPortfolioList(portfolioFromStorage);
+
+        // Load most previsous
+        const lastPortolio = loadLastPortfolio(portfolioFromStorage);
         const prevWorth = loadPrevPortfolioWorth(lastPortolio);
+
+        // Load overall portfolio analyses
         const worthAnalyses = loadPortfolioAnalyses(currWorth, prevWorth);
         setPortfolioStatus(worthAnalyses);
         try {
@@ -144,7 +158,7 @@ export default function Networth({ navigation }) {
       <View style={styles.usableScreen}>
         {modalVisible && (
           <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible} size={15} hasColor={true}>
-            <AddForm items={items} onSubmit={onSubmiteCallback} />
+            <AddForm items={items} onSubmit={onSubmiteCallback} email={appCtx.email} />
           </ModalCustom>
         )}
         <View style={styles.mainContainer}>

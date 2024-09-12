@@ -1,0 +1,56 @@
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { Connection, createConnection } from "typeorm";
+
+import { PortfolioRepository } from "./database/Portfolio/PortfolioRepository";
+import { PortfolioModel } from "./database/Portfolio/PortfolioEntity";
+
+interface DatabaseConnectionContextData {
+  portfolioRepository: PortfolioRepository;
+}
+
+export const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>({} as DatabaseConnectionContextData);
+
+export const DatabaseConnectionProvider = ({ children }) => {
+  const [connection, setConnection] = useState<Connection | null>(null);
+
+  const connect = useCallback(async () => {
+    const createdConnection = await createConnection({
+      type: "expo",
+      database: "fm_mobile.db",
+      driver: require("expo-sqlite"),
+      entities: [PortfolioModel],
+
+      //If you're not using migrations, you can delete these lines,
+      //since the default is no migrations:
+      migrations: [],
+      migrationsRun: false,
+      // If you're not using migrations also set this to true
+      synchronize: true,
+    });
+
+    setConnection(createdConnection);
+  }, []);
+
+  useEffect(() => {
+    if (!connection) {
+      connect();
+    }
+    console.log(`Database UseEffect triggered: ${connection}`);
+  }, [connect, connection]);
+
+  if (!connection) {
+    console.log("Connection failed...");
+  }
+
+  return (
+    <DatabaseConnectionContext.Provider value={{ portfolioRepository: new PortfolioRepository(connection) }}>
+      {children}
+    </DatabaseConnectionContext.Provider>
+  );
+};
+
+export function useDatabaseConnection() {
+  const context = useContext(DatabaseConnectionContext);
+
+  return context;
+}

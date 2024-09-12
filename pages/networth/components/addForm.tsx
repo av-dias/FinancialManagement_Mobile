@@ -12,6 +12,8 @@ import React from "react";
 import { addOrUpdateOnDateStorage } from "../../../functions/secureStorage";
 import { KEYS } from "../../../utility/storageKeys";
 import CalendarCard from "../../../components/calendarCard/calendarCard";
+import { useDatabaseConnection } from "../../../store/database-context";
+import { PortfolioEntity, PortfolioModel } from "../../../store/database/Portfolio/PortfolioEntity";
 
 const styles = StyleSheet.create({
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center", backgroundColor: "transparent" },
@@ -38,6 +40,7 @@ const styles = StyleSheet.create({
 type AddFormProps = {
   items: CarrosselItemsType[];
   onSubmit: () => void;
+  email: string;
 };
 
 export const AddForm = (props: AddFormProps) => {
@@ -49,19 +52,28 @@ export const AddForm = (props: AddFormProps) => {
   const [grossworth, setGrossworth] = useState(true);
   const [exists, setExists] = useState(false);
 
-  const appCtx = useContext(AppContext);
+  const { portfolioRepository } = useDatabaseConnection();
 
   const isExistingName = () => {
     const found = props.items.find((item) => item.label == name);
     setExists(found ? true : false);
   };
 
-  const createPortfolioItem = () => {
-    return { name: name, value: value, networth: networth, grossworth: grossworth, month: currentMonth, year: currentYear };
+  const createPortfolioItem = (): PortfolioEntity => {
+    return {
+      name: name,
+      value: value,
+      networthFlag: networth,
+      grossworthFlag: grossworth,
+      month: currentMonth,
+      year: currentYear,
+      userId: props.email,
+    };
   };
 
   const onHandlePressCallback = async () => {
-    await addOrUpdateOnDateStorage(KEYS.PORTFOLIO, createPortfolioItem(), appCtx.email);
+    //await addOrUpdateOnDateStorage(KEYS.PORTFOLIO, createPortfolioItem(), appCtx.email);
+    portfolioRepository.create(createPortfolioItem());
     props.onSubmit();
   };
 
