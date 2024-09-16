@@ -15,18 +15,21 @@ import { AddForm } from "./components/addForm";
 import { useFocusEffect } from "@react-navigation/native";
 import React from "react";
 import { useDatabaseConnection } from "../../store/database-context";
-import { PortfolioEntity } from "../../store/database/Portfolio/PortfolioEntity";
+import { PortfolioEntity, PortfolioModel } from "../../store/database/Portfolio/PortfolioEntity";
+import { PortfolioItemRepository } from "../../store/database/PortfolioItem/PortfolioItemRepository";
+import { PortfolioItemEntity } from "../../store/database/PortfolioItem/PortfolioItemEntity";
+import { PortfolioDAO } from "../../models/portfolio.models";
 
 type PortfolioStatusType = { networth: { absolute: number; relative: number }; grossworth: { absolute: number; relative: number } };
 
 export default function Networth({ navigation }) {
   const appCtx = useContext(AppContext);
-  const { portfolioRepository } = useDatabaseConnection();
+  const { portfolioRepository, portfolioItemRepository } = useDatabaseConnection();
 
   const styles = _styles;
   const [modalVisible, setModalVisible] = useState(false);
-  const [items, setItems] = useState([]);
-  const [portfolio, setPortfolio] = useState<PortfolioEntity[]>([]);
+  const [items, setItems] = useState<any[]>([]);
+  const [portfolio, setPortfolio] = useState<PortfolioDAO[]>([]);
   const [portfolioWorth, setPortfolioWorth] = useState({ networth: 0, grossworth: 0 });
   const [portfolioStatus, setPortfolioStatus] = useState<PortfolioStatusType>({
     networth: { absolute: 0, relative: 0 },
@@ -35,68 +38,71 @@ export default function Networth({ navigation }) {
   const [currenMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
-  const loadPortfolioCarrosselItems = (portfolio) => {
+  const loadPortfolioCarrosselItems = (distinctPortfolioNames) => {
     let carrosselItems = [];
-    if (portfolio != undefined) {
-      portfolio?.map((item) => !carrosselItems.find((c) => c.label == item.name) && carrosselItems.push({ label: item.name, color: "black" }));
+    if (distinctPortfolioNames != undefined) {
+      distinctPortfolioNames.map((name) => carrosselItems.push({ label: name, color: "black" }));
     }
     setItems(carrosselItems);
   };
 
-  const loadPortfolioWorth = (portfolio: PortfolioEntity[]) => {
+  const loadPortfolioData = (sortedPortfolio: PortfolioModel[]) => {
+    let currPortfolio = [];
+    let prevPortfolio = [];
+
+    sortedPortfolio.map((portfolio) => {
+      let currItem = portfolio.items[0];
+      let prevItem = portfolio?.items[1] || { value: 0 };
+
+      // Push most recent item
+      currPortfolio.push({
+        name: portfolio.name,
+        value: currItem.value,
+        networthFlag: portfolio.networthFlag,
+        grossworthFlag: portfolio.grossworthFlag,
+      });
+
+      // Push most recent last item
+      prevPortfolio.push({
+        name: portfolio.name,
+        value: prevItem.value,
+        networthFlag: portfolio.networthFlag,
+        grossworthFlag: portfolio.grossworthFlag,
+      });
+    });
+
+    return { currPortfolio: currPortfolio, prevPortfolio: prevPortfolio };
+  };
+
+  const loadWorthData = (curr: PortfolioDAO[], prev: PortfolioDAO[]) => {
     let networth = 0,
-      grossworth = 0;
-    portfolio.map((item) => {
+      grossworth = 0,
+      prevNetworth = 0,
+      prevGrossworth = 0;
+
+    curr.map((item) => {
       item.networthFlag && (networth += Number(item.value));
       item.grossworthFlag && (grossworth += Number(item.value));
     });
-    return { networth: networth, grossworth: grossworth };
-  };
 
-  const loadPrevPortfolioWorth = (lastPortolio) => {
-    let prevPortfolio = [];
-    Object.keys(lastPortolio).forEach((key) => {
-      if (lastPortolio[key].length > 1) {
-        prevPortfolio.push(lastPortolio[key][1]);
-      }
+    prev.map((item) => {
+      item.networthFlag && (prevNetworth += Number(item.value));
+      item.grossworthFlag && (prevGrossworth += Number(item.value));
     });
 
-    return loadPortfolioWorth(prevPortfolio);
-  };
-
-  const loadPortfolioList = (portfolio: PortfolioEntity[]) => {
-    let portfolioList = [];
-    portfolio?.map((item) => item.month === currenMonth && item.year === currentYear && portfolioList.push(item));
-    return portfolioList;
-  };
-
-  const loadLastPortfolio = (portfolio: PortfolioEntity[]) => {
-    let portfolioListSorted = {};
-    portfolio?.map((item) => {
-      if (Object.keys(portfolioListSorted).includes(item.name)) portfolioListSorted[item.name].push(item);
-      else portfolioListSorted[item.name] = [item];
-    });
-    Object.keys(portfolioListSorted).forEach((key) =>
-      portfolioListSorted[key].sort((a, b) => {
-        if (a.year !== b.year) {
-          return b.year - a.year;
-        }
-        return b.month - a.month;
-      })
-    );
-    return portfolioListSorted;
+    return { currWorth: { networth: networth, grossworth: grossworth }, prevWorth: { networth: prevNetworth, grossworth: prevGrossworth } };
   };
 
   const loadPortfolioAnalyses = (currWorth, prevWorth) => {
     const networthAbsolute = currWorth.networth - prevWorth.networth;
     const grossworthAbsolute = currWorth.grossworth - prevWorth.grossworth;
 
-    const networthRelative = (currWorth.networth / prevWorth.networth) * 100 - 100;
-    const grosswortRelative = (currWorth.grossworth / prevWorth.grossworth) * 100 - 100;
+    const networthRelative = (networthAbsolute / currWorth.networth) * 100;
+    const grosswortRelative = (grossworthAbsolute / currWorth.grossworth) * 100;
 
     return {
-      networth: { absolute: networthAbsolute, relative: Number(networthRelative.toFixed(0)) },
-      grossworth: { absolute: grossworthAbsolute, relative: Number(grosswortRelative.toFixed(0)) },
+      networth: { absolute: networthAbsolute, relative: networthRelative },
+      grossworth: { absolute: grossworthAbsolute, relative: grosswortRelative },
     };
   };
 
@@ -116,25 +122,24 @@ export default function Networth({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
-        const portfolioFromStorage = await portfolioRepository.getAll(appCtx.email);
-        loadPortfolioCarrosselItems(portfolioFromStorage);
-
+        /* const portfolioFromStorage = await portfolioRepository.getAll(appCtx.email);
+        console.log("\n\n\n\n");
         console.log("----------------");
         portfolioFromStorage.map((item) => console.log(item));
+        console.log("----------------"); */
 
-        // Load most recent portfolio
-        const portfolio = loadPortfolioList(portfolioFromStorage);
-        setPortfolio(portfolio);
-        const currWorth = loadPortfolioWorth(portfolio);
+        const distinctPortfolioNames = await portfolioRepository.getDistinctPortfolioNames(appCtx.email);
+        loadPortfolioCarrosselItems(distinctPortfolioNames);
+
+        const sortedPortfolio = await portfolioRepository.getSortedPortfolio(appCtx.email, currenMonth, currentYear);
+        const { currPortfolio, prevPortfolio } = loadPortfolioData(sortedPortfolio);
+        setPortfolio(currPortfolio);
+
+        const { currWorth, prevWorth } = loadWorthData(currPortfolio, prevPortfolio);
         setPortfolioWorth(currWorth);
 
-        // Load most previsous
-        const lastPortolio = loadLastPortfolio(portfolioFromStorage);
-        const prevWorth = loadPrevPortfolioWorth(lastPortolio);
-
-        // Load overall portfolio analyses
-        const worthAnalyses = loadPortfolioAnalyses(currWorth, prevWorth);
-        setPortfolioStatus(worthAnalyses);
+        const worthStats = loadPortfolioAnalyses(currWorth, prevWorth);
+        setPortfolioStatus(worthStats);
         try {
         } catch (e) {
           console.log("Networth AddForm: " + e);

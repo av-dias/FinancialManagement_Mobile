@@ -1,38 +1,32 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { PortfolioItemEntity, PortfolioItemModel } from "../PortfolioItem/PortfolioItemEntity";
 
 @Entity("portfolios")
 export class PortfolioModel {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column()
+  @Column({ nullable: false, unique: true })
   name: string;
 
-  @Column()
-  value: number;
-
-  @Column()
+  @Column({ nullable: false })
   networthFlag: boolean;
 
-  @Column()
+  @Column({ nullable: false })
   grossworthFlag: boolean;
 
-  @Column()
-  month: number;
-
-  @Column()
-  year: number;
-
-  @Column()
+  @Column({ nullable: false })
   userId: string;
+
+  @OneToMany(() => PortfolioItemModel, (portfolioItem) => portfolioItem.portfolio, {
+    cascade: true,
+  })
+  items: PortfolioItemModel[];
 }
 
 export type PortfolioEntity = {
   name: string;
-  value: number;
   networthFlag: boolean;
   grossworthFlag: boolean;
-  month: number;
-  year: number;
   userId: string;
 };

@@ -1,19 +1,18 @@
 import { View, StyleSheet, Pressable, Text } from "react-native";
-import { ReactNode, useContext, useState } from "react";
+import { useState } from "react";
 import MoneyInputHeader from "../../../components/moneyInputHeader/moneyInputHeader";
 import CustomInput from "../../../components/customInput/customInput";
 import { verticalScale } from "../../../functions/responsive";
 import { dark } from "../../../utility/colors";
 import CustomButton from "../../../components/customButton/customButton";
 import Carrossel, { CarrosselItemsType } from "../../../components/carrossel/carrossel";
-import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Feather } from "@expo/vector-icons";
-import { AppContext } from "../../../store/app-context";
+import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
-import { addOrUpdateOnDateStorage } from "../../../functions/secureStorage";
-import { KEYS } from "../../../utility/storageKeys";
 import CalendarCard from "../../../components/calendarCard/calendarCard";
-import { useDatabaseConnection } from "../../../store/database-context";
-import { PortfolioEntity, PortfolioModel } from "../../../store/database/Portfolio/PortfolioEntity";
+import { PortfolioEntity } from "../../../store/database/Portfolio/PortfolioEntity";
+import { PortfolioItemEntity } from "../../../store/database/PortfolioItem/PortfolioItemEntity";
+import { PortfolioService } from "../../../store/database/Portfolio/PortfolioService";
+import { useFocusEffect } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center", backgroundColor: "transparent" },
@@ -52,28 +51,41 @@ export const AddForm = (props: AddFormProps) => {
   const [grossworth, setGrossworth] = useState(true);
   const [exists, setExists] = useState(false);
 
-  const { portfolioRepository } = useDatabaseConnection();
+  const portfolioService = new PortfolioService();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        isExistingName();
+      }
+      fetchData();
+    }, [name])
+  );
 
   const isExistingName = () => {
     const found = props.items.find((item) => item.label == name);
     setExists(found ? true : false);
   };
 
-  const createPortfolioItem = (): PortfolioEntity => {
+  const createPortfolio = (): PortfolioEntity => {
     return {
       name: name,
-      value: value,
       networthFlag: networth,
       grossworthFlag: grossworth,
-      month: currentMonth,
-      year: currentYear,
       userId: props.email,
     };
   };
 
+  const createPortfolioItem = (): PortfolioItemEntity => {
+    return {
+      value: value,
+      month: currentMonth,
+      year: currentYear,
+    };
+  };
+
   const onHandlePressCallback = async () => {
-    //await addOrUpdateOnDateStorage(KEYS.PORTFOLIO, createPortfolioItem(), appCtx.email);
-    portfolioRepository.create(createPortfolioItem());
+    await portfolioService.update(createPortfolio(), createPortfolioItem());
     props.onSubmit();
   };
 
@@ -93,7 +105,7 @@ export const AddForm = (props: AddFormProps) => {
         />
         <Carrossel type={name} setType={setName} size={verticalScale(90)} iconSize={30} items={props.items} />
         {!exists && (
-          <>
+          <View style={{ paddingTop: 10, gap: 10 }}>
             <Pressable
               style={networth ? styles.buttonActive : styles.buttonDeactive}
               onPress={() => {
@@ -110,7 +122,7 @@ export const AddForm = (props: AddFormProps) => {
             >
               <Text style={{ textAlign: "center" }}>Grossworth</Text>
             </Pressable>
-          </>
+          </View>
         )}
       </View>
       <CustomButton handlePress={onHandlePressCallback} />

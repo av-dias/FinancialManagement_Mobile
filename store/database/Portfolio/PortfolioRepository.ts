@@ -1,5 +1,5 @@
 import { Connection, Repository } from "typeorm";
-import { PortfolioEntity, PortfolioModel } from "./PortfolioEntity";
+import { PortfolioModel } from "./PortfolioEntity";
 
 export class PortfolioRepository {
   private ormRepository: Repository<PortfolioModel>;
@@ -9,16 +9,46 @@ export class PortfolioRepository {
   }
 
   public async getAll(userId: string): Promise<PortfolioModel[]> {
-    const portfolios = await this.ormRepository?.find({ userId: userId });
-
+    const portfolios = await this.ormRepository?.find({ where: { userId: userId }, relations: ["items"] });
     return portfolios;
   }
 
-  public async create(portfolioEntity: PortfolioEntity): Promise<PortfolioModel> {
-    const portfolio = this.ormRepository.create(portfolioEntity);
-    await this.ormRepository.save(portfolio);
+  public async getDistinctPortfolioNames(userId: string) {
+    const distinctItems = await this.ormRepository.createQueryBuilder("p").select("p.name").where({ userId: userId }).getMany();
+    return distinctItems.map((portfolio) => portfolio.name);
+  }
 
-    return portfolio;
+  public async getSortedPortfolio(userId: string, currMonth: number, currYear: number) {
+    let list = [];
+    try {
+      list = await this.ormRepository
+        .createQueryBuilder("p")
+        .leftJoinAndSelect("p.items", "items")
+        .where("p.userId = :userId AND items.month <= :month AND items.year <= :year", { userId: userId, month: currMonth, year: currYear })
+        .orderBy("items.year", "DESC")
+        .orderBy("items.month", "DESC")
+        .distinct()
+        .getMany();
+    } catch (err) {
+      console.log(err);
+    } finally {
+      return list;
+    }
+  }
+
+  public async getByName(userId: string, name: string): Promise<PortfolioModel> {
+    const portfolios = await this.ormRepository?.find({ where: { userId: userId, name: name }, relations: ["items"] });
+    return portfolios[0];
+  }
+
+  public async hasPortfolio(userId: string, name: string): Promise<boolean> {
+    const portfolios = await this.ormRepository?.find({ userId: userId, name: name });
+    return portfolios.length > 0;
+  }
+
+  public async updateOrCreate(portfolioEntity: PortfolioModel): Promise<PortfolioModel> {
+    await this.ormRepository.save(portfolioEntity);
+    return portfolioEntity;
   }
 
   public async delete(id: number): Promise<void> {

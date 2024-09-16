@@ -3,9 +3,12 @@ import { Connection, createConnection } from "typeorm";
 
 import { PortfolioRepository } from "./database/Portfolio/PortfolioRepository";
 import { PortfolioModel } from "./database/Portfolio/PortfolioEntity";
+import { PortfolioItemModel } from "./database/PortfolioItem/PortfolioItemEntity";
+import { PortfolioItemRepository } from "./database/PortfolioItem/PortfolioItemRepository";
 
 interface DatabaseConnectionContextData {
   portfolioRepository: PortfolioRepository;
+  portfolioItemRepository: PortfolioItemRepository;
 }
 
 export const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>({} as DatabaseConnectionContextData);
@@ -18,7 +21,7 @@ export const DatabaseConnectionProvider = ({ children }) => {
       type: "expo",
       database: "fm_mobile.db",
       driver: require("expo-sqlite"),
-      entities: [PortfolioModel],
+      entities: [PortfolioModel, PortfolioItemModel],
 
       //If you're not using migrations, you can delete these lines,
       //since the default is no migrations:
@@ -43,7 +46,9 @@ export const DatabaseConnectionProvider = ({ children }) => {
   }
 
   return (
-    <DatabaseConnectionContext.Provider value={{ portfolioRepository: new PortfolioRepository(connection) }}>
+    <DatabaseConnectionContext.Provider
+      value={{ portfolioRepository: new PortfolioRepository(connection), portfolioItemRepository: new PortfolioItemRepository(connection) }}
+    >
       {children}
     </DatabaseConnectionContext.Provider>
   );
