@@ -19,7 +19,10 @@ export const _styles = StyleSheet.create({
     marginTop: verticalScale(5),
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
-  rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", gap: 20 },
+  rowGap: {
+    flexDirection: "row",
+    gap: 10,
+  },
   rowTable: {
     flexDirection: "row",
     justifyContent: "center",
@@ -36,7 +39,7 @@ export const _styles = StyleSheet.create({
     paddingHorizontal: commonStyles.boxPaddingHorizontal,
     borderRadius: commonStyles.borderRadius,
   },
-  iconButton: { backgroundColor: dark.button, padding: 10, borderRadius: 100 },
+  iconButton: { padding: 11 },
   dividerContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 10, paddingBottom: 0, paddingRight: 0 },
   mainContainer: { gap: 20, padding: 5 },
 });

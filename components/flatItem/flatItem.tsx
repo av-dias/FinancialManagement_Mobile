@@ -7,6 +7,7 @@ type FlatItemType = {
   name: string;
   value: number;
   icon?: ReactNode;
+  options?: ReactNode;
 };
 
 export const FlatItem = (content: FlatItemType) => {
@@ -20,6 +21,7 @@ export const FlatItem = (content: FlatItemType) => {
             <Text style={styles.text}>{content.name}</Text>
           </View>
           <View style={styles.right}>
+            <View>{content.options}</View>
             <Text style={styles.text}>{`${content.value} €`}</Text>
           </View>
         </View>

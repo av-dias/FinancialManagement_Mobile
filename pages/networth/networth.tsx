@@ -96,9 +96,10 @@ export default function Networth({ navigation }) {
     const networthAbsolute = currWorth.networth - prevWorth.networth;
     const grossworthAbsolute = currWorth.grossworth - prevWorth.grossworth;
 
-    const networthRelative = (networthAbsolute / currWorth.networth) * 100;
-    const grosswortRelative = (grossworthAbsolute / currWorth.grossworth) * 100;
+    const networthRelative = (networthAbsolute / currWorth.networth) * 100 || 0;
+    const grosswortRelative = (grossworthAbsolute / currWorth.grossworth) * 100 || 0;
 
+    console.log(currWorth, prevWorth);
     return {
       networth: { absolute: networthAbsolute, relative: networthRelative },
       grossworth: { absolute: grossworthAbsolute, relative: grosswortRelative },
@@ -121,11 +122,6 @@ export default function Networth({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
-        /* const portfolioFromStorage = await portfolioRepository.getAll(appCtx.email);
-        console.log("\n\n\n\n");
-        console.log("----------------");
-        portfolioFromStorage.map((item) => console.log(item));
-        console.log("----------------"); */
         try {
           if (appCtx.email) {
             const distinctPortfolioNames = await portfolioRepository.getDistinctPortfolioNames(appCtx.email);
@@ -149,6 +145,15 @@ export default function Networth({ navigation }) {
     }, [appCtx.email, modalVisible, currentMonth, currentYear, portfolioRepository])
   );
 
+  const loadOptions = (item: PortfolioDAO) => {
+    return (
+      <View style={styles.rowGap}>
+        <FontAwesome5 name="money-check" size={20} color={item.grossworthFlag ? dark.secundary : "gray"} />
+        <FontAwesome5 name="money-check-alt" size={20} color={item.networthFlag ? "lightblue" : "gray"} />
+      </View>
+    );
+  };
+
   /*
    * Networth and Grossworth switch should be global to type
    * and should not vary by date
@@ -168,16 +173,16 @@ export default function Networth({ navigation }) {
         )}
         <View style={styles.mainContainer}>
           <MainCard
-            value={portfolioWorth.grossworth}
-            absoluteIncrease={portfolioStatus.networth.absolute}
-            relativeIncrease={portfolioStatus.networth.relative}
+            value={portfolioWorth.grossworth.toFixed(0)}
+            absoluteIncrease={portfolioStatus.networth.absolute.toFixed(0)}
+            relativeIncrease={portfolioStatus.networth.relative.toFixed(0)}
             title={"Grossworth"}
             icon={<FontAwesome5 name="money-check" size={24} color={dark.secundary} />}
           />
           <MainCard
-            value={portfolioWorth.networth}
-            absoluteIncrease={portfolioStatus.grossworth.absolute}
-            relativeIncrease={portfolioStatus.grossworth.relative}
+            value={portfolioWorth.networth.toFixed(0)}
+            absoluteIncrease={portfolioStatus.grossworth.absolute.toFixed(0)}
+            relativeIncrease={portfolioStatus.grossworth.relative.toFixed(0)}
             title={"Networth"}
             icon={<FontAwesome5 name="money-check-alt" size={24} color="lightblue" />}
           />
@@ -185,12 +190,18 @@ export default function Networth({ navigation }) {
         <View style={{ flex: 1, gap: 10, padding: 5 }}>
           <View style={styles.dividerContainer}>
             <CustomTitle title="Portefolio" icon={<FontAwesome name="book" size={24} color="white" />} />
-            <IconButton icon={<Entypo name="add-to-list" size={18} color={"white"} />} onPressHandle={onIconPressCallback} />
-            <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
+
+            <View style={styles.rowGap}>
+              <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
+              <IconButton
+                icon={<Entypo style={styles.iconButton} name="add-to-list" size={18} color={"white"} />}
+                onPressHandle={onIconPressCallback}
+              />
+            </View>
           </View>
           <ScrollView contentContainerStyle={{ gap: 5 }}>
             {portfolio?.map((item) => (
-              <FlatItem key={item.name} name={item.name} value={item.value} />
+              <FlatItem key={item.name} name={item.name} value={item.value} options={loadOptions(item)} />
             ))}
           </ScrollView>
         </View>

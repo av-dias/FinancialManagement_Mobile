@@ -5,13 +5,14 @@ import { ReactNode } from "react";
 type IconButtonProps = {
   icon: ReactNode;
   onPressHandle: () => void;
+  addStyle?: {};
 };
 
 export const IconButton = (props: IconButtonProps) => {
   const styles = _styles;
 
   return (
-    <Pressable style={styles.iconButton} onPress={props.onPressHandle}>
+    <Pressable style={{ ...styles.iconButton, ...props.addStyle }} onPress={props.onPressHandle}>
       {props.icon}
     </Pressable>
   );
