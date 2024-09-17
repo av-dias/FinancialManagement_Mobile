@@ -9,10 +9,10 @@ export class PortfolioModel {
   @Column({ nullable: false, unique: true })
   name: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, type: "boolean" })
   networthFlag: boolean;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, type: "boolean" })
   grossworthFlag: boolean;
 
   @Column({ nullable: false })

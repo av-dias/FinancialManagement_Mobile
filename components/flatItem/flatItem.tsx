@@ -22,7 +22,9 @@ export const FlatItem = (content: FlatItemType) => {
           </View>
           <View style={styles.right}>
             <View>{content.options}</View>
-            <Text style={styles.text}>{`${content.value} €`}</Text>
+            <View style={styles.textBox}>
+              <Text style={styles.text}>{`${content.value} €`}</Text>
+            </View>
           </View>
         </View>
       </Pressable>

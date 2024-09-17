@@ -14,8 +14,16 @@ export class PortfolioRepository {
   }
 
   public async getDistinctPortfolioNames(userId: string) {
-    const distinctItems = await this.ormRepository.createQueryBuilder("p").select("p.name").where({ userId: userId }).getMany();
-    return distinctItems.map((portfolio) => portfolio.name);
+    const distinctItems = await this.ormRepository
+      .createQueryBuilder("p")
+      .select(["p.name AS name", "p.grossworthFlag AS grossworthFlag", "p.networthFlag as networthFlag"])
+      .where({ userId: userId })
+      .getRawMany();
+    return distinctItems.map((p) => ({
+      ...p,
+      grossworthFlag: p.grossworthFlag == 1 ? true : false,
+      networthFlag: p.networthFlag == 1 ? true : false,
+    }));
   }
 
   public async getSortedPortfolio(userId: string, currMonth: number, currYear: number) {
