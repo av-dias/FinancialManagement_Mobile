@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { PortfolioItemEntity, PortfolioItemModel } from "../PortfolioItem/PortfolioItemEntity";
+import { PortfolioItemModel } from "../PortfolioItem/PortfolioItemEntity";
 
 @Entity("portfolios")
 export class PortfolioModel {

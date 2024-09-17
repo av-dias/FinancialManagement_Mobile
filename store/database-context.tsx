@@ -17,21 +17,29 @@ export const DatabaseConnectionProvider = ({ children }) => {
   const [connection, setConnection] = useState<Connection | null>(null);
 
   const connect = useCallback(async () => {
-    const createdConnection = await createConnection({
-      type: "expo",
-      database: "fm_mobile.db",
-      driver: require("expo-sqlite"),
-      entities: [PortfolioModel, PortfolioItemModel],
+    try {
+      const createdConnection = await createConnection({
+        type: "expo",
+        database: "fm_mobile.db",
+        driver: require("expo-sqlite"),
+        entities: [PortfolioModel, PortfolioItemModel],
 
-      //If you're not using migrations, you can delete these lines,
-      //since the default is no migrations:
-      migrations: [],
-      migrationsRun: false,
-      // If you're not using migrations also set this to true
-      synchronize: true,
-    });
+        //If you're not using migrations, you can delete these lines,
+        //since the default is no migrations:
+        migrations: [],
+        migrationsRun: false,
+        // If you're not using migrations also set this to true
+        synchronize: true,
+      });
 
-    setConnection(createdConnection);
+      setConnection(createdConnection);
+    } catch (error) {
+      console.error("Database connection failed:", error);
+      // Implement retry logic here
+      setTimeout(() => {
+        connect();
+      }, 5000); // Retry after 5 seconds (adjust as needed)
+    }
   }, []);
 
   useEffect(() => {

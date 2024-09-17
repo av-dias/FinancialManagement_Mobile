@@ -15,16 +15,15 @@ import { AddForm } from "./components/addForm";
 import { useFocusEffect } from "@react-navigation/native";
 import React from "react";
 import { useDatabaseConnection } from "../../store/database-context";
-import { PortfolioEntity, PortfolioModel } from "../../store/database/Portfolio/PortfolioEntity";
-import { PortfolioItemRepository } from "../../store/database/PortfolioItem/PortfolioItemRepository";
-import { PortfolioItemEntity } from "../../store/database/PortfolioItem/PortfolioItemEntity";
+import { PortfolioModel } from "../../store/database/Portfolio/PortfolioEntity";
 import { PortfolioDAO } from "../../models/portfolio.models";
+import CalendarCard from "../../components/calendarCard/calendarCard";
 
 type PortfolioStatusType = { networth: { absolute: number; relative: number }; grossworth: { absolute: number; relative: number } };
 
 export default function Networth({ navigation }) {
   const appCtx = useContext(AppContext);
-  const { portfolioRepository, portfolioItemRepository } = useDatabaseConnection();
+  const { portfolioRepository } = useDatabaseConnection();
 
   const styles = _styles;
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,7 +34,7 @@ export default function Networth({ navigation }) {
     networth: { absolute: 0, relative: 0 },
     grossworth: { absolute: 0, relative: 0 },
   });
-  const [currenMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   const loadPortfolioCarrosselItems = (distinctPortfolioNames) => {
@@ -127,26 +126,27 @@ export default function Networth({ navigation }) {
         console.log("----------------");
         portfolioFromStorage.map((item) => console.log(item));
         console.log("----------------"); */
-
-        const distinctPortfolioNames = await portfolioRepository.getDistinctPortfolioNames(appCtx.email);
-        loadPortfolioCarrosselItems(distinctPortfolioNames);
-
-        const sortedPortfolio = await portfolioRepository.getSortedPortfolio(appCtx.email, currenMonth, currentYear);
-        const { currPortfolio, prevPortfolio } = loadPortfolioData(sortedPortfolio);
-        setPortfolio(currPortfolio);
-
-        const { currWorth, prevWorth } = loadWorthData(currPortfolio, prevPortfolio);
-        setPortfolioWorth(currWorth);
-
-        const worthStats = loadPortfolioAnalyses(currWorth, prevWorth);
-        setPortfolioStatus(worthStats);
         try {
+          if (appCtx.email) {
+            const distinctPortfolioNames = await portfolioRepository.getDistinctPortfolioNames(appCtx.email);
+            loadPortfolioCarrosselItems(distinctPortfolioNames);
+
+            const sortedPortfolio = await portfolioRepository.getSortedPortfolio(appCtx.email, currentMonth, currentYear);
+            const { currPortfolio, prevPortfolio } = loadPortfolioData(sortedPortfolio);
+            setPortfolio(currPortfolio);
+
+            const { currWorth, prevWorth } = loadWorthData(currPortfolio, prevPortfolio);
+            setPortfolioWorth(currWorth);
+
+            const worthStats = loadPortfolioAnalyses(currWorth, prevWorth);
+            setPortfolioStatus(worthStats);
+          }
         } catch (e) {
-          console.log("Networth AddForm: " + e);
+          console.log("Networth: " + e);
         }
       }
       fetchData();
-    }, [appCtx.email, modalVisible])
+    }, [appCtx.email, modalVisible, currentMonth, currentYear, portfolioRepository])
   );
 
   /*
@@ -186,6 +186,7 @@ export default function Networth({ navigation }) {
           <View style={styles.dividerContainer}>
             <CustomTitle title="Portefolio" icon={<FontAwesome name="book" size={24} color="white" />} />
             <IconButton icon={<Entypo name="add-to-list" size={18} color={"white"} />} onPressHandle={onIconPressCallback} />
+            <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
           </View>
           <ScrollView contentContainerStyle={{ gap: 5 }}>
             {portfolio?.map((item) => (
