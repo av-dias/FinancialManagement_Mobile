@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { Connection, createConnection } from "typeorm";
+import { getConnectionManager, Connection } from "typeorm";
 
 import { PortfolioRepository } from "./database/Portfolio/PortfolioRepository";
 import { PortfolioModel } from "./database/Portfolio/PortfolioEntity";
@@ -17,8 +17,17 @@ export const DatabaseConnectionProvider = ({ children }) => {
   const [connection, setConnection] = useState<Connection | null>(null);
 
   const connect = useCallback(async () => {
+    console.log("Connecting to...");
     try {
-      const createdConnection = await createConnection({
+      const connectionManager = getConnectionManager();
+
+      // Check wheter there was a connection already created
+      if (connectionManager.has("default")) {
+        setConnection(connectionManager.get("default"));
+        return;
+      }
+
+      const managedConnection = connectionManager.create({
         type: "expo",
         database: "fm_mobile.db",
         driver: require("expo-sqlite"),
@@ -32,13 +41,14 @@ export const DatabaseConnectionProvider = ({ children }) => {
         synchronize: true,
       });
 
+      const createdConnection = await managedConnection.connect();
       setConnection(createdConnection);
     } catch (error) {
       console.error("Database connection failed:", error);
-      // Implement retry logic here
+      // Implement retry
       setTimeout(() => {
         connect();
-      }, 5000); // Retry after 5 seconds (adjust as needed)
+      }, 5000); // Retry after 10 seconds (adjust as needed)
     }
   }, []);
 
@@ -46,7 +56,7 @@ export const DatabaseConnectionProvider = ({ children }) => {
     if (!connection) {
       connect();
     }
-    console.log(`Database UseEffect triggered: ${connection}`);
+    console.log(`Database  UseEffect triggered: ${connection}`);
   }, [connect, connection]);
 
   if (!connection) {
