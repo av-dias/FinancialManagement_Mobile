@@ -18,15 +18,20 @@ import { useDatabaseConnection } from "../../store/database-context";
 import { PortfolioModel } from "../../store/database/Portfolio/PortfolioEntity";
 import { PortfolioDAO } from "../../models/portfolio.models";
 import CalendarCard from "../../components/calendarCard/calendarCard";
+import { PortfolioService } from "../../store/database/Portfolio/PortfolioService";
+import { deleteForm } from "./components/deleteForm";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 type PortfolioStatusType = { networth: { absolute: number; relative: number }; grossworth: { absolute: number; relative: number } };
 
 export default function Networth({ navigation }) {
   const appCtx = useContext(AppContext);
   const { portfolioRepository } = useDatabaseConnection();
+  const portfolioService = new PortfolioService();
 
   const styles = _styles;
   const [modalVisible, setModalVisible] = useState(false);
+  const [triggerRefresh, setTriggerRefresh] = useState(false);
   const [items, setItems] = useState<PortfolioDAO[]>([]);
   const [portfolio, setPortfolio] = useState<PortfolioDAO[]>([]);
   const [portfolioWorth, setPortfolioWorth] = useState({ networth: 0, grossworth: 0 });
@@ -57,6 +62,8 @@ export default function Networth({ navigation }) {
         value: currItem.value,
         networthFlag: portfolio.networthFlag,
         grossworthFlag: portfolio.grossworthFlag,
+        month: currItem.month,
+        year: currItem.year,
       });
 
       // Push most recent last item
@@ -111,6 +118,21 @@ export default function Networth({ navigation }) {
     setModalVisible(true);
   };
 
+  const deleteQuery = async ({ name, value }) => {
+    await portfolioService.deletePortfolioItem(appCtx.email, name, value, currentMonth, currentYear);
+  };
+
+  const onPressCallback = async ({ name, value }) => {
+    deleteForm(
+      async () => {
+        await deleteQuery({ name, value });
+        setTriggerRefresh((prev) => !prev);
+      },
+      name,
+      value
+    );
+  };
+
   /* TODO BUG
    * Portefolio Calculation is wrong
    * when lastest item does not exist in current month
@@ -121,6 +143,10 @@ export default function Networth({ navigation }) {
       async function fetchData() {
         try {
           if (appCtx.email) {
+            //console.log("UseEffect Triggered...");
+            const p = await portfolioRepository.getAll(appCtx.email);
+            //p.map((item) => console.log(item));
+
             const distinctPortfolioNames = await portfolioRepository.getDistinctPortfolioNames(appCtx.email);
             setItems(distinctPortfolioNames);
 
@@ -139,12 +165,17 @@ export default function Networth({ navigation }) {
         }
       }
       fetchData();
-    }, [appCtx.email, modalVisible, currentMonth, currentYear, portfolioRepository])
+    }, [appCtx.email, modalVisible, currentMonth, currentYear, triggerRefresh, portfolioRepository])
   );
+
+  const isItemMonthYear = (item) => {
+    return item.month == currentMonth && item.year == currentYear;
+  };
 
   const loadOptions = (item: PortfolioDAO) => {
     return (
       <View style={styles.rowGap}>
+        {isItemMonthYear(item) && <Ionicons name="add-circle" size={20} color="lightgray" />}
         <FontAwesome5 name="money-check" size={20} color={item.grossworthFlag ? dark.secundary : "gray"} />
         <FontAwesome5 name="money-check-alt" size={20} color={item.networthFlag ? "lightblue" : "gray"} />
       </View>
@@ -158,7 +189,6 @@ export default function Networth({ navigation }) {
    * Makes everything consisten on load functions
    * return value and only then set data
    */
-
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={appCtx.email} navigation={navigation} />
@@ -196,9 +226,18 @@ export default function Networth({ navigation }) {
               />
             </View>
           </View>
+          {/*
+           * Fix Item giving its date to allow delete
+           */}
           <ScrollView contentContainerStyle={{ gap: 5 }}>
             {portfolio?.map((item) => (
-              <FlatItem key={item.name} name={item.name} value={item.value} options={loadOptions(item)} />
+              <FlatItem
+                key={item.name}
+                name={item.name}
+                value={item.value}
+                options={loadOptions(item)}
+                onPressCallback={isItemMonthYear(item) ? onPressCallback : undefined}
+              />
             ))}
           </ScrollView>
         </View>

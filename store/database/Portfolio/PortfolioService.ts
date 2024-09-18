@@ -31,4 +31,18 @@ export class PortfolioService {
 
     await this.portfolioRepository.updateOrCreate(portfolio);
   }
+
+  public async deletePortfolioItem(userId: string, name: string, value: number, month: number, year: number) {
+    const id = await this.portfolioItemRepository.get(userId, name, value, month, year);
+    console.log(id);
+    if (id) {
+      await this.portfolioItemRepository.delete(id);
+      console.log(`Deleting portfolio item ${id}`);
+
+      const isEmpty = await this.portfolioRepository.hasPortfolioItems(userId, name);
+      if (isEmpty) {
+        await this.portfolioRepository.deleteByName(userId, name);
+      }
+    }
+  }
 }

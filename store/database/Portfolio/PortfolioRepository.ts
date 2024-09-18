@@ -54,6 +54,11 @@ export class PortfolioRepository {
     return portfolios.length > 0;
   }
 
+  public async hasPortfolioItems(userId: string, name: string) {
+    const portfolios = await this.ormRepository?.findOne({ where: { userId: userId, name: name }, relations: ["items"] });
+    return portfolios.items.length < 1;
+  }
+
   public async updateOrCreate(portfolioEntity: PortfolioModel): Promise<PortfolioModel> {
     await this.ormRepository.save(portfolioEntity);
     return portfolioEntity;
@@ -61,6 +66,10 @@ export class PortfolioRepository {
 
   public async delete(id: number): Promise<void> {
     await this.ormRepository.delete(id);
+  }
+
+  public async deleteByName(userId: string, name: string): Promise<void> {
+    await this.ormRepository.createQueryBuilder().where("userId = :userId AND name = :name", { userId, name }).delete().execute();
   }
 
   public async deleteAll(): Promise<void> {

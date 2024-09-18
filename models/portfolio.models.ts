@@ -3,4 +3,6 @@ export type PortfolioDAO = {
   value: number;
   grossworthFlag: boolean;
   networthFlag: boolean;
+  month: number;
+  year: number;
 };
