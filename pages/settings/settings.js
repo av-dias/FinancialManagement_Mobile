@@ -7,6 +7,7 @@ import ModalCustom from "../../components/modal/modal";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 import { LinearGradient } from "expo-linear-gradient";
 import commonStyles from "../../utility/commonStyles";
+import * as FileSystem from "expo-file-system";
 
 import { getSplitUser, getSplitUsers, getSplitEmail } from "../../functions/split";
 import { saveToStorage, getFromStorage, addToStorage } from "../../functions/secureStorage";
@@ -172,6 +173,47 @@ export default function Settings({ navigation }) {
       <View style={styles.form}>
         <Pressable
           style={styles.buttonChoice}
+          onPress={async () => {
+            let uriRaw = [],
+              filename = "fm_" + new Date().getTime() + ".txt",
+              mimetype = "text/plain";
+
+            Object.keys(KEYS).map(async (key) => {
+              let data = await getFromStorage(KEYS[key], email);
+              if (data) {
+                uriRaw.push(KEYS[key]);
+                uriRaw.push(data);
+              }
+            });
+
+            try {
+              const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+
+              if (permissions.granted) {
+                const base64Data = uriRaw.join("\n");
+
+                console.log(filename);
+                console.log(base64Data);
+
+                const fileUri = await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, filename, mimetype);
+
+                console.log(fileUri);
+
+                await FileSystem.writeAsStringAsync(fileUri, base64Data, { encoding: FileSystem.EncodingType.UTF8 });
+
+                console.log("File created successfully:", fileUri);
+              } else {
+                console.log("Storage permissions not granted");
+              }
+            } catch (error) {
+              console.error("Error creating file:", error);
+            }
+          }}
+        >
+          <Text style={styles.buttonText}>Download Storage</Text>
+        </Pressable>
+        <Pressable
+          style={styles.buttonChoice}
           onPress={() => {
             setModalVisible(true);
             setModalContentFlag("split");
@@ -179,7 +221,7 @@ export default function Settings({ navigation }) {
         >
           <Text style={styles.buttonText}>Split</Text>
         </Pressable>
-        <Pressable
+        {/* <Pressable
           style={styles.buttonChoice}
           onPress={async () => {
             let server = await getFromStorage(KEYS.SERVER);
@@ -242,7 +284,7 @@ export default function Settings({ navigation }) {
           }}
         >
           <Text style={styles.buttonText}>Update</Text>
-        </Pressable>
+        </Pressable> */}
         <Pressable
           style={styles.buttonChoice}
           onPress={async () => {
@@ -272,14 +314,14 @@ export default function Settings({ navigation }) {
         >
           <Text style={styles.buttonText}>Logs: Split Users</Text>
         </Pressable>
-        <Pressable
+        {/* <Pressable
           style={styles.buttonChoice}
           onPress={async () => {
             showAlert();
           }}
         >
           <Text style={styles.buttonText}>Clear All</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
     </LinearGradient>
   );
