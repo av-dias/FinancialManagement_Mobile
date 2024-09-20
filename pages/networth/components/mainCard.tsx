@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import CardWrapper from "../../../components/cardWrapper/cardWrapper";
-import { Entypo, FontAwesome5 } from "@expo/vector-icons";
+import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { dark } from "../../../utility/colors";
 import { ReactNode } from "react";
 
@@ -21,6 +21,16 @@ const styles = StyleSheet.create({
   symbolStyle: { fontSize: 20, color: dark.textPrimary, width: 20 },
 });
 
+const StatsIcon = ({ value }) => {
+  if (value > 0) {
+    return <Entypo name="arrow-long-up" size={20} color="green" />;
+  } else if (value < 0) {
+    return <Entypo name="arrow-long-down" size={20} color="red" />;
+  } else {
+    return <Entypo style={{ marginBottom: -1 }} name="select-arrows" size={20} color="gray" />;
+  }
+};
+
 export const MainCard = (content: MainCardPropsType) => (
   <CardWrapper style={styles.wrapperContainer}>
     <View style={styles.valueContainer}>
@@ -37,7 +47,7 @@ export const MainCard = (content: MainCardPropsType) => (
       </View>
       <View style={{ flexDirection: "row" }}>
         <View style={{ justifyContent: "center" }}>
-          <Entypo name="arrow-long-up" size={20} color="green" />
+          <StatsIcon value={content.absoluteIncrease} />
         </View>
         <Text style={styles.titleStyle}>{`${content.relativeIncrease}`}</Text>
         <Text style={styles.symbolStyle}>{`%`}</Text>
