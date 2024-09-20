@@ -19,7 +19,9 @@ export default function Login({ navigation }) {
   const [ip4, setip4] = useState("");
 
   const lastLogin = async () => {
-    if ((await getFromStorage(KEYS.EMAIL)) != "" && (await getFromStorage(KEYS.PASSWORD)) != "") {
+    const email = await getFromStorage(KEYS.EMAIL);
+    const password = await getFromStorage(KEYS.PASSWORD);
+    if (email && email != "" && password && password != "") {
       navigation.navigate("Home");
     }
   };
