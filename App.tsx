@@ -24,6 +24,7 @@ import UserContextProvider from "./store/user-context";
 import { LogBox } from "react-native";
 import Networth from "./pages/networth/networth";
 import { DatabaseConnectionProvider } from "./store/database-context";
+import Statistics from "./pages/stats/statistics";
 
 const IGNORED_LOGS = ["Warning: Failed prop type: Invalid prop `domain` supplied to `VictoryLine`."];
 LogBox.ignoreLogs(IGNORED_LOGS);
@@ -66,7 +67,7 @@ function HomeTabs() {
               component={Networth}
               options={{ headerShown: false, tabBarIcon: ({ color, size }) => <AntDesign name="piechart" size={20} color="white" /> }}
             />
-            <Tab.Screen name="Statistics" component={Stats} options={{ headerShown: false, tabBarButton: (props) => null }} />
+            <Tab.Screen name="Statistics" component={Statistics} options={{ headerShown: false, tabBarButton: (props) => null }} />
             <Tab.Screen name="Budget" component={Budget} options={{ headerShown: false, tabBarButton: (props) => null }} />
             <Tab.Screen
               name="Purchase"

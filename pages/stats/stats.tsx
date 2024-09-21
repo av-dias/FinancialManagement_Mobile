@@ -28,6 +28,7 @@ import {
   calcTotalExpensesByType,
   calcTransactionStats,
 } from "../../functions/expenses";
+import { getSumArrayObject, getMinArrayObject, getCombinedArray, getMaxArrayObject } from "../../functions/array";
 
 export default function Stats({ navigation }) {
   const styles = _styles;
@@ -126,62 +127,12 @@ export default function Stats({ navigation }) {
     }, [appCtx.expenses, currentYear])
   );
 
-  const calculateArrayVariation = (arr) => {
-    let maxArray = arr.sort(function (a, b) {
-      return b.y - a.y;
-    });
-
-    let variation = Math.abs(maxArray[0].y - maxArray[maxArray.length - 1].y);
-    return variation < 300 ? 300 : variation;
-  };
-
-  const getMaxArrayObject = (arr) => {
-    if (!arr || arr.length == 0) return 0;
-    let maxArray = arr.sort(function (a, b) {
-      return b.y - a.y;
-    });
-
-    let max = maxArray[0].y;
-
-    return max + calculateArrayVariation(arr) * 0.6;
-  };
-
-  const getMinArrayObject = (arr) => {
-    if (!arr || arr.length == 0) return 0;
-
-    let minArray = arr.sort(function (a, b) {
-      return a.y - b.y;
-    });
-
-    let min = minArray[0].y;
-    return min - calculateArrayVariation(arr) * 0.3;
-  };
-
-  const getSumArrayObject = (arr) => {
-    if (!arr || arr.length == 0) return 0;
-    return arr.reduce((acc, value) => acc + parseFloat(value.y), 0);
-  };
-
-  const findKeyJsonArray = (arr, value) => {
-    let found = arr.filter((data) => {
-      return data.x == value;
-    });
-    return found;
-  };
-
   const getCurrentYear = (year) => {
     return year.toString();
   };
 
   const getPreviousYear = (year) => {
     return (year - 1).toString();
-  };
-
-  const getCombinedArray = (arr1, arr2) => {
-    if (arr1 && arr1.length > 0 && arr2 && arr2.length > 0) return arr1.concat(arr2);
-    else if (arr1 && arr1.length > 0) return arr1;
-    else if (arr2 && arr2.length > 0) return arr2;
-    else return [];
   };
 
   return (
@@ -250,115 +201,109 @@ export default function Stats({ navigation }) {
                 )}
               </View>
             </CardWrapper>
-            {
-              <CardWrapper style={styles.chartContainer}>
-                <View style={styles.chart}>
-                  <View style={{ position: "absolute", top: 15 }}>
-                    <Text style={styles.text}>Total Purchase by Type</Text>
-                  </View>
-                  {spendByType[getCurrentYear(currentYear)] && (
-                    <VictoryBar
-                      horizontal
-                      cornerRadius={{ top: 5 }}
-                      domain={{ y: [-40, getMaxArrayObject(spendByType[getCurrentYear(currentYear)])] }}
-                      domainPadding={20}
-                      padding={30}
-                      style={{
-                        data: { fill: dark.textPrimary, stroke: dark.textPrimary }, // Set both fill and stroke to white
-                        parent: { border: "1px solid #ccc" },
-                      }}
-                      data={spendByType[getCurrentYear(currentYear)]}
-                      interpolation="natural"
-                      labels={({ datum }) => datum.x + " " + datum.y.toFixed(0) + "€"}
-                      labelComponent={<VictoryLabel style={{ fill: dark.textPrimary, fontSize: 10 }} />}
-                    />
-                  )}
+            <CardWrapper style={styles.chartContainer}>
+              <View style={styles.chart}>
+                <View style={{ position: "absolute", top: 15 }}>
+                  <Text style={styles.text}>Total Purchase by Type</Text>
                 </View>
-              </CardWrapper>
-            }
-            {
-              <CardWrapper style={{ ...styles.chartContainer, paddingVertical: 20 }}>
+                {spendByType[getCurrentYear(currentYear)] && (
+                  <VictoryBar
+                    horizontal
+                    cornerRadius={{ top: 5 }}
+                    domain={{ y: [-40, getMaxArrayObject(spendByType[getCurrentYear(currentYear)])] }}
+                    domainPadding={20}
+                    padding={30}
+                    style={{
+                      data: { fill: dark.textPrimary, stroke: dark.textPrimary }, // Set both fill and stroke to white
+                      parent: { border: "1px solid #ccc" },
+                    }}
+                    data={spendByType[getCurrentYear(currentYear)]}
+                    interpolation="natural"
+                    labels={({ datum }) => datum.x + " " + datum.y.toFixed(0) + "€"}
+                    labelComponent={<VictoryLabel style={{ fill: dark.textPrimary, fontSize: 10 }} />}
+                  />
+                )}
+              </View>
+            </CardWrapper>
+            <CardWrapper style={{ ...styles.chartContainer, paddingVertical: 20 }}>
+              <View style={{ flex: 1, flexDirection: "row" }}>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <Text style={{ fontWeight: "bold", color: dark.textPrimary }}>Months</Text>
+                </View>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <Text style={{ fontWeight: "bold", color: "darkred" }}>Sent</Text>
+                </View>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                  <Text style={{ fontWeight: "bold", color: "darkgreen" }}>Received</Text>
+                </View>
+              </View>
+              <View style={styles.chart}>
                 <View style={{ flex: 1, flexDirection: "row" }}>
                   <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text style={{ fontWeight: "bold", color: dark.textPrimary }}>Months</Text>
+                    {months.map((month, i) => (
+                      <Text style={{ color: i % 2 ? dark.textPrimary : "lightgray" }} key={"M" + month}>
+                        {month}
+                      </Text>
+                    ))}
                   </View>
                   <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text style={{ fontWeight: "bold", color: "darkred" }}>Sent</Text>
-                  </View>
-                  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Text style={{ fontWeight: "bold", color: "darkgreen" }}>Received</Text>
-                  </View>
-                </View>
-                <View style={styles.chart}>
-                  <View style={{ flex: 1, flexDirection: "row" }}>
-                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                      {months.map((month, i) => (
-                        <Text style={{ color: i % 2 ? dark.textPrimary : "lightgray" }} key={"M" + month}>
-                          {month}
+                    {months.map((month, i) => {
+                      let itemSent = 0;
+                      i = i.toString();
+                      if (transactionStats[getCurrentYear(currentYear)] && transactionStats[getCurrentYear(currentYear)].hasOwnProperty(i)) {
+                        itemSent = transactionStats[getCurrentYear(currentYear)][i][TRANSACTION_TYPE[1]].toFixed(2);
+                      }
+                      return (
+                        <Text key={"R" + month} style={{ color: i % 2 ? dark.textPrimary : "lightgray" }}>
+                          {itemSent}
                         </Text>
-                      ))}
-                    </View>
-                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                      {months.map((month, i) => {
-                        let itemSent = 0;
-                        i = i.toString();
-                        if (transactionStats[getCurrentYear(currentYear)] && transactionStats[getCurrentYear(currentYear)].hasOwnProperty(i)) {
-                          itemSent = transactionStats[getCurrentYear(currentYear)][i][TRANSACTION_TYPE[1]].toFixed(2);
-                        }
-                        return (
-                          <Text key={"R" + month} style={{ color: i % 2 ? dark.textPrimary : "lightgray" }}>
-                            {itemSent}
-                          </Text>
-                        );
-                      })}
-                    </View>
-                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                      {months.map((month, i) => {
-                        let itemReceived = 0;
-                        i = i.toString();
-                        if (transactionStats[getCurrentYear(currentYear)] && transactionStats[getCurrentYear(currentYear)].hasOwnProperty(i)) {
-                          itemReceived = transactionStats[getCurrentYear(currentYear)][i][TRANSACTION_TYPE[2]].toFixed(2);
-                        }
-                        return (
-                          <Text key={"R" + month} style={{ color: i % 2 ? dark.textPrimary : "lightgray" }}>
-                            {-itemReceived}
-                          </Text>
-                        );
-                      })}
-                    </View>
+                      );
+                    })}
+                  </View>
+                  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    {months.map((month, i) => {
+                      let itemReceived = 0;
+                      i = i.toString();
+                      if (transactionStats[getCurrentYear(currentYear)] && transactionStats[getCurrentYear(currentYear)].hasOwnProperty(i)) {
+                        itemReceived = transactionStats[getCurrentYear(currentYear)][i][TRANSACTION_TYPE[2]].toFixed(2);
+                      }
+                      return (
+                        <Text key={"R" + month} style={{ color: i % 2 ? dark.textPrimary : "lightgray" }}>
+                          {-itemReceived}
+                        </Text>
+                      );
+                    })}
                   </View>
                 </View>
-              </CardWrapper>
-            }
-            {
-              <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
-                <View style={styles.chart}>
-                  <View style={{ position: "absolute", top: 15 }}>
-                    <Text style={{ color: dark.textPrimary }}>Total Transaction by Month</Text>
-                  </View>
-                  {transactionStats[getCurrentYear(currentYear)] && (
-                    <VictoryLine
-                      domain={{
-                        x: [0, 13],
-                        y: [
-                          getMinArrayObject(transactionStats[getCurrentYear(currentYear)][TRANSACTION_TYPE[0]]),
-                          getMaxArrayObject(transactionStats[getCurrentYear(currentYear)][TRANSACTION_TYPE[0]]),
-                        ],
-                      }}
-                      padding={{ left: 20 }}
-                      style={{
-                        data: { stroke: "#c43a31" },
-                        parent: { border: "1px solid #ccc" },
-                      }}
-                      categories={{ x: months }}
-                      data={transactionStats[getCurrentYear(currentYear)][TRANSACTION_TYPE[0]]}
-                      interpolation="natural"
-                      labels={({ datum }) => datum.x + "\n" + datum.y.toFixed(0) + "€"}
-                    />
-                  )}
+              </View>
+            </CardWrapper>
+            <CardWrapper style={{ flex: 1, justifyContent: "center", alignItems: "center", elevation: 0 }}>
+              <View style={styles.chart}>
+                <View style={{ position: "absolute", top: 15 }}>
+                  <Text style={{ color: dark.textPrimary }}>Total Transaction by Month</Text>
                 </View>
-              </CardWrapper>
-            }
+                {transactionStats[getCurrentYear(currentYear)] && (
+                  <VictoryLine
+                    domain={{
+                      x: [0, 13],
+                      y: [
+                        getMinArrayObject(transactionStats[getCurrentYear(currentYear)][TRANSACTION_TYPE[0]]),
+                        getMaxArrayObject(transactionStats[getCurrentYear(currentYear)][TRANSACTION_TYPE[0]]),
+                      ],
+                    }}
+                    padding={{ left: 20 }}
+                    style={{
+                      data: { stroke: "#c43a31" },
+                      parent: { border: "1px solid #ccc" },
+                    }}
+                    categories={{ x: months }}
+                    data={transactionStats[getCurrentYear(currentYear)][TRANSACTION_TYPE[0]]}
+                    interpolation="natural"
+                    labels={({ datum }) => datum.x + "\n" + datum.y.toFixed(0) + "€"}
+                  />
+                )}
+              </View>
+            </CardWrapper>
           </ScrollView>
         </View>
       </View>
