@@ -21,6 +21,7 @@ import { calcExpensesAverage, calcExpensesByType, calcExpensesTotalFromType, cal
 import { dark } from "../../utility/colors";
 import { verticalScale } from "../../functions/responsive";
 import commonStyles from "../../utility/commonStyles";
+import Statistics from "../stats/statistics";
 
 export default function Budget({ navigation }) {
   const styles = _styles;
@@ -73,13 +74,7 @@ export default function Budget({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      if (
-        appCtx &&
-        appCtx.expenses &&
-        appCtx.expenses.hasOwnProperty(currentYear) &&
-        appCtx.expenses[currentYear].hasOwnProperty(currentMonth) &&
-        appCtx.expenses[currentYear][currentMonth].length > 0
-      ) {
+      if (appCtx && appCtx.expenses && appCtx.expenses.hasOwnProperty(currentYear) && appCtx.expenses[currentYear].hasOwnProperty(currentMonth) && appCtx.expenses[currentYear][currentMonth].length > 0) {
         console.log("Budget: Fetching app data...");
         startTime = performance.now();
 
@@ -130,98 +125,147 @@ export default function Budget({ navigation }) {
 
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
-      <Header email={email} navigation={navigation} />
+      <Header email={appCtx.email} navigation={navigation} />
       <View style={styles.usableScreen}>
-        <ScrollView horizontal={false} style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, paddingVertical: 20, gap: 10 }}>
+        <View style={{ flex: 1, gap: 20 }}>
           {purchaseAverageTotal[currentYear] && (
             <View
               key={"TotalView"}
-              style={{ height: 70, backgroundColor: dark.complementary, padding: 15, borderRadius: 5, justifyContent: "center", gap: 10 }}
+              style={{
+                height: 70,
+                backgroundColor: dark.complementary,
+                padding: 15,
+                borderRadius: 5,
+                justifyContent: "center",
+                gap: 10,
+              }}
             >
               {
-                <Text key={"TotalText"} style={{ fontWeight: "bold", color: dark.textPrimary, fontSize: 20 }}>
+                <Text
+                  key={"TotalText"}
+                  style={{
+                    fontWeight: "bold",
+                    color: dark.textPrimary,
+                    fontSize: 20,
+                  }}
+                >
                   {"Average " + getCurrentValue(purchaseTotal[STATS_TYPE[1]]) + "/" + getLastAvailableAverageValue(purchaseAverageTotal, currentYear)}
                 </Text>
               }
-              {
-                <ProgressBar
-                  key={"PTtotal"}
-                  progress={getTotalProgress(
-                    getCurrentValue(purchaseTotal[STATS_TYPE[1]]),
-                    getLastAvailableAverageValue(purchaseAverageTotal, currentYear)
-                  )}
-                  color={"darkred"}
-                />
-              }
+              {<ProgressBar key={"PTtotal"} progress={getTotalProgress(getCurrentValue(purchaseTotal[STATS_TYPE[1]]), getLastAvailableAverageValue(purchaseAverageTotal, currentYear))} color={"darkred"} />}
             </View>
           )}
-          {spendAverageByType[currentYear] &&
-            purchaseCurrentStats[currentYear] &&
-            expensesTotalByType[currentYear] &&
-            Object.keys(spendAverageByType[currentYear][STATS_TYPE[1]]).map((type) => {
-              let lastAverageTypeValue = getLastAvailableAverageTypeValue(spendAverageByType, currentYear, type);
-              let lastTotalTypeValue = getLastAvailableTypeValue(expensesTotalByType, currentYear, type);
-              let currentTypeValue = 0,
-                currentTotalTypeValue = 0;
+          <Statistics />
+          <ScrollView
+            horizontal={false}
+            style={{ flex: 1 }}
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingVertical: 0,
+              gap: 10,
+            }}
+          >
+            {spendAverageByType[currentYear] &&
+              purchaseCurrentStats[currentYear] &&
+              expensesTotalByType[currentYear] &&
+              Object.keys(spendAverageByType[currentYear][STATS_TYPE[1]]).map((type) => {
+                let lastAverageTypeValue = getLastAvailableAverageTypeValue(spendAverageByType, currentYear, type);
+                let lastTotalTypeValue = getLastAvailableTypeValue(expensesTotalByType, currentYear, type);
+                let currentTypeValue = 0,
+                  currentTotalTypeValue = 0;
 
-              if (purchaseCurrentStats[currentYear][currentMonth][STATS_TYPE[1]].hasOwnProperty(type)) {
-                currentTypeValue = parseFloat(purchaseCurrentStats[currentYear][currentMonth][STATS_TYPE[1]][type]).toFixed(0);
-              }
-              if (expensesTotalByType[currentYear][STATS_TYPE[1]].hasOwnProperty(type)) {
-                currentTotalTypeValue = parseFloat(expensesTotalByType[currentYear][STATS_TYPE[1]][type]).toFixed(0);
-              }
+                if (purchaseCurrentStats[currentYear][currentMonth][STATS_TYPE[1]].hasOwnProperty(type)) {
+                  currentTypeValue = parseFloat(purchaseCurrentStats[currentYear][currentMonth][STATS_TYPE[1]][type]).toFixed(0);
+                }
+                if (expensesTotalByType[currentYear][STATS_TYPE[1]].hasOwnProperty(type)) {
+                  currentTotalTypeValue = parseFloat(expensesTotalByType[currentYear][STATS_TYPE[1]][type]).toFixed(0);
+                }
 
-              return (
-                <View
-                  key={type + "View"}
-                  style={{ flexDirection: "row", height: "auto", backgroundColor: dark.complementary, gap: 5, padding: 10, borderRadius: 5 }}
-                >
-                  <View style={{ justifyContent: "center", width: 50, backgroundColor: "transparent", gap: 5 }}>
+                return (
+                  <View
+                    key={type + "View"}
+                    style={{
+                      flexDirection: "row",
+                      height: "auto",
+                      backgroundColor: dark.complementary,
+                      gap: 5,
+                      padding: 10,
+                      borderRadius: 5,
+                    }}
+                  >
                     <View
                       style={{
-                        width: verticalScale(50),
-                        maxWidth: 50,
-                        height: verticalScale(50),
-                        maxHeight: 50,
-                        backgroundColor: categoryIcons(25).find((category) => category.label === type).color,
-                        borderRadius: commonStyles.borderRadius,
-                        borderWidth: 1,
                         justifyContent: "center",
-                        alignSelf: "center",
+                        width: 50,
+                        backgroundColor: "transparent",
+                        gap: 5,
                       }}
                     >
-                      {categoryIcons(25).find((category) => category.label === type).icon}
+                      <View
+                        style={{
+                          width: verticalScale(50),
+                          maxWidth: 50,
+                          height: verticalScale(50),
+                          maxHeight: 50,
+                          backgroundColor: categoryIcons(25).find((category) => category.label === type).color,
+                          borderRadius: commonStyles.borderRadius,
+                          borderWidth: 1,
+                          justifyContent: "center",
+                          alignSelf: "center",
+                        }}
+                      >
+                        {categoryIcons(25).find((category) => category.label === type).icon}
+                      </View>
+                      <Text
+                        key={type + "TextA"}
+                        style={{
+                          fontSize: 10,
+                          alignContent: "center",
+                          justifyContent: "center",
+                          textAlign: "center",
+                          color: dark.textPrimary,
+                        }}
+                      >
+                        {type.substring(0, 7)}
+                      </Text>
                     </View>
-                    <Text
-                      key={type + "TextA"}
-                      style={{ fontSize: 10, alignContent: "center", justifyContent: "center", textAlign: "center", color: dark.textPrimary }}
+                    <View
+                      style={{
+                        flex: 1,
+                        backgroundColor: "transparent",
+                        gap: 10,
+                        padding: 5,
+                      }}
                     >
-                      {type.substring(0, 7)}
-                    </Text>
-                  </View>
-                  <View style={{ flex: 1, backgroundColor: "transparent", gap: 10, padding: 5 }}>
-                    <View style={{ gap: 2 }}>
-                      <Text key={type + "TextT"} style={{ color: dark.textPrimary }}>
-                        {"Total " + currentTotalTypeValue + "/" + lastTotalTypeValue}
-                      </Text>
-                      <ProgressBar key={"PT" + type} progress={getTotalProgress(currentTotalTypeValue, lastTotalTypeValue)} color={"darkred"} />
-                    </View>
-                    <View style={{ gap: 2 }}>
-                      <Text key={type + "TextM"} style={{ color: dark.textPrimary }}>
-                        {"Monthly " + currentTypeValue + "/" + lastAverageTypeValue}
-                      </Text>
-                      <ProgressBar key={"PM" + type} progress={getTotalProgress(currentTypeValue, lastAverageTypeValue)} color={"blue"} />
+                      <View style={{ gap: 2 }}>
+                        <Text key={type + "TextT"} style={{ color: dark.textPrimary }}>
+                          {"Total " + currentTotalTypeValue + "/" + lastTotalTypeValue}
+                        </Text>
+                        <ProgressBar key={"PT" + type} progress={getTotalProgress(currentTotalTypeValue, lastTotalTypeValue)} color={"darkred"} />
+                      </View>
+                      <View style={{ gap: 2 }}>
+                        <Text key={type + "TextM"} style={{ color: dark.textPrimary }}>
+                          {"Monthly " + currentTypeValue + "/" + lastAverageTypeValue}
+                        </Text>
+                        <ProgressBar key={"PM" + type} progress={getTotalProgress(currentTypeValue, lastAverageTypeValue)} color={"blue"} />
+                      </View>
                     </View>
                   </View>
-                </View>
-              );
-            })}
-          {!spendAverageByType[currentYear] && !purchaseCurrentStats[currentYear] && !expensesTotalByType[currentYear] && (
-            <View style={{ flex: 8, justifyContent: "center", alignItems: "center" }}>
-              <Text style={{ color: "white" }}>NO DATA</Text>
-            </View>
-          )}
-        </ScrollView>
+                );
+              })}
+            {!spendAverageByType[currentYear] && !purchaseCurrentStats[currentYear] && !expensesTotalByType[currentYear] && (
+              <View
+                style={{
+                  flex: 8,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "white" }}>NO DATA</Text>
+              </View>
+            )}
+          </ScrollView>
+        </View>
       </View>
     </LinearGradient>
   );

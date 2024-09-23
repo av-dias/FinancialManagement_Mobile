@@ -10,7 +10,7 @@ import { AppContext } from "../../store/app-context";
 
 //Custom Components
 import CalendarCard from "../../components/calendarCard/calendarCard";
-import TypeCard from "../../components/typeCard/typeCard";
+import TypeCard from "../../components/TypeCard/TypeCard";
 import Header from "../../components/header/header";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
@@ -50,13 +50,7 @@ export default function Home({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       function fetchData() {
-        if (
-          appCtx &&
-          appCtx.expenses &&
-          appCtx.expenses.hasOwnProperty(currentYear) &&
-          appCtx.expenses[currentYear].hasOwnProperty(currentMonth) &&
-          appCtx.expenses[currentYear][currentMonth].length > 0
-        ) {
+        if (appCtx && appCtx.expenses && appCtx.expenses.hasOwnProperty(currentYear) && appCtx.expenses[currentYear].hasOwnProperty(currentMonth) && appCtx.expenses[currentYear][currentMonth].length > 0) {
           let resExpensesByType = calcExpensesByType(appCtx.expenses[currentYear][currentMonth]);
           let [resPieChart, resTableChart] = loadExpenses(resExpensesByType[currentYear][currentMonth]);
           setPieChartData(resPieChart);
@@ -98,11 +92,7 @@ export default function Home({ navigation }) {
                   height={horizontalScale(320)}
                   innerRadius={horizontalScale(130)}
                   padding={{ top: 0, bottom: 0 }}
-                  data={
-                    loadPieChartData(statsMode, statsType, pieChartData, pieChartAverageData).length != 0
-                      ? loadPieChartData(statsMode, statsType, pieChartData, pieChartAverageData)
-                      : [{ x: "Your Spents", y: 1 }]
-                  }
+                  data={loadPieChartData(statsMode, statsType, pieChartData, pieChartAverageData).length != 0 ? loadPieChartData(statsMode, statsType, pieChartData, pieChartAverageData) : [{ x: "Your Spents", y: 1 }]}
                   style={{
                     data: {
                       fill: ({ datum }) => datum.color,
@@ -112,9 +102,7 @@ export default function Home({ navigation }) {
                   options={{ maintainAspectRatio: false, aspectRatio: 1 }}
                 />
                 <View style={{ position: "absolute", justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}>
-                  <Text style={{ alignSelf: "center", fontSize: verticalScale(40), color: "white" }}>
-                    {loadPurchaseTotalData(statsMode, statsType, expenseTotal, purchaseAverageTotal)}
-                  </Text>
+                  <Text style={{ alignSelf: "center", fontSize: verticalScale(40), color: "white" }}>{loadPurchaseTotalData(statsMode, statsType, expenseTotal, purchaseAverageTotal)}</Text>
                   {loadCalendarCard(statsMode, currentMonth, setCurrentMonth, currentYear, setCurrentYear)}
                 </View>
               </View>

@@ -4,7 +4,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, MaterialIcons, FontAwesome5, AntDesign } from "@expo/vector-icons";
-import { ThemeProvider } from "react-native-elements";
 import "reflect-metadata";
 
 import Login from "./pages/login/login";
@@ -13,9 +12,7 @@ import Purchase from "./pages/purchase/purchase";
 import List from "./pages/list/list";
 import Settings from "./pages/settings/settings";
 import Transaction from "./pages/transaction/transaction";
-import Stats from "./pages/stats/stats";
 import Budget from "./pages/budget/budget";
-import StatsMenu from "./pages/statsMenu/statsMenu";
 
 import AppContextProvider from "./store/app-context";
 import UserContextProvider from "./store/user-context";
@@ -24,7 +21,6 @@ import UserContextProvider from "./store/user-context";
 import { LogBox } from "react-native";
 import Networth from "./pages/networth/networth";
 import { DatabaseConnectionProvider } from "./store/database-context";
-import Statistics from "./pages/stats/statistics";
 
 const IGNORED_LOGS = ["Warning: Failed prop type: Invalid prop `domain` supplied to `VictoryLine`."];
 LogBox.ignoreLogs(IGNORED_LOGS);
@@ -52,38 +48,12 @@ function HomeTabs() {
               navigationBarColor: "gold",
             })}
           >
-            <Tab.Screen
-              name="Dashboard"
-              component={Home}
-              options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="dashboard" size={24} color="white" /> }}
-            />
-            <Tab.Screen
-              name="Stats"
-              component={StatsMenu}
-              options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={24} color="white" /> }}
-            />
-            <Tab.Screen
-              name="Networth"
-              component={Networth}
-              options={{ headerShown: false, tabBarIcon: ({ color, size }) => <AntDesign name="piechart" size={20} color="white" /> }}
-            />
-            <Tab.Screen name="Statistics" component={Statistics} options={{ headerShown: false, tabBarButton: (props) => null }} />
-            <Tab.Screen name="Budget" component={Budget} options={{ headerShown: false, tabBarButton: (props) => null }} />
-            <Tab.Screen
-              name="Purchase"
-              component={Purchase}
-              options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="add-circle-outline" size={24} color="white" /> }}
-            />
-            <Tab.Screen
-              name="Transaction"
-              component={Transaction}
-              options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="compare-arrows" size={25} color="white" /> }}
-            />
-            <Tab.Screen
-              name="List"
-              component={List}
-              options={{ headerShown: false, tabBarIcon: ({ color, size }) => <FontAwesome5 name="clipboard-list" size={20} color="white" /> }}
-            />
+            <Tab.Screen name="Dashboard" component={Home} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="dashboard" size={24} color="white" /> }} />
+            <Tab.Screen name="Stats" component={Budget} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={24} color="white" /> }} />
+            <Tab.Screen name="Networth" component={Networth} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <AntDesign name="piechart" size={20} color="white" /> }} />
+            <Tab.Screen name="Purchase" component={Purchase} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="add-circle-outline" size={24} color="white" /> }} />
+            <Tab.Screen name="Transaction" component={Transaction} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="compare-arrows" size={25} color="white" /> }} />
+            <Tab.Screen name="List" component={List} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <FontAwesome5 name="clipboard-list" size={20} color="white" /> }} />
             <Tab.Screen name="Settings" component={Settings} options={{ headerShown: false, tabBarButton: (props) => null }} />
           </Tab.Navigator>
         </AppContextProvider>

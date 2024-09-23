@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
+import { StyleSheet } from "react-native";
 import { dark } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../functions/responsive";
+import { verticalScale } from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 const statusBarHeight = StatusBar.currentHeight;
-const naviagtionBarHeight = verticalScale(110);
+const naviagtionBarHeight = verticalScale(140);
 import commonStyles from "../../utility/commonStyles";
 
 export const _styles = StyleSheet.create({
@@ -19,5 +19,10 @@ export const _styles = StyleSheet.create({
     marginTop: verticalScale(5),
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
-  colorIcon: { textAlign: "center", fontSize: verticalScale(20), padding: 5, margin: 5 },
+  colorIcon: {
+    textAlign: "center",
+    fontSize: verticalScale(20),
+    padding: 5,
+    margin: 5,
+  },
 });

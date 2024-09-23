@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
+import { StyleSheet } from "react-native";
 import { dark } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../functions/responsive";
+import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 const statusBarHeight = StatusBar.currentHeight;
 const naviagtionBarHeight = verticalScale(110);
@@ -19,7 +19,13 @@ export const _styles = StyleSheet.create({
     marginTop: verticalScale(5),
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
-  calendar: { justifyContent: "center", alignItems: "center", flex: 1, width: "100%", backgroundColor: "transparent" },
+  calendar: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+    width: "100%",
+    backgroundColor: "transparent",
+  },
   hitBox: {
     alignItems: "center",
     justifyContent: "center",
@@ -28,13 +34,24 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
     zIndex: -1,
   },
-  rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", gap: 20 },
-  text: { fontSize: 15, textAlign: "center", color: dark.textPrimary },
+  rowGap: {
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "100%",
+    gap: 20,
+  },
+  text: { fontSize: 15, color: dark.textPrimary },
+  textTitle: { fontSize: 15, fontWeight: "bold", color: dark.textPrimary },
+  textSecundary: { fontSize: 13, color: dark.textSecundary },
   chart: {
     justifyContent: "center",
     alignItems: "center",
   },
-  chartContainer: { flex: 1, justifyContent: "center", alignItems: "center", elevation: 0, backgroundColor: dark.complementary },
+  chartContainer: {
+    height: "40%",
+    elevation: 0,
+    backgroundColor: dark.complementary,
+  },
   tableInfo: {
     width: "100%",
     height: "100%",
@@ -44,7 +61,11 @@ export const _styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   textCenter: { textAlign: "center", fontSize: verticalScale(12), gap: 10 },
-  textCenterHead: { textAlign: "center", fontWeight: "bold", fontSize: verticalScale(15) },
+  textCenterHead: {
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: verticalScale(15),
+  },
   rowTable: {
     flexDirection: "row",
     justifyContent: "center",
@@ -52,5 +73,20 @@ export const _styles = StyleSheet.create({
     borderColor: dark.complementary,
     borderWidth: verticalScale(1),
   },
-  colorIcon: { textAlign: "center", fontSize: verticalScale(20), padding: 5, margin: 5 },
+  colorIcon: {
+    textAlign: "center",
+    fontSize: verticalScale(20),
+    padding: 5,
+    margin: 5,
+  },
+  chartHeader: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    position: "absolute",
+    top: 10,
+    width: "100%",
+    paddingHorizontal: 15,
+  },
+  containerJustifyCenter: { justifyContent: "center" },
+  containerRowGap: { flexDirection: "row", gap: 10 },
 });

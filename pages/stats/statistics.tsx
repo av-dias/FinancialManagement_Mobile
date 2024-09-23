@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { dark } from "../../utility/colors";
 import { _styles } from "./style";
@@ -8,22 +8,21 @@ import { AppContext } from "../../store/app-context";
 import { useFocusEffect } from "@react-navigation/native";
 
 import Header from "../../components/header/header";
-import TypeCard from "../../components/typeCard/typeCard";
+import TypeCard from "../../components/TypeCard/TypeCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { verticalScale } from "../../functions/responsive";
 import { ChartCard } from "./components/ChartCard";
-import { calculateSpendByType, calculateSplitData, calculateSplitDeptData, calculateTransactionStats } from "../../functions/statistics";
-import { BarCard } from "./components/BarCard";
+import { calculateSplitData, calculateSplitDeptData } from "../../functions/statistics";
+import { getCombinedArray, getMaxArrayObject, getMinArrayObject, getSumArrayObject } from "../../functions/array";
+import { VictoryLabel, VictoryLine } from "victory-native";
+import { months } from "../../utility/calendar";
 
 export default function Statistics({ navigation }) {
   const styles = _styles;
   const appCtx = useContext(AppContext);
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [splitTotal, setSplitTotal] = useState(0);
   const [splitDeptData, setSplitDeptData] = useState({});
-  const [spendByType, setSpendByType] = useState({});
-  const [transactionStats, setTransactionStats] = useState({});
 
   useFocusEffect(
     React.useCallback(() => {
@@ -37,10 +36,8 @@ export default function Statistics({ navigation }) {
 
           let resSplitDeptData = calculateSplitDeptData(resExpensesTotal, currentYear);
           setSplitDeptData(resSplitDeptData);
-          let resTransactionTotal = calculateTransactionStats(appCtx.expenses, currentYear);
-          setTransactionStats(resTransactionTotal);
-          let resSpendByType = calculateSpendByType(appCtx.expenses, currentYear);
-          setSpendByType(resSpendByType);
+          const resSplitTotal = getSumArrayObject(resSplitDeptData[currentYear.toString()]);
+          setSplitTotal(resSplitTotal);
         }
       }
       let startTime = performance.now();
@@ -51,20 +48,32 @@ export default function Statistics({ navigation }) {
   );
 
   return (
-    <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
-      <Header email={appCtx.email} navigation={navigation} />
-      <View style={styles.usableScreen}>
-        <View style={{ alignSelf: "center", flexDirection: "row", paddingBottom: 10, gap: 10 }}>
-          <TypeCard setItem={setCurrentYear} itemList={[2024, 2023]} />
-          <CardWrapper style={{ width: verticalScale(100), alignItems: "center", backgroundColor: dark.complementary }}>
-            <Text style={styles.text}>{`Split: ${splitTotal}€`}</Text>
-          </CardWrapper>
+    <CardWrapper style={styles.chartContainer}>
+      <View style={styles.chartHeader}>
+        <View style={styles.containerJustifyCenter}>
+          <Text style={styles.textTitle}>{"Total Purchase"}</Text>
+          <Text style={styles.textSecundary}>{`Split: ${splitTotal}€`}</Text>
         </View>
-        <View style={{ flex: 1, gap: verticalScale(10) }}>
-          <ChartCard title={"Total Purchase by Month"} currentYear={currentYear.toString()} splitDeptData={splitDeptData} />
-          <BarCard title={"Total Purchase by Type"} currentYear={currentYear.toString()} spendByType={spendByType} />
+        <View style={styles.containerRowGap}>
+          <TypeCard setItem={setCurrentYear} itemList={[2024, 2023]} />
         </View>
       </View>
-    </LinearGradient>
+      <VictoryLine
+        domain={{
+          x: [0, 13],
+          y: [getMinArrayObject(getCombinedArray(splitDeptData[currentYear.toString()], splitDeptData[currentYear.toString()])), getMaxArrayObject(getCombinedArray(splitDeptData[currentYear.toString()], splitDeptData[currentYear.toString()]))],
+        }}
+        padding={{ left: 20 }}
+        style={{
+          data: { stroke: "rgb(112,137,187)" },
+          parent: { border: "1px solid #ccc" },
+        }}
+        categories={{ x: months }}
+        data={splitDeptData[currentYear] || []}
+        interpolation="natural"
+        labels={({ datum }) => datum.x + "\n" + datum.y.toFixed(0) + "€"}
+        labelComponent={<VictoryLabel style={{ fill: dark.textPrimary, fontSize: 10 }} />}
+      />
+    </CardWrapper>
   );
 }

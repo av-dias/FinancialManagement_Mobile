@@ -3,6 +3,7 @@ export const calculateArrayVariation = (arr) => {
     return b.y - a.y;
   });
 
+  // Calculate the variation from smallest to biggest number
   let variation = Math.abs(maxArray[0].y - maxArray[maxArray.length - 1].y);
   return variation < 300 ? 300 : variation;
 };
@@ -26,7 +27,7 @@ export const getMinArrayObject = (arr) => {
   });
 
   let min = minArray[0].y;
-  return min - calculateArrayVariation(arr) * 0.3;
+  return min - calculateArrayVariation(arr) * 0.1;
 };
 
 export const getSumArrayObject = (arr) => {
