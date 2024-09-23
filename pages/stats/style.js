@@ -48,7 +48,7 @@ export const _styles = StyleSheet.create({
     alignItems: "center",
   },
   chartContainer: {
-    height: "40%",
+    height: "auto",
     elevation: 0,
     backgroundColor: dark.complementary,
   },

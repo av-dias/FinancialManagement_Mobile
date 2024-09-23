@@ -1,23 +1,19 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { View, Text } from "react-native";
 import { dark } from "../../utility/colors";
 import { _styles } from "./style";
 import { useContext } from "react";
 import { AppContext } from "../../store/app-context";
 import { useFocusEffect } from "@react-navigation/native";
 
-import Header from "../../components/header/header";
 import TypeCard from "../../components/TypeCard/TypeCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
-import { verticalScale } from "../../functions/responsive";
-import { ChartCard } from "./components/ChartCard";
 import { calculateSplitData, calculateSplitDeptData } from "../../functions/statistics";
 import { getCombinedArray, getMaxArrayObject, getMinArrayObject, getSumArrayObject } from "../../functions/array";
 import { VictoryLabel, VictoryLine } from "victory-native";
 import { months } from "../../utility/calendar";
 
-export default function Statistics({ navigation }) {
+export default function Statistics() {
   const styles = _styles;
   const appCtx = useContext(AppContext);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -61,7 +57,10 @@ export default function Statistics({ navigation }) {
       <VictoryLine
         domain={{
           x: [0, 13],
-          y: [getMinArrayObject(getCombinedArray(splitDeptData[currentYear.toString()], splitDeptData[currentYear.toString()])), getMaxArrayObject(getCombinedArray(splitDeptData[currentYear.toString()], splitDeptData[currentYear.toString()]))],
+          y: [
+            getMinArrayObject(getCombinedArray(splitDeptData[currentYear.toString()], splitDeptData[currentYear.toString()])),
+            getMaxArrayObject(getCombinedArray(splitDeptData[currentYear.toString()], splitDeptData[currentYear.toString()])),
+          ],
         }}
         padding={{ left: 20 }}
         style={{
