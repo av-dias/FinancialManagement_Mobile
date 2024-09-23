@@ -88,5 +88,5 @@ export const _styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   containerJustifyCenter: { justifyContent: "center" },
-  containerRowGap: { flexDirection: "row", gap: 10 },
+  containerRowGap: { flexDirection: "row", gap: 10, zIndex: 100 },
 });

@@ -12,6 +12,7 @@ import { calculateSplitData, calculateSplitDeptData } from "../../functions/stat
 import { getCombinedArray, getMaxArrayObject, getMinArrayObject, getSumArrayObject } from "../../functions/array";
 import { VictoryLabel, VictoryLine } from "victory-native";
 import { months } from "../../utility/calendar";
+import CalendarCard from "../../components/calendarCard/calendarCard";
 
 export default function Statistics() {
   const styles = _styles;
@@ -48,7 +49,7 @@ export default function Statistics() {
       <View style={styles.chartHeader}>
         <View style={styles.containerJustifyCenter}>
           <Text style={styles.textTitle}>{"Total Purchase"}</Text>
-          <Text style={styles.textSecundary}>{`Split: ${splitTotal}€`}</Text>
+          <Text style={styles.textSecundary}>{`Split: ${splitTotal.toFixed(0)}€`}</Text>
         </View>
         <View style={styles.containerRowGap}>
           <TypeCard setItem={setCurrentYear} itemList={[2024, 2023]} />
