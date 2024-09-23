@@ -4,7 +4,6 @@ import { categoryIcons } from "../../assets/icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { _styles } from "./style";
 import { STATS_MODE, STATS_TYPE } from "../../utility/keys";
-import { Expense } from "../../models/types";
 import { Chart, Table } from "../../models/charts";
 
 const styles = _styles;
@@ -33,7 +32,7 @@ export const loadExpenses = (expenses: string) => {
 
       categoryIcons().find((icon) => {
         if (icon.label === type) {
-          _color = icon.color;
+          _color = icon.brightColor;
         }
       });
 

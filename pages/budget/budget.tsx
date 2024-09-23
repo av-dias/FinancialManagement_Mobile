@@ -99,8 +99,8 @@ export default function Budget({ navigation }) {
           {purchaseAverageTotal[currentYear] && (
             <AverageProgressBar purchaseTotal={purchaseTotal} purchaseAverageTotal={purchaseAverageTotal} currentYear={currentYear} />
           )}
-          <Statistics />
           <ScrollView horizontal={false} style={{ flex: 1 }} contentContainerStyle={styles.scrollviewContainer}>
+            <Statistics />
             {spendAverageByType[currentYear] &&
               purchaseCurrentStats[currentYear] &&
               expensesTotalByType[currentYear] &&

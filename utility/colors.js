@@ -16,6 +16,48 @@ export const dark = {
 };
 
 export const categoryColorsBackground = {
+  Supermarket: "rgba(200, 33, 33, 1)",
+  Travel: "rgba(230, 68, 45, 1)",
+  Rent: "rgba(219, 98, 56, 1)",
+  Work: "rgba(185, 123, 85, 1)",
+  CoffeePub: "rgba(185, 152, 85, 1)",
+  Fun: "rgba(185, 173, 85, 1)",
+  Car: "rgba(138, 185, 85, 1)",
+  Transport: "rgba(85, 185, 116, 1)",
+  LifeStyle: "rgba(85, 185, 166, 1)",
+  Restaurant: "rgba(85, 160, 185, 1)",
+  Gadgets: "rgba(85, 113, 185, 1)",
+  Medic: "rgba(38, 75, 191, 1)",
+  Gift: "rgba(79, 63, 196, 1)",
+  Cloth: "rgba(213, 73, 213, 1)",
+  Subscription: "rgba(151, 75, 185, 1)",
+  Home: "rgba(185, 75, 152, 1)",
+  Uber: "rgba(230, 82, 115, 1)",
+  Other: "rgba(226, 123, 138, 1)",
+};
+
+export const categoryColorsBorder = {
+  Supermarket: "rgba(255, 210, 210, 1)",
+  Travel: "rgba(255, 223, 200, 1)",
+  Rent: "rgba(255, 235, 201, 1)",
+  Work: "rgba(255, 246, 229, 1)",
+  CoffeePub: "rgba(255, 253, 229, 1)",
+  Fun: "rgba(255, 255, 229, 1)",
+  Car: "rgba(252, 255, 229, 1)",
+  Transport: "rgba(229, 255, 240, 1)",
+  LifeStyle: "rgba(229, 255, 255, 1)",
+  Restaurant: "rgba(229, 252, 255, 1)",
+  Gadgets: "rgba(229, 247, 255, 1)",
+  Medic: "rgba(187, 224, 255, 1)",
+  Gift: "rgba(237, 226, 255, 1)",
+  Cloth: "rgba(255, 239, 255, 1)",
+  Subscription: "rgba(255, 230, 255, 1)",
+  Home: "rgba(255, 230, 252, 1)",
+  Uber: "rgba(255, 237, 249, 1)",
+  Other: "rgba(255, 247, 242, 1)",
+};
+
+export const categoryColorsBright = {
   Supermarket: "rgba(238, 66, 66, 1)",
   Travel: "rgba(255, 92, 70, 1)",
   Rent: "rgba(244, 123, 71, 1)",

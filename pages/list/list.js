@@ -22,7 +22,7 @@ import Header from "../../components/header/header";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import ModalCustom from "../../components/modal/modal";
-import ListItem from "./component/listItem/listItem";
+import { ListItem } from "./component/listItem/listItem";
 
 import { groupExpensesByDate } from "../../functions/expenses";
 import { handleTransaction } from "../transaction/handler";
@@ -72,7 +72,7 @@ export default function List({ navigation }) {
 
           let resExpensesGroupedByDate = groupExpensesByDate(expenses, currentYear, currentMonth);
           setExpensesGroupedByDate(resExpensesGroupedByDate);
-          let list = Object.keys(resExpensesGroupedByDate).sort();
+          let list = Object.keys(resExpensesGroupedByDate).sort().reverse();
           setListDays([...new Set(list)]);
           endTime = performance.now();
           console.log(`--> Call to List useFocusEffect took ${endTime - startTime} milliseconds.`);

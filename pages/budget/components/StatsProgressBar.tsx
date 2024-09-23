@@ -4,6 +4,7 @@ import { _styles } from "../style";
 import { ProgressBar } from "react-native-paper";
 import { dark } from "../../../utility/colors";
 import { STATS_TYPE } from "../../../utility/keys";
+import { TypeIcon } from "../../../components/TypeIcon/TypeIcon";
 
 type StatsProgressBar = {
   type: any;
@@ -67,9 +68,7 @@ export const StatsProgressBar = ({
           gap: 5,
         }}
       >
-        <View style={{ ...styles.containerIcon, backgroundColor: categoryIcons(25).find((category) => category.label === type).color }}>
-          {categoryIcons(25).find((category) => category.label === type).icon}
-        </View>
+        <TypeIcon icon={categoryIcons(25).find((category) => category.label === type)} />
         <Text key={type + "TextA"} style={styles.textItem}>
           {type.substring(0, 7)}
         </Text>

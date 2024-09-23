@@ -6,6 +6,7 @@ import { _styles } from "./style";
 import { KEYS as KEYS_SERIALIZER } from "../../../../utility/keys";
 import { dark } from "../../../../utility/colors";
 import commonStyles from "../../../../utility/commonStyles";
+import { TypeIcon } from "../../../../components/TypeIcon/TypeIcon";
 
 const getLabel = (innerData) => {
   let name = innerData.name || innerData.description;
@@ -22,10 +23,10 @@ const getValue = (innerData) => {
   return Number(value).toFixed(0);
 };
 
-export default ListItem = ({ innerData, handleSplit, handleEdit, showAlert, keys, gray = false, handleSettleSplit }) => {
+export const ListItem = ({ innerData, handleSplit, handleEdit, showAlert, keys, gray = false, handleSettleSplit }) => {
   const styles = _styles;
   let iconComponent;
-  if (innerData.type && innerData.dop) iconComponent = categoryIcons(20).find((category) => category.label === innerData.type);
+  if (innerData.type && innerData.dop) iconComponent = categoryIcons(30).find((category) => category.label === innerData.type);
   else {
     if (!innerData.user_origin_id) {
       iconComponent = utilIcons().find((type) => type.label === "Transaction");
@@ -43,21 +44,7 @@ export default ListItem = ({ innerData, handleSplit, handleEdit, showAlert, keys
     >
       <View style={styles.rowGap}>
         <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-          <View
-            style={{
-              width: verticalScale(40),
-              maxWidth: 50,
-              height: verticalScale(40),
-              maxHeight: 50,
-              backgroundColor: gray ? "lightgray" : iconComponent.color,
-              borderRadius: commonStyles.borderRadius,
-              borderWidth: 1,
-              justifyContent: "center",
-            }}
-          >
-            {iconComponent.icon}
-          </View>
-
+          <TypeIcon icon={iconComponent} />
           <View style={{ justifyContent: "center" }}>
             <Text style={styles.buttonText}>{getLabel(innerData)}</Text>
           </View>
@@ -77,7 +64,6 @@ export default ListItem = ({ innerData, handleSplit, handleEdit, showAlert, keys
               height: verticalScale(40),
               maxHeight: 50,
               borderRadius: commonStyles.borderRadius,
-              borderWidth: keys == KEYS_SERIALIZER.ARCHIVE_PURCHASE && innerData.split ? 1 : 0,
               justifyContent: "flex-end",
               backgroundColor: "transparent",
             }}

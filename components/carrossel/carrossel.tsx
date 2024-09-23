@@ -6,6 +6,7 @@ import { categoryIcons } from "../../assets/icons";
 const BORDER_RADIUS = 10;
 import { dark } from "../../utility/colors";
 import { ReactNode } from "react";
+import { TypeIcon } from "../TypeIcon/TypeIcon";
 
 type CarrosselProps = {
   type: any;
@@ -26,7 +27,7 @@ export default function Carrossel({ type, setType, size, iconSize, items = categ
         horizontal={true}
         style={styles.categoryScrollContainer}
         contentContainerStyle={{
-          gap: verticalScale(10),
+          gap: verticalScale(5),
           paddingHorizontal: 1,
         }}
       >
@@ -34,19 +35,19 @@ export default function Carrossel({ type, setType, size, iconSize, items = categ
           return (
             <CardWrapper
               key={iconComponent.label}
-              style={{ backgroundColor: type == iconComponent.label ? dark.secundary : dark.complementary, width: size }}
+              style={{ backgroundColor: type == iconComponent.label ? iconComponent.color : "transparent", width: size }}
             >
               <Pressable
                 key={iconComponent.label}
-                style={{
-                  ...styles.categoryContainer,
-                }}
+                style={styles.categoryContainer}
                 onPress={() => {
                   setType(iconComponent.label);
                 }}
               >
                 {iconComponent?.icon && (
-                  <View style={{ ...styles.categoryIconContainer, backgroundColor: iconComponent.color }}>{iconComponent.icon}</View>
+                  <View style={styles.categoryIconContainer}>
+                    <TypeIcon icon={iconComponent} />
+                  </View>
                 )}
                 <View style={styles.labelContainer}>
                   <Text style={styles.iconLabel}>{iconComponent.label}</Text>
