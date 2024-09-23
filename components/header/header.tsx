@@ -7,12 +7,12 @@ import { saveToStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 import { AppContext } from "../../store/app-context";
 import CardWrapper from "../cardWrapper/cardWrapper";
+const title = "Financial Manager";
 
 export default function Header(props) {
   const styles = _styles;
   const appCtx = useContext(AppContext);
   let nameLetter: string = "";
-  console.log(appCtx);
   if (appCtx?.email) nameLetter = appCtx?.email[0]?.toUpperCase();
 
   return (
@@ -28,18 +28,13 @@ export default function Header(props) {
             <Text style={styles.text}>{nameLetter}</Text>
           </Pressable>
         </CardWrapper>
-        <CardWrapper
-          style={{
-            borderRadius: 100,
-            paddingHorizontal: 10,
-          }}
-        >
+        <CardWrapper style={styles.titleContainer}>
           <Pressable
             onPress={() => {
               props.navigation.navigate("Dashboard");
             }}
           >
-            <Text style={styles.text}>{"Financial Manager"}</Text>
+            <Text style={styles.text}>{title}</Text>
           </Pressable>
         </CardWrapper>
       </View>

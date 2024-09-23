@@ -3,11 +3,11 @@ import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { StatusBar } from "react-native";
 const statusBarHeight = StatusBar.currentHeight;
 
-const headerSize = 35;
-const fontSize = 15;
+const headerSize = 45;
+const fontSize = 17;
 
 export const _styles = StyleSheet.create({
-  iconLeft: { marginLeft: `${verticalScale(25)}%` },
+  iconLeft: { marginLeft: `${verticalScale(30)}%` },
   header: {
     paddingVertical: verticalScale(15),
     paddingHorizontal: verticalScale(20),
@@ -33,6 +33,10 @@ export const _styles = StyleSheet.create({
     alignItems: "center",
   },
   text: { color: "white", fontSize: verticalScale(fontSize) },
-  leftContainer: { flex: 1, flexDirection: "row", gap: horizontalScale(5) },
+  leftContainer: { flex: 1, flexDirection: "row", gap: horizontalScale(10) },
   exitContainer: { borderRadius: 100, width: verticalScale(headerSize), aspectRatio: 1, justifyContent: "center" },
+  titleContainer: {
+    borderRadius: 100,
+    paddingHorizontal: 15,
+  },
 });

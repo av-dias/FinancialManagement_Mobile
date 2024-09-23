@@ -107,6 +107,7 @@ export default function Budget({ navigation }) {
               Object.keys(spendAverageByType[currentYear][STATS_TYPE[1]]).map((type) => {
                 return (
                   <StatsProgressBar
+                    key={`StatsProgressBar${type}`}
                     type={type}
                     spendAverageByType={spendAverageByType}
                     expensesTotalByType={expensesTotalByType}
