@@ -8,12 +8,3 @@ export const getUser = async () => {
     console.log("Basic: " + err);
   }
 };
-
-export const getServerStatus = async () => {
-  try {
-    const serverStatus = await getFromStorage("server");
-    return serverStatus;
-  } catch (err) {
-    console.log("Basic: " + err);
-  }
-};
