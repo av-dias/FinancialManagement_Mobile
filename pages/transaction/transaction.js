@@ -67,7 +67,7 @@ export default function Purchase({ navigation }) {
               setReceivedActive(!receivedActive);
             }}
           >
-            <Text>Received</Text>
+            <Text style={styles.text}>Received</Text>
           </Pressable>
         </View>
         <View style={{ flex: 1 }}>

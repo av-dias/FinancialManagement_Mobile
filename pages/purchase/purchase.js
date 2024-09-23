@@ -86,7 +86,7 @@ export default function Purchase({ navigation }) {
                 setRefundActive(!refundActive);
               }}
             >
-              <Text>Refund</Text>
+              <Text style={styles.text}>Refund</Text>
             </Pressable>
             <Pressable
               style={{
@@ -101,7 +101,7 @@ export default function Purchase({ navigation }) {
                 setModalVisible(true);
               }}
             >
-              <Text>History</Text>
+              <Text style={styles.text}>History</Text>
             </Pressable>
           </View>
           <View style={{ flex: 1 }}>

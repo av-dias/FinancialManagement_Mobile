@@ -19,7 +19,7 @@ export const _styles = StyleSheet.create({
     //justifyContent: "center",
     height: "97%",
   },
-  text: { fontSize: 20, textAlign: "center", zIndex: 1, backgroundColor: "transparent" },
+  text: { color: dark.textSecundary },
   rowGap: { flexDirection: "row", justifyContent: "space-between", width: "100%", backgroundColor: "transparent" },
   buttonText: {
     fontSize: verticalScale(12),

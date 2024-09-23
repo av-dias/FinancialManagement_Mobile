@@ -92,4 +92,5 @@ export const _styles = StyleSheet.create({
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
   scrollTable: { height: "100%", backgroundColor: "transparent" },
   divider: { margin: -5 },
+  text: { color: dark.textSecundary },
 });
