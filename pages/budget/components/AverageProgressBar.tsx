@@ -2,6 +2,7 @@ import { Text, View, ScrollView } from "react-native";
 import { _styles } from "../style";
 import { STATS_TYPE } from "../../../utility/keys";
 import { ProgressBar } from "react-native-paper";
+import { ProgressBarColors } from "../../../utility/colors";
 
 type AverageProgressBar = {
   purchaseTotal: any;
@@ -40,7 +41,8 @@ export const AverageProgressBar = ({ purchaseTotal, purchaseAverageTotal, curren
         <ProgressBar
           key={"PTtotal"}
           progress={getTotalProgress(getCurrentValue(purchaseTotal[STATS_TYPE[1]]), getLastAvailableAverageValue(purchaseAverageTotal, currentYear))}
-          color={"darkred"}
+          style={styles.progressStyle}
+          color={ProgressBarColors.red}
         />
       }
     </View>

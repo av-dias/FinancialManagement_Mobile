@@ -15,6 +15,11 @@ export const dark = {
   textSecundary: "lightgray",
 };
 
+export const ProgressBarColors = {
+  red: "rgb(234,71,59)",
+  blue: "rgb(113,198,244)",
+};
+
 export const categoryColorsBackground = {
   Supermarket: "rgba(200, 33, 33, 1)",
   Travel: "rgba(230, 68, 45, 1)",

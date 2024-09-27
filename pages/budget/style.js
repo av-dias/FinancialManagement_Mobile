@@ -73,4 +73,15 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  progressStyle: { height: verticalScale(8), borderRadius: 10 },
+  progressDataContainer: {
+    flex: 1,
+    gap: 10,
+    padding: 5,
+    backgroundColor: "transparent",
+  },
+  itemContainer: {
+    justifyContent: "flex-end",
+    width: 60,
+  },
 });
