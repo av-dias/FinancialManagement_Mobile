@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -8,14 +8,16 @@ import "reflect-metadata";
 
 import Login from "./pages/login/login";
 import Home from "./pages/home/home";
-import Purchase from "./pages/purchase/purchase";
 import List from "./pages/list/list";
 import Settings from "./pages/settings/settings";
-import Transaction from "./pages/transaction/transaction";
 import Budget from "./pages/budget/budget";
+import Add from "./pages/add/add";
 
 import AppContextProvider from "./store/app-context";
 import UserContextProvider from "./store/user-context";
+
+//Styles
+import { styles } from "./style";
 
 // Removing annoying warning from VictoryChart
 import { LogBox } from "react-native";
@@ -27,33 +29,25 @@ LogBox.ignoreLogs(IGNORED_LOGS);
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const iconSize = 24;
+
+const MainIcon = () => (
+  <View style={styles.mainContainer}>
+    <Ionicons style={styles.mainIcon} name="add-circle-outline" size={50} color="grey" />
+  </View>
+);
 
 function HomeTabs() {
   return (
     <UserContextProvider>
       <DatabaseConnectionProvider>
         <AppContextProvider>
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              headerShown: false,
-              tabBarStyle: {
-                height: 50,
-                paddingHorizontal: 5,
-                paddingTop: 5,
-                backgroundColor: "#12102E",
-                position: "absolute",
-                borderTopWidth: 0,
-                navigationBarColor: "gold",
-              },
-              navigationBarColor: "gold",
-            })}
-          >
-            <Tab.Screen name="Dashboard" component={Home} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="dashboard" size={24} color="white" /> }} />
-            <Tab.Screen name="Stats" component={Budget} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={24} color="white" /> }} />
-            <Tab.Screen name="Networth" component={Networth} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <AntDesign name="piechart" size={20} color="white" /> }} />
-            <Tab.Screen name="Purchase" component={Purchase} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="add-circle-outline" size={24} color="white" /> }} />
-            <Tab.Screen name="Transaction" component={Transaction} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="compare-arrows" size={25} color="white" /> }} />
-            <Tab.Screen name="List" component={List} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <FontAwesome5 name="clipboard-list" size={20} color="white" /> }} />
+          <Tab.Navigator screenOptions={({ route }) => ({ tabBarShowLabel: false, headerShown: false, tabBarStyle: styles.tab, navigationBarColor: "gold" })}>
+            <Tab.Screen name="Dashboard" component={Home} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="dashboard" size={iconSize} color="white" /> }} />
+            <Tab.Screen name="Stats" component={Budget} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={iconSize} color="white" /> }} />
+            <Tab.Screen name="Purchase" component={Add} options={{ tabBarIcon: ({ color, size }) => <MainIcon /> }} />
+            <Tab.Screen name="Networth" component={Networth} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <AntDesign name="piechart" size={iconSize} color="white" /> }} />
+            <Tab.Screen name="List" component={List} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <FontAwesome5 name="clipboard-list" size={iconSize} color="white" /> }} />
             <Tab.Screen name="Settings" component={Settings} options={{ headerShown: false, tabBarButton: (props) => null }} />
           </Tab.Navigator>
         </AppContextProvider>
@@ -73,12 +67,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#d4e4fc",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

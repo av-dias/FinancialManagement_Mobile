@@ -64,127 +64,120 @@ export default function Purchase({ navigation }) {
   }, [refundActive]);
 
   return (
-    <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
-      <Header email={email} navigation={navigation} />
-      <View style={styles.usableScreen}>
-        <View style={{ flex: 1 }}>
-          {modalVisible && (
-            <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible}>
-              {modalContent(list, newPurchase.value, email, modalContentFlag, modalVisible, setModalVisible, getSplitEmail(splitUser), slider)}
-            </ModalCustom>
-          )}
-          <View style={{ position: "absolute", right: 0, paddingVertical: 10, gap: 10 }}>
-            <Pressable
-              style={{
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                backgroundColor: refundActive ? "lightblue" : dark.complementary,
-                borderRadius: 10,
-                zIndex: 1,
-              }}
-              onPress={() => {
-                setRefundActive(!refundActive);
-              }}
-            >
-              <Text style={styles.text}>Refund</Text>
-            </Pressable>
-            <Pressable
-              style={{
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                backgroundColor: modalContentFlag == "history" && modalVisible ? "lightblue" : dark.complementary,
-                borderRadius: 10,
-                zIndex: 1,
-              }}
-              onPress={() => {
-                setModalContentFlag("history");
-                setModalVisible(true);
-              }}
-            >
-              <Text style={styles.text}>History</Text>
-            </Pressable>
-          </View>
-          <View style={{ flex: 1 }}>
-            <MoneyInputHeader
-              value={newPurchase.value}
-              setValue={(_value) => {
-                setNewPurchase({ ...newPurchase, value: _value });
-              }}
-              signal={refundActive ? "-" : "+"}
-            />
-            <Carrossel
-              type={newPurchase.type}
-              setType={(_type) => {
-                setNewPurchase({ ...newPurchase, type: _type });
-              }}
-              size={verticalScale(90)}
-              iconSize={30}
-            />
-            <View style={styles.form}>
-              <CustomCalendarStrip
-                pickerCurrentDate={new Date(newPurchase.dop)}
-                setPickerCurrentDate={(_date) => {
-                  setNewPurchase({ ...newPurchase, dop: _date.toISOString().split("T")[0] });
-                }}
-              />
-              <CardWrapper
-                style={{
-                  paddingHorizontal: horizontalScale(10),
-                  height: verticalScale(90),
-                }}
-              >
-                <CustomInput
-                  noStyle={true}
-                  Icon={
-                    <MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />
-                  }
-                  placeholder="Name"
-                  setValue={(_name) => {
-                    setNewPurchase({ ...newPurchase, name: _name });
-                  }}
-                  value={newPurchase.name}
-                />
-                <CustomInput
-                  noStyle={true}
-                  Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color={dark.textPrimary} />}
-                  placeholder="Notes"
-                  setValue={(_note) => {
-                    setNewPurchase({ ...newPurchase, note: _note });
-                  }}
-                  value={newPurchase.note}
-                />
-              </CardWrapper>
-              <SplitSlider
-                value={newPurchase.value}
-                setModalVisible={setModalVisible}
-                setModalContentFlag={setModalContentFlag}
-                splitStatus={splitStatus}
-                setSplitStatus={setSplitStatus}
-                slider={slider}
-                setSlider={setSlider}
-                size={verticalScale(90)}
-              />
-            </View>
-            <CustomButton
-              handlePress={() => {
-                handlePurchase(
-                  email,
-                  newPurchase,
-                  setNewPurchase,
-                  splitStatus,
-                  setSplitStatus,
-                  getSplitEmail(splitUser),
-                  slider,
-                  setList,
-                  refundActive,
-                  setRefundActive,
-                  appCtx.setExpenses
-                );
-              }}
-            />
-          </View>
-        </View>
+    <View style={{ flex: 1 }}>
+      {modalVisible && (
+        <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible}>
+          {modalContent(list, newPurchase.value, email, modalContentFlag, modalVisible, setModalVisible, getSplitEmail(splitUser), slider)}
+        </ModalCustom>
+      )}
+      <View style={{ position: "absolute", right: 0, paddingTop: 50, gap: 10 }}>
+        <Pressable
+          style={{
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            backgroundColor: refundActive ? "lightblue" : dark.complementary,
+            borderRadius: 10,
+            zIndex: 1,
+          }}
+          onPress={() => {
+            setRefundActive(!refundActive);
+          }}
+        >
+          <Text style={styles.text}>Refund</Text>
+        </Pressable>
+        <Pressable
+          style={{
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            backgroundColor: modalContentFlag == "history" && modalVisible ? "lightblue" : dark.complementary,
+            borderRadius: 10,
+            zIndex: 1,
+          }}
+          onPress={() => {
+            setModalContentFlag("history");
+            setModalVisible(true);
+          }}
+        >
+          <Text style={styles.text}>History</Text>
+        </Pressable>
       </View>
-    </LinearGradient>
+      <View style={{ flex: 1 }}>
+        <MoneyInputHeader
+          value={newPurchase.value}
+          setValue={(_value) => {
+            setNewPurchase({ ...newPurchase, value: _value });
+          }}
+          signal={refundActive ? "-" : "+"}
+        />
+        <Carrossel
+          type={newPurchase.type}
+          setType={(_type) => {
+            setNewPurchase({ ...newPurchase, type: _type });
+          }}
+          size={verticalScale(90)}
+          iconSize={30}
+        />
+        <View style={styles.form}>
+          <CustomCalendarStrip
+            pickerCurrentDate={new Date(newPurchase.dop)}
+            setPickerCurrentDate={(_date) => {
+              setNewPurchase({ ...newPurchase, dop: _date.toISOString().split("T")[0] });
+            }}
+          />
+          <CardWrapper
+            style={{
+              paddingHorizontal: horizontalScale(10),
+              height: verticalScale(90),
+            }}
+          >
+            <CustomInput
+              noStyle={true}
+              Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
+              placeholder="Name"
+              setValue={(_name) => {
+                setNewPurchase({ ...newPurchase, name: _name });
+              }}
+              value={newPurchase.name}
+            />
+            <CustomInput
+              noStyle={true}
+              Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color={dark.textPrimary} />}
+              placeholder="Notes"
+              setValue={(_note) => {
+                setNewPurchase({ ...newPurchase, note: _note });
+              }}
+              value={newPurchase.note}
+            />
+          </CardWrapper>
+          <SplitSlider
+            value={newPurchase.value}
+            setModalVisible={setModalVisible}
+            setModalContentFlag={setModalContentFlag}
+            splitStatus={splitStatus}
+            setSplitStatus={setSplitStatus}
+            slider={slider}
+            setSlider={setSlider}
+            size={verticalScale(90)}
+          />
+        </View>
+        <CustomButton
+          handlePress={() => {
+            handlePurchase(
+              email,
+              newPurchase,
+              setNewPurchase,
+              splitStatus,
+              setSplitStatus,
+              getSplitEmail(splitUser),
+              slider,
+              setList,
+              refundActive,
+              setRefundActive,
+              appCtx.setExpenses
+            );
+          }}
+        />
+      </View>
+    </View>
   );
 }

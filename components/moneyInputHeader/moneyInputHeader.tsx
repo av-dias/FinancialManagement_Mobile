@@ -6,7 +6,7 @@ export default function MoneyInputHeader({ value = "", setValue, signal = "+", v
   const styles = _styles;
 
   return (
-    <View style={{ ...styles.rowNoBorder, height: verticalScale(verticalHeight) }}>
+    <View style={{ ...styles.rowNoBorder, height: verticalScale(verticalHeight), paddingTop: 20 }}>
       <Text style={styles.symbolBig}>{signal}</Text>
       <TextInput
         ref={(input) => {

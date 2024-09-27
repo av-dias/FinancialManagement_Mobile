@@ -20,12 +20,13 @@ import { _styles } from "./style";
 import { dark } from "../../utility/colors";
 
 //Functions
-import { verticalScale } from "../../functions/responsive";
+import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { getUser } from "../../functions/basic";
 import { getSplitUser, getSplitEmail } from "../../functions/split";
 import { handleTransaction } from "./handler";
+import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
-export default function Purchase({ navigation }) {
+export default function Transaction({ navigation }) {
   const styles = _styles;
   const [email, setEmail] = useState("");
   const [receivedActive, setReceivedActive] = useState(false);
@@ -51,48 +52,53 @@ export default function Purchase({ navigation }) {
   );
 
   return (
-    <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
-      <Header email={email} navigation={navigation} />
-      <View style={styles.usableScreen}>
-        <View style={{ position: "absolute", right: 15, paddingVertical: 10, gap: 10 }}>
-          <Pressable
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-              backgroundColor: receivedActive ? "lightblue" : dark.complementary,
-              borderRadius: 10,
-              zIndex: 1,
+    <View style={{ flex: 1 }}>
+      <View style={{ position: "absolute", right: 0, paddingTop: 50, gap: 10 }}>
+        <Pressable
+          style={{
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            backgroundColor: receivedActive ? "lightblue" : dark.complementary,
+            borderRadius: 10,
+            zIndex: 1,
+          }}
+          onPress={() => {
+            setReceivedActive(!receivedActive);
+          }}
+        >
+          <Text style={styles.text}>Received</Text>
+        </Pressable>
+      </View>
+      <View style={{ flex: 1 }}>
+        <MoneyInputHeader
+          value={newTransaction.amount}
+          setValue={(_amount) => {
+            setNewTransaction({ ...newTransaction, amount: _amount });
+          }}
+        />
+        <Carrossel
+          type={newTransaction.type}
+          setType={(_type) => {
+            setNewTransaction({ ...newTransaction, type: _type });
+          }}
+          size={verticalScale(90)}
+          iconSize={30}
+        />
+        <View style={styles.form}>
+          <CustomCalendarStrip
+            pickerCurrentDate={newTransaction.dot}
+            setPickerCurrentDate={(_date) => {
+              setNewTransaction({ ...newTransaction, dot: new Date(_date).toISOString().split("T")[0] });
             }}
-            onPress={() => {
-              setReceivedActive(!receivedActive);
+          />
+          <CardWrapper
+            style={{
+              paddingHorizontal: horizontalScale(10),
+              height: verticalScale(90),
             }}
           >
-            <Text style={styles.text}>Received</Text>
-          </Pressable>
-        </View>
-        <View style={{ flex: 1 }}>
-          <MoneyInputHeader
-            value={newTransaction.amount}
-            setValue={(_amount) => {
-              setNewTransaction({ ...newTransaction, amount: _amount });
-            }}
-          />
-          <Carrossel
-            type={newTransaction.type}
-            setType={(_type) => {
-              setNewTransaction({ ...newTransaction, type: _type });
-            }}
-            size={verticalScale(90)}
-            iconSize={30}
-          />
-          <View style={styles.form}>
-            <CustomCalendarStrip
-              pickerCurrentDate={newTransaction.dot}
-              setPickerCurrentDate={(_date) => {
-                setNewTransaction({ ...newTransaction, dot: new Date(_date).toISOString().split("T")[0] });
-              }}
-            />
             <CustomInput
+              noStyle={true}
               Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
               placeholder="Description"
               setValue={(_description) => {
@@ -101,19 +107,20 @@ export default function Purchase({ navigation }) {
               value={newTransaction.description}
             />
             <CustomInput
+              noStyle={true}
               Icon={<Entypo style={styles.iconCenter} name="email" size={verticalScale(20)} color={dark.textPrimary} />}
               placeholder="Email"
               value={getSplitEmail(destination)}
               editable={false}
             />
-          </View>
-          <CustomButton
-            handlePress={() => {
-              handleTransaction(newTransaction, setNewTransaction, destination, receivedActive, email, appCtx.setExpenses);
-            }}
-          />
+          </CardWrapper>
         </View>
+        <CustomButton
+          handlePress={() => {
+            handleTransaction(newTransaction, setNewTransaction, destination, receivedActive, email, appCtx.setExpenses);
+          }}
+        />
       </View>
-    </LinearGradient>
+    </View>
   );
 }
