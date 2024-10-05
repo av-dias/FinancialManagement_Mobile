@@ -10,6 +10,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import ButtonSwitch from "../../components/ButtonSwitch/ButtonSwitch";
 import Purchase from "../purchase/purchase";
 import Transaction from "../transaction/transaction";
+import Income from "../income/income";
 
 const options = ["Purchase", "Transaction", "Income"];
 
@@ -27,7 +28,7 @@ export default function Add({ navigation }) {
         </View>
         {selectedOption == options[0] && <Purchase navigation={navigation} />}
         {selectedOption == options[1] && <Transaction navigation={navigation} />}
-        {selectedOption == options[2] && <></>}
+        {selectedOption == options[2] && <Income navigation={navigation} />}
       </View>
     </LinearGradient>
   );

@@ -13,12 +13,20 @@ type CarrosselProps = {
   setType: any;
   size: any;
   iconSize: any;
+  iconBackground?: string;
   items: CarrosselItemsType[];
 };
 
 export type CarrosselItemsType = { label: string; color: string; icon?: ReactNode };
 
-export default function Carrossel({ type, setType, size, iconSize, items = categoryIcons(iconSize) }: CarrosselProps) {
+export default function Carrossel({
+  type,
+  setType,
+  size,
+  iconSize,
+  items = categoryIcons(iconSize),
+  iconBackground = "transparent",
+}: CarrosselProps) {
   const styles = _styles;
 
   return (
@@ -35,7 +43,7 @@ export default function Carrossel({ type, setType, size, iconSize, items = categ
           return (
             <CardWrapper
               key={iconComponent.label}
-              style={{ backgroundColor: type == iconComponent.label ? iconComponent.color : "transparent", width: size }}
+              style={{ backgroundColor: type == iconComponent.label ? iconComponent.color : iconBackground, width: size }}
             >
               <Pressable
                 key={iconComponent.label}

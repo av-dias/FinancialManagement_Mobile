@@ -4,7 +4,7 @@ import { horizontalScale, verticalScale, moderateScale, heightTreshold } from ".
 import CalendarStrip from "react-native-calendar-strip";
 import React, { useState, useEffect } from "react";
 import { dark } from "../../utility/colors";
-import CardWrapper from "../../components/cardWrapper/cardWrapper";
+import CardWrapper from "../cardWrapper/cardWrapper";
 import { MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Entypo } from "@expo/vector-icons";
 import CustomCalendarPicker from "../customCalendarPicker/customCalendarPicker";
 
