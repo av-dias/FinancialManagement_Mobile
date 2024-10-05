@@ -5,13 +5,18 @@ import { PortfolioRepository } from "./database/Portfolio/PortfolioRepository";
 import { PortfolioModel } from "./database/Portfolio/PortfolioEntity";
 import { PortfolioItemModel } from "./database/PortfolioItem/PortfolioItemEntity";
 import { PortfolioItemRepository } from "./database/PortfolioItem/PortfolioItemRepository";
+import { IncomeRepository } from "./database/Income/IncomeRepository";
+import { IncomeModel } from "./database/Income/IncomeEntity";
 
 interface DatabaseConnectionContextData {
   portfolioRepository: PortfolioRepository;
   portfolioItemRepository: PortfolioItemRepository;
+  incomeRepository: IncomeRepository;
 }
 
-export const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>({} as DatabaseConnectionContextData);
+export const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>(
+  {} as DatabaseConnectionContextData
+);
 
 export const DatabaseConnectionProvider = ({ children }) => {
   const [connection, setConnection] = useState<Connection | null>(null);
@@ -31,7 +36,7 @@ export const DatabaseConnectionProvider = ({ children }) => {
         type: "expo",
         database: "fm_mobile.db",
         driver: require("expo-sqlite"),
-        entities: [PortfolioModel, PortfolioItemModel],
+        entities: [PortfolioModel, PortfolioItemModel, IncomeModel],
 
         //If you're not using migrations, you can delete these lines,
         //since the default is no migrations:
@@ -65,7 +70,11 @@ export const DatabaseConnectionProvider = ({ children }) => {
 
   return (
     <DatabaseConnectionContext.Provider
-      value={{ portfolioRepository: new PortfolioRepository(connection), portfolioItemRepository: new PortfolioItemRepository(connection) }}
+      value={{
+        portfolioRepository: new PortfolioRepository(connection),
+        portfolioItemRepository: new PortfolioItemRepository(connection),
+        incomeRepository: new IncomeRepository(connection),
+      }}
     >
       {children}
     </DatabaseConnectionContext.Provider>
