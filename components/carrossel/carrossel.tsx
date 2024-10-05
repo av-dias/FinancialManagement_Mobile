@@ -14,6 +14,7 @@ type CarrosselProps = {
   size: any;
   iconSize: any;
   iconBackground?: string;
+  iconBorderColor?: string;
   items: CarrosselItemsType[];
 };
 
@@ -26,6 +27,7 @@ export default function Carrossel({
   iconSize,
   items = categoryIcons(iconSize),
   iconBackground = "transparent",
+  iconBorderColor = "transparent",
 }: CarrosselProps) {
   const styles = _styles;
 
@@ -43,7 +45,12 @@ export default function Carrossel({
           return (
             <CardWrapper
               key={iconComponent.label}
-              style={{ backgroundColor: type == iconComponent.label ? iconComponent.color : iconBackground, width: size }}
+              style={{
+                backgroundColor: type == iconComponent.label ? iconComponent.color : iconBackground,
+                width: size,
+                borderWidth: 1,
+                borderColor: iconBorderColor,
+              }}
             >
               <Pressable
                 key={iconComponent.label}

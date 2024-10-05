@@ -84,7 +84,7 @@ export const AddForm = (props: AddFormProps) => {
   };
 
   const loadCarroselItems = () => {
-    return props.items.map((item) => ({ label: item.name, color: "black" }));
+    return props.items.map((item) => ({ label: item.name, color: dark.secundary }));
   };
 
   const createPortfolio = (): PortfolioEntity => {
@@ -123,7 +123,14 @@ export const AddForm = (props: AddFormProps) => {
           value={name}
           Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
         />
-        <Carrossel type={name} setType={setName} size={verticalScale(90)} iconSize={30} items={loadCarroselItems()} />
+        <Carrossel
+          type={name}
+          setType={setName}
+          size={verticalScale(90)}
+          iconSize={30}
+          items={loadCarroselItems()}
+          iconBorderColor={dark.secundary}
+        />
 
         <View style={{ paddingTop: 10, gap: 10 }}>
           {(!exists || (exists && flags.networthFlag)) && (

@@ -56,7 +56,7 @@ export default function Income({ navigation }) {
           size={verticalScale(90)}
           iconSize={30}
           items={loadCarroselItems(["Citi"])}
-          iconBackground="gray"
+          iconBorderColor={dark.secundary}
         />
         <View style={styles.form}>
           <CustomCalendarStrip
