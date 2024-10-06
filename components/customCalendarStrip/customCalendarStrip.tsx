@@ -48,7 +48,6 @@ export default function CustomCalendarStrip({ pickerCurrentDate, setPickerCurren
         </CardWrapper>
       )}
       <CalendarStrip
-        ref={(component) => (this._calendar = component)}
         selectedDate={pickerCurrentDate}
         calendarAnimation={{ type: "sequence", duration: 15 }}
         daySelectionAnimation={{ type: "border", duration: 100, borderWidth: 1, borderHighlightColor: dark.calendarBorder }}
@@ -72,7 +71,6 @@ export default function CustomCalendarStrip({ pickerCurrentDate, setPickerCurren
         disabledDateNameStyle={{ color: "grey" }}
         disabledDateNumberStyle={{ color: "grey" }}
         iconContainer={{ flex: 0.1 }}
-        startFromMonday={true}
         scrollable={true}
         scrollerPaging={true}
         onDateSelected={setPickerCurrentDate}
