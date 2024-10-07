@@ -15,12 +15,13 @@ export class IncomeModel {
   userId: string;
 
   @Column({ nullable: false })
-  doi: string;
+  doi: Date;
 }
 
 export type IncomeEntity = {
+  id: number;
   name: string;
   amount: number;
-  doi: string;
+  doi: Date;
   userId: string;
 };

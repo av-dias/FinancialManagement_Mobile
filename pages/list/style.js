@@ -19,7 +19,14 @@ export const _styles = StyleSheet.create({
     //justifyContent: "center",
     height: "97%",
   },
-  calendar: { justifyContent: "center", alignItems: "flex-end", flex: 1, width: "98%", backgroundColor: "transparent", alignSelf: "center" },
+  calendar: {
+    justifyContent: "center",
+    alignItems: "flex-end",
+    flex: 1,
+    width: "98%",
+    backgroundColor: "transparent",
+    alignSelf: "center",
+  },
   hitBox: {
     alignItems: "center",
     justifyContent: "center",
@@ -28,8 +35,17 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
     zIndex: -1,
   },
-  text: { fontSize: verticalScale(10), textAlign: "center", zIndex: 1, backgroundColor: "transparent", alignSelf: "center" },
-  rowGap: { flexDirection: "row", justifyContent: "space-between", width: "100%", backgroundColor: "transparent" },
+  text: {
+    fontSize: verticalScale(12),
+    backgroundColor: "transparent",
+    color: dark.textPrimary,
+  },
+  rowGap: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    backgroundColor: "transparent",
+  },
   row: { flexDirection: "row", gap: verticalScale(15), backgroundColor: "transparent" },
   buttonText: {
     fontSize: verticalScale(12),

@@ -23,10 +23,19 @@ const getValue = (innerData) => {
   return Number(value).toFixed(0);
 };
 
-export const ListItem = ({ innerData, handleSplit, handleEdit, showAlert, keys, gray = false, handleSettleSplit }) => {
+export const ListItem = ({
+  innerData,
+  handleSplit,
+  handleEdit,
+  showAlert,
+  keys,
+  gray = false,
+  handleSettleSplit,
+}) => {
   const styles = _styles;
   let iconComponent;
-  if (innerData.type && innerData.dop) iconComponent = categoryIcons(30).find((category) => category.label === innerData.type);
+  if (innerData.type && innerData.dop)
+    iconComponent = categoryIcons(30).find((category) => category.label === innerData.type);
   else {
     if (!innerData.user_origin_id) {
       iconComponent = utilIcons().find((type) => type.label === "Transaction");
@@ -39,7 +48,11 @@ export const ListItem = ({ innerData, handleSplit, handleEdit, showAlert, keys, 
   return (
     <Pressable
       key={keys + KEYS_SERIALIZER.TOKEN_SEPARATOR + innerData.index}
-      style={{ ...styles.button, backgroundColor: dark.complementary, borderRadius: commonStyles.borderRadius }}
+      style={{
+        ...styles.button,
+        backgroundColor: dark.complementary,
+        borderRadius: commonStyles.borderRadius,
+      }}
       onPress={showAlert}
     >
       <View style={styles.rowGap}>
@@ -50,7 +63,14 @@ export const ListItem = ({ innerData, handleSplit, handleEdit, showAlert, keys, 
           </View>
         </View>
         <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-          <View style={{ justifyContent: "center", flex: 1, backgroundColor: "transparent", alignItems: "flex-end" }}>
+          <View
+            style={{
+              justifyContent: "center",
+              flex: 1,
+              backgroundColor: "transparent",
+              alignItems: "flex-end",
+            }}
+          >
             <Text style={styles.buttonText}>{getValue(innerData) + " €"}</Text>
           </View>
           <View

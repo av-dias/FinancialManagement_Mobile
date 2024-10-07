@@ -1,5 +1,5 @@
 import { ExpensesByYear } from "../models/interfaces";
-import { Expense, Purchase, Transaction } from "../models/types";
+import { Expense, ExpensesByDate, Purchase, Transaction } from "../models/types";
 import { KEYS, STATS_TYPE, TRANSACTION_TYPE } from "../utility/keys";
 
 export const calcExpensesByType = (expenses: Expense[]) => {
@@ -284,7 +284,7 @@ export const calcTotalExpensesByType = (expenses: any, year: number) => {
   return resType;
 };
 
-export const groupExpensesByDate = (expenses: any, year: number, month: number) => {
+export const groupExpensesByDate = (expenses: any, year: number, month: number): ExpensesByDate => {
   let groupedPurchases = {};
 
   expenses[year][month].forEach(({ element, index, key }: Expense) => {

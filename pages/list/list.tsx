@@ -10,10 +10,8 @@ import { UserContext } from "../../store/user-context";
 
 import { verticalScale } from "../../functions/responsive";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
-import { KEYS } from "../../utility/storageKeys";
 import { getSplitEmail, getSplitUser } from "../../functions/split";
-import { handleSplit, handleEditPurchase, groupByDate, handleEditTransaction, isCtxLoaded, handleSettleSplit } from "./handler";
-import { getFromStorage } from "../../functions/secureStorage";
+import { handleSplit, handleSettleSplit } from "./handler";
 import { months } from "../../utility/calendar";
 import showAlert from "./showAlert";
 
@@ -26,21 +24,26 @@ import { ListItem } from "./component/listItem/listItem";
 
 import { groupExpensesByDate } from "../../functions/expenses";
 import { handleTransaction } from "../transaction/handler";
-import { getUser } from "../../functions/basic";
 import { dark } from "../../utility/colors";
+import { Expense, ExpensesByDate } from "../../models/types";
+import { useDatabaseConnection } from "../../store/database-context";
+import { IncomeEntity, IncomeModel } from "../../store/database/Income/IncomeEntity";
+import { IncomeItem } from "./component/IncomeItem/incomeItem";
 
 export default function List({ navigation }) {
   const appCtx = useContext(AppContext);
   const email = useContext(UserContext).email;
+  const { incomeRepository } = useDatabaseConnection();
 
   const styles = _styles;
 
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
-  const [expensesGroupedByDate, setExpensesGroupedByDate] = useState([]);
+  const [expensesGroupedByDate, setExpensesGroupedByDate] = useState<ExpensesByDate>({});
+  const [incomeData, setIncomeData] = useState<IncomeEntity[]>([]);
 
-  const [selectedItem, setSelectedItem] = useState({ date: new Date().toISOString().split("T")[0] });
+  const [selectedItem, setSelectedItem] = useState<Expense>();
   const [splitUser, setSplitUser] = useState("");
   const [sliderStatus, setSliderStatus] = useState(false);
   const [destination, setDestination] = useState("");
@@ -65,16 +68,36 @@ export default function List({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      function fetchData() {
-        if (expenses && expenses.hasOwnProperty(currentYear) && expenses[currentYear].hasOwnProperty(currentMonth)) {
+      async function fetchData() {
+        if (expenses && email && expenses.hasOwnProperty(currentYear) && expenses[currentYear].hasOwnProperty(currentMonth)) {
           console.log("List: Fetching app data...");
-          startTime = performance.now();
+          const startTime = performance.now();
 
           let resExpensesGroupedByDate = groupExpensesByDate(expenses, currentYear, currentMonth);
           setExpensesGroupedByDate(resExpensesGroupedByDate);
-          let list = Object.keys(resExpensesGroupedByDate).sort().reverse();
+
+          let incomeList: IncomeModel[] = [];
+
+          try {
+            incomeList = await incomeRepository.getIncomeFromDate(email, currentMonth, currentYear);
+            setIncomeData(incomeList);
+          } catch (e) {
+            console.log(e);
+          }
+
+          let dates = Object.keys(resExpensesGroupedByDate);
+          if (incomeList) {
+            incomeList.forEach((income) => {
+              const date = income.doi.toString().split(" ")[0];
+              if (!dates.includes(date)) {
+                dates.push(date);
+              }
+            });
+          }
+
+          let list = dates.sort().reverse();
           setListDays([...new Set(list)]);
-          endTime = performance.now();
+          const endTime = performance.now();
           console.log(`--> Call to List useFocusEffect took ${endTime - startTime} milliseconds.`);
         } else {
           // There is no data for the selected month
@@ -82,7 +105,7 @@ export default function List({ navigation }) {
         }
       }
       fetchData();
-    }, [appCtx.expenses, expenses, currentYear, currentMonth])
+    }, [appCtx.expenses, email, expenses, currentYear, currentMonth])
   );
 
   return (
@@ -92,17 +115,7 @@ export default function List({ navigation }) {
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
           {editVisible && (
             <ModalCustom modalVisible={editVisible} setModalVisible={setEditVisible} size={14} hasColor={true}>
-              {ModalList(
-                email,
-                selectedItem,
-                setSelectedItem,
-                getSplitEmail(splitUser),
-                sliderStatus,
-                setSliderStatus,
-                setEditVisible,
-                styles,
-                setExpenses
-              )}
+              {ModalList(email, selectedItem, setSelectedItem, getSplitEmail(splitUser), sliderStatus, setSliderStatus, setEditVisible, styles, setExpenses)}
             </ModalCustom>
           )}
           <View style={{ flex: verticalScale(7), backgroundColor: "transparent" }}>
@@ -114,7 +127,7 @@ export default function List({ navigation }) {
                   </View>
                   <CardWrapper key={date} style={styles.listBox}>
                     {expensesGroupedByDate[date] &&
-                      expensesGroupedByDate[date].map((expenses) => (
+                      expensesGroupedByDate[date].map((expenses: Expense) => (
                         <ListItem
                           key={expenses.index + expenses.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
                           innerData={expenses.element}
@@ -136,6 +149,7 @@ export default function List({ navigation }) {
                           }}
                         />
                       ))}
+                    {incomeData && incomeData.map((income) => income.doi.toString().split(" ")[0] == date && <IncomeItem key={income.id} incomeData={income} handleEdit={() => {}} />)}
                   </CardWrapper>
                 </View>
               ))}

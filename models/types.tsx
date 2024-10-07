@@ -28,6 +28,10 @@ export type Transaction = {
   user_origin_id: string;
 };
 
+export type ExpensesByDate = {
+  [key: string]: Expense[];
+};
+
 export const purchaseExpense = (purchase: Purchase, index: number, key: string): Expense => {
   const expense: Expense = {
     index: index,

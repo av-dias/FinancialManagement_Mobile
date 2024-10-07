@@ -31,10 +31,11 @@ export default function Income({ navigation }) {
   const [listNames, setListNames] = useState<string[]>([]);
   const [triggerRefresh, setTriggerRefresh] = useState<boolean>(true);
   const [newIncome, setNewIncome] = useState<IncomeEntity>({
-    doi: new Date().toISOString().split("T")[0],
+    doi: new Date(),
     name: null,
     amount: null,
     userId: appCtx.email,
+    id: null,
   });
 
   const loadCarroselItems = (items: string[]) => {
@@ -55,10 +56,11 @@ export default function Income({ navigation }) {
     await incomeRepository.updateOrCreate(income);
 
     setNewIncome({
-      doi: new Date().toISOString().split("T")[0],
+      doi: new Date(),
       name: null,
       amount: null,
       userId: appCtx.email,
+      id: null,
     });
     setTriggerRefresh((refresh) => !refresh);
   };
@@ -103,7 +105,7 @@ export default function Income({ navigation }) {
           <CustomCalendarStrip
             pickerCurrentDate={newIncome.doi}
             setPickerCurrentDate={(_date) => {
-              setNewIncome({ ...newIncome, doi: new Date(_date).toISOString().split("T")[0] });
+              setNewIncome({ ...newIncome, doi: new Date(_date) });
             }}
           />
           <CardWrapper
@@ -114,14 +116,7 @@ export default function Income({ navigation }) {
           >
             <CustomInput
               noStyle={true}
-              Icon={
-                <MaterialIcons
-                  style={styles.iconCenter}
-                  name="drive-file-rename-outline"
-                  size={verticalScale(20)}
-                  color={dark.textPrimary}
-                />
-              }
+              Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
               placeholder="Name"
               setValue={(name: string) => {
                 setNewIncome({ ...newIncome, name: name });
