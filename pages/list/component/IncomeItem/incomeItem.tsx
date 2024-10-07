@@ -42,10 +42,7 @@ export const IncomeItem = ({ incomeData, handleEdit }: IncomeItemProps) => {
     >
       <View style={styles.rowGap}>
         <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-          <TypeIcon
-            icon={iconComponent}
-            customStyle={{ padding: 10, backgroundColor: "lightgreen" }}
-          />
+          <TypeIcon icon={iconComponent} />
           <View style={{ justifyContent: "center" }}>
             <Text style={styles.buttonText}>{getLabel(incomeData)}</Text>
           </View>

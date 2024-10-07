@@ -115,7 +115,17 @@ export default function List({ navigation }) {
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
           {editVisible && (
             <ModalCustom modalVisible={editVisible} setModalVisible={setEditVisible} size={14} hasColor={true}>
-              {ModalList(email, selectedItem, setSelectedItem, getSplitEmail(splitUser), sliderStatus, setSliderStatus, setEditVisible, styles, setExpenses)}
+              {ModalList(
+                email,
+                selectedItem,
+                setSelectedItem,
+                getSplitEmail(splitUser),
+                sliderStatus,
+                setSliderStatus,
+                setEditVisible,
+                styles,
+                setExpenses
+              )}
             </ModalCustom>
           )}
           <View style={{ flex: verticalScale(7), backgroundColor: "transparent" }}>
@@ -149,7 +159,11 @@ export default function List({ navigation }) {
                           }}
                         />
                       ))}
-                    {incomeData && incomeData.map((income) => income.doi.toString().split(" ")[0] == date && <IncomeItem key={income.id} incomeData={income} handleEdit={() => {}} />)}
+                    {incomeData &&
+                      incomeData.map(
+                        (income) =>
+                          income.doi.toString().split(" ")[0] == date && <IncomeItem key={income.id} incomeData={income} handleEdit={() => {}} />
+                      )}
                   </CardWrapper>
                 </View>
               ))}
