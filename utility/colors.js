@@ -13,6 +13,7 @@ export const dark = {
   gradientColourLight: ["#010103", "#12102E"],
   textPrimary: "rgba(214, 210, 230, 1)",
   textSecundary: "lightgray",
+  incomeBackgroundColor: "rgb(180, 255, 180)",
 };
 
 export const ProgressBarColors = {

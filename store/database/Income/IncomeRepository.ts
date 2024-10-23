@@ -14,20 +14,12 @@ export class IncomeRepository {
   }
 
   public async getDistinctIncomeNames(userId: string): Promise<string[]> {
-    const distinctNames = await this.ormRepository
-      .createQueryBuilder("i")
-      .select("i.name")
-      .distinct(true)
-      .getMany();
+    const distinctNames = await this.ormRepository.createQueryBuilder("i").select("i.name as name").distinct().getRawMany();
 
     return distinctNames.map((income) => income.name);
   }
 
-  public async getIncomeFromDate(
-    userId: string,
-    month: number,
-    year: number
-  ): Promise<IncomeModel[]> {
+  public async getIncomeFromDate(userId: string, month: number, year: number): Promise<IncomeModel[]> {
     const firstDateOfMonth = new Date(year, month, 1).toISOString();
     const lastDateOfMonth = new Date(year, month + 1, 0).toISOString();
     const incomeData = await this.ormRepository
