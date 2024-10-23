@@ -168,7 +168,7 @@ export const utilIcons = (size = 25) => {
     },
     {
       label: "Income",
-      icon: <Fontisto name="euro" style={{ left: "26%" }} size={size} color="green" />,
+      icon: <Fontisto name="euro" style={{ left: "20%" }} size={size} color="green" />,
       color: "green",
       borderColor: dark.incomeBackgroundColor,
     },

@@ -23,7 +23,7 @@ export const isCtxLoaded = (ctx, year, month) => {
   );
 };
 
-export const loadExpenses = (expenses: string) => {
+export const loadExpenses = (expenses: any) => {
   let array = { [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] };
   let arrayTables = { [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] };
   Object.keys(expenses).forEach((stats) => {
@@ -39,11 +39,7 @@ export const loadExpenses = (expenses: string) => {
       let pieChartValue = expenses[stats][type] < 0 ? 1 : expenses[stats][type];
 
       array[stats].push({ x: " ", y: pieChartValue, color: _color } as Chart);
-      arrayTables[stats].push([
-        <FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />,
-        type,
-        parseFloat(expenses[stats][type]).toFixed(0),
-      ] as Table);
+      arrayTables[stats].push([<FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />, type, parseFloat(expenses[stats][type]).toFixed(0)] as Table);
     });
 
     arrayTables[stats] = arrayTables[stats].sort(function (a, b) {
@@ -67,11 +63,7 @@ export const refinePurchaseStats = (purchasesStats) => {
     });
 
     array.push({ x: " ", y: purchasesStats[key], color: _color });
-    arrayTables.push([
-      <FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />,
-      key,
-      parseFloat(purchasesStats[key]).toFixed(0),
-    ]);
+    arrayTables.push([<FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />, key, parseFloat(purchasesStats[key]).toFixed(0)]);
   });
 
   arrayTables = arrayTables.sort(function (a, b) {
@@ -92,8 +84,8 @@ export const loadPieChartData = (statsMode: any, statsType: any, pieChartData: a
 
 export const loadPurchaseTotalData = (statsMode: any, statsType: any, purchaseTotal: any, purchaseAverageTotal: any) => {
   if (statsMode == STATS_MODE[0]) {
-    return Number(purchaseTotal[statsType]).toFixed(1) + "€";
-  } else return Number(purchaseAverageTotal[statsType]).toFixed(1) + "€";
+    return Number(purchaseTotal[statsType]).toFixed(1);
+  } else return Number(purchaseAverageTotal[statsType]).toFixed(1);
 };
 
 export const loadSpendTableData = (statsMode, statsType, spendByType, spendAverageByType) => {

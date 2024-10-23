@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, Pressable } from "react-native";
 import React, { useState, useContext } from "react";
 import { VictoryPie, VictoryLabel } from "victory-native";
 import { Table, TableWrapper, Cell } from "react-native-table-component";
@@ -7,6 +7,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 //Context
 import { AppContext } from "../../store/app-context";
+import { useDatabaseConnection } from "../../store/database-context";
 
 //Custom Components
 import CalendarCard from "../../components/calendarCard/calendarCard";
@@ -34,13 +35,16 @@ export default function Home({ navigation }) {
 
   const [pieChartData, setPieChartData] = useState({ [STATS_TYPE[0]]: [] });
   const [spendByType, setSpendByType] = useState({ [STATS_TYPE[0]]: [[""]] });
-  const [expenseTotal, setExpenseTotal] = useState({ [STATS_TYPE[0]]: "0.00" });
+  const [expenseTotal, setExpenseTotal] = useState<any>({ [STATS_TYPE[0]]: "0.00" });
 
   const [pieChartAverageData, setPieChartAverageData] = useState({ [STATS_TYPE[0]]: [] });
   const [spendAverageByType, setSpendAverageByType] = useState({ [STATS_TYPE[0]]: [[""]] });
-  const [purchaseAverageTotal, setPurchaseAverageTotal] = useState({ [STATS_TYPE[0]]: "0.00" });
+  const [purchaseAverageTotal, setPurchaseAverageTotal] = useState<any>({ [STATS_TYPE[0]]: "0.00" });
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [showPrediction, setShowPrediction] = useState(false);
 
   const appCtx = useContext(AppContext);
+  const { incomeRepository } = useDatabaseConnection();
 
   const state = {
     tableHead: ["Color", "Type", "Value"],
@@ -49,13 +53,28 @@ export default function Home({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      function fetchData() {
-        if (appCtx && appCtx.expenses && appCtx.expenses.hasOwnProperty(currentYear) && appCtx.expenses[currentYear].hasOwnProperty(currentMonth) && appCtx.expenses[currentYear][currentMonth].length > 0) {
+      async function fetchData() {
+        if (
+          appCtx &&
+          appCtx.email &&
+          appCtx.expenses &&
+          appCtx.expenses.hasOwnProperty(currentYear) &&
+          appCtx.expenses[currentYear].hasOwnProperty(currentMonth) &&
+          appCtx.expenses[currentYear][currentMonth].length > 0
+        ) {
           let resExpensesByType = calcExpensesByType(appCtx.expenses[currentYear][currentMonth]);
           let [resPieChart, resTableChart] = loadExpenses(resExpensesByType[currentYear][currentMonth]);
           setPieChartData(resPieChart);
           setSpendByType(resTableChart);
           setExpenseTotal(calcExpensesTotalFromType(resExpensesByType[currentYear][currentMonth]));
+
+          //Calculate Current Savings
+          try {
+            const resTotalIncome = await incomeRepository.getTotalIncomeFromDate(appCtx.email, currentMonth, currentYear);
+            setTotalIncome(Number(resTotalIncome.toFixed(1)));
+          } catch (e) {
+            console.log(e);
+          }
 
           //Average
           let [resTotal, resType] = calcExpensesAverage(appCtx.expenses, currentYear);
@@ -77,8 +96,15 @@ export default function Home({ navigation }) {
       fetchData();
       let endTime = performance.now();
       console.log(`Home: Fetch took ${endTime - startTime} milliseconds.`);
-    }, [appCtx.expenses, currentMonth, currentYear])
+    }, [appCtx.expenses, appCtx.email, currentMonth, currentYear, incomeRepository])
   );
+
+  const mainCallback = () => {
+    setShowPrediction(true);
+    setTimeout(() => {
+      setShowPrediction(false); // Change the value back to false after 5 seconds
+    }, 5000);
+  };
 
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
@@ -92,17 +118,29 @@ export default function Home({ navigation }) {
                   height={horizontalScale(320)}
                   innerRadius={horizontalScale(130)}
                   padding={{ top: 0, bottom: 0 }}
-                  data={loadPieChartData(statsMode, statsType, pieChartData, pieChartAverageData).length != 0 ? loadPieChartData(statsMode, statsType, pieChartData, pieChartAverageData) : [{ x: "Your Spents", y: 1 }]}
+                  data={
+                    loadPieChartData(statsMode, statsType, pieChartData, pieChartAverageData).length != 0
+                      ? loadPieChartData(statsMode, statsType, pieChartData, pieChartAverageData)
+                      : [{ x: "Your Spents", y: 1 }]
+                  }
                   style={{
                     data: {
                       fill: ({ datum }) => datum.color,
                     },
                   }}
                   labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
-                  options={{ maintainAspectRatio: false, aspectRatio: 1 }}
                 />
                 <View style={{ position: "absolute", justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}>
-                  <Text style={{ alignSelf: "center", fontSize: verticalScale(40), color: "white" }}>{loadPurchaseTotalData(statsMode, statsType, expenseTotal, purchaseAverageTotal)}</Text>
+                  <View style={{ paddingBottom: 10 }}>
+                    <Pressable onPress={mainCallback}>
+                      <Text style={{ alignSelf: "center", fontSize: verticalScale(40), color: "white" }}>{`${loadPurchaseTotalData(statsMode, statsType, expenseTotal, purchaseAverageTotal)}€`}</Text>
+                    </Pressable>
+                    {showPrediction && (
+                      <Text style={{ color: "lightgreen", textAlign: "center", fontSize: 15 }}>{`Prediction ${
+                        totalIncome - Number(loadPurchaseTotalData(statsMode, statsType, expenseTotal, purchaseAverageTotal))
+                      }€`}</Text>
+                    )}
+                  </View>
                   {loadCalendarCard(statsMode, currentMonth, setCurrentMonth, currentYear, setCurrentYear)}
                 </View>
               </View>

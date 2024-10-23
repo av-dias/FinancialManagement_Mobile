@@ -35,6 +35,22 @@ export class IncomeRepository {
     return incomeData;
   }
 
+  public async getTotalIncomeFromDate(userId: string, month: number, year: number): Promise<number> {
+    const firstDateOfMonth = new Date(year, month, 1).toISOString();
+    const lastDateOfMonth = new Date(year, month + 1, 0).toISOString();
+    const totalIncomeData = await this.ormRepository
+      .createQueryBuilder("i")
+      .select("SUM(i.amount) AS totalIncome") // Add SUM(i.amount) for total
+      .where("i.userId = :userId AND i.doi BETWEEN :startDate AND :endDate ", {
+        userId: userId,
+        startDate: firstDateOfMonth,
+        endDate: lastDateOfMonth,
+      })
+      .getRawMany();
+
+    return totalIncomeData[0].totalIncome || 0;
+  }
+
   public async updateOrCreate(incomeEntity: IncomeModel): Promise<IncomeModel> {
     await this.ormRepository.save(incomeEntity);
     return incomeEntity;
