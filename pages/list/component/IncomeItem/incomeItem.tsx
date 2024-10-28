@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 import { utilIcons } from "../../../../assets/icons";
 import { _styles } from "./style";
 import { dark } from "../../../../utility/colors";
@@ -24,11 +24,22 @@ const getValue = (innerData: IncomeEntity) => {
 type IncomeItemProps = {
   incomeData: IncomeEntity;
   handleEdit: () => void;
+  handlePress: () => void;
 };
 
-export const IncomeItem = ({ incomeData, handleEdit }: IncomeItemProps) => {
+export const IncomeItem = ({ incomeData, handleEdit, handlePress }: IncomeItemProps) => {
   const styles = _styles;
   let iconComponent = utilIcons(25).find((category) => category.label === "Income");
+
+  const handleAlert = () => {
+    Alert.alert("Delete Income", `Are you sure you want to remove this income permanently?\n\nName: ${incomeData.name}\nAmount: ${incomeData.amount}`, [
+      {
+        text: `Yes`,
+        onPress: () => handlePress(),
+      },
+      { text: "No", onPress: () => {}, style: "cancel" },
+    ]);
+  };
 
   return (
     <Pressable
@@ -38,7 +49,7 @@ export const IncomeItem = ({ incomeData, handleEdit }: IncomeItemProps) => {
         backgroundColor: dark.complementary,
         borderRadius: commonStyles.borderRadius,
       }}
-      onPress={() => {}}
+      onPress={handleAlert}
     >
       <View style={styles.rowGap}>
         <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
@@ -48,54 +59,11 @@ export const IncomeItem = ({ incomeData, handleEdit }: IncomeItemProps) => {
           </View>
         </View>
         <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-          <View
-            style={{
-              justifyContent: "center",
-              flex: 1,
-              backgroundColor: "transparent",
-              alignItems: "flex-end",
-            }}
-          >
-            <Text style={styles.amountText}>{getValue(incomeData) + " €"}</Text>
+          <View style={styles.textContainer}>
+            <Text style={styles.amountText}>{`${getValue(incomeData)}€`}</Text>
           </View>
-          <View
-            style={{
-              flex: 3,
-              flexDirection: "row",
-              alignContent: "center",
-              alignItems: "center",
-              width: verticalScale(40),
-              maxWidth: 130,
-              height: verticalScale(40),
-              maxHeight: 50,
-              borderRadius: commonStyles.borderRadius,
-              justifyContent: "flex-end",
-              backgroundColor: "transparent",
-            }}
-          >
-            <Pressable
-              style={{
-                width: verticalScale(40),
-                maxWidth: 50,
-                height: verticalScale(40),
-                maxHeight: 50,
-                justifyContent: "center",
-                backgroundColor: "transparent",
-                alignContent: "center",
-              }}
-            ></Pressable>
-            <Pressable
-              style={{
-                width: verticalScale(40),
-                maxWidth: 50,
-                height: verticalScale(40),
-                maxHeight: 50,
-                justifyContent: "center",
-                backgroundColor: "transparent",
-                alignContent: "center",
-              }}
-              onPress={handleEdit}
-            >
+          <View style={styles.optionsContainer}>
+            <Pressable style={styles.editContainer} onPress={handleEdit}>
               {utilIcons(verticalScale(20)).find((type) => type.label === "Edit").icon}
             </Pressable>
           </View>

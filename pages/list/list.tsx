@@ -105,8 +105,12 @@ export default function List({ navigation }) {
         }
       }
       fetchData();
-    }, [appCtx.expenses, email, expenses, currentYear, currentMonth])
+    }, [appCtx.expenses, email, expenses, currentYear, currentMonth, incomeData.length])
   );
+
+  const isIncomeOnDate = (i_doi, date) => {
+    return i_doi.toString().split(" ")[0] == date ? true : false;
+  };
 
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
@@ -115,17 +119,7 @@ export default function List({ navigation }) {
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
           {editVisible && (
             <ModalCustom modalVisible={editVisible} setModalVisible={setEditVisible} size={14} hasColor={true}>
-              {ModalList(
-                email,
-                selectedItem,
-                setSelectedItem,
-                getSplitEmail(splitUser),
-                sliderStatus,
-                setSliderStatus,
-                setEditVisible,
-                styles,
-                setExpenses
-              )}
+              {ModalList(email, selectedItem, setSelectedItem, getSplitEmail(splitUser), sliderStatus, setSliderStatus, setEditVisible, styles, setExpenses)}
             </ModalCustom>
           )}
           <View style={{ flex: verticalScale(7), backgroundColor: "transparent" }}>
@@ -162,7 +156,17 @@ export default function List({ navigation }) {
                     {incomeData &&
                       incomeData.map(
                         (income) =>
-                          income.doi.toString().split(" ")[0] == date && <IncomeItem key={income.id} incomeData={income} handleEdit={() => {}} />
+                          isIncomeOnDate(income.doi, date) && (
+                            <IncomeItem
+                              key={income.id}
+                              incomeData={income}
+                              handleEdit={() => {}}
+                              handlePress={async () => {
+                                await incomeRepository.delete(income.id);
+                                setIncomeData((prev) => prev.filter((item) => item.id !== income.id));
+                              }}
+                            />
+                          )
                       )}
                   </CardWrapper>
                 </View>

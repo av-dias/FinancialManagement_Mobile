@@ -1,8 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { Text, View, ScrollView, Pressable } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import React, { useState, useContext } from "react";
 import { VictoryPie, VictoryLabel } from "victory-native";
-import { Table, TableWrapper, Cell } from "react-native-table-component";
 import { LinearGradient } from "expo-linear-gradient";
 
 //Context
@@ -40,23 +39,16 @@ export default function Home({ navigation }) {
   const [pieChartAverageData, setPieChartAverageData] = useState({ [STATS_TYPE[0]]: [] });
   const [spendAverageByType, setSpendAverageByType] = useState({ [STATS_TYPE[0]]: [[""]] });
   const [purchaseAverageTotal, setPurchaseAverageTotal] = useState<any>({ [STATS_TYPE[0]]: "0.00" });
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [showPrediction, setShowPrediction] = useState(false);
+  const [prediction, setPrediction] = useState(0);
 
   const appCtx = useContext(AppContext);
   const { incomeRepository } = useDatabaseConnection();
-
-  const state = {
-    tableHead: ["Color", "Type", "Value"],
-    tableFlex: [1, 2, 1],
-  };
 
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
         if (
           appCtx &&
-          appCtx.email &&
           appCtx.expenses &&
           appCtx.expenses.hasOwnProperty(currentYear) &&
           appCtx.expenses[currentYear].hasOwnProperty(currentMonth) &&
@@ -67,14 +59,6 @@ export default function Home({ navigation }) {
           setPieChartData(resPieChart);
           setSpendByType(resTableChart);
           setExpenseTotal(calcExpensesTotalFromType(resExpensesByType[currentYear][currentMonth]));
-
-          //Calculate Current Savings
-          try {
-            const resTotalIncome = await incomeRepository.getTotalIncomeFromDate(appCtx.email, currentMonth, currentYear);
-            setTotalIncome(Number(resTotalIncome.toFixed(1)));
-          } catch (e) {
-            console.log(e);
-          }
 
           //Average
           let [resTotal, resType] = calcExpensesAverage(appCtx.expenses, currentYear);
@@ -96,15 +80,30 @@ export default function Home({ navigation }) {
       fetchData();
       let endTime = performance.now();
       console.log(`Home: Fetch took ${endTime - startTime} milliseconds.`);
-    }, [appCtx.expenses, appCtx.email, currentMonth, currentYear, incomeRepository])
+    }, [appCtx.expenses, currentMonth, currentYear])
   );
 
-  const mainCallback = () => {
-    setShowPrediction(true);
-    setTimeout(() => {
-      setShowPrediction(false); // Change the value back to false after 5 seconds
-    }, 5000);
-  };
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchData() {
+        if (appCtx && appCtx.email) {
+          //Calculate Current Savings
+          try {
+            const resTotalIncome = await incomeRepository.getTotalIncomeFromDate(appCtx.email, currentMonth, currentYear);
+            setPrediction(resTotalIncome - Number(loadPurchaseTotalData(statsMode, statsType, expenseTotal, purchaseAverageTotal)));
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+      let startTime = performance.now();
+      if (incomeRepository.isReady()) {
+        fetchData();
+      }
+      let endTime = performance.now();
+      console.log(`Home: Database Fetch took ${endTime - startTime} milliseconds.`);
+    }, [appCtx.email, incomeRepository, expenseTotal, purchaseAverageTotal])
+  );
 
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
@@ -112,8 +111,11 @@ export default function Home({ navigation }) {
       <View style={styles.usableScreen}>
         {loadPieChartData(statsMode, statsType, pieChartData, pieChartAverageData).length !== 0 ? (
           <View style={{ flex: 8, gap: verticalScale(10) }}>
-            <CardWrapper style={{ flex: verticalScale(8), justifyContent: "center", alignItems: "center", backgroundColor: "transparent" }}>
+            <CardWrapper style={styles.mainContainer}>
               <View style={styles.chart}>
+                <View style={styles.savingsContainer}>
+                  <Text style={styles.savingsText}>{`${prediction.toFixed(0)}€`}</Text>
+                </View>
                 <VictoryPie
                   height={horizontalScale(320)}
                   innerRadius={horizontalScale(130)}
@@ -130,22 +132,15 @@ export default function Home({ navigation }) {
                   }}
                   labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
                 />
-                <View style={{ position: "absolute", justifyContent: "center", alignContent: "center", backgroundColor: "transparent" }}>
+                <View style={styles.expensesContainer}>
                   <View style={{ paddingBottom: 10 }}>
-                    <Pressable onPress={mainCallback}>
-                      <Text style={{ alignSelf: "center", fontSize: verticalScale(40), color: "white" }}>{`${loadPurchaseTotalData(statsMode, statsType, expenseTotal, purchaseAverageTotal)}€`}</Text>
-                    </Pressable>
-                    {showPrediction && (
-                      <Text style={{ color: "lightgreen", textAlign: "center", fontSize: 15 }}>{`Prediction ${
-                        totalIncome - Number(loadPurchaseTotalData(statsMode, statsType, expenseTotal, purchaseAverageTotal))
-                      }€`}</Text>
-                    )}
+                    <Text style={styles.expensesText}>{`${loadPurchaseTotalData(statsMode, statsType, expenseTotal, purchaseAverageTotal)}€`}</Text>
                   </View>
                   {loadCalendarCard(statsMode, currentMonth, setCurrentMonth, currentYear, setCurrentYear)}
                 </View>
               </View>
             </CardWrapper>
-            <View style={{ flex: 1, alignSelf: "flex-end", flexDirection: "row", maxHeight: 35, gap: 10, paddingHorizontal: 5 }}>
+            <View style={styles.typeCardContainer}>
               <TypeCard setItem={setStatsType} itemList={Object.values(STATS_TYPE)} />
               <TypeCard setItem={setStatsMode} itemList={Object.values(STATS_MODE)} />
             </View>
@@ -160,7 +155,7 @@ export default function Home({ navigation }) {
             </View>
           </View>
         ) : (
-          <View style={{ flex: 8, justifyContent: "center", alignItems: "center", gap: 10 }}>
+          <View style={styles.noDataContainer}>
             <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
             <Text style={{ color: dark.textPrimary }}>NO DATA</Text>
           </View>

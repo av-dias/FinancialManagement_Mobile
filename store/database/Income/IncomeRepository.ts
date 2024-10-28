@@ -1,4 +1,4 @@
-import { Connection, Repository } from "typeorm";
+import { Connection, DeleteResult, Repository } from "typeorm";
 import { IncomeModel } from "./IncomeEntity";
 
 export class IncomeRepository {
@@ -7,6 +7,10 @@ export class IncomeRepository {
   constructor(connection: Connection) {
     this.ormRepository = connection?.getRepository(IncomeModel);
   }
+
+  public isReady = () => {
+    return this.ormRepository == undefined ? false : true;
+  };
 
   public async getAll(userId: string): Promise<IncomeModel[]> {
     const incomes = await this.ormRepository?.find({ where: { userId: userId } });
@@ -54,6 +58,10 @@ export class IncomeRepository {
   public async updateOrCreate(incomeEntity: IncomeModel): Promise<IncomeModel> {
     await this.ormRepository.save(incomeEntity);
     return incomeEntity;
+  }
+
+  public async delete(id: number): Promise<DeleteResult> {
+    return await this.ormRepository.delete(id);
   }
 
   public async deleteAll(): Promise<void> {
