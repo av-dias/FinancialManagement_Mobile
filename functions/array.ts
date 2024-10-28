@@ -32,7 +32,7 @@ export const getMinArrayObject = (arr) => {
 
 export const getSumArrayObject = (arr) => {
   if (!arr || arr.length == 0) return 0;
-  return arr.reduce((acc, value) => acc + parseFloat(value.y), 0);
+  return arr.reduce((acc, data) => acc + parseFloat(data.value), 0);
 };
 
 export const getCombinedArray = (arr1, arr2) => {

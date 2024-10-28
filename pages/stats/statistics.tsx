@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { View, Text } from "react-native";
-import { dark } from "../../utility/colors";
+import { ProgressBarColors } from "../../utility/colors";
 import { _styles } from "./style";
 import { useContext } from "react";
 import { AppContext } from "../../store/app-context";
@@ -9,17 +9,20 @@ import { useFocusEffect } from "@react-navigation/native";
 import TypeCard from "../../components/TypeCard/TypeCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { calculateSplitData, calculateSplitDeptData } from "../../functions/statistics";
-import { getCombinedArray, getMaxArrayObject, getMinArrayObject, getSumArrayObject } from "../../functions/array";
-import { VictoryLabel, VictoryLine } from "victory-native";
+import { getSumArrayObject } from "../../functions/array";
 import { months } from "../../utility/calendar";
-import CalendarCard from "../../components/calendarCard/calendarCard";
+import { BarChart } from "react-native-gifted-charts";
+
+const sortMonths = (a, b) => months.indexOf(a.label) - months.indexOf(b.label);
 
 export default function Statistics() {
   const styles = _styles;
+  const ref = useRef(null);
   const appCtx = useContext(AppContext);
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [splitTotal, setSplitTotal] = useState(0);
+  const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
+  const [splitTotal, setSplitTotal] = useState<number>(0);
   const [splitDeptData, setSplitDeptData] = useState({});
+  const [yearsRange, setYearsRange] = useState<string[]>([new Date().getFullYear().toString()]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -32,9 +35,20 @@ export default function Statistics() {
           if (!resExpensesTotal) return;
 
           let resSplitDeptData = calculateSplitDeptData(resExpensesTotal, currentYear);
+
+          // Populate months without data
+          for (let month in months) {
+            if (!resSplitDeptData[currentYear].find((data) => data.label === months[month])) {
+              resSplitDeptData[currentYear].push({ label: months[month], dataPointText: "0", value: 0 });
+            }
+          }
+
+          resSplitDeptData[currentYear] = resSplitDeptData[currentYear].sort(sortMonths);
           setSplitDeptData(resSplitDeptData);
           const resSplitTotal = getSumArrayObject(resSplitDeptData[currentYear.toString()]);
           setSplitTotal(resSplitTotal);
+
+          setYearsRange(Object.keys(resSplitDeptData));
         }
       }
       let startTime = performance.now();
@@ -44,6 +58,9 @@ export default function Statistics() {
     }, [appCtx.expenses, currentYear])
   );
 
+  const month = new Date().getMonth();
+  ref.current?.scrollTo({ x: month < 6 ? 0 : 200 }); // adjust as per your UI
+
   return (
     <CardWrapper style={styles.chartContainer}>
       <View style={styles.chartHeader}>
@@ -52,28 +69,30 @@ export default function Statistics() {
           <Text style={styles.textSecundary}>{`Split: ${splitTotal.toFixed(0)}€`}</Text>
         </View>
         <View style={styles.containerRowGap}>
-          <TypeCard setItem={setCurrentYear} itemList={[2024, 2023]} />
+          <TypeCard setItem={setCurrentYear} itemList={[yearsRange]} />
         </View>
       </View>
-      <VictoryLine
-        domain={{
-          x: [0, 13],
-          y: [
-            getMinArrayObject(getCombinedArray(splitDeptData[currentYear.toString()], splitDeptData[currentYear.toString()])),
-            getMaxArrayObject(getCombinedArray(splitDeptData[currentYear.toString()], splitDeptData[currentYear.toString()])),
-          ],
-        }}
-        padding={{ left: 20 }}
-        style={{
-          data: { stroke: "rgb(112,137,187)" },
-          parent: { border: "1px solid #ccc" },
-        }}
-        categories={{ x: months }}
-        data={splitDeptData[currentYear] || []}
-        interpolation="natural"
-        labels={({ datum }) => datum.x + "\n" + datum.y.toFixed(0) + "€"}
-        labelComponent={<VictoryLabel style={{ fill: dark.textPrimary, fontSize: 10 }} />}
-      />
+      <View style={{ paddingTop: 80, paddingBottom: 20, paddingLeft: 10 }}>
+        <BarChart
+          scrollRef={ref}
+          barWidth={30}
+          spacing={10}
+          noOfSections={2}
+          barBorderRadius={4}
+          frontColor={ProgressBarColors.blue}
+          data={splitDeptData[currentYear]}
+          yAxisThickness={0}
+          xAxisThickness={0}
+          yAxisTextStyle={{ color: "gray" }}
+          xAxisLabelTextStyle={{ color: "gray" }}
+          showValuesAsTopLabel={true}
+          topLabelContainerStyle={{ paddingBottom: 2 }}
+          topLabelTextStyle={{ color: "white", fontSize: 10, textAlign: "center" }}
+          xAxisLabelsVerticalShift={5}
+          rulesType="solid"
+          rulesColor={"gray"}
+        />
+      </View>
     </CardWrapper>
   );
 }
