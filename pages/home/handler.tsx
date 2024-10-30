@@ -1,6 +1,6 @@
 import CalendarCard from "../../components/calendarCard/calendarCard";
 
-import { categoryIcons } from "../../assets/icons";
+import { categoryIcons } from "../../utility/icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { _styles } from "./style";
 import { STATS_MODE, STATS_TYPE } from "../../utility/keys";

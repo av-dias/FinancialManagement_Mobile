@@ -1,6 +1,6 @@
 import { Fontisto, MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Feather, FontAwesome6 } from "@expo/vector-icons";
 import { horizontalScale, verticalScale, moderateScale } from "../functions/responsive";
-import { categoryColorsBackground, categoryColorsBorder, categoryColorsBright, dark } from "../utility/colors";
+import { categoryColorsBackground, categoryColorsBorder, categoryColorsBright, dark } from "./colors";
 export const categoryIcons = (icon_size = 25, color) => {
   const iconSize = verticalScale(icon_size);
 
@@ -134,7 +134,7 @@ export const categoryIcons = (icon_size = 25, color) => {
   ];
 };
 
-export const utilIcons = (size = 25) => {
+export const utilIcons = (size = 25, _color) => {
   return [
     {
       label: "Split",
@@ -176,6 +176,11 @@ export const utilIcons = (size = 25) => {
       label: "Default",
       icon: <MaterialIcons name="compare-arrows" style={{ alignSelf: "center" }} size={size} color="white" />,
       color: "white",
+    },
+    {
+      label: "Circle",
+      icon: <FontAwesome name="circle" style={{ alignSelf: "center" }} size={size} color={_color} />,
+      color: _color,
     },
   ];
 };

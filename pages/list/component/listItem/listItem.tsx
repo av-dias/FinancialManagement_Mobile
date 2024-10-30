@@ -1,6 +1,6 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
-import { categoryIcons, utilIcons } from "../../../../assets/icons";
+import { categoryIcons, utilIcons } from "../../../../utility/icons";
 import { horizontalScale, verticalScale, moderateScale } from "../../../../functions/responsive";
 import { _styles } from "./style";
 import { KEYS as KEYS_SERIALIZER } from "../../../../utility/keys";

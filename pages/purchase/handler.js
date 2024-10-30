@@ -1,5 +1,5 @@
 import { addToStorage } from "../../functions/secureStorage";
-import { categoryIcons } from "../../assets/icons";
+import { categoryIcons } from "../../utility/icons";
 import { KEYS } from "../../utility/storageKeys";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 
@@ -18,19 +18,7 @@ export const modalContent = (list, value, email, modalContentFlag, modalVisible,
   }
 };
 
-export const handlePurchase = async (
-  email,
-  newPurchase,
-  setNewPurchase,
-  splitStatus,
-  setSplitStatus,
-  splitEmail,
-  slider,
-  setList,
-  refundActive,
-  setRefundActive,
-  setExpenses
-) => {
+export const handlePurchase = async (email, newPurchase, setNewPurchase, splitStatus, setSplitStatus, splitEmail, slider, setList, refundActive, setRefundActive, setExpenses) => {
   if (!newPurchase.type || newPurchase.type == "" || !newPurchase.value || newPurchase.value == "" || !newPurchase.dop || newPurchase.dop == "") {
     alert("Please fill all fields.");
     return;
@@ -55,15 +43,7 @@ export const handlePurchase = async (
     addExpenses(newPurchase, KEYS_SERIALIZER.PURCHASE, setExpenses);
 
     // History List
-    setList((list) => [
-      [
-        categoryIcons(TABLE_ICON_SIZE).find((category) => category.label === newPurchase.type).icon,
-        newPurchase.name,
-        newPurchase.value,
-        newPurchase.dop,
-      ],
-      ...list,
-    ]);
+    setList((list) => [[categoryIcons(TABLE_ICON_SIZE).find((category) => category.label === newPurchase.type).icon, newPurchase.name, newPurchase.value, newPurchase.dop], ...list]);
 
     setNewPurchase({ value: "", note: "", name: "", description: "", dop: newPurchase.dop });
     setSplitStatus(false);

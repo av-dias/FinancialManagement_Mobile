@@ -1,4 +1,4 @@
-import { categoryIcons } from "../../assets/icons";
+import { categoryIcons } from "../../utility/icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { _styles } from "./style";
 import { STATS_MODE } from "../../utility/keys";
@@ -22,10 +22,6 @@ export const refinePurchaseStats = (purchasesStats) => {
     });
 
     array.push({ x: " ", y: purchasesStats[key], color: _color });
-    arrayTables.push([
-      <FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />,
-      key,
-      parseFloat(purchasesStats[key]).toFixed(0) + " €",
-    ]);
+    arrayTables.push([<FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />, key, parseFloat(purchasesStats[key]).toFixed(0) + " €"]);
   });
 };

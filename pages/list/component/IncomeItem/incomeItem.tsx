@@ -1,6 +1,6 @@
 import React from "react";
 import { Alert, Pressable, Text, View } from "react-native";
-import { utilIcons } from "../../../../assets/icons";
+import { utilIcons } from "../../../../utility/icons";
 import { _styles } from "./style";
 import { dark } from "../../../../utility/colors";
 import commonStyles from "../../../../utility/commonStyles";
