@@ -86,7 +86,7 @@ export default function Statistics() {
           yAxisTextStyle={{ color: "gray" }}
           xAxisLabelTextStyle={{ color: "gray" }}
           showValuesAsTopLabel={true}
-          topLabelContainerStyle={{ paddingBottom: 2 }}
+          topLabelContainerStyle={{ paddingBottom: 0 }}
           topLabelTextStyle={{ color: "white", fontSize: 10, textAlign: "center" }}
           xAxisLabelsVerticalShift={5}
           rulesType="solid"

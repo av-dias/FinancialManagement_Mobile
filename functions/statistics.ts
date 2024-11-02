@@ -41,7 +41,7 @@ export const calculateSplitDeptData = (resExpensesTotal, currentYear: number) =>
 
     resSplitDeptData[currentYear].push({
       label: months[month],
-      value: resDept[currentYear][month],
+      value: Number(resDept[currentYear][month].toFixed(0)),
       dataPointText: resDept[currentYear][month].toFixed(0),
     });
   }
