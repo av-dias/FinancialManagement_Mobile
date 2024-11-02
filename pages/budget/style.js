@@ -26,17 +26,21 @@ export const _styles = StyleSheet.create({
     margin: 5,
   },
   containerAverage: {
-    height: 70,
+    height: verticalScale(60),
     backgroundColor: dark.complementary,
-    padding: 15,
+    padding: 20,
+    paddingHorizontal: 30,
     borderRadius: 5,
     justifyContent: "center",
-    gap: 10,
+    gap: 5,
   },
-  textTotal: {
+  textValue: {
     fontWeight: "bold",
     color: dark.textPrimary,
-    fontSize: 20,
+    fontSize: 18,
+  },
+  textTotal: {
+    color: dark.textPrimary,
   },
   scrollviewContainer: {
     flexGrow: 1,
@@ -68,6 +72,10 @@ export const _styles = StyleSheet.create({
     textAlign: "center",
     color: dark.textPrimary,
   },
+  textTitle: {
+    color: dark.textPrimary,
+    fontSize: 18,
+  },
   containerNoData: {
     flex: 8,
     justifyContent: "center",
@@ -82,6 +90,8 @@ export const _styles = StyleSheet.create({
   },
   itemContainer: {
     justifyContent: "flex-end",
-    width: 60,
+    width: 45,
   },
+  averageTextTitle: { flexDirection: "row", justifyContent: "space-between" },
+  averageTextValue: { flexDirection: "row", alignItems: "baseline" },
 });

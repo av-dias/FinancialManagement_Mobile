@@ -1,4 +1,4 @@
-import { Text, View, ScrollView } from "react-native";
+import { Text, View } from "react-native";
 import { _styles } from "../style";
 import { STATS_TYPE } from "../../../utility/keys";
 import { ProgressBar } from "react-native-paper";
@@ -32,19 +32,25 @@ export const AverageProgressBar = ({ purchaseTotal, purchaseAverageTotal, curren
 
   return (
     <View key={"TotalView"} style={styles.containerAverage}>
-      {
-        <Text key={"TotalText"} style={styles.textTotal}>
-          {"Average " + getCurrentValue(purchaseTotal[STATS_TYPE[1]]) + "/" + getLastAvailableAverageValue(purchaseAverageTotal, currentYear)}
+      <View style={styles.averageTextTitle}>
+        <Text key={"TotalTextAverage"} style={styles.textValue}>
+          {"Average"}
         </Text>
-      }
-      {
-        <ProgressBar
-          key={"PTtotal"}
-          progress={getTotalProgress(getCurrentValue(purchaseTotal[STATS_TYPE[1]]), getLastAvailableAverageValue(purchaseAverageTotal, currentYear))}
-          style={styles.progressStyle}
-          color={ProgressBarColors.red}
-        />
-      }
+        <View style={styles.averageTextValue}>
+          <Text key={"TotalText1"} style={styles.textValue}>
+            {`${getCurrentValue(purchaseTotal[STATS_TYPE[1]])}/`}
+          </Text>
+          <Text key={"TotalText2"} style={styles.textTotal}>
+            {getLastAvailableAverageValue(purchaseAverageTotal, currentYear)}
+          </Text>
+        </View>
+      </View>
+      <ProgressBar
+        key={"PTtotal"}
+        progress={getTotalProgress(getCurrentValue(purchaseTotal[STATS_TYPE[1]]), getLastAvailableAverageValue(purchaseAverageTotal, currentYear))}
+        style={styles.progressStyle}
+        color={ProgressBarColors.red}
+      />
     </View>
   );
 };

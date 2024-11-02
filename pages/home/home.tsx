@@ -19,7 +19,7 @@ import { _styles } from "./style";
 import { STATS_TYPE, STATS_MODE } from "../../utility/keys";
 
 import { horizontalScale, verticalScale } from "../../functions/responsive";
-import { loadCalendarCard, loadPieChartData, loadPurchaseTotalData, loadSpendTableData, loadExpenses, isCtxLoaded } from "./handler";
+import { loadCalendarCard, loadPieChartData, loadPurchaseTotalData, loadSpendTableData, loadExpenses } from "./handler";
 import { calcExpensesByType, calcExpensesAverage, calcExpensesTotalFromType } from "../../functions/expenses";
 import { dark } from "../../utility/colors";
 import { FlatItem } from "../../components/flatItem/flatItem";
@@ -102,7 +102,7 @@ export default function Home({ navigation }) {
       }
       let endTime = performance.now();
       console.log(`Home: Database Fetch took ${endTime - startTime} milliseconds.`);
-    }, [appCtx.email, incomeRepository, expenseTotal, purchaseAverageTotal])
+    }, [appCtx.email, incomeRepository, expenseTotal, purchaseAverageTotal, statsMode, statsType])
   );
 
   return (

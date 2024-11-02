@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import { categoryIcons } from "../../../assets/icons";
+import { categoryIcons } from "../../../utility/icons";
 import { _styles } from "../style";
 import { ProgressBar } from "react-native-paper";
 import { dark, ProgressBarColors } from "../../../utility/colors";
@@ -15,14 +15,7 @@ type StatsProgressBar = {
   currentMonth: string;
 };
 
-export const StatsProgressBar = ({
-  type,
-  spendAverageByType,
-  expensesTotalByType,
-  purchaseCurrentStats,
-  currentYear,
-  currentMonth,
-}: StatsProgressBar) => {
+export const StatsProgressBar = ({ type, spendAverageByType, expensesTotalByType, purchaseCurrentStats, currentYear, currentMonth }: StatsProgressBar) => {
   const styles = _styles;
 
   const getTotalProgress = (monthValue, monthAverage) => {
@@ -58,38 +51,42 @@ export const StatsProgressBar = ({
     currentTotalTypeValue = parseFloat(expensesTotalByType[currentYear][STATS_TYPE[1]][type].toFixed(0));
   }
 
+  const ProgressBarComponent = ({ type, color, currentTypeValue, lastAverageTypeValue, totalProgress }) => (
+    <View style={{ flex: 1, justifyContent: "center", paddingHorizontal: 20 }}>
+      <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "baseline" }}>
+        <Text key={type + "TextM1"} style={{ fontSize: 18, fontWeight: "bold", color: dark.textPrimary, textAlign: "right" }}>
+          {currentTypeValue + "/"}
+        </Text>
+        <Text key={type + "TextM2"} style={{ color: dark.textPrimary, textAlign: "right" }}>
+          {lastAverageTypeValue}
+        </Text>
+      </View>
+      <ProgressBar key={"PM" + type} progress={totalProgress} style={styles.progressStyle} color={color} />
+    </View>
+  );
+
   return (
     <View key={type + "View"} style={styles.containerItem}>
+      <ProgressBarComponent
+        color={ProgressBarColors.red}
+        type={type}
+        currentTypeValue={currentTotalTypeValue}
+        lastAverageTypeValue={lastTotalTypeValue}
+        totalProgress={getTotalProgress(currentTotalTypeValue, lastTotalTypeValue)}
+      />
       <View style={styles.itemContainer}>
         <TypeIcon icon={categoryIcons(25).find((category) => category.label === type)} />
         <Text key={type + "TextA"} style={styles.textItem}>
-          {type.substring(0, 10)}
+          {type.substring(0, 8)}
         </Text>
       </View>
-      <View style={styles.progressDataContainer}>
-        <View style={{ gap: 2 }}>
-          <Text key={type + "TextT"} style={{ color: dark.textPrimary, textAlign: "right" }}>
-            {"Total " + currentTotalTypeValue + "/" + lastTotalTypeValue}
-          </Text>
-          <ProgressBar
-            key={"PT" + type}
-            progress={getTotalProgress(currentTotalTypeValue, lastTotalTypeValue)}
-            style={styles.progressStyle}
-            color={ProgressBarColors.red}
-          />
-        </View>
-        <View style={{ gap: 2 }}>
-          <Text key={type + "TextM"} style={{ color: dark.textPrimary, textAlign: "right" }}>
-            {"Monthly " + currentTypeValue + "/" + lastAverageTypeValue}
-          </Text>
-          <ProgressBar
-            key={"PM" + type}
-            progress={getTotalProgress(currentTypeValue, lastAverageTypeValue)}
-            style={styles.progressStyle}
-            color={ProgressBarColors.blue}
-          />
-        </View>
-      </View>
+      <ProgressBarComponent
+        color={ProgressBarColors.blue}
+        type={type}
+        currentTypeValue={currentTypeValue}
+        lastAverageTypeValue={lastAverageTypeValue}
+        totalProgress={getTotalProgress(currentTypeValue, lastAverageTypeValue)}
+      />
     </View>
   );
 };

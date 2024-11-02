@@ -19,6 +19,7 @@ import { dark } from "../../utility/colors";
 import Statistics from "../stats/statistics";
 import { AverageProgressBar } from "./components/AverageProgressBar";
 import { StatsProgressBar } from "./components/StatsProgressBar";
+import { ProgressItemsHeader } from "./components/ProgressItemsHeader";
 
 export default function Budget({ navigation }) {
   const styles = _styles;
@@ -96,11 +97,10 @@ export default function Budget({ navigation }) {
       <Header email={appCtx.email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1, gap: 20 }}>
-          {purchaseAverageTotal[currentYear] && (
-            <AverageProgressBar purchaseTotal={purchaseTotal} purchaseAverageTotal={purchaseAverageTotal} currentYear={currentYear} />
-          )}
+          {purchaseAverageTotal[currentYear] && <AverageProgressBar purchaseTotal={purchaseTotal} purchaseAverageTotal={purchaseAverageTotal} currentYear={currentYear} />}
           <ScrollView horizontal={false} style={{ flex: 1 }} contentContainerStyle={styles.scrollviewContainer}>
             <Statistics />
+            <ProgressItemsHeader />
             {spendAverageByType[currentYear] &&
               purchaseCurrentStats[currentYear] &&
               expensesTotalByType[currentYear] &&

@@ -83,7 +83,7 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
     width: "100%",
     maxWidth: 750,
-    marginVertical: verticalScale(20),
+    marginVertical: verticalScale(15),
     borderRadius: commonStyles.borderRadius,
   },
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },

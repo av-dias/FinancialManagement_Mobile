@@ -1,6 +1,6 @@
 const commonStyles = {
   paddingHorizontal: moderateScale(15),
-  borderRadius: 5,
+  borderRadius: 10,
   boxPaddingVertical: moderateScale(10),
   boxPaddingHorizontal: moderateScale(0),
 };

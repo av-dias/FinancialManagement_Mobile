@@ -51,6 +51,7 @@ export const _styles = StyleSheet.create({
     height: "auto",
     elevation: 0,
     backgroundColor: dark.complementary,
+    padding: 20,
   },
   tableInfo: {
     width: "100%",
@@ -85,7 +86,8 @@ export const _styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     width: "100%",
-    paddingHorizontal: 15,
+    padding: 10,
+    alignSelf: "center",
   },
   containerJustifyCenter: { justifyContent: "center" },
   containerRowGap: { flexDirection: "row", gap: 10, zIndex: 100 },
