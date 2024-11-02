@@ -56,7 +56,7 @@ export const IncomeItem = ({ incomeData, handleEdit, handlePress }: IncomeItemPr
           <TypeIcon icon={iconComponent} />
           <View style={{ justifyContent: "center" }}>
             <Text style={styles.buttonText}>{getLabel(incomeData)}</Text>
-            <Text style={styles.amountText}>{`${getValue(incomeData)}€`}</Text>
+            <Text style={styles.amountText}>{`+${getValue(incomeData)}€`}</Text>
           </View>
         </View>
         <View style={{ ...styles.row, flex: 1 }}>

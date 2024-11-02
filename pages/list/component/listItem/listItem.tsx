@@ -53,7 +53,7 @@ export const ListItem = ({ innerData, handleSplit, handleEdit, showAlert, keys, 
           <TypeIcon icon={iconComponent} />
           <View style={{ justifyContent: "center" }}>
             <Text style={styles.buttonText}>{getLabel(innerData)}</Text>
-            <Text style={styles.moneyText}>{getValue(innerData) + " €"}</Text>
+            <Text style={styles.moneyText}>{`-${getValue(innerData)}€`}</Text>
           </View>
         </View>
         <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
