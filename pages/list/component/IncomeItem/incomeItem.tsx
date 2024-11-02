@@ -56,12 +56,10 @@ export const IncomeItem = ({ incomeData, handleEdit, handlePress }: IncomeItemPr
           <TypeIcon icon={iconComponent} />
           <View style={{ justifyContent: "center" }}>
             <Text style={styles.buttonText}>{getLabel(incomeData)}</Text>
-          </View>
-        </View>
-        <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent" }}>
-          <View style={styles.textContainer}>
             <Text style={styles.amountText}>{`${getValue(incomeData)}€`}</Text>
           </View>
+        </View>
+        <View style={{ ...styles.row, flex: 1 }}>
           <View style={styles.optionsContainer}>
             <Pressable style={styles.editContainer} onPress={handleEdit}>
               {utilIcons(verticalScale(20)).find((type) => type.label === "Edit").icon}

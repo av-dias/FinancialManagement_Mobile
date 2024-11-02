@@ -6,6 +6,7 @@ import { dark } from "../../../../utility/colors";
 export const _styles = StyleSheet.create({
   button: {
     padding: 10,
+    paddingHorizontal: verticalScale(20),
     width: "100%",
     backgroundColor: "transparent",
     alignSelf: "center",
@@ -47,17 +48,20 @@ export const _styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   optionsContainer: {
-    flex: 3,
+    flex: 4,
     flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    width: verticalScale(40),
-    maxWidth: 130,
-    height: verticalScale(40),
-    maxHeight: 50,
     borderRadius: commonStyles.borderRadius,
     justifyContent: "flex-end",
     backgroundColor: "transparent",
+  },
+  splitContainer: {
+    width: verticalScale(40),
+    maxWidth: 50,
+    height: verticalScale(40),
+    maxHeight: 50,
+    justifyContent: "center",
+    backgroundColor: "transparent",
+    alignContent: "center",
   },
   editContainer: {
     width: verticalScale(40),
