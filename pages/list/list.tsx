@@ -13,14 +13,11 @@ import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { getSplitEmail, getSplitUser } from "../../functions/split";
 import { handleSplit, handleSettleSplit } from "./handler";
 import { months } from "../../utility/calendar";
-import showAlert from "./showAlert";
 
-import ModalList from "./component/modalList/modalList";
 import Header from "../../components/header/header";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import ModalCustom from "../../components/modal/modal";
-import { ListItem } from "./component/listItem/listItem";
 
 import { groupExpensesByDate } from "../../functions/expenses";
 import { handleTransaction } from "../transaction/handler";
@@ -28,7 +25,9 @@ import { dark } from "../../utility/colors";
 import { Expense, ExpensesByDate } from "../../models/types";
 import { useDatabaseConnection } from "../../store/database-context";
 import { IncomeEntity, IncomeModel } from "../../store/database/Income/IncomeEntity";
-import { IncomeItem } from "./component/IncomeItem/incomeItem";
+import { CustomListItem } from "../../components/ListItem/ListItem";
+import ModalList from "./component/modalList/modalList";
+import { handleDeleteAlert, handleIncomeDeleteAlert } from "./component/modalList/showAlert";
 
 export default function List({ navigation }) {
   const appCtx = useContext(AppContext);
@@ -105,11 +104,56 @@ export default function List({ navigation }) {
         }
       }
       fetchData();
-    }, [appCtx.expenses, email, expenses, currentYear, currentMonth, incomeData.length])
+    }, [appCtx.expenses, email, expenses, currentYear, currentMonth, incomeData.length, incomeRepository])
   );
 
   const isIncomeOnDate = (i_doi, date) => {
     return i_doi.toString().split(" ")[0] == date ? true : false;
+  };
+
+  const incomeOptions = () => {
+    return [{ callback: () => {}, type: "Edit" }];
+  };
+
+  const expenseLabel = (innerData) => {
+    if (innerData.split)
+      return {
+        text: innerData.split.weight + "%",
+      };
+  };
+
+  const expensesOptions = (expenses, keys) => {
+    let options = [];
+    const innerData = expenses.element;
+    if (!innerData.split && keys === KEYS_SERIALIZER.PURCHASE) {
+      options.push({
+        callback: async () => {
+          setSelectedItem({ ...expenses });
+          await handleSplit(email, expenses, getSplitEmail(splitUser), setExpenses);
+        },
+        type: "Split",
+      });
+    }
+
+    if (innerData.split) {
+      options.push({
+        callback: async () => {
+          await handleSettleSplit(email, expenses, handleTransaction, destination, setExpenses);
+        },
+        type: "Settle",
+      });
+    }
+
+    options.push({
+      callback: async () => {
+        setSelectedItem({ ...expenses });
+        setSliderStatus("split" in expenses.element ? true : false);
+        setEditVisible(true);
+      },
+      type: "Edit",
+    });
+
+    return options;
   };
 
   return (
@@ -132,40 +176,19 @@ export default function List({ navigation }) {
                   <CardWrapper key={date} style={styles.listBox}>
                     {expensesGroupedByDate[date] &&
                       expensesGroupedByDate[date].map((expenses: Expense) => (
-                        <ListItem
-                          key={expenses.index + expenses.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + date}
+                        <CustomListItem
+                          key={`Income${expenses.index}`}
                           innerData={expenses.element}
-                          handleSplit={async () => {
-                            setSelectedItem({ ...expenses });
-                            await handleSplit(email, expenses, getSplitEmail(splitUser), setExpenses);
-                          }}
-                          handleEdit={async () => {
-                            setSelectedItem({ ...expenses });
-                            setSliderStatus("split" in expenses.element ? true : false);
-                            setEditVisible(true);
-                          }}
-                          handleSettleSplit={async () => {
-                            await handleSettleSplit(email, expenses, handleTransaction, destination, setExpenses);
-                          }}
-                          keys={expenses.key}
-                          showAlert={() => {
-                            showAlert(expenses.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + expenses.index, expenses, email, setExpenses);
-                          }}
+                          options={expensesOptions(expenses, expenses.key)}
+                          label={expenseLabel(expenses.element)}
+                          onPress={() => handleDeleteAlert(expenses.key + KEYS_SERIALIZER.TOKEN_SEPARATOR + expenses.index, expenses, email, setExpenses)}
                         />
                       ))}
                     {incomeData &&
                       incomeData.map(
                         (income) =>
                           isIncomeOnDate(income.doi, date) && (
-                            <IncomeItem
-                              key={income.id}
-                              incomeData={income}
-                              handleEdit={() => {}}
-                              handlePress={async () => {
-                                await incomeRepository.delete(income.id);
-                                setIncomeData((prev) => prev.filter((item) => item.id !== income.id));
-                              }}
-                            />
+                            <CustomListItem key={`Income${income.id}`} innerData={{ ...income, type: "Income" }} options={incomeOptions()} onPress={() => handleIncomeDeleteAlert(income)} />
                           )
                       )}
                   </CardWrapper>

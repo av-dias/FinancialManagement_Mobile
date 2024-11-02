@@ -1,10 +1,23 @@
 import { Alert } from "react-native";
-import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
-import { KEYS } from "../../utility/storageKeys";
-import { removeFromStorage } from "../../functions/secureStorage";
-import { deleteExpenses } from "../../functions/expenses";
+import { KEYS as KEYS_SERIALIZER } from "../../../../utility/keys";
+import { KEYS } from "../../../../utility/storageKeys";
+import { removeFromStorage } from "../../../../functions/secureStorage";
+import { deleteExpenses } from "../../../../functions/expenses";
 
-export default showAlert = (key, expense, email, setExpenses) => {
+export const handleIncomeDeleteAlert = (income) => {
+  Alert.alert("Delete Income", `Are you sure you want to remove this income permanently?\n\nName: ${income.name}\nAmount: ${income.amount}`, [
+    {
+      text: `Yes`,
+      onPress: async () => {
+        await incomeRepository.delete(income.id);
+        setIncomeData((prev) => prev.filter((item) => item.id !== income.id));
+      },
+    },
+    { text: "No", onPress: () => {}, style: "cancel" },
+  ]);
+};
+
+export const handleDeleteAlert = (key, expense, email, setExpenses) => {
   let [identifier, id] = key.split(KEYS_SERIALIZER.TOKEN_SEPARATOR);
   let element = identifier == KEYS_SERIALIZER.PURCHASE ? KEYS.PURCHASE : KEYS.TRANSACTION,
     elementArray = expense.element,

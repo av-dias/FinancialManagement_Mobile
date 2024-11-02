@@ -93,4 +93,14 @@ export const _styles = StyleSheet.create({
     //paddingVertical: verticalScale(10),
     paddingTop: verticalScale(20),
   },
+  optionBox: {
+    width: verticalScale(40),
+    maxWidth: 50,
+    height: verticalScale(40),
+    maxHeight: 50,
+    justifyContent: "center",
+    backgroundColor: dark.glass,
+    alignContent: "center",
+    borderRadius: commonStyles.borderRadius,
+  },
 });
