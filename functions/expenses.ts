@@ -1,18 +1,18 @@
 import { ExpensesByYear } from "../models/interfaces";
-import { Expense, ExpensesByDate, Purchase, Transaction } from "../models/types";
+import { ExpenseType, ExpensesByDateType, PurchaseType, TransactionType } from "../models/types";
 import { KEYS, STATS_TYPE, TRANSACTION_TYPE } from "../utility/keys";
 
-export const calcExpensesByType = (expenses: Expense[]) => {
+export const calcExpensesByType = (expenses: ExpenseType[]) => {
   let res = {};
 
   expenses.forEach(({ element, index, key }) => {
     let year: number, month: number;
     if (key == KEYS.TRANSACTION) {
-      element = element as Transaction;
+      element = element as TransactionType;
       month = new Date(element.dot).getMonth();
       year = new Date(element.dot).getFullYear();
     } else if (key == KEYS.PURCHASE) {
-      element = element as Purchase;
+      element = element as PurchaseType;
       month = new Date(element.dop).getMonth();
       year = new Date(element.dop).getFullYear();
     } else {
@@ -30,7 +30,7 @@ export const calcExpensesByType = (expenses: Expense[]) => {
     }
 
     if (key == KEYS.TRANSACTION) {
-      element = element as Transaction;
+      element = element as TransactionType;
 
       let value = parseFloat(element.amount);
 
@@ -48,7 +48,7 @@ export const calcExpensesByType = (expenses: Expense[]) => {
         res[year][month][STATS_TYPE[1]][element.type] += value;
       }
     } else if (key == KEYS.PURCHASE) {
-      element = element as Purchase;
+      element = element as PurchaseType;
 
       // Verify if type already exists
       if (!Object.keys(res[year][month][STATS_TYPE[0]]).includes(element.type)) {
@@ -89,14 +89,14 @@ export const calcExpensesAverage = (expenses: any, year: number) => {
   let monthCount = Object.keys(expenses[year]).length;
 
   Object.keys(expenses[year]).forEach((month) => {
-    expenses[year][month].forEach(({ element, index, key }: Expense) => {
+    expenses[year][month].forEach(({ element, index, key }: ExpenseType) => {
       let year: number, month: number;
       if (key == KEYS.TRANSACTION) {
-        element = element as Transaction;
+        element = element as TransactionType;
         month = new Date(element.dot).getMonth();
         year = new Date(element.dot).getFullYear();
       } else if (key == KEYS.PURCHASE) {
-        element = element as Purchase;
+        element = element as PurchaseType;
         month = new Date(element.dop).getMonth();
         year = new Date(element.dop).getFullYear();
       } else {
@@ -104,7 +104,7 @@ export const calcExpensesAverage = (expenses: any, year: number) => {
       }
 
       if (key == KEYS.TRANSACTION) {
-        element = element as Transaction;
+        element = element as TransactionType;
 
         let value = parseFloat(element.amount);
 
@@ -125,7 +125,7 @@ export const calcExpensesAverage = (expenses: any, year: number) => {
           resTotal[year][STATS_TYPE[0]] += value;
         }
       } else if (key == KEYS.PURCHASE) {
-        element = element as Purchase;
+        element = element as PurchaseType;
 
         // Verify if type already exists
         if (!Object.keys(resType[year][STATS_TYPE[0]]).includes(element.type)) {
@@ -190,7 +190,7 @@ export const calcTransactionStats = (expenses: any) => {
   Object.keys(expenses).forEach((month) => {
     expenses[month].forEach(({ element, index, key }) => {
       if (key == KEYS.TRANSACTION) {
-        element = element as Transaction;
+        element = element as TransactionType;
 
         let month = new Date(element.dot).getMonth();
         let year = new Date(element.dot).getFullYear();
@@ -226,14 +226,14 @@ export const calcTotalExpensesByType = (expenses: any, year: number) => {
   let resType = { [year]: { [STATS_TYPE[0]]: {}, [STATS_TYPE[1]]: {} } };
 
   Object.keys(expenses[year]).forEach((month) => {
-    expenses[year][month].forEach(({ element, index, key }: Expense) => {
+    expenses[year][month].forEach(({ element, index, key }: ExpenseType) => {
       let year: number, month: number;
       if (key == KEYS.TRANSACTION) {
-        element = element as Transaction;
+        element = element as TransactionType;
         month = new Date(element.dot).getMonth();
         year = new Date(element.dot).getFullYear();
       } else if (key == KEYS.PURCHASE) {
-        element = element as Purchase;
+        element = element as PurchaseType;
         month = new Date(element.dop).getMonth();
         year = new Date(element.dop).getFullYear();
       } else {
@@ -241,7 +241,7 @@ export const calcTotalExpensesByType = (expenses: any, year: number) => {
       }
 
       if (key == KEYS.TRANSACTION) {
-        element = element as Transaction;
+        element = element as TransactionType;
 
         let value = parseFloat(element.amount);
 
@@ -259,7 +259,7 @@ export const calcTotalExpensesByType = (expenses: any, year: number) => {
           resType[year][STATS_TYPE[1]][element.type] += value;
         }
       } else if (key == KEYS.PURCHASE) {
-        element = element as Purchase;
+        element = element as PurchaseType;
 
         // Verify if type already exists
         if (!Object.keys(resType[year][STATS_TYPE[0]]).includes(element.type)) {
@@ -284,16 +284,16 @@ export const calcTotalExpensesByType = (expenses: any, year: number) => {
   return resType;
 };
 
-export const groupExpensesByDate = (expenses: any, year: number, month: number): ExpensesByDate => {
+export const groupExpensesByDate = (expenses: any, year: number, month: number): ExpensesByDateType => {
   let groupedPurchases = {};
 
-  expenses[year][month].forEach(({ element, index, key }: Expense) => {
+  expenses[year][month].forEach(({ element, index, key }: ExpenseType) => {
     if (key == KEYS.TRANSACTION) {
-      element = element as Transaction;
+      element = element as TransactionType;
       let dateValue = element.dot;
       (groupedPurchases[dateValue] = groupedPurchases[dateValue] || []).push({ element, index, key });
     } else if (key == KEYS.PURCHASE) {
-      element = element as Purchase;
+      element = element as PurchaseType;
       let dateValue = element.dop;
       (groupedPurchases[dateValue] = groupedPurchases[dateValue] || []).push({ element, index, key });
     } else {
@@ -304,16 +304,16 @@ export const groupExpensesByDate = (expenses: any, year: number, month: number):
   return groupedPurchases;
 };
 
-export const updateExpenses = (expense: Expense, setExpenses: any) => {
+export const updateExpenses = (expense: ExpenseType, setExpenses: any) => {
   let year: number, month: number, updatedState: any;
   setExpenses((prev: any) => {
     updatedState = { ...prev };
     if (KEYS.PURCHASE == expense.key) {
-      let purchase = expense.element as Purchase;
+      let purchase = expense.element as PurchaseType;
       month = new Date(purchase.dop).getMonth();
       year = new Date(purchase.dop).getFullYear();
     } else if (KEYS.TRANSACTION == expense.key) {
-      let transaction = expense.element as Transaction;
+      let transaction = expense.element as TransactionType;
       month = new Date(transaction.dot).getMonth();
       year = new Date(transaction.dot).getFullYear();
     } else {
@@ -321,23 +321,23 @@ export const updateExpenses = (expense: Expense, setExpenses: any) => {
       return prev;
     }
 
-    let index = prev[year][month].findIndex((e: Expense) => e.index == expense.index && e.key == expense.key);
+    let index = prev[year][month].findIndex((e: ExpenseType) => e.index == expense.index && e.key == expense.key);
     updatedState[year][month][index] = expense;
 
     return updatedState;
   });
 };
 
-export const deleteExpenses = (expense: Expense, setExpenses: any) => {
+export const deleteExpenses = (expense: ExpenseType, setExpenses: any) => {
   let year: number, month: number, updatedState: any;
   setExpenses((prev: any) => {
     updatedState = { ...prev };
     if (KEYS.PURCHASE == expense.key) {
-      let purchase = expense.element as Purchase;
+      let purchase = expense.element as PurchaseType;
       month = new Date(purchase.dop).getMonth();
       year = new Date(purchase.dop).getFullYear();
     } else if (KEYS.TRANSACTION == expense.key) {
-      let transaction = expense.element as Transaction;
+      let transaction = expense.element as TransactionType;
       month = new Date(transaction.dot).getMonth();
       year = new Date(transaction.dot).getFullYear();
     } else {
@@ -345,24 +345,24 @@ export const deleteExpenses = (expense: Expense, setExpenses: any) => {
       return prev;
     }
 
-    let index = prev[year][month].findIndex((e: Expense) => e.index == expense.index && e.key == expense.key);
+    let index = prev[year][month].findIndex((e: ExpenseType) => e.index == expense.index && e.key == expense.key);
     updatedState[year][month].splice(index, 1);
 
     return updatedState;
   });
 };
 
-export const addExpenses = (newElement: Purchase | Transaction, key: any, setExpenses: any) => {
+export const addExpenses = (newElement: PurchaseType | TransactionType, key: any, setExpenses: any) => {
   let year: number, month: number, index: number, updatedState: ExpensesByYear;
   setExpenses((prev: ExpensesByYear) => {
     updatedState = { ...prev };
     if (KEYS.PURCHASE == key) {
-      let purchase = newElement as Purchase;
+      let purchase = newElement as PurchaseType;
       month = new Date(purchase.dop).getMonth();
       year = new Date(purchase.dop).getFullYear();
       index = ++updatedState.purchaseIndex;
     } else if (KEYS.TRANSACTION == key) {
-      let transaction = newElement as Transaction;
+      let transaction = newElement as TransactionType;
       month = new Date(transaction.dot).getMonth();
       year = new Date(transaction.dot).getFullYear();
       index = ++updatedState.transactionIndex;
@@ -371,7 +371,7 @@ export const addExpenses = (newElement: Purchase | Transaction, key: any, setExp
       return prev;
     }
 
-    let expense: Expense = { element: newElement, key: key, index: index };
+    let expense: ExpenseType = { element: newElement, key: key, index: index };
 
     if (prev.hasOwnProperty(year)) {
       if (prev[year].hasOwnProperty(month)) {

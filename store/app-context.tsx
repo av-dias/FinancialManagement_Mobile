@@ -5,7 +5,7 @@ import { getAllTransactionsStats } from "../functions/transaction";
 import { getUser } from "../functions/basic";
 import { UserContext } from "./user-context";
 import { STATS_TYPE, TRANSACTION_TYPE, KEYS as KEYS_SERIALIZER, KEYS } from "../utility/keys";
-import { Expense, Purchase, Transaction } from "../models/types";
+import { ExpenseType, PurchaseType, TransactionType } from "../models/types";
 import { ExpensesByYear } from "../models/interfaces";
 
 interface AppContext {
@@ -322,11 +322,11 @@ const groupExpensesByDate = (purchases, transactions) => {
   return groupedPurchases;
 };
 
-const loadPurchases = (purchases: Purchase[], expenses: ExpensesByYear) => {
+const loadPurchases = (purchases: PurchaseType[], expenses: ExpensesByYear) => {
   let resPurchases = {};
   let lastIndex = 0;
 
-  purchases.forEach((curr: Purchase, index) => {
+  purchases.forEach((curr: PurchaseType, index) => {
     let year = new Date(curr.dop).getFullYear();
     let month = new Date(curr.dop).getMonth();
 
@@ -338,7 +338,7 @@ const loadPurchases = (purchases: Purchase[], expenses: ExpensesByYear) => {
     if (!expenses[year]) expenses[year] = { [month]: [] };
     if (!expenses[year][month]) expenses[year][month] = [];
 
-    let e: Expense = { index: index, key: KEYS.PURCHASE, element: curr };
+    let e: ExpenseType = { index: index, key: KEYS.PURCHASE, element: curr };
     expenses[year][month].push(e);
     lastIndex = index;
   });
@@ -347,11 +347,11 @@ const loadPurchases = (purchases: Purchase[], expenses: ExpensesByYear) => {
   return resPurchases;
 };
 
-const loadTransactions = (transactions: Transaction[], expenses: ExpensesByYear) => {
+const loadTransactions = (transactions: TransactionType[], expenses: ExpensesByYear) => {
   let resTransactions = {};
   let lastIndex = 0;
 
-  transactions.forEach((curr: Transaction, index) => {
+  transactions.forEach((curr: TransactionType, index) => {
     let year = new Date(curr.dot).getFullYear();
     let month = new Date(curr.dot).getMonth();
 
@@ -363,7 +363,7 @@ const loadTransactions = (transactions: Transaction[], expenses: ExpensesByYear)
     if (!expenses[year]) expenses[year] = { [month]: [] };
     if (!expenses[year][month]) expenses[year][month] = [];
 
-    let e: Expense = { index: index, key: KEYS.TRANSACTION, element: curr };
+    let e: ExpenseType = { index: index, key: KEYS.TRANSACTION, element: curr };
     expenses[year][month].push(e);
     lastIndex = index;
   });

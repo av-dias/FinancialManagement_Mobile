@@ -1,7 +1,7 @@
-import { Expense } from "./types";
+import { ExpenseType } from "./types";
 
 export interface ExpensesByMonth {
-  [month: number]: Expense[];
+  [month: number]: ExpenseType[];
 }
 
 export interface ExpensesByYear {

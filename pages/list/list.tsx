@@ -21,15 +21,15 @@ import ModalCustom from "../../components/modal/modal";
 
 import { deleteExpenses, groupExpensesByDate } from "../../functions/expenses";
 import { dark } from "../../utility/colors";
-import { Expense, ExpensesByDate, Purchase, Transaction } from "../../models/types";
+import { ExpenseType, ExpensesByDateType, PurchaseType, TransactionType } from "../../models/types";
 import { useDatabaseConnection } from "../../store/database-context";
 import { IncomeEntity, IncomeModel } from "../../store/database/Income/IncomeEntity";
 import { CustomListItem } from "../../components/ListItem/ListItem";
-import ModalList from "./component/modalList/modalList";
 import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
 import { AlertData, IncomeAlertData, PurchaseAlertData, TransactionAlertData } from "../../constants/listConstants/deleteDialog";
 import { removeFromStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
+import ModalList from "./component/modalList/modalList";
 
 export default function List({ navigation }) {
   const appCtx = useContext(AppContext);
@@ -41,10 +41,10 @@ export default function List({ navigation }) {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
-  const [expensesGroupedByDate, setExpensesGroupedByDate] = useState<ExpensesByDate>({});
+  const [expensesGroupedByDate, setExpensesGroupedByDate] = useState<ExpensesByDateType>({});
   const [incomeData, setIncomeData] = useState<IncomeEntity[]>([]);
 
-  const [selectedItem, setSelectedItem] = useState<Expense | IncomeEntity>();
+  const [selectedItem, setSelectedItem] = useState<ExpenseType | IncomeEntity>();
   const [splitUser, setSplitUser] = useState("");
   const [sliderStatus, setSliderStatus] = useState(false);
   const [destination, setDestination] = useState("");
@@ -136,7 +136,7 @@ export default function List({ navigation }) {
   };
 
   /* Loads the dialog data when list item is pressed */
-  const getModalDialogData = (data: Expense | IncomeEntity): AlertData => {
+  const getModalDialogData = (data: ExpenseType | IncomeEntity): AlertData => {
     if (data.hasOwnProperty("doi")) {
       data = data as IncomeEntity;
 
@@ -147,20 +147,20 @@ export default function List({ navigation }) {
 
       return IncomeAlertData(data.name, data.amount.toString(), async () => await handleConfirm(data as IncomeEntity));
     } else {
-      data = data as Expense;
+      data = data as ExpenseType;
 
-      const handleConfirm = async (data: Expense) => {
+      const handleConfirm = async (data: ExpenseType) => {
         const key = data.key == KEYS_SERIALIZER.PURCHASE ? KEYS.PURCHASE : KEYS.TRANSACTION;
         await removeFromStorage(key, data.index, email);
         deleteExpenses(data, setExpenses);
       };
 
       if (data.key == KEYS_SERIALIZER.PURCHASE) {
-        const element = data.element as Purchase;
-        return PurchaseAlertData(element.name, element.value, async () => await handleConfirm(data as Expense));
+        const element = data.element as PurchaseType;
+        return PurchaseAlertData(element.name, element.value, async () => await handleConfirm(data as ExpenseType));
       } else if (data.key == KEYS_SERIALIZER.TRANSACTION) {
-        const element = data.element as Transaction;
-        return TransactionAlertData(element.description, element.amount, async () => await handleConfirm(data as Expense));
+        const element = data.element as TransactionType;
+        return TransactionAlertData(element.description, element.amount, async () => await handleConfirm(data as ExpenseType));
       }
       return null;
     }
@@ -187,7 +187,7 @@ export default function List({ navigation }) {
                   </View>
                   <CardWrapper key={date} style={styles.listBox}>
                     {expensesGroupedByDate[date] &&
-                      expensesGroupedByDate[date].map((expenses: Expense) => (
+                      expensesGroupedByDate[date].map((expenses: ExpenseType) => (
                         <CustomListItem
                           key={`Income${expenses.index}`}
                           innerData={expenses.element}

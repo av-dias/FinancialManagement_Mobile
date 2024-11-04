@@ -1,6 +1,6 @@
 import { editOnStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
-import { Expense, Purchase, Transaction } from "../../models/types";
+import { ExpenseType, PurchaseType, TransactionType } from "../../models/types";
 import { updateExpenses } from "../../functions/expenses";
 import { handleTransaction } from "../transaction/handler";
 
@@ -8,16 +8,16 @@ export const isCtxLoaded = (ctx) => {
   return Object.keys(ctx).length > 0 && Object.keys(ctx["expensesByDate"]).length > 0;
 };
 
-export const handleSplit = async (email, expense: Expense, splitUser, setExpenses) => {
-  expense.element = expense.element as Purchase;
+export const handleSplit = async (email, expense: ExpenseType, splitUser, setExpenses) => {
+  expense.element = expense.element as PurchaseType;
   expense.element = { ...expense.element, split: { userId: splitUser, weight: "50" } };
 
   await editOnStorage(KEYS.PURCHASE, JSON.stringify(expense.element), expense.index, email);
   updateExpenses(expense, setExpenses);
 };
 
-export const handleEditPurchase = async (email, expense: Expense, sliderStatus, setEditVisible, setExpenses) => {
-  let selectedPurchase = expense.element as Purchase;
+export const handleEditPurchase = async (email, expense: ExpenseType, sliderStatus, setEditVisible, setExpenses) => {
+  let selectedPurchase = expense.element as PurchaseType;
 
   if (!selectedPurchase.name && selectedPurchase.name == "") selectedPurchase.name = selectedPurchase.type;
   if (!sliderStatus) delete selectedPurchase.split;
@@ -29,8 +29,8 @@ export const handleEditPurchase = async (email, expense: Expense, sliderStatus, 
   setEditVisible(false);
 };
 
-export const handleEditTransaction = async (email, expense: Expense, setEditVisible, setExpenses) => {
-  let selectedTransaction: Transaction = expense.element as Transaction;
+export const handleEditTransaction = async (email, expense: ExpenseType, setEditVisible, setExpenses) => {
+  let selectedTransaction: TransactionType = expense.element as TransactionType;
   if (
     !selectedTransaction.amount ||
     selectedTransaction.amount == "" ||
@@ -56,7 +56,7 @@ export const groupByDate = (data: any) => {
   if (!data || data.length == 0) return {};
   let grouped_data = data
     .map((value: any, index: any) => ({ ...value, index: index }))
-    .reduce((rv: any, x: Purchase | Transaction) => {
+    .reduce((rv: any, x: PurchaseType | TransactionType) => {
       let dateValue = x["dop"] || x["dot"];
       (rv[dateValue] = rv[dateValue] || []).push(x);
       return rv;
@@ -64,12 +64,12 @@ export const groupByDate = (data: any) => {
   return grouped_data;
 };
 
-export const handleSettleSplit = async (email, expense: Expense, handleTransaction, destination, setExpenses) => {
-  let selectedPurchase = expense.element as Purchase;
+export const handleSettleSplit = async (email, expense: ExpenseType, handleTransaction, destination, setExpenses) => {
+  let selectedPurchase = expense.element as PurchaseType;
   let splitPercentage = Number(selectedPurchase.split.weight) / 100;
   let settleValue = Number(selectedPurchase.value) * splitPercentage;
 
-  let newTransaction: Transaction = {
+  let newTransaction: TransactionType = {
     amount: settleValue.toString(),
     description: selectedPurchase.name,
     type: selectedPurchase.type,

@@ -1,25 +1,25 @@
-export type Purchase = {
+export type PurchaseType = {
   value: string;
   name: string;
   type: string;
   description: string;
   note: string;
   dop: string;
-  split: Split;
+  split: SplitType;
 };
 
-export type Split = {
+export type SplitType = {
   userId: string;
   weight: string;
 };
 
-export type Expense = {
+export type ExpenseType = {
   index: number;
   key: string;
-  element: Purchase | Transaction;
+  element: PurchaseType | TransactionType;
 };
 
-export type Transaction = {
+export type TransactionType = {
   amount: string;
   type: string;
   description: string;
@@ -28,12 +28,12 @@ export type Transaction = {
   user_origin_id: string;
 };
 
-export type ExpensesByDate = {
-  [key: string]: Expense[];
+export type ExpensesByDateType = {
+  [key: string]: ExpenseType[];
 };
 
-export const purchaseExpense = (purchase: Purchase, index: number, key: string): Expense => {
-  const expense: Expense = {
+export const purchaseExpense = (purchase: PurchaseType, index: number, key: string): ExpenseType => {
+  const expense: ExpenseType = {
     index: index,
     key: key,
     element: purchase,
@@ -41,8 +41,8 @@ export const purchaseExpense = (purchase: Purchase, index: number, key: string):
   return expense;
 };
 
-export const transactionExpense: any = (transaction: Transaction, index: number, key: string) => {
-  const expense: Expense = {
+export const transactionExpense: any = (transaction: TransactionType, index: number, key: string) => {
+  const expense: ExpenseType = {
     index: index,
     key: key,
     element: transaction,
@@ -50,12 +50,12 @@ export const transactionExpense: any = (transaction: Transaction, index: number,
   return expense;
 };
 
-export function expenseToType(expense: Expense): Purchase | Transaction | undefined {
+export function expenseToType(expense: ExpenseType): PurchaseType | TransactionType | undefined {
   const element = expense.element;
   if (typeof element === "object" && "value" in element && "dop" in element) {
-    return element as Purchase; // Type assertion as element might be Transaction
+    return element as PurchaseType; // Type assertion as element might be Transaction
   } else if (typeof element === "object" && "amount" in element && "dot" in element) {
-    return element as Transaction; // Type assertion as element might be Purchase
+    return element as TransactionType; // Type assertion as element might be Purchase
   } else {
     return undefined; // Return undefined if element is not a Purchase
   }
