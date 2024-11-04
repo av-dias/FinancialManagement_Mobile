@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Text, View, ScrollView, Button } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { _styles } from "./style";
@@ -11,7 +11,7 @@ import { UserContext } from "../../store/user-context";
 import { verticalScale } from "../../functions/responsive";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { getSplitEmail, getSplitUser } from "../../functions/split";
-import { handleSplit, handleSettleSplit, expenseLabel, isIncomeOnDate } from "./handler";
+import { expenseLabel, isIncomeOnDate, splitOption, settleOption, editOption } from "./handler";
 import { months } from "../../utility/calendar";
 
 import Header from "../../components/header/header";
@@ -20,7 +20,6 @@ import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import ModalCustom from "../../components/modal/modal";
 
 import { deleteExpenses, groupExpensesByDate } from "../../functions/expenses";
-import { handleTransaction } from "../transaction/handler";
 import { dark } from "../../utility/colors";
 import { Expense, ExpensesByDate, Purchase, Transaction } from "../../models/types";
 import { useDatabaseConnection } from "../../store/database-context";
@@ -121,32 +120,12 @@ export default function List({ navigation }) {
     let options = [];
     const innerData = expenses.element;
     if (!innerData.split && keys === KEYS_SERIALIZER.PURCHASE) {
-      options.push({
-        callback: async () => {
-          setSelectedItem({ ...expenses });
-          await handleSplit(email, expenses, getSplitEmail(splitUser), setExpenses);
-        },
-        type: "Split",
-      });
+      options.push(splitOption(setSelectedItem, expenses, email, getSplitEmail(splitUser), setExpenses));
     }
-
     if (innerData.split) {
-      options.push({
-        callback: async () => {
-          await handleSettleSplit(email, expenses, handleTransaction, destination, setExpenses);
-        },
-        type: "Settle",
-      });
+      options.push(settleOption(email, expenses, destination, setExpenses));
     }
-
-    options.push({
-      callback: async () => {
-        setSelectedItem({ ...expenses });
-        setSliderStatus("split" in expenses.element ? true : false);
-        setEditVisible(true);
-      },
-      type: "Edit",
-    });
+    options.push(editOption(setSelectedItem, expenses, setSliderStatus, setEditVisible));
 
     return options;
   };

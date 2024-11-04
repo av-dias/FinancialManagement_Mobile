@@ -1,8 +1,8 @@
 import { editOnStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
-import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { Expense, Purchase, Transaction } from "../../models/types";
 import { updateExpenses } from "../../functions/expenses";
+import { handleTransaction } from "../transaction/handler";
 
 export const isCtxLoaded = (ctx) => {
   return Object.keys(ctx).length > 0 && Object.keys(ctx["expensesByDate"]).length > 0;
@@ -90,3 +90,27 @@ export const expenseLabel = (innerData) => {
       text: innerData.split.weight + "%",
     };
 };
+
+export const splitOption = (setSelectedItem, expenses, email, splitUser, setExpenses) => ({
+  callback: async () => {
+    setSelectedItem({ ...expenses });
+    await handleSplit(email, expenses, splitUser, setExpenses);
+  },
+  type: "Split",
+});
+
+export const settleOption = (email, expenses, destination, setExpenses) => ({
+  callback: async () => {
+    await handleSettleSplit(email, expenses, handleTransaction, destination, setExpenses);
+  },
+  type: "Settle",
+});
+
+export const editOption = (setSelectedItem, expenses, setSliderStatus, setEditVisible) => ({
+  callback: async () => {
+    setSelectedItem({ ...expenses });
+    setSliderStatus("split" in expenses.element ? true : false);
+    setEditVisible(true);
+  },
+  type: "Edit",
+});
