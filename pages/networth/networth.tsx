@@ -204,14 +204,14 @@ export default function Networth({ navigation }) {
             absoluteIncrease={portfolioStatus.grossworth.absolute.toFixed(0)}
             relativeIncrease={portfolioStatus.grossworth.relative.toFixed(0)}
             title={"Grossworth"}
-            icon={<FontAwesome5 name="money-check" size={24} color={dark.secundary} />}
+            icon={<FontAwesome5 name="money-check" size={15} color={dark.secundary} />}
           />
           <MainCard
             value={portfolioWorth.networth.toFixed(0)}
             absoluteIncrease={portfolioStatus.networth.absolute.toFixed(0)}
             relativeIncrease={portfolioStatus.networth.relative.toFixed(0)}
             title={"Networth"}
-            icon={<FontAwesome5 name="money-check-alt" size={24} color="lightblue" />}
+            icon={<FontAwesome5 name="money-check-alt" size={15} color="lightblue" />}
           />
         </View>
         <View style={{ flex: 1, gap: 10, padding: 5 }}>
@@ -220,10 +220,7 @@ export default function Networth({ navigation }) {
 
             <View style={styles.rowGap}>
               <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
-              <IconButton
-                icon={<Entypo style={styles.iconButton} name="add-to-list" size={18} color={"white"} />}
-                onPressHandle={onIconPressCallback}
-              />
+              <IconButton addStyle={{ borderRadius: 12 }} icon={<Entypo style={styles.iconButton} name="add-to-list" size={18} color={"white"} />} onPressHandle={onIconPressCallback} />
             </View>
           </View>
           {/*
@@ -231,13 +228,7 @@ export default function Networth({ navigation }) {
            */}
           <ScrollView contentContainerStyle={{ gap: 5 }}>
             {portfolio?.map((item) => (
-              <FlatItem
-                key={item.name}
-                name={item.name}
-                value={item.value}
-                options={loadOptions(item)}
-                onPressCallback={isItemMonthYear(item) ? onPressCallback : undefined}
-              />
+              <FlatItem key={item.name} name={item.name} value={item.value} options={loadOptions(item)} onPressCallback={isItemMonthYear(item) ? onPressCallback : undefined} />
             ))}
           </ScrollView>
         </View>

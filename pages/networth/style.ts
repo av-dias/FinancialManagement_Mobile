@@ -41,5 +41,5 @@ export const _styles = StyleSheet.create({
   },
   iconButton: { padding: 11 },
   dividerContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 10, paddingBottom: 0, paddingRight: 0 },
-  mainContainer: { gap: 20, padding: 5 },
+  mainContainer: { flexDirection: "row", gap: 10, padding: 10 },
 });
