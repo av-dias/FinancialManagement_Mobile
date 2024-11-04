@@ -36,7 +36,7 @@ export const CustomListItem = ({ innerData, options, label, onPress = () => {} }
   let iconComponent;
 
   const loadIcon = (data) => {
-    if (data.doi) return utilIcons(30).find((category) => category.label === innerData.type);
+    if (data.doi) return utilIcons(23).find((category) => category.label === innerData.type);
     if (data.dop) return categoryIcons(30).find((category) => category.label === innerData.type);
     if (data.dot) {
       if (!innerData.user_origin_id) {
