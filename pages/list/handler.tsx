@@ -79,3 +79,14 @@ export const handleSettleSplit = async (email, expense: Expense, handleTransacti
   };
   await handleTransaction(newTransaction, () => {}, destination, true, email, setExpenses);
 };
+
+export const isIncomeOnDate = (i_doi, date) => {
+  return i_doi.toString().split(" ")[0] == date ? true : false;
+};
+
+export const expenseLabel = (innerData) => {
+  if (innerData.split)
+    return {
+      text: innerData.split.weight + "%",
+    };
+};

@@ -5,8 +5,7 @@ import commonStyles from "../../utility/commonStyles";
 import { dark } from "../../utility/colors";
 import Modal from "react-native-modal";
 
-export default function ModalCustom({ modalVisible, setModalVisible, size = 3, hasColor = true, children }) {
-  const styles = _styles;
+export default function ModalCustom({ modalVisible, setModalVisible, size = 3, hasColor = true, color = "transparent", padding = 0, paddingBottom = 0, children }) {
   return (
     <Modal
       animationType="fade"
@@ -20,11 +19,11 @@ export default function ModalCustom({ modalVisible, setModalVisible, size = 3, h
       statusBarTranslucent
       deviceHeight={Dimensions.get("window").height * 2}
     >
-      <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.3)" }}>
+      <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.3)", padding: padding, paddingBottom: paddingBottom }}>
         <TouchableOpacity style={{ flex: 5 }} onPress={() => setModalVisible(!modalVisible)} />
         <View
           style={{
-            backgroundColor: hasColor ? dark.backgroundLight : "transparent",
+            backgroundColor: hasColor ? dark.backgroundLight : color,
             flex: size,
             width: "100%",
             padding: commonStyles.paddingHorizontal,
