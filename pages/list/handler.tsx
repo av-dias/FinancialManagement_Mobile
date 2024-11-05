@@ -3,6 +3,8 @@ import { KEYS } from "../../utility/storageKeys";
 import { ExpenseType, PurchaseType, TransactionType } from "../../models/types";
 import { updateExpenses } from "../../functions/expenses";
 import { handleTransaction } from "../transaction/handler";
+import { IncomeEntity } from "../../store/database/Income/IncomeEntity";
+import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 
 export const isCtxLoaded = (ctx) => {
   return Object.keys(ctx).length > 0 && Object.keys(ctx["expensesByDate"]).length > 0;
@@ -114,3 +116,27 @@ export const editOption = (setSelectedItem, expenses, setSliderStatus, setEditVi
   },
   type: "Edit",
 });
+
+export const searchItemm = (data: IncomeEntity | ExpenseType, searchQuery) => {
+  // If the search query is empty, return true to display all items
+  if (searchQuery.trim().length == 0) return true;
+  // Filter income based on search query
+  else if (data.hasOwnProperty("doi")) {
+    data = data as IncomeEntity;
+    if (data.name.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim())) {
+      return true;
+    }
+    return false;
+    // Filter expenses based on search query
+  } else {
+    data = data as ExpenseType;
+    if (data.key == KEYS_SERIALIZER.PURCHASE) {
+      const element = data.element as PurchaseType;
+      if (element.name.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim()) || element.type.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase().trim())) return true;
+    } else if (data.key == KEYS_SERIALIZER.TRANSACTION) {
+      const element = data.element as TransactionType;
+      if (element.description.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim()) || element.type.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim())) return true;
+    }
+    return false;
+  }
+};

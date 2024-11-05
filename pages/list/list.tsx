@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, Children } from "react";
 import { Text, View, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -11,7 +11,7 @@ import { UserContext } from "../../store/user-context";
 import { verticalScale } from "../../functions/responsive";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { getSplitEmail, getSplitUser } from "../../functions/split";
-import { expenseLabel, isIncomeOnDate, splitOption, settleOption, editOption } from "./handler";
+import { expenseLabel, isIncomeOnDate, splitOption, settleOption, editOption, searchItemm } from "./handler";
 import { months } from "../../utility/calendar";
 
 import Header from "../../components/header/header";
@@ -30,6 +30,7 @@ import { AlertData, IncomeAlertData, PurchaseAlertData, TransactionAlertData } f
 import { removeFromStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 import ModalList from "./component/modalList/modalList";
+import { Searchbar } from "react-native-paper";
 
 export default function List({ navigation }) {
   const appCtx = useContext(AppContext);
@@ -50,10 +51,13 @@ export default function List({ navigation }) {
   const [destination, setDestination] = useState("");
 
   const [listDays, setListDays] = useState([]);
+  const [listSearchDays, setListSearchDays] = useState({});
+
   const [editVisible, setEditVisible] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
 
   const [expenses, setExpenses] = useState(appCtx.expenses);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useFocusEffect(
     React.useCallback(() => {
@@ -66,6 +70,12 @@ export default function List({ navigation }) {
       }
       fetchData();
     }, [email])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setListSearchDays({});
+    }, [searchQuery])
   );
 
   useFocusEffect(
@@ -166,6 +176,16 @@ export default function List({ navigation }) {
     }
   };
 
+  const ItemsCounter = ({ date, children }) => {
+    const hasDate = children.find((child) => child != false)[0];
+    if (!listSearchDays.hasOwnProperty(date)) {
+      setListSearchDays((prev) => ({ ...prev, [date]: hasDate == false ? false : true }));
+    }
+    return <>{children}</>;
+  };
+
+  console.log(listSearchDays);
+
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
@@ -178,31 +198,50 @@ export default function List({ navigation }) {
             </ModalCustom>
           )}
           {alertVisible && <ModalDialog visible={alertVisible} setVisible={setAlertVisible} size={2.5} data={getModalDialogData(selectedItem)} />}
+          <View style={{ paddingHorizontal: 5 }}>
+            <Searchbar
+              iconColor="white"
+              placeholderTextColor="lightgray"
+              style={{ backgroundColor: dark.complementary, borderRadius: 10 }}
+              placeholder="Search"
+              inputStyle={{ color: "white" }}
+              onChangeText={setSearchQuery}
+              value={searchQuery}
+            />
+          </View>
           <View style={{ flex: verticalScale(7), backgroundColor: "transparent" }}>
             <ScrollView>
               {listDays.map((date) => (
                 <View key={KEYS_SERIALIZER.EXPENSE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date} style={{ paddingHorizontal: 5 }}>
-                  <View style={styles.listDateBox}>
-                    <Text style={styles.listDate}>{new Date(date).getDate() + " " + months[new Date(date).getMonth()]}</Text>
-                  </View>
+                  {listSearchDays[date] && (
+                    <View style={styles.listDateBox}>
+                      <Text style={styles.listDate}>{new Date(date).getDate() + " " + months[new Date(date).getMonth()]}</Text>
+                    </View>
+                  )}
                   <CardWrapper key={date} style={styles.listBox}>
-                    {expensesGroupedByDate[date] &&
-                      expensesGroupedByDate[date].map((expenses: ExpenseType) => (
-                        <CustomListItem
-                          key={`Income${expenses.index}`}
-                          innerData={expenses.element}
-                          options={expensesOptions(expenses, expenses.key)}
-                          label={expenseLabel(expenses.element)}
-                          onPress={() => loadModalDialog(expenses)}
-                        />
-                      ))}
-                    {incomeData &&
-                      incomeData.map(
-                        (income) =>
-                          isIncomeOnDate(income.doi, date) && (
-                            <CustomListItem key={`Income${income.id}`} innerData={{ ...income, type: "Income" }} options={incomeOptions()} onPress={() => loadModalDialog(income)} />
-                          )
-                      )}
+                    <ItemsCounter date={date}>
+                      {expensesGroupedByDate[date] &&
+                        expensesGroupedByDate[date].map(
+                          (expenses: ExpenseType) =>
+                            searchItemm(expenses, searchQuery) && (
+                              <CustomListItem
+                                key={`Income${expenses.index}`}
+                                innerData={expenses.element}
+                                options={expensesOptions(expenses, expenses.key)}
+                                label={expenseLabel(expenses.element)}
+                                onPress={() => loadModalDialog(expenses)}
+                              />
+                            )
+                        )}
+                      {incomeData &&
+                        incomeData.map(
+                          (income) =>
+                            isIncomeOnDate(income.doi, date) &&
+                            searchItemm(income, searchQuery) && (
+                              <CustomListItem key={`Income${income.id}`} innerData={{ ...income, type: "Income" }} options={incomeOptions()} onPress={() => loadModalDialog(income)} />
+                            )
+                        )}
+                    </ItemsCounter>
                   </CardWrapper>
                 </View>
               ))}
