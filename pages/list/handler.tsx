@@ -117,7 +117,7 @@ export const editOption = (setSelectedItem, expenses, setSliderStatus, setEditVi
   type: "Edit",
 });
 
-export const searchItemm = (data: IncomeEntity | ExpenseType, searchQuery) => {
+export const searchItem = (data: IncomeEntity | ExpenseType, searchQuery: string) => {
   // If the search query is empty, return true to display all items
   if (searchQuery.trim().length == 0) return true;
   // Filter income based on search query
@@ -139,4 +139,35 @@ export const searchItemm = (data: IncomeEntity | ExpenseType, searchQuery) => {
     }
     return false;
   }
+};
+
+export const searchExpenses = (expensesByDate, searchQuery, listOfDays) => {
+  Object.keys(expensesByDate).forEach((date) => {
+    expensesByDate[date].forEach((expense) => {
+      let hasItem = searchItem(expense, searchQuery);
+      if (hasItem) {
+        let expenseDate: string;
+        if (expense.key === KEYS_SERIALIZER.PURCHASE) {
+          expenseDate = (expense.element as PurchaseType).dop;
+        } else if (expense.key === KEYS_SERIALIZER.TRANSACTION) {
+          expenseDate = (expense.element as TransactionType).dot;
+        }
+        if (!listOfDays.includes(expenseDate)) {
+          listOfDays.push(expenseDate);
+        }
+      }
+    });
+  });
+};
+
+export const searchIncome = (incomeData, searchQuery, listOfDays) => {
+  incomeData.forEach((income) => {
+    let hasItem = searchItem(income, searchQuery);
+    if (hasItem) {
+      const date = income.doi.toString().split(" ")[0];
+      if (!listOfDays.includes(date)) {
+        listOfDays.push(date);
+      }
+    }
+  });
 };

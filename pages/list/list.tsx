@@ -11,7 +11,7 @@ import { UserContext } from "../../store/user-context";
 import { verticalScale } from "../../functions/responsive";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { getSplitEmail, getSplitUser } from "../../functions/split";
-import { expenseLabel, isIncomeOnDate, splitOption, settleOption, editOption, searchItemm } from "./handler";
+import { expenseLabel, isIncomeOnDate, splitOption, settleOption, editOption, searchItem, searchExpenses, searchIncome } from "./handler";
 import { months } from "../../utility/calendar";
 
 import Header from "../../components/header/header";
@@ -51,7 +51,6 @@ export default function List({ navigation }) {
   const [destination, setDestination] = useState("");
 
   const [listDays, setListDays] = useState([]);
-  const [listSearchDays, setListSearchDays] = useState({});
 
   const [editVisible, setEditVisible] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
@@ -74,13 +73,8 @@ export default function List({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      setListSearchDays({});
-    }, [searchQuery])
-  );
-
-  useFocusEffect(
-    React.useCallback(() => {
       async function fetchData() {
+        setListDays([]); // There is no data for the selected month
         if (expenses && email && expenses.hasOwnProperty(currentYear) && expenses[currentYear].hasOwnProperty(currentMonth)) {
           console.log("List: Fetching app data...");
           const startTime = performance.now();
@@ -96,28 +90,27 @@ export default function List({ navigation }) {
           } catch (e) {
             console.log(e);
           }
-
-          let dates = Object.keys(resExpensesGroupedByDate);
-          if (incomeList) {
-            incomeList.forEach((income) => {
-              const date = income.doi.toString().split(" ")[0];
-              if (!dates.includes(date)) {
-                dates.push(date);
-              }
-            });
-          }
-
-          let list = dates.sort().reverse();
-          setListDays([...new Set(list)]);
           const endTime = performance.now();
           console.log(`--> Call to List useFocusEffect took ${endTime - startTime} milliseconds.`);
-        } else {
-          // There is no data for the selected month
-          setListDays([]);
         }
       }
       fetchData();
     }, [appCtx.expenses, email, expenses, currentYear, currentMonth, incomeData.length, incomeRepository])
+  );
+
+  /* Loads dates based on Expenses, Income Items and Search Query */
+  useFocusEffect(
+    React.useCallback(() => {
+      const startTime = performance.now();
+      let listOfDays = [];
+      searchExpenses(expensesGroupedByDate, searchQuery, listOfDays);
+      searchIncome(incomeData, searchQuery, listOfDays);
+
+      let list = listOfDays.sort().reverse();
+      setListDays([...new Set(list)]);
+      const endTime = performance.now();
+      console.log(`--> Call to List useFocusEffect list days took ${endTime - startTime} milliseconds.`);
+    }, [searchQuery, incomeData, expensesGroupedByDate])
   );
 
   /* Load income options for list item */
@@ -176,16 +169,6 @@ export default function List({ navigation }) {
     }
   };
 
-  const ItemsCounter = ({ date, children }) => {
-    const hasDate = children.find((child) => child != false)[0];
-    if (!listSearchDays.hasOwnProperty(date)) {
-      setListSearchDays((prev) => ({ ...prev, [date]: hasDate == false ? false : true }));
-    }
-    return <>{children}</>;
-  };
-
-  console.log(listSearchDays);
-
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
@@ -213,35 +196,31 @@ export default function List({ navigation }) {
             <ScrollView>
               {listDays.map((date) => (
                 <View key={KEYS_SERIALIZER.EXPENSE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date} style={{ paddingHorizontal: 5 }}>
-                  {listSearchDays[date] && (
-                    <View style={styles.listDateBox}>
-                      <Text style={styles.listDate}>{new Date(date).getDate() + " " + months[new Date(date).getMonth()]}</Text>
-                    </View>
-                  )}
+                  <View style={styles.listDateBox}>
+                    <Text style={styles.listDate}>{new Date(date).getDate() + " " + months[new Date(date).getMonth()]}</Text>
+                  </View>
                   <CardWrapper key={date} style={styles.listBox}>
-                    <ItemsCounter date={date}>
-                      {expensesGroupedByDate[date] &&
-                        expensesGroupedByDate[date].map(
-                          (expenses: ExpenseType) =>
-                            searchItemm(expenses, searchQuery) && (
-                              <CustomListItem
-                                key={`Income${expenses.index}`}
-                                innerData={expenses.element}
-                                options={expensesOptions(expenses, expenses.key)}
-                                label={expenseLabel(expenses.element)}
-                                onPress={() => loadModalDialog(expenses)}
-                              />
-                            )
-                        )}
-                      {incomeData &&
-                        incomeData.map(
-                          (income) =>
-                            isIncomeOnDate(income.doi, date) &&
-                            searchItemm(income, searchQuery) && (
-                              <CustomListItem key={`Income${income.id}`} innerData={{ ...income, type: "Income" }} options={incomeOptions()} onPress={() => loadModalDialog(income)} />
-                            )
-                        )}
-                    </ItemsCounter>
+                    {expensesGroupedByDate[date] &&
+                      expensesGroupedByDate[date].map(
+                        (expenses: ExpenseType) =>
+                          searchItem(expenses, searchQuery) && (
+                            <CustomListItem
+                              key={`Income${expenses.index}`}
+                              innerData={expenses.element}
+                              options={expensesOptions(expenses, expenses.key)}
+                              label={expenseLabel(expenses.element)}
+                              onPress={() => loadModalDialog(expenses)}
+                            />
+                          )
+                      )}
+                    {incomeData &&
+                      incomeData.map(
+                        (income) =>
+                          isIncomeOnDate(income.doi, date) &&
+                          searchItem(income, searchQuery) && (
+                            <CustomListItem key={`Income${income.id}`} innerData={{ ...income, type: "Income" }} options={incomeOptions()} onPress={() => loadModalDialog(income)} />
+                          )
+                      )}
                   </CardWrapper>
                 </View>
               ))}
