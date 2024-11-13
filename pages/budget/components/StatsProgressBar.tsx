@@ -57,7 +57,7 @@ export const StatsProgressBar = ({ type, spendAverageByType, expensesTotalByType
         <Text key={type + "TextM1"} style={{ fontSize: 18, fontWeight: "bold", color: dark.textPrimary, textAlign: "right" }}>
           {currentTypeValue + "/"}
         </Text>
-        <Text key={type + "TextM2"} style={{ color: dark.textPrimary, textAlign: "right" }}>
+        <Text key={type + "TextM2"} style={{ color: dark.textPrimary, textAlign: "right", fontSize: 12 }}>
           {lastAverageTypeValue}
         </Text>
       </View>

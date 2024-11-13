@@ -80,6 +80,9 @@ export default function Budget({ navigation }) {
           resTotalExpensesByType = { ...resTotalExpensesByType, ...resTotalExpensesByTypePrev };
         }
 
+        // Sort the average expenses by the most expensive type to least expensive
+        resType[currentYear][STATS_TYPE[1]] = Object.fromEntries(Object.entries(resType[currentYear][STATS_TYPE[1]]).sort(([, a], [, b]) => Number(b) - Number(a)));
+
         setSpendAverageByType(resType);
         setPurchaseAverageTotal(resTotal);
         setPurchaseCurrentStats(resExpensesByType);
