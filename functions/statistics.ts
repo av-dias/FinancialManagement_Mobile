@@ -1,3 +1,4 @@
+import { ExpensesByYear } from "../models/interfaces";
 import { months } from "../utility/calendar";
 import { STATS_TYPE, TRANSACTION_TYPE } from "../utility/keys";
 import { calcExpensesByType, calcExpensesTotalFromType, calcSplitDept, calcTotalExpensesByType, calcTransactionStats } from "./expenses";
@@ -87,4 +88,18 @@ export const calculateSpendByType = (expenses, currentYear) => {
   }
 
   return resSpendByType;
+};
+
+/*
+ * Used to find all the expenses that have been split by the current year and month
+ */
+export const findAllSplitExpenses = (expenses: ExpensesByYear, currentYear: number) => {
+  let expensesWithSplit = { [currentYear]: {} };
+  let transactionsWithSplit = { [currentYear]: {} };
+  Object.keys(expenses[currentYear]).map((element) => {
+    // Remove all the expense elements which do not have a split
+    expensesWithSplit[currentYear][element] = expenses[currentYear][element].filter((expense) => expense.element.split);
+    transactionsWithSplit[currentYear][element] = expenses[currentYear][element].filter((expense) => expense.element.user_origin_id);
+  });
+  return { expensesWithSplit, transactionsWithSplit };
 };

@@ -91,4 +91,6 @@ export const _styles = StyleSheet.create({
   },
   containerJustifyCenter: { justifyContent: "center" },
   containerRowGap: { flexDirection: "row", gap: 10, zIndex: 100 },
+  splitModalTitle: { color: dark.textPrimary, fontWeight: "bold", fontSize: 24, paddingVertical: 10 },
+  splitModalText: { color: dark.textPrimary, fontSize: 14, paddingHorizontal: 10, paddingVertical: 5, backgroundColor: dark.complementary, borderRadius: commonStyles.borderRadius },
 });
