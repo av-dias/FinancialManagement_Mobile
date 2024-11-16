@@ -19,8 +19,8 @@ export const FlatItem = (content: FlatItemType) => {
   };
 
   return (
-    <CardWrapper style={{ paddingVertical: 20, paddingHorizontal: 30, maxHeight: 100 }}>
-      <Pressable onPress={onPress}>
+    <Pressable onPress={onPress}>
+      <CardWrapper style={{ paddingVertical: 20, paddingHorizontal: 30, maxHeight: 100 }}>
         <View style={styles.row}>
           {content.icon && <View style={styles.left}>{content?.icon}</View>}
           <View style={content.icon ? styles.center : styles.left}>
@@ -33,7 +33,7 @@ export const FlatItem = (content: FlatItemType) => {
             </View>
           </View>
         </View>
-      </Pressable>
-    </CardWrapper>
+      </CardWrapper>
+    </Pressable>
   );
 };

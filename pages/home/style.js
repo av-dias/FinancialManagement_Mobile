@@ -71,4 +71,6 @@ export const _styles = StyleSheet.create({
   expensesContainer: { position: "absolute", justifyContent: "center", alignContent: "center", backgroundColor: "transparent" },
   typeCardContainer: { flex: 1, alignSelf: "flex-end", flexDirection: "row", maxHeight: 35, gap: 10, paddingHorizontal: 5 },
   noDataContainer: { flex: 8, justifyContent: "center", alignItems: "center", gap: 10 },
+  splitModalTitle: { color: dark.textPrimary, fontWeight: "bold", fontSize: 24, paddingVertical: 10 },
+  splitModalText: { color: dark.textPrimary, fontSize: 14, paddingHorizontal: 10, paddingVertical: 5, backgroundColor: dark.complementary, borderRadius: commonStyles.borderRadius },
 });
