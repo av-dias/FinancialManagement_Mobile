@@ -31,6 +31,7 @@ import { removeFromStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 import ModalList from "./component/modalList/modalList";
 import { Searchbar } from "react-native-paper";
+import { logTimeTook } from "../../utility/logger";
 
 export default function List({ navigation }) {
   const appCtx = useContext(AppContext);
@@ -91,7 +92,7 @@ export default function List({ navigation }) {
             console.log(e);
           }
           const endTime = performance.now();
-          console.log(`--> Call to List useFocusEffect took ${endTime - startTime} milliseconds.`);
+          logTimeTook("List", "useFocusEffect", endTime, startTime);
         }
       }
       fetchData();
@@ -109,7 +110,7 @@ export default function List({ navigation }) {
       let list = listOfDays.sort().reverse();
       setListDays([...new Set(list)]);
       const endTime = performance.now();
-      console.log(`--> Call to List useFocusEffect list days took ${endTime - startTime} milliseconds.`);
+      logTimeTook("List", "useFocusEffect list days", endTime, startTime);
     }, [searchQuery, incomeData, expensesGroupedByDate])
   );
 

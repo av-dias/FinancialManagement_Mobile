@@ -2,11 +2,11 @@ import React, { createContext, useContext, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { getAllPurchaseStats } from "../functions/purchase";
 import { getAllTransactionsStats } from "../functions/transaction";
-import { getUser } from "../functions/basic";
 import { UserContext } from "./user-context";
 import { STATS_TYPE, TRANSACTION_TYPE, KEYS as KEYS_SERIALIZER, KEYS } from "../utility/keys";
 import { ExpenseType, PurchaseType, TransactionType } from "../models/types";
 import { ExpensesByYear } from "../models/interfaces";
+import { logTimeTook } from "../utility/logger";
 
 interface AppContext {
   email: any;
@@ -57,7 +57,7 @@ const calcExpensesByType = (resPurchases, resTransactions) => {
     let type0Value = parseFloat(curr.value);
     let type1Value = parseFloat(curr.value);
 
-    if (curr.split) type1Value = parseFloat((type0Value * (100 - curr.split.weight)) / 100);
+    if (curr.split) type1Value = (type0Value * (100 - parseFloat(curr.split.weight))) / 100;
 
     res[year][month][STATS_TYPE[0]][curr.type] += type0Value;
     res[year][month][STATS_TYPE[1]][curr.type] += type1Value;
@@ -124,7 +124,7 @@ const calcExpensesTotal = (purchases, transaction) => {
   let purchaseYearList = Object.keys(purchases);
   let transactionYearList = Object.keys(transaction);
 
-  for (year of purchaseYearList) {
+  for (const year of purchaseYearList) {
     Object.keys(purchases[year]).forEach((month) => {
       let curr = purchases[year][month];
 
@@ -143,7 +143,7 @@ const calcExpensesTotal = (purchases, transaction) => {
     });
   }
 
-  for (year of transactionYearList) {
+  for (const year of transactionYearList) {
     Object.keys(transaction[year]).forEach((month) => {
       let curr = transaction[year][month];
 
@@ -186,7 +186,7 @@ const calcPurchaseTotal = (purchases) => {
     let type1Value = parseFloat(curr.value);
 
     if (curr.split) {
-      type1Value = parseFloat((type0Value * (100 - curr.split.weight)) / 100);
+      type1Value = (type0Value * (100 - parseFloat(curr.split.weight))) / 100;
     }
 
     res[year][month][STATS_TYPE[0]] += type0Value;
@@ -230,8 +230,8 @@ const calcTransactionTotal = (transactions) => {
 
 const calcExpensesTotalAverage = (expenses) => {
   let expensesAverage = {};
-  let expensesYearList = Object.keys(expenses);
-  for (year of expensesYearList) {
+  let expensesYearList: string[] = Object.keys(expenses);
+  for (const year of expensesYearList) {
     let monthCount = 0;
     Object.keys(expenses[year]).forEach((month) => {
       monthCount++;
@@ -253,7 +253,7 @@ const calcExpensesTotalAverage = (expenses) => {
 const calcExpensesByTypeAverage = (expenses) => {
   let expensesByTypeAverage = {};
   let expensesYearList = Object.keys(expenses);
-  for (year of expensesYearList) {
+  for (const year of expensesYearList) {
     let monthCount = 0;
     Object.keys(expenses[year]).forEach((month) => {
       monthCount++;
@@ -264,9 +264,9 @@ const calcExpensesByTypeAverage = (expenses) => {
       }
 
       let elementStatsList = Object.keys(expenses[year][month]);
-      for (stats of elementStatsList) {
+      for (const stats of elementStatsList) {
         let elementTypeList = Object.keys(expenses[year][month][stats]);
-        for (type of elementTypeList) {
+        for (const type of elementTypeList) {
           // Verify if type already exists
           if (!expensesByTypeAverage[year][stats][type]) expensesByTypeAverage[year][stats][type] = 0;
 
@@ -275,9 +275,9 @@ const calcExpensesByTypeAverage = (expenses) => {
       }
     });
 
-    for (stats of Object.keys(expensesByTypeAverage[year])) {
+    for (const stats of Object.keys(expensesByTypeAverage[year])) {
       let elementTypeList = Object.keys(expensesByTypeAverage[year][stats]);
-      for (type of elementTypeList) {
+      for (const type of elementTypeList) {
         expensesByTypeAverage[year][stats][type] /= monthCount;
       }
     }
@@ -289,7 +289,7 @@ const calcSplitDept = (expenses, splitDept) => {
   let res = {};
   let expensesYearList = Object.keys(expenses);
 
-  for (year of expensesYearList) {
+  for (const year of expensesYearList) {
     Object.keys(expenses[year]).forEach((month) => {
       // Verify if year already exists
       if (!res[year]) {
@@ -399,17 +399,17 @@ const AppContextProvider = ({ children }) => {
           let resPurchases = await getAllPurchaseStats(userCtx.email);
           setPurchases(loadPurchases(resPurchases, resExpense));
           let purchaseTime = performance.now();
-          console.log(`App-Context: Load Purchase took ${purchaseTime - startTime} milliseconds.`);
+          logTimeTook("App-Context", "Load Purchase", purchaseTime, startTime);
           // TRANSACTION
           // [Year][Month]
           // Index
           let resTransactions = await getAllTransactionsStats(userCtx.email);
           setTransactions(loadTransactions(resTransactions, resExpense));
           let transactionTime = performance.now();
-          console.log(`App-Context: Load Transaction took ${transactionTime - purchaseTime} milliseconds.`);
+          logTimeTook("App-Context", "Load Transaction", transactionTime, purchaseTime);
           setExpenses(resExpense);
           let endTime = performance.now();
-          console.log(`App-Context: Load useFocusEffect took ${endTime - startTime} milliseconds.`);
+          logTimeTook("App-Context", "Load useFocusEffect", endTime, startTime);
         }
       }
       fetchData();

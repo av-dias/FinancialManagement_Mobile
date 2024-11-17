@@ -20,6 +20,7 @@ import Statistics from "../stats/statistics";
 import { AverageProgressBar } from "./components/AverageProgressBar";
 import { StatsProgressBar } from "./components/StatsProgressBar";
 import { ProgressItemsHeader } from "./components/ProgressItemsHeader";
+import { logTimeTook } from "../../utility/logger";
 
 export default function Budget({ navigation }) {
   const styles = _styles;
@@ -90,7 +91,7 @@ export default function Budget({ navigation }) {
         setExpensesTotalByType(resTotalExpensesByType);
 
         const endTime = performance.now();
-        console.log(`--> Call to Budget useFocusEffect took ${endTime - startTime} milliseconds.`);
+        logTimeTook("Budget", "useFocusEffect", endTime, startTime);
       }
     }, [appCtx.expenses])
   );

@@ -27,6 +27,7 @@ import ModalCustom from "../../components/modal/modal";
 import { ExpenseType, PurchaseType, TransactionType } from "../../models/types";
 import { categoryIcons, utilIcons } from "../../utility/icons";
 import { Badge } from "react-native-paper";
+import { logTimeTook } from "../../utility/logger";
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -85,7 +86,7 @@ export default function Home({ navigation }) {
       let startTime = performance.now();
       fetchData();
       let endTime = performance.now();
-      console.log(`Home: Fetch took ${endTime - startTime} milliseconds.`);
+      logTimeTook("Home", "Fetch", endTime, startTime);
     }, [appCtx.expenses, currentMonth, currentYear])
   );
 
@@ -107,7 +108,7 @@ export default function Home({ navigation }) {
         fetchData();
       }
       let endTime = performance.now();
-      console.log(`Home: Database Fetch took ${endTime - startTime} milliseconds.`);
+      logTimeTook("Home", "Database Fetch", endTime, startTime);
     }, [appCtx.email, incomeRepository, expenseTotal, purchaseAverageTotal, statsMode, statsType])
   );
 
