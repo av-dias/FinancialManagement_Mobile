@@ -19,7 +19,9 @@ export const FlatItem = (content: FlatItemType) => {
   };
 
   return (
-    <Pressable onPress={onPress}>
+    //style={({ pressed }) => [{ backgroundColor: pressed ? 'black' : 'white' }, styles.btn ]}>
+
+    <Pressable onPress={onPress} style={({ pressed }) => [{ opacity: pressed ? content.onPressCallback && 0.8 : 1 }]}>
       <CardWrapper style={{ paddingVertical: 20, paddingHorizontal: 30, maxHeight: 100 }}>
         <View style={styles.row}>
           {content.icon && <View style={styles.left}>{content?.icon}</View>}

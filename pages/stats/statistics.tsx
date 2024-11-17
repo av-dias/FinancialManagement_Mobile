@@ -1,6 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { View, Text, ScrollView } from "react-native";
-import { ProgressBarColors } from "../../utility/colors";
 import { _styles } from "./style";
 import { useContext } from "react";
 import { AppContext } from "../../store/app-context";
@@ -11,18 +10,20 @@ import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { calculateSplitData, calculateSplitDeptData, findAllSplitExpenses } from "../../functions/statistics";
 import { getSumArrayObject } from "../../functions/array";
 import { months } from "../../utility/calendar";
-import { BarChart } from "react-native-gifted-charts";
 import ModalCustom from "../../components/modal/modal";
 import { ExpenseType, PurchaseType, TransactionType } from "../../models/types";
 import { FlatItem } from "../../components/flatItem/flatItem";
 import { categoryIcons } from "../../utility/icons";
 import { Badge } from "react-native-paper";
+import { CustomBarChart } from "../../components/CustomBarChart/CustomBarChart";
+import { dark } from "../../utility/colors";
+import { verticalScale } from "../../functions/responsive";
+import { logTimeTook } from "../../utility/logger";
 
 const sortMonths = (a, b) => months.indexOf(a.label) - months.indexOf(b.label);
 
 export default function Statistics() {
   const styles = _styles;
-  const ref = useRef(null);
   const appCtx = useContext(AppContext);
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
   const [splitTotal, setSplitTotal] = useState<number>(0);
@@ -66,12 +67,9 @@ export default function Statistics() {
       let startTime = performance.now();
       fetchData();
       let endTime = performance.now();
-      console.log(`Stats: Fetch took ${endTime - startTime} milliseconds.`);
+      logTimeTook("Stats", "Fetch", endTime, startTime);
     }, [appCtx.expenses, currentYear])
   );
-
-  const month = new Date().getMonth();
-  ref.current?.scrollTo({ x: month < 6 ? 0 : 200 }); // adjust as per your UI
 
   const loadIcon = (expense) => <View>{categoryIcons(25).find((category) => category.label === expense.element.type).icon}</View>;
 
@@ -113,6 +111,8 @@ export default function Statistics() {
     </View>
   );
 
+  const maxBaxValue = splitDeptData[currentYear] && splitDeptData[currentYear].sort((a, b) => b.value - a.value)[0].value;
+
   return (
     <CardWrapper style={styles.chartContainer}>
       <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible} size={10} hasColor={true}>
@@ -132,29 +132,21 @@ export default function Statistics() {
           <TypeCard setItem={setCurrentYear} itemList={[yearsRange]} />
         </View>
       </View>
-      <View style={{ paddingTop: 80, paddingBottom: 20, paddingLeft: 10 }}>
-        <BarChart
-          scrollRef={ref}
-          onPress={(item: {}, index: number) => {
-            setChartIndex(index);
-            setModalVisible(true);
-          }}
-          barWidth={30}
-          spacing={10}
-          noOfSections={2}
-          barBorderRadius={4}
-          frontColor={ProgressBarColors.blue}
+      <View style={{ gap: 10, paddingTop: 60, paddingHorizontal: 10, paddingRight: verticalScale(40), flexDirection: "row" }}>
+        <View style={{ justifyContent: "center" }}>
+          <Text style={{ flex: 3, color: dark.textPrimary, fontSize: 10, textAlignVertical: "top", textAlign: "center" }}>{maxBaxValue}</Text>
+          <Text style={{ flex: 3, color: dark.textPrimary, fontSize: 10, textAlignVertical: "center", textAlign: "center" }}>{maxBaxValue / 2}</Text>
+          <Text style={{ flex: 3, color: dark.textPrimary, fontSize: 10, textAlignVertical: "bottom", textAlign: "center" }}>{0}</Text>
+          <Text style={{ flex: 1 }}></Text>
+        </View>
+        <CustomBarChart
+          maxBarValue={maxBaxValue}
           data={splitDeptData[currentYear]}
-          yAxisThickness={0}
-          xAxisThickness={0}
-          yAxisTextStyle={{ color: "gray" }}
-          xAxisLabelTextStyle={{ color: "gray" }}
-          showValuesAsTopLabel={true}
-          topLabelContainerStyle={{ paddingBottom: 0 }}
-          topLabelTextStyle={{ color: "white", fontSize: 10, textAlign: "center" }}
-          xAxisLabelsVerticalShift={5}
-          rulesType="solid"
-          rulesColor={"gray"}
+          labels={months}
+          onPressCallback={(index: number) => {
+            setModalVisible(true);
+            setChartIndex(index);
+          }}
         />
       </View>
     </CardWrapper>
