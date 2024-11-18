@@ -16,7 +16,6 @@ export const _styles = StyleSheet.create({
     paddingHorizontal: verticalScale(20),
     width: "100%",
     alignSelf: "center",
-    backgroundColor: dark.complementary,
     borderRadius: commonStyles.borderRadius,
   },
   row: { flexDirection: "row", gap: verticalScale(15), borderRadius: commonStyles.borderRadius, backgroundColor: "transparent" },
