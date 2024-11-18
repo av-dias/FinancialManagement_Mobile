@@ -2,6 +2,7 @@ import { Pressable, View, Text } from "react-native";
 import { ReactNode } from "react";
 import CardWrapper from "../cardWrapper/cardWrapper";
 import { _styles } from "./style";
+import commonStyles from "../../utility/commonStyles";
 
 type FlatItemType = {
   name: string;
@@ -21,7 +22,7 @@ export const FlatItem = (content: FlatItemType) => {
   return (
     //style={({ pressed }) => [{ backgroundColor: pressed ? 'black' : 'white' }, styles.btn ]}>
 
-    <Pressable onPress={onPress} style={({ pressed }) => [{ opacity: pressed ? content.onPressCallback && 0.8 : 1 }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => commonStyles.onPressBounce(pressed, {}, content.onPressCallback)}>
       <CardWrapper style={{ paddingVertical: 20, paddingHorizontal: 30, maxHeight: 100 }}>
         <View style={styles.row}>
           {content.icon && <View style={styles.left}>{content?.icon}</View>}

@@ -3,6 +3,7 @@ import CardWrapper from "../cardWrapper/cardWrapper";
 import { dark } from "../../utility/colors";
 import { _styles } from "./style";
 import { useRef } from "react";
+import commonStyles from "../../utility/commonStyles";
 
 type CustomBarChartProps = {
   maxBarValue: number; // Maximum value of the bar chart
@@ -41,7 +42,7 @@ export const CustomBarChart = ({ maxBarValue, data, labels, onPressCallback }: C
         {labels.map((month, index) => {
           let value = Number(data.find((element) => element.label === month).value);
           return (
-            <Pressable key={`barChart${month}`} style={({ pressed }) => [{ opacity: pressed ? onPressCallback && 0.8 : 1, ...styles.barContainer }]} onPress={() => onPressCallback(index)}>
+            <Pressable key={`barChart${month}`} style={({ pressed }) => commonStyles.onBarPressBounce(pressed, styles.barContainer, onPressCallback)} onPress={() => onPressCallback(index)}>
               <View style={styles.barValueContainer}>
                 <Text style={styles.barValueText}>{value.toFixed(0)}</Text>
               </View>

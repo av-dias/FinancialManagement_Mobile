@@ -15,8 +15,9 @@ export const _styles = StyleSheet.create({
     padding: 10,
     paddingHorizontal: verticalScale(20),
     width: "100%",
-    backgroundColor: "transparent",
     alignSelf: "center",
+    backgroundColor: dark.complementary,
+    borderRadius: commonStyles.borderRadius,
   },
   row: { flexDirection: "row", gap: verticalScale(15), borderRadius: commonStyles.borderRadius, backgroundColor: "transparent" },
   titleText: {

@@ -48,15 +48,7 @@ export const CustomListItem = ({ innerData, options, label, onPress = () => {} }
   };
 
   return (
-    <Pressable
-      key={`${innerData.id}`}
-      style={{
-        ...styles.button,
-        backgroundColor: dark.complementary,
-        borderRadius: commonStyles.borderRadius,
-      }}
-      onPress={onPress}
-    >
+    <Pressable key={`${innerData.id}`} style={({ pressed }) => commonStyles.onPressBounce(pressed, styles.button, onPress, 12)} onPress={onPress}>
       <View style={styles.rowGap}>
         <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent", height: verticalScale(40) }}>
           <TypeIcon icon={loadIcon(innerData)} />
