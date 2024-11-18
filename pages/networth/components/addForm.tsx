@@ -33,11 +33,14 @@ const styles = StyleSheet.create({
   },
   buttonDeactive: {
     flexDirection: "row",
+    alignContent: "center",
+    alignItems: "center",
+    gap: 10,
     height: 50,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    backgroundColor: dark.complementary,
     justifyContent: "center",
+    backgroundColor: dark.complementary,
     borderRadius: 5,
     zIndex: 1,
   },
@@ -123,14 +126,7 @@ export const AddForm = (props: AddFormProps) => {
           value={name}
           Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
         />
-        <Carrossel
-          type={name}
-          setType={setName}
-          size={verticalScale(90)}
-          iconSize={30}
-          items={loadCarroselItems()}
-          iconBorderColor={dark.secundary}
-        />
+        <Carrossel type={name} setType={setName} size={verticalScale(90)} iconSize={30} items={loadCarroselItems()} iconBorderColor={dark.secundary} />
 
         <View style={{ paddingTop: 10, gap: 10 }}>
           {(!exists || (exists && flags.networthFlag)) && (

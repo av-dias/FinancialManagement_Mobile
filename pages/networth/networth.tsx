@@ -19,8 +19,10 @@ import { PortfolioModel } from "../../store/database/Portfolio/PortfolioEntity";
 import { PortfolioDAO } from "../../models/portfolio.models";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import { PortfolioService } from "../../store/database/Portfolio/PortfolioService";
-import { deleteForm } from "./components/deleteForm";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
+import { AlertData } from "../../constants/listConstants/deleteDialog";
+import { NetworthAlertData } from "../../constants/networthConstants/networthDeleteDialog";
 
 type PortfolioStatusType = { networth: { absolute: number; relative: number }; grossworth: { absolute: number; relative: number } };
 
@@ -41,6 +43,8 @@ export default function Networth({ navigation }) {
   });
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<PortfolioDAO>();
 
   const loadPortfolioData = (sortedPortfolio: PortfolioModel[]) => {
     let currPortfolio = [];
@@ -122,15 +126,12 @@ export default function Networth({ navigation }) {
     await portfolioService.deletePortfolioItem(appCtx.email, name, value, currentMonth, currentYear);
   };
 
-  const onPressCallback = async ({ name, value }) => {
-    deleteForm(
-      async () => {
-        await deleteQuery({ name, value });
-        setTriggerRefresh((prev) => !prev);
-      },
-      name,
-      value
-    );
+  /* Loads the dialog data when list item is pressed */
+  const getModalDialogData = (data: PortfolioDAO): AlertData => {
+    return NetworthAlertData(data.name, data.value, async () => {
+      await deleteQuery({ name: data.name, value: data.value });
+      setTriggerRefresh((prev) => !prev);
+    });
   };
 
   /* TODO BUG
@@ -182,6 +183,11 @@ export default function Networth({ navigation }) {
     );
   };
 
+  const loadModalDialog = (data: PortfolioDAO) => {
+    setAlertVisible(true);
+    setSelectedItem(data);
+  };
+
   /*
    * Networth and Grossworth switch should be global to type
    * and should not vary by date
@@ -198,6 +204,7 @@ export default function Networth({ navigation }) {
             <AddForm items={items} onSubmit={onSubmiteCallback} email={appCtx.email} />
           </ModalCustom>
         )}
+        {alertVisible && <ModalDialog visible={alertVisible} setVisible={setAlertVisible} size={2.5} data={getModalDialogData(selectedItem)} />}
         <View style={styles.mainContainer}>
           <MainCard
             value={portfolioWorth.grossworth.toFixed(0)}
@@ -228,7 +235,7 @@ export default function Networth({ navigation }) {
            */}
           <ScrollView contentContainerStyle={{ gap: 5 }}>
             {portfolio?.map((item) => (
-              <FlatItem key={item.name} name={item.name} value={item.value} options={loadOptions(item)} onPressCallback={isItemMonthYear(item) ? onPressCallback : undefined} />
+              <FlatItem key={item.name} name={item.name} value={item.value} options={loadOptions(item)} onPressCallback={isItemMonthYear(item) ? loadModalDialog : undefined} />
             ))}
           </ScrollView>
         </View>
