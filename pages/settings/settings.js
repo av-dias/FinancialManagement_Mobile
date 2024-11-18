@@ -145,10 +145,8 @@ export default function Settings({ navigation }) {
           text: "Yes",
           onPress: async () => {
             let infoPurchase = await saveToStorage(KEYS.PURCHASE, "[]", email);
-            let infoArchivedPurchase = await saveToStorage(KEYS.ARCHIVE_PURCHASE, "[]", email);
             //let infoSplit = await saveToStorage(KEYS.SPLIT_USERS, "[]", email);
             let infoTransaction = await saveToStorage(KEYS.TRANSACTION, "[]", email);
-            let infoArchivedTransaction = await saveToStorage(KEYS.ARCHIVE_TRANSACTION, "[]", email);
             alert("Cleared");
           },
           style: "yes",
@@ -221,76 +219,11 @@ export default function Settings({ navigation }) {
         >
           <Text style={styles.buttonText}>Split</Text>
         </Pressable>
-        {/* <Pressable
-          style={styles.buttonChoice}
-          onPress={async () => {
-            let server = await getFromStorage(KEYS.SERVER);
-            let purchases = await getFromStorage(KEYS.PURCHASE, email);
-            let transactions = await getFromStorage(KEYS.TRANSACTION, email);
-            if (server == "on") {
-              let access_token = await getFromStorage(KEYS.ACCESS_TOKEN);
-              ip1 = await getFromStorage(KEYS.IP1);
-              ip2 = await getFromStorage(KEYS.IP2);
-              ip3 = await getFromStorage(KEYS.IP3);
-              ip4 = await getFromStorage(KEYS.IP4);
-              let userId = await getFromStorage(KEYS.USER_ID);
-              await fetch(`http://${ip1}.${ip2}.${ip3}.${ip4}:8080/api/v1/purchase/mobile/user/${userId}/update/purchases`, {
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  Authorization: "Bearer " + access_token,
-                },
-                method: "POST",
-                body: purchases,
-              })
-                .then(async (res) => {
-                  console.log("Update Status: " + res.status);
-                  await addToStorage(KEYS.ARCHIVE_PURCHASE, purchases, email);
-                  let info = await saveToStorage(KEYS.PURCHASE, "[]", email);
-                  alert("Data uploaded to main server.");
-                })
-                .catch(function (res) {
-                  console.log(res);
-                });
-              await fetch(`http://${ip1}.${ip2}.${ip3}.${ip4}:8080/api/v1/transactions/mobile/user/${userId}/update/transactions`, {
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  Authorization: "Bearer " + access_token,
-                },
-                method: "POST",
-                body: transactions,
-              })
-                .then(async (res) => {
-                  console.log("Update Status: " + res.status);
-                  await addToStorage(KEYS.ARCHIVE_TRANSACTION, transactions, email);
-                  let info = await saveToStorage(KEYS.TRANSACTION, "[]", email);
-                  alert("Data uploaded to main server.");
-                })
-                .catch(function (res) {
-                  console.log(res);
-                });
-            } else {
-              alert("Main server not connected.");
-              if (false) {
-                // For testing purpose only
-                await addToStorage(KEYS.ARCHIVE_PURCHASE, purchases, email);
-                await saveToStorage(KEYS.PURCHASE, "[]", email);
-
-                await addToStorage(KEYS.ARCHIVE_TRANSACTION, transactions, email);
-                await saveToStorage(KEYS.TRANSACTION, "[]", email);
-              }
-            }
-          }}
-        >
-          <Text style={styles.buttonText}>Update</Text>
-        </Pressable> */}
         <Pressable
           style={styles.buttonChoice}
           onPress={async () => {
             let infoPurchase = await getFromStorage(KEYS.PURCHASE, email);
-            let infoArchivePurchase = await getFromStorage(KEYS.ARCHIVE_PURCHASE, email);
-            alert(infoPurchase + " and " + infoArchivePurchase);
+            alert(infoPurchase);
           }}
         >
           <Text style={styles.buttonText}>Logs: Purchase</Text>
@@ -299,8 +232,7 @@ export default function Settings({ navigation }) {
           style={styles.buttonChoice}
           onPress={async () => {
             let infoTransaction = await getFromStorage(KEYS.TRANSACTION, email);
-            let infoArchiveTransaction = await getFromStorage(KEYS.ARCHIVE_TRANSACTION, email);
-            alert(infoTransaction + " and " + infoArchiveTransaction);
+            alert(infoTransaction);
           }}
         >
           <Text style={styles.buttonText}>Logs: Transaction</Text>

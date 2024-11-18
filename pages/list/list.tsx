@@ -1,4 +1,4 @@
-import React, { useState, useContext, Children } from "react";
+import React, { useState, useContext } from "react";
 import { Text, View, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";

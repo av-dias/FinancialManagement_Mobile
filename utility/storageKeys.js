@@ -1,9 +1,7 @@
 export const KEYS = {
   PORTFOLIO: "portfolio",
   PURCHASE: "purchases",
-  ARCHIVE_PURCHASE: "archived_purchases",
   TRANSACTION: "transactions",
-  ARCHIVE_TRANSACTION: "archived_transactions",
   EMAIL: "email",
   PASSWORD: "password",
   SPLIT_USERS: "split-list",
