@@ -52,6 +52,7 @@ export const _styles = StyleSheet.create({
     elevation: 0,
     backgroundColor: dark.complementary,
     padding: 20,
+    paddingBottom: 10,
   },
   tableInfo: {
     width: "100%",

@@ -132,13 +132,7 @@ export default function Statistics() {
           <TypeCard setItem={setCurrentYear} itemList={[yearsRange]} />
         </View>
       </View>
-      <View style={{ gap: 10, paddingTop: 60, paddingHorizontal: 10, paddingRight: verticalScale(40), flexDirection: "row" }}>
-        <View style={{ justifyContent: "center" }}>
-          <Text style={{ flex: 3, color: dark.textPrimary, fontSize: 10, textAlignVertical: "top", textAlign: "center" }}>{maxBaxValue}</Text>
-          <Text style={{ flex: 3, color: dark.textPrimary, fontSize: 10, textAlignVertical: "center", textAlign: "center" }}>{maxBaxValue / 2}</Text>
-          <Text style={{ flex: 3, color: dark.textPrimary, fontSize: 10, textAlignVertical: "bottom", textAlign: "center" }}>{0}</Text>
-          <Text style={{ flex: 1 }}></Text>
-        </View>
+      <View style={{ paddingTop: verticalScale(60), paddingHorizontal: 10, paddingRight: verticalScale(20), flexDirection: "row" }}>
         <CustomBarChart
           maxBarValue={maxBaxValue}
           data={splitDeptData[currentYear]}
