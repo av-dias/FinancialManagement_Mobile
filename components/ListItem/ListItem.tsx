@@ -5,6 +5,7 @@ import { _styles } from "./style";
 import { TypeIcon } from "../TypeIcon/TypeIcon";
 import { categoryIcons, utilIcons } from "../../utility/icons";
 import { verticalScale } from "../../functions/responsive";
+import { PurchaseType, TransactionType } from "../../models/types";
 
 type ListItemProps = {
   innerData: any;
@@ -25,8 +26,15 @@ const getLabel = (innerData) => {
 const getValue = (innerData: any) => {
   let value: string;
   if (innerData.hasOwnProperty("doi")) value = `+${innerData.amount}€`;
-  if (innerData.hasOwnProperty("dop")) value = `-${innerData.value}€`;
-  else if (innerData.hasOwnProperty("dot")) value = `${innerData.amount}€`;
+  if (innerData.hasOwnProperty("dop")) {
+    innerData = innerData as PurchaseType;
+    if (innerData.note === "Refund") value = `${innerData.value.toString().replace("-", "+")}€`;
+    else value = `-${innerData.value}€`;
+  } else if (innerData.hasOwnProperty("dot")) {
+    innerData = innerData as TransactionType;
+    if (innerData?.user_origin_id == null) value = `-${innerData.amount}€`;
+    else value = `+${innerData.amount}€`;
+  }
 
   return value;
 };
@@ -54,7 +62,9 @@ export const CustomListItem = ({ innerData, options, label, onPress = () => {} }
           <TypeIcon icon={loadIcon(innerData)} />
           <View style={{ justifyContent: "center" }}>
             <Text style={styles.titleText}>{getLabel(innerData)}</Text>
-            <Text style={{ ...styles.titleText, color: innerData.type == "Income" || innerData?.user_origin_id ? "green" : dark.textExpenses }}>{getValue(innerData)}</Text>
+            <Text style={{ ...styles.titleText, color: innerData.type == "Income" || innerData?.user_origin_id || innerData?.note == "Refund" ? "green" : dark.textExpenses }}>
+              {getValue(innerData)}
+            </Text>
           </View>
         </View>
         <View style={{ ...styles.row, flex: 1 }}>

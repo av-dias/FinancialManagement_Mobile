@@ -1,6 +1,7 @@
 export const KEYS = {
   EXPENSE: "PE",
   PURCHASE: "PK",
+  INCOME: "PI",
   TRANSACTION: "TK",
   TOKEN_SEPARATOR: "-=-=+=+",
 };

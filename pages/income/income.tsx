@@ -23,20 +23,27 @@ import { IncomeEntity, IncomeModel } from "../../store/database/Income/IncomeEnt
 import { useFocusEffect } from "@react-navigation/native";
 import { useDatabaseConnection } from "../../store/database-context";
 
-export default function Income({ navigation }) {
+type IncomeProps = {
+  income?: IncomeEntity;
+  handleEditCallback?: (newIncome: IncomeEntity) => void;
+};
+
+export default function Income({ income, handleEditCallback }: IncomeProps) {
   const styles = _styles;
   const appCtx = useContext(AppContext);
   const { incomeRepository } = useDatabaseConnection();
 
   const [listNames, setListNames] = useState<string[]>([]);
   const [triggerRefresh, setTriggerRefresh] = useState<boolean>(true);
-  const [newIncome, setNewIncome] = useState<IncomeEntity>({
-    doi: new Date(),
-    name: null,
-    amount: null,
-    userId: appCtx.email,
-    id: null,
-  });
+  const [newIncome, setNewIncome] = useState<IncomeEntity>(
+    income || {
+      doi: new Date(),
+      name: null,
+      amount: null,
+      userId: appCtx.email,
+      id: null,
+    }
+  );
 
   const loadCarroselItems = (items: string[]) => {
     return items.map((item: string) => ({ label: item, color: dark.secundary }));
@@ -49,11 +56,12 @@ export default function Income({ navigation }) {
     }
 
     let income = new IncomeModel();
+    if (newIncome.id) income.id = newIncome.id;
     income.amount = newIncome.amount;
     income.doi = newIncome.doi;
     income.name = newIncome.name;
     income.userId = newIncome.userId;
-    await incomeRepository.updateOrCreate(income);
+    const resIncome = await incomeRepository.updateOrCreate(income);
 
     setNewIncome({
       doi: new Date(),
@@ -63,6 +71,8 @@ export default function Income({ navigation }) {
       id: null,
     });
     setTriggerRefresh((refresh) => !refresh);
+    // Trigger refresh for edit callback
+    if (handleEditCallback) handleEditCallback(resIncome);
   };
 
   useFocusEffect(

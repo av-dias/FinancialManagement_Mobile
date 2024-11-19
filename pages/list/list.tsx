@@ -11,7 +11,7 @@ import { UserContext } from "../../store/user-context";
 import { verticalScale } from "../../functions/responsive";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { getSplitEmail, getSplitUser } from "../../functions/split";
-import { expenseLabel, isIncomeOnDate, splitOption, settleOption, editOption, searchItem, searchExpenses, searchIncome } from "./handler";
+import { expenseLabel, isIncomeOnDate, splitOption, settleOption, editOption, searchItem, searchExpenses, searchIncome, editIncomeOption, loadEditModal } from "./handler";
 import { months } from "../../utility/calendar";
 
 import Header from "../../components/header/header";
@@ -21,7 +21,7 @@ import ModalCustom from "../../components/modal/modal";
 
 import { deleteExpenses, groupExpensesByDate } from "../../functions/expenses";
 import { dark } from "../../utility/colors";
-import { ExpenseType, ExpensesByDateType, PurchaseType, TransactionType } from "../../models/types";
+import { ExpenseType, ExpensesByDateType, IncomeType, PurchaseType, TransactionType } from "../../models/types";
 import { useDatabaseConnection } from "../../store/database-context";
 import { IncomeEntity, IncomeModel } from "../../store/database/Income/IncomeEntity";
 import { CustomListItem } from "../../components/ListItem/ListItem";
@@ -29,7 +29,6 @@ import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
 import { AlertData, IncomeAlertData, PurchaseAlertData, TransactionAlertData } from "../../constants/listConstants/deleteDialog";
 import { removeFromStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
-import ModalList from "./component/modalList/modalList";
 import { Searchbar } from "react-native-paper";
 import { logTimeTook } from "../../utility/logger";
 
@@ -46,7 +45,7 @@ export default function List({ navigation }) {
   const [expensesGroupedByDate, setExpensesGroupedByDate] = useState<ExpensesByDateType>({});
   const [incomeData, setIncomeData] = useState<IncomeEntity[]>([]);
 
-  const [selectedItem, setSelectedItem] = useState<ExpenseType | IncomeEntity>();
+  const [selectedItem, setSelectedItem] = useState<ExpenseType | IncomeType>();
   const [splitUser, setSplitUser] = useState("");
   const [sliderStatus, setSliderStatus] = useState(false);
   const [destination, setDestination] = useState("");
@@ -115,18 +114,17 @@ export default function List({ navigation }) {
   );
 
   /* Load income options for list item */
-  const incomeOptions = () => {
-    return [{ callback: () => {}, type: "Edit" }];
+  const incomeOptions = (income: IncomeEntity) => {
+    return [editIncomeOption(income, setSelectedItem, setEditVisible)];
   };
 
   /* Load expenses options for list item */
-  const expensesOptions = (expenses, keys) => {
+  const expensesOptions = (expenses: ExpenseType) => {
     let options = [];
     const innerData = expenses.element;
-    if (!innerData.split && keys === KEYS_SERIALIZER.PURCHASE) {
+    if (expenses.key === KEYS_SERIALIZER.PURCHASE && !(innerData as PurchaseType).split) {
       options.push(splitOption(setSelectedItem, expenses, email, getSplitEmail(splitUser), setExpenses));
-    }
-    if (innerData.split) {
+    } else if (expenses.key === KEYS_SERIALIZER.PURCHASE && (innerData as PurchaseType)) {
       options.push(settleOption(email, expenses, destination, setExpenses));
     }
     options.push(editOption(setSelectedItem, expenses, setSliderStatus, setEditVisible));
@@ -134,22 +132,22 @@ export default function List({ navigation }) {
     return options;
   };
 
-  const loadModalDialog = (data) => {
+  const loadModalDialog = (data: ExpenseType | IncomeType) => {
     setAlertVisible(true);
     setSelectedItem(data);
   };
 
   /* Loads the dialog data when list item is pressed */
-  const getModalDialogData = (data: ExpenseType | IncomeEntity): AlertData => {
+  const getModalDialogData = (data: ExpenseType | IncomeType): AlertData => {
     if (data.hasOwnProperty("doi")) {
-      data = data as IncomeEntity;
+      data = data as IncomeType;
 
-      const handleConfirm = async (data: IncomeEntity) => {
+      const handleConfirm = async (data: IncomeType) => {
         await incomeRepository.delete(data.id);
         setIncomeData((prev) => prev.filter((item) => item.id !== data.id));
       };
 
-      return IncomeAlertData(data.name, data.amount.toString(), async () => await handleConfirm(data as IncomeEntity));
+      return IncomeAlertData(data.name, data.amount.toString(), async () => await handleConfirm(data as IncomeType));
     } else {
       data = data as ExpenseType;
 
@@ -177,8 +175,8 @@ export default function List({ navigation }) {
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
           {editVisible && (
             /* TODO Improve ModalList implementation to prevent code duplication */
-            <ModalCustom modalVisible={editVisible} setModalVisible={setEditVisible} size={14} hasColor={true}>
-              {ModalList(email, selectedItem, setSelectedItem, getSplitEmail(splitUser), sliderStatus, setSliderStatus, setEditVisible, styles, setExpenses)}
+            <ModalCustom modalVisible={editVisible} setModalVisible={setEditVisible} size={18} hasColor={true}>
+              {loadEditModal(selectedItem, email, sliderStatus, setEditVisible, setExpenses, setIncomeData)}
             </ModalCustom>
           )}
           {alertVisible && <ModalDialog visible={alertVisible} setVisible={setAlertVisible} size={2.5} data={getModalDialogData(selectedItem)} />}
@@ -208,7 +206,7 @@ export default function List({ navigation }) {
                             <CustomListItem
                               key={`Income${expenses.index}`}
                               innerData={expenses.element}
-                              options={expensesOptions(expenses, expenses.key)}
+                              options={expensesOptions(expenses)}
                               label={expenseLabel(expenses.element)}
                               onPress={() => loadModalDialog(expenses)}
                             />
@@ -219,7 +217,12 @@ export default function List({ navigation }) {
                         (income) =>
                           isIncomeOnDate(income.doi, date) &&
                           searchItem(income, searchQuery) && (
-                            <CustomListItem key={`Income${income.id}`} innerData={{ ...income, type: "Income" }} options={incomeOptions()} onPress={() => loadModalDialog(income)} />
+                            <CustomListItem
+                              key={`Income${income.id}`}
+                              innerData={{ ...income, type: "Income" }}
+                              options={incomeOptions(income)}
+                              onPress={() => loadModalDialog({ ...income, key: KEYS_SERIALIZER.INCOME })}
+                            />
                           )
                       )}
                   </CardWrapper>

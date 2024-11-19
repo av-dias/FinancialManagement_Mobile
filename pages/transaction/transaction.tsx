@@ -2,10 +2,8 @@ import React, { useState, useContext } from "react";
 import { View, Pressable, Text } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 
 //Custom Components
-import Header from "../../components/header/header";
 import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
 import CustomInput from "../../components/customInput/customInput";
 import CustomCalendarStrip from "../../components/customCalendarStrip/customCalendarStrip";
@@ -25,13 +23,34 @@ import { getUser } from "../../functions/basic";
 import { getSplitUser, getSplitEmail } from "../../functions/split";
 import { handleTransaction } from "./handler";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
+import { TransactionType } from "../../models/types";
 
-export default function Transaction({ navigation }) {
+type TransactionProps = {
+  handleEdit?: (newTransaction: TransactionType, receivedActive: boolean, destination: string) => void;
+  transaction?: TransactionType;
+};
+
+const loadReceivedActive = (transaction: TransactionType) => {
+  if (!transaction) return false;
+  if (transaction?.user_origin_id) return true;
+  return false;
+};
+
+export default function Transaction({ handleEdit, transaction }: TransactionProps) {
   const styles = _styles;
   const [email, setEmail] = useState("");
-  const [receivedActive, setReceivedActive] = useState(false);
+  const [receivedActive, setReceivedActive] = useState<boolean>(loadReceivedActive(transaction));
   const [destination, setDestination] = useState("");
-  const [newTransaction, setNewTransaction] = useState({ dot: new Date().toISOString().split("T")[0] });
+  const [newTransaction, setNewTransaction] = useState<TransactionType>(
+    transaction || {
+      amount: "",
+      type: "",
+      description: "",
+      user_destination_id: null,
+      user_origin_id: null,
+      dot: new Date().toISOString().split("T")[0].toString(),
+    }
+  );
 
   const appCtx = useContext(AppContext);
 
@@ -111,13 +130,14 @@ export default function Transaction({ navigation }) {
               Icon={<Entypo style={styles.iconCenter} name="email" size={verticalScale(20)} color={dark.textPrimary} />}
               placeholder="Email"
               value={getSplitEmail(destination)}
+              setValue={() => {}}
               editable={false}
             />
           </CardWrapper>
         </View>
         <CustomButton
           handlePress={() => {
-            handleTransaction(newTransaction, setNewTransaction, destination, receivedActive, email, appCtx.setExpenses);
+            handleEdit ? handleEdit(newTransaction, receivedActive, destination) : handleTransaction(newTransaction, setNewTransaction, destination, receivedActive, email, appCtx.setExpenses);
           }}
         />
       </View>

@@ -1,12 +1,11 @@
 import { Text, View, ScrollView, Pressable } from "react-native";
 import { _styles } from "./style";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
+import { verticalScale } from "../../functions/responsive";
 import CardWrapper from "../cardWrapper/cardWrapper";
 import { categoryIcons } from "../../utility/icons";
-const BORDER_RADIUS = 10;
-import { dark } from "../../utility/colors";
 import { ReactNode } from "react";
 import { TypeIcon } from "../TypeIcon/TypeIcon";
+const BORDER_RADIUS = 10;
 
 type CarrosselProps = {
   type: any;
@@ -15,7 +14,7 @@ type CarrosselProps = {
   iconSize: any;
   iconBackground?: string;
   iconBorderColor?: string;
-  items: CarrosselItemsType[];
+  items?: CarrosselItemsType[];
 };
 
 export type CarrosselItemsType = { label: string; color: string; icon?: ReactNode };

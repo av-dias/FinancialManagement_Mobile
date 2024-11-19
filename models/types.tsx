@@ -1,3 +1,5 @@
+import { IncomeEntity } from "../store/database/Income/IncomeEntity";
+
 export type PurchaseType = {
   value: string;
   name: string;
@@ -17,6 +19,10 @@ export type ExpenseType = {
   index: number;
   key: string;
   element: PurchaseType | TransactionType;
+};
+
+export type IncomeType = IncomeEntity & {
+  key: string;
 };
 
 export type TransactionType = {

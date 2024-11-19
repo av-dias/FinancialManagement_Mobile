@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Dimensions } from "react-native";
+import { View, TouchableOpacity, Dimensions, ScrollView } from "react-native";
 
 import { _styles } from "./style";
 import commonStyles from "../../utility/commonStyles";
@@ -30,7 +30,7 @@ export default function ModalCustom({ modalVisible, setModalVisible, size = 3, h
             borderRadius: commonStyles.borderRadius,
           }}
         >
-          {children}
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>{children}</ScrollView>
         </View>
       </View>
     </Modal>

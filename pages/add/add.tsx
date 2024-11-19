@@ -1,4 +1,4 @@
-import React, { View, Text } from "react-native";
+import React, { View } from "react-native";
 import Header from "../../components/header/header";
 import { dark } from "../../utility/colors";
 
@@ -26,9 +26,9 @@ export default function Add({ navigation }) {
         <View>
           <ButtonSwitch selectedOption={selectedOption} setSelectedOption={setSelectedOption} options={options} />
         </View>
-        {selectedOption == options[0] && <Purchase navigation={navigation} />}
-        {selectedOption == options[1] && <Transaction navigation={navigation} />}
-        {selectedOption == options[2] && <Income navigation={navigation} />}
+        {selectedOption == options[0] && <Purchase />}
+        {selectedOption == options[1] && <Transaction />}
+        {selectedOption == options[2] && <Income />}
       </View>
     </LinearGradient>
   );

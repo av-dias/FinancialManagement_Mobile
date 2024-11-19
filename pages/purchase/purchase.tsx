@@ -1,5 +1,4 @@
 import { Text, View, Pressable } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useState, useEffect, useContext } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -8,7 +7,6 @@ import { AppContext } from "../../store/app-context";
 
 //Custom Components
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
-import Header from "../../components/header/header";
 import ModalCustom from "../../components/modal/modal";
 import CustomCalendarStrip from "../../components/customCalendarStrip/customCalendarStrip";
 import CustomButton from "../../components/customButton/customButton";
@@ -26,22 +24,38 @@ import { getUser } from "../../functions/basic";
 import { handlePurchase, modalContent } from "./handler";
 import { getSplitUser, getSplitEmail } from "../../functions/split";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
+import { PurchaseType } from "../../models/types";
 
-export default function Purchase({ navigation }) {
+type PurchaseProps = {
+  handleEdit?: (purchase: PurchaseType, splitStatus: boolean, slider: number, splitEmail) => void;
+  purchase?: PurchaseType;
+};
+
+export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
   const styles = _styles;
 
   const [email, setEmail] = useState("");
-  const [newPurchase, setNewPurchase] = useState({ dop: new Date().toISOString().split("T")[0] });
+  const [newPurchase, setNewPurchase] = useState<PurchaseType>(
+    purchase || {
+      value: "",
+      name: "",
+      type: "",
+      description: "",
+      note: "",
+      dop: new Date().toISOString().split("T")[0].toString(),
+      split: null,
+    }
+  );
 
-  const [slider, setSlider] = useState(50);
-  const [splitStatus, setSplitStatus] = useState(false);
+  const [slider, setSlider] = useState<number>(Number(purchase?.split?.weight) || 50);
+  const [splitStatus, setSplitStatus] = useState<boolean>(purchase?.split !== undefined || false);
   const [splitUser, setSplitUser] = useState("");
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalContentFlag, setModalContentFlag] = useState("");
   const [list, setList] = useState([]);
 
-  const [refundActive, setRefundActive] = useState(false);
+  const [refundActive, setRefundActive] = useState<boolean>(purchase?.note == "Refund" || false);
 
   const appCtx = useContext(AppContext);
 
@@ -161,20 +175,11 @@ export default function Purchase({ navigation }) {
           />
         </View>
         <CustomButton
+          addStyle={{ top: handleEdit ? 15 : 0 }}
           handlePress={() => {
-            handlePurchase(
-              email,
-              newPurchase,
-              setNewPurchase,
-              splitStatus,
-              setSplitStatus,
-              getSplitEmail(splitUser),
-              slider,
-              setList,
-              refundActive,
-              setRefundActive,
-              appCtx.setExpenses
-            );
+            handleEdit
+              ? handleEdit(newPurchase, splitStatus, slider, getSplitEmail(splitUser))
+              : handlePurchase(email, newPurchase, setNewPurchase, splitStatus, setSplitStatus, getSplitEmail(splitUser), slider, setList, refundActive, setRefundActive, appCtx.setExpenses);
           }}
         />
       </View>
