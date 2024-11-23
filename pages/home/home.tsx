@@ -167,14 +167,14 @@ export default function Home({ navigation }) {
       {appCtx.expenses[currentYear][currentMonth].map(
         (expense: ExpenseType) =>
           rowType === expense.element.type && (
-            <View key={expense.index}>
+            <View key={`V${expense.key + expense.index}`}>
               {(expense.element as PurchaseType)?.split && statsType === STATS_TYPE[0] && (
                 <Badge size={24} style={{ top: -5, zIndex: 1, position: "absolute" }}>
                   {`${(expense.element as PurchaseType).split.weight}%`}
                 </Badge>
               )}
               <FlatItem
-                key={expense.index}
+                key={`FI${expense.key + expense.index}`}
                 icon={loadIcon(expense)}
                 name={(expense.element as PurchaseType).name || (expense.element as TransactionType).description}
                 value={loadPurchaseValue(expense) || Number((expense.element as TransactionType).amount)}
