@@ -25,7 +25,7 @@ const loadScrollViewPosition = () => {
   return offset;
 };
 
-export const CustomBarChart = ({ maxBarValue, data, labels, onPressCallback }: CustomBarChartProps) => {
+export const CustomBarChart = ({ maxBarValue = 1, data, labels, onPressCallback }: CustomBarChartProps) => {
   const styles = _styles;
   const ref = useRef<ScrollView>(null); // Improve scrollView positioning based on current month
   if (!data) return null;
@@ -51,7 +51,7 @@ export const CustomBarChart = ({ maxBarValue, data, labels, onPressCallback }: C
                 <View
                   style={{
                     ...styles.barFilledStyle,
-                    flex: (value === 0 ? 1 : value) / maxBarValue,
+                    flex: value / maxBarValue,
                   }}
                 />
               </View>

@@ -2,7 +2,7 @@
   "expo": {
     "name": "fm_mobile",
     "slug": "fm_mobile",
-    "version": "2.91",
+    "version": "2.92",
     "orientation": "portrait",
     "icon": "./images/icon.png",
     "userInterfaceStyle": "light",
@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "config": {
@@ -36,6 +38,9 @@
       "eas": {
         "projectId": "0d93d640-abb9-49dd-a31c-eee72b033d17"
       }
-    }
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }

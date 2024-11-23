@@ -1,15 +1,13 @@
-import navLogo from "../../images/logo.png";
-import { StyleSheet, Text, View, TextInput, Image, Pressable, Alert } from "react-native";
+import { Text, View, TextInput, Pressable, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { MaterialIcons, FontAwesome, Entypo, FontAwesome5 } from "@expo/vector-icons";
+import { Entypo, FontAwesome5 } from "@expo/vector-icons";
 import ModalCustom from "../../components/modal/modal";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
+import { verticalScale } from "../../functions/responsive";
 import { LinearGradient } from "expo-linear-gradient";
 import commonStyles from "../../utility/commonStyles";
 import * as FileSystem from "expo-file-system";
 
-import { getSplitUser, getSplitUsers, getSplitEmail } from "../../functions/split";
+import { getSplitUsers, getSplitEmail } from "../../functions/split";
 import { saveToStorage, getFromStorage, addToStorage } from "../../functions/secureStorage";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
@@ -29,7 +27,7 @@ export default function Settings({ navigation }) {
   const [newName, setNewName] = useState("");
   const [listVisible, setListVisible] = useState(false);
   const [modalSize, setModalSize] = useState(MODAL_DEFAULT_SIZE);
-  const [splitUsers, setSplitUsers] = useState("");
+  const [splitUsers, setSplitUsers] = useState([]);
 
   const handleNewSplitUser = async () => {
     let value = [{ email: newEmail, name: newName }];
@@ -45,7 +43,6 @@ export default function Settings({ navigation }) {
 
   const ModalContent = () => {
     let content;
-    let value = 20;
 
     switch (modalContentFlag) {
       case "split":
@@ -149,12 +146,11 @@ export default function Settings({ navigation }) {
             let infoTransaction = await saveToStorage(KEYS.TRANSACTION, "[]", email);
             alert("Cleared");
           },
-          style: "yes",
         },
         {
           text: "No",
           onPress: () => {},
-          style: "no",
+          style: "cancel",
         },
       ],
       {

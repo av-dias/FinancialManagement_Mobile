@@ -33,7 +33,7 @@ const iconSize = 24;
 
 const MainIcon = () => (
   <View style={styles.mainContainer}>
-    <Ionicons style={styles.mainIcon} name="add-circle-outline" size={50} color="grey" />
+    <Ionicons name="add-circle-outline" size={50} color="grey" />
   </View>
 );
 
@@ -42,7 +42,7 @@ function HomeTabs() {
     <UserContextProvider>
       <DatabaseConnectionProvider>
         <AppContextProvider>
-          <Tab.Navigator screenOptions={({ route }) => ({ tabBarShowLabel: false, headerShown: false, tabBarStyle: styles.tab, navigationBarColor: "gold" })}>
+          <Tab.Navigator screenOptions={() => ({ tabBarShowLabel: false, headerShown: false, tabBarStyle: styles.tab, navigationBarColor: "gold" })}>
             <Tab.Screen name="Dashboard" component={Home} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="dashboard" size={iconSize} color="white" /> }} />
             <Tab.Screen name="Stats" component={Budget} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={iconSize} color="white" /> }} />
             <Tab.Screen name="Purchase" component={Add} options={{ tabBarIcon: ({ color, size }) => <MainIcon /> }} />
