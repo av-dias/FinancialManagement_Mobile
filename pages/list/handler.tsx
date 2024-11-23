@@ -34,10 +34,7 @@ export const handleEditPurchase = async (email, selectedPurchase: PurchaseType, 
 
   selectedPurchase.value = selectedPurchase.note === "Refund" ? "-" + selectedPurchase.value : selectedPurchase.value;
 
-  if (splitStatus) {
-    selectedPurchase.split.userId = splitEmail;
-    selectedPurchase.split.weight = slider.toString();
-  }
+  if (splitStatus) selectedPurchase.split = { userId: splitEmail, weight: slider.toString() };
 
   await editOnStorage(KEYS.PURCHASE, JSON.stringify(selectedPurchase), index, email);
   updateExpenses({ element: selectedPurchase, index: index, key: KEYS_SERIALIZER.PURCHASE }, setExpenses);

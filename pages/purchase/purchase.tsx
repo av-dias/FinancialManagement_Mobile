@@ -89,7 +89,7 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
           style={{
             paddingHorizontal: 10,
             paddingVertical: 5,
-            backgroundColor: refundActive ? "lightblue" : dark.complementary,
+            backgroundColor: refundActive ? dark.secundary : dark.complementary,
             borderRadius: 10,
             zIndex: 1,
           }}

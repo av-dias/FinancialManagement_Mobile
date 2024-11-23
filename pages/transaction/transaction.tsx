@@ -77,7 +77,7 @@ export default function Transaction({ handleEdit, transaction }: TransactionProp
           style={{
             paddingHorizontal: 10,
             paddingVertical: 5,
-            backgroundColor: receivedActive ? "lightblue" : dark.complementary,
+            backgroundColor: receivedActive ? dark.secundary : dark.complementary,
             borderRadius: 10,
             zIndex: 1,
           }}
