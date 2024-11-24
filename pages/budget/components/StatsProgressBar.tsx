@@ -76,9 +76,9 @@ export const StatsProgressBar = ({ type, spendAverageByType, expensesTotalByType
       />
       <View style={styles.itemContainer}>
         <TypeIcon icon={categoryIcons(25).find((category) => category.label === type)} />
-        <Text key={type + "TextA"} style={styles.textItem}>
+        {/*  <Text key={type + "TextA"} style={styles.textItem}>
           {type.substring(0, 8)}
-        </Text>
+        </Text> */}
       </View>
       <ProgressBarComponent
         color={ProgressBarColors.blue}

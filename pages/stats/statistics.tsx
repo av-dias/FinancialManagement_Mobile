@@ -59,7 +59,7 @@ export default function Statistics() {
           resSplitDeptData[currentYear] = resSplitDeptData[currentYear].sort(sortMonths);
           setSplitDeptData(resSplitDeptData);
           let resSplitTotal = getSumArrayObject(resSplitDeptData[currentYear.toString()]);
-          if (isNaN(resSplitTotal)) console.log((resSplitTotal = 0));
+          if (isNaN(resSplitTotal)) resSplitTotal = 0;
           setSplitTotal(resSplitTotal);
 
           setYearsRange(Object.keys(resSplitDeptData));

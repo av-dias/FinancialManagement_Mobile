@@ -21,6 +21,7 @@ import { AverageProgressBar } from "./components/AverageProgressBar";
 import { StatsProgressBar } from "./components/StatsProgressBar";
 import { ProgressItemsHeader } from "./components/ProgressItemsHeader";
 import { logTimeTook } from "../../utility/logger";
+import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
 export default function Budget({ navigation }) {
   const styles = _styles;
@@ -104,23 +105,25 @@ export default function Budget({ navigation }) {
           {purchaseAverageTotal[currentYear] && <AverageProgressBar purchaseTotal={purchaseTotal} purchaseAverageTotal={purchaseAverageTotal} currentYear={currentYear} />}
           <ScrollView horizontal={false} style={{ flex: 1 }} contentContainerStyle={styles.scrollviewContainer}>
             <Statistics />
-            <ProgressItemsHeader />
-            {spendAverageByType[currentYear] &&
-              purchaseCurrentStats[currentYear] &&
-              expensesTotalByType[currentYear] &&
-              Object.keys(spendAverageByType[currentYear][STATS_TYPE[1]]).map((type) => {
-                return (
-                  <StatsProgressBar
-                    key={`StatsProgressBar${type}`}
-                    type={type}
-                    spendAverageByType={spendAverageByType}
-                    expensesTotalByType={expensesTotalByType}
-                    purchaseCurrentStats={purchaseCurrentStats}
-                    currentYear={currentYear}
-                    currentMonth={currentMonth}
-                  />
-                );
-              })}
+            <CardWrapper style={{ flex: 1, justifyContent: "flex-start" }}>
+              <ProgressItemsHeader />
+              {spendAverageByType[currentYear] &&
+                purchaseCurrentStats[currentYear] &&
+                expensesTotalByType[currentYear] &&
+                Object.keys(spendAverageByType[currentYear][STATS_TYPE[1]]).map((type) => {
+                  return (
+                    <StatsProgressBar
+                      key={`StatsProgressBar${type}`}
+                      type={type}
+                      spendAverageByType={spendAverageByType}
+                      expensesTotalByType={expensesTotalByType}
+                      purchaseCurrentStats={purchaseCurrentStats}
+                      currentYear={currentYear}
+                      currentMonth={currentMonth}
+                    />
+                  );
+                })}
+            </CardWrapper>
             {!spendAverageByType[currentYear] && !purchaseCurrentStats[currentYear] && !expensesTotalByType[currentYear] && (
               <View style={styles.containerNoData}>
                 <Text style={{ color: "white" }}>NO DATA</Text>

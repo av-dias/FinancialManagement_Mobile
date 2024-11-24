@@ -30,7 +30,7 @@ export const _styles = StyleSheet.create({
     backgroundColor: dark.complementary,
     padding: 20,
     paddingHorizontal: 30,
-    borderRadius: 5,
+    borderRadius: 10,
     justifyContent: "center",
     gap: 5,
   },
@@ -45,14 +45,13 @@ export const _styles = StyleSheet.create({
   scrollviewContainer: {
     flexGrow: 1,
     paddingVertical: 0,
-    gap: 10,
+    gap: 20,
   },
   containerItem: {
     flexDirection: "row",
     height: "auto",
-    backgroundColor: dark.complementary,
     gap: 5,
-    padding: 10,
+    padding: 20,
     borderRadius: 5,
   },
   containerIcon: {
