@@ -99,21 +99,6 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
         >
           <Text style={styles.text}>Refund</Text>
         </Pressable>
-        <Pressable
-          style={{
-            paddingHorizontal: 10,
-            paddingVertical: 5,
-            backgroundColor: modalContentFlag == "history" && modalVisible ? "lightblue" : dark.complementary,
-            borderRadius: 10,
-            zIndex: 1,
-          }}
-          onPress={() => {
-            setModalContentFlag("history");
-            setModalVisible(true);
-          }}
-        >
-          <Text style={styles.text}>History</Text>
-        </Pressable>
       </View>
       <View style={{ flex: 1 }}>
         <MoneyInputHeader
