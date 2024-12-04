@@ -34,6 +34,7 @@ export type InvestmentEntity = {
   buyDate: Date;
   sellPrice?: number | null;
   sellDate?: Date | null;
+  security?: SecurityEntity;
   userId: string;
 };
 
