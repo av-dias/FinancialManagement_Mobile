@@ -1,6 +1,7 @@
 import { View, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Entypo, FontAwesome5, FontAwesome } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { dark } from "../../utility/colors";
 import Header from "../../components/header/header";
 import { useContext, useState } from "react";
@@ -19,7 +20,6 @@ import { PortfolioModel } from "../../store/database/Portfolio/PortfolioEntity";
 import { PortfolioDAO } from "../../models/portfolio.models";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import { PortfolioService } from "../../store/database/Portfolio/PortfolioService";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
 import { AlertData } from "../../constants/listConstants/deleteDialog";
 import { NetworthAlertData } from "../../constants/networthConstants/networthDeleteDialog";
@@ -118,8 +118,12 @@ export default function Networth({ navigation }) {
     setModalVisible(false);
   };
 
-  const onIconPressCallback = () => {
+  const onAddPressCallback = () => {
     setModalVisible(true);
+  };
+
+  const onTradePressCallback = () => {
+    navigation.navigate("Trade");
   };
 
   const deleteQuery = async ({ name, value }) => {
@@ -227,7 +231,16 @@ export default function Networth({ navigation }) {
 
             <View style={styles.rowGap}>
               <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
-              <IconButton addStyle={{ borderRadius: 12 }} icon={<Entypo style={styles.iconButton} name="add-to-list" size={18} color={"white"} />} onPressHandle={onIconPressCallback} />
+              <IconButton
+                addStyle={{ borderRadius: 12, justifyContent: "center" }}
+                icon={<Entypo style={styles.iconButton} name="add-to-list" size={20} color={"white"} />}
+                onPressHandle={onAddPressCallback}
+              />
+              <IconButton
+                addStyle={{ borderRadius: 12, justifyContent: "center" }}
+                icon={<Ionicons style={styles.iconButton} name="analytics-outline" size={20} color="white" />}
+                onPressHandle={onTradePressCallback}
+              />
             </View>
           </View>
           {/*

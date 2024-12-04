@@ -1,11 +1,11 @@
-import { Pressable } from "react-native";
+import { Pressable, StyleProp, ViewStyle } from "react-native";
 import { _styles } from "./style";
 import { ReactNode } from "react";
 
 type IconButtonProps = {
   icon: ReactNode;
   onPressHandle: () => void;
-  addStyle?: {};
+  addStyle?: ViewStyle;
 };
 
 export const IconButton = (props: IconButtonProps) => {

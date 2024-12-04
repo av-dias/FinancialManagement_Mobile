@@ -7,16 +7,19 @@ import { PortfolioItemModel } from "./database/PortfolioItem/PortfolioItemEntity
 import { PortfolioItemRepository } from "./database/PortfolioItem/PortfolioItemRepository";
 import { IncomeRepository } from "./database/Income/IncomeRepository";
 import { IncomeModel } from "./database/Income/IncomeEntity";
+import { InvestmentRepository } from "./database/SecurityInvestment/InvestmentRepository";
+import { InvestmentModel, SecurityModel } from "./database/SecurityInvestment/SecurityInvestmentEntity";
+import { SecurityRepository } from "./database/SecurityInvestment/SecurityRepository";
 
 interface DatabaseConnectionContextData {
   portfolioRepository: PortfolioRepository;
   portfolioItemRepository: PortfolioItemRepository;
   incomeRepository: IncomeRepository;
+  investmentRepository: InvestmentRepository;
+  securityRepository: SecurityRepository;
 }
 
-export const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>(
-  {} as DatabaseConnectionContextData
-);
+export const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>({} as DatabaseConnectionContextData);
 
 export const DatabaseConnectionProvider = ({ children }) => {
   const [connection, setConnection] = useState<Connection | null>(null);
@@ -36,7 +39,7 @@ export const DatabaseConnectionProvider = ({ children }) => {
         type: "expo",
         database: "fm_mobile.db",
         driver: require("expo-sqlite"),
-        entities: [PortfolioModel, PortfolioItemModel, IncomeModel],
+        entities: [PortfolioModel, PortfolioItemModel, IncomeModel, InvestmentModel, SecurityModel],
 
         //If you're not using migrations, you can delete these lines,
         //since the default is no migrations:
@@ -74,6 +77,8 @@ export const DatabaseConnectionProvider = ({ children }) => {
         portfolioRepository: new PortfolioRepository(connection),
         portfolioItemRepository: new PortfolioItemRepository(connection),
         incomeRepository: new IncomeRepository(connection),
+        investmentRepository: new InvestmentRepository(connection),
+        securityRepository: new SecurityRepository(connection),
       }}
     >
       {children}
