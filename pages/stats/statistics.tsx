@@ -57,6 +57,7 @@ export default function Statistics() {
           }
 
           resSplitDeptData[currentYear] = resSplitDeptData[currentYear].sort(sortMonths);
+          console.log(resSplitDeptData[currentYear.toString()]);
           setSplitDeptData(resSplitDeptData);
           let resSplitTotal = getSumArrayObject(resSplitDeptData[currentYear.toString()]);
           if (isNaN(resSplitTotal)) resSplitTotal = 0;
@@ -96,7 +97,7 @@ export default function Statistics() {
           <Text style={styles.splitModalText}>
             {`${Number(
               expensesWithSplit[currentYear][chartIndex].reduce(
-                (acc: number, expense: ExpenseType) => acc + Number((expense.element as PurchaseType).value) * ((100 - Number((expense.element as PurchaseType).split.weight)) / 100),
+                (acc: number, expense: ExpenseType) => acc + Number((expense.element as PurchaseType).value) * (Number((expense.element as PurchaseType).split.weight) / 100),
                 0
               )
             ).toFixed(0)}€`}

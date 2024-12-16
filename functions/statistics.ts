@@ -26,15 +26,6 @@ export const calculateSplitDeptData = (resExpensesTotal, currentYear: number) =>
   let resDept = calcSplitDept(resExpensesTotal, currentYear);
 
   // Load Split Dept Data
-  let monthsList = Object.keys(resDept[currentYear]);
-  // Add dummy data when only one months data is available
-  if (monthsList.length == 1) {
-    let indexMonth;
-    if (parseFloat(monthsList[0]) == 0) {
-      indexMonth = 1;
-    } else indexMonth = parseFloat(monthsList[0]) - 1;
-    resSplitDeptData[currentYear] = [{ x: months[indexMonth], y: 0 }];
-  }
   for (let month of Object.keys(resDept[currentYear])) {
     if (!resSplitDeptData[currentYear]) {
       resSplitDeptData[currentYear] = [];
