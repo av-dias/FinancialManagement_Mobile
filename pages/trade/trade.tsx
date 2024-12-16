@@ -22,13 +22,16 @@ import { TradeItem } from "./tradeComponents/tradeItem";
 import { verticalScale } from "../../functions/responsive";
 import { months } from "../../utility/calendar";
 import { dateSorterAsc } from "../../functions/dates";
+import { IconButton } from "../../components/iconButton/IconButton";
+import { EvilIcons } from "@expo/vector-icons";
 
 export default function Trade({ navigation }) {
   const appCtx = useContext(AppContext);
   const securityInvestmentService = new SecurityInvestmentService();
   const { investmentRepository, securityRepository } = useDatabaseConnection();
-
+  const noFilter = "NoFilter";
   const styles = _styles;
+
   const [inputName, setInputName] = useState("");
   const [inputTicker, setInputTicker] = useState("");
   const [inputBuyPrice, setInputBuyPrice] = useState("");
@@ -42,7 +45,7 @@ export default function Trade({ navigation }) {
   const [modalType, setModalType] = useState<"Trade" | "Security">(null);
 
   const [sortedDates, setSortedDates] = useState([]);
-  const [selectedTicker, setSelectedTicker] = useState<string>();
+  const [selectedTicker, setSelectedTicker] = useState<string>(noFilter);
 
   const createInvestment = (): InvestmentEntity => {
     return { shares: Number(inputShareValue), buyPrice: Number(inputBuyPrice), buyDate: inputBuyDate, userId: appCtx.email };
@@ -138,11 +141,15 @@ export default function Trade({ navigation }) {
             try {
               const listSecurity = await securityRepository.getAll(appCtx.email);
               setSecurities(listSecurity);
-              setSelectedTicker(listSecurity[0].ticker);
 
               let dateList = [];
+              let listInvestment = await investmentRepository.getAll(appCtx.email);
 
-              const listInvestment = await investmentRepository.getAll(appCtx.email);
+              // Check if filter is selected and filter appropriately
+              if (selectedTicker != noFilter) {
+                listInvestment = listInvestment.filter((investment) => investment.security.ticker == selectedTicker);
+              }
+
               listInvestment.map((investment) => dateList.push(investment.buyDate.toISOString().split("T")[0]));
               const sortedList = new Set(dateSorterAsc(dateList).reverse());
               setSortedDates(Array.from(sortedList));
@@ -151,7 +158,6 @@ export default function Trade({ navigation }) {
             } catch (e) {
               setSecurities([]);
               setInvestments([]);
-              setSelectedTicker("");
               console.log(e);
             }
           }
@@ -165,7 +171,7 @@ export default function Trade({ navigation }) {
         let endTime = performance.now();
         logTimeTook("Trade", "Fetch", endTime, startTime);
       }
-    }, [appCtx.email, securityRepository, investmentRepository, refresh])
+    }, [appCtx.email, securityRepository, investmentRepository, refresh, selectedTicker])
   );
 
   return (
@@ -178,7 +184,18 @@ export default function Trade({ navigation }) {
               {addForm()}
             </ModalCustom>
           )}
-          <Carrossel items={loadSecurityItems()} type={selectedTicker} setType={setSelectedTicker} size={60} iconBackground={dark.complementary} />
+          <View style={{ flexDirection: "row", gap: 5 }}>
+            <CardWrapper style={{ width: 60, height: 60, alignItems: "center", backgroundColor: selectedTicker === noFilter ? dark.secundary : dark.complementary }}>
+              <IconButton
+                addStyle={{ backgroundColor: "transparent", paddingBottom: 5 }}
+                icon={<EvilIcons name="search" size={30} color="white" />}
+                onPressHandle={() => setSelectedTicker(noFilter)}
+              />
+            </CardWrapper>
+            <View style={{ flex: 1 }}>
+              <Carrossel items={loadSecurityItems()} type={selectedTicker} setType={setSelectedTicker} size={60} iconBackground={dark.complementary} />
+            </View>
+          </View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 10 }}>
             <Pressable
               onPress={() => {
