@@ -11,6 +11,8 @@ export const _styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     borderRadius: borderRadius,
+    paddingHorizontal: 10,
+    gap: 10,
   },
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center", backgroundColor: "transparent" },
   textInput: {
