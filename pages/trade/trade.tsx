@@ -14,8 +14,13 @@ import React from "react";
 import { useDatabaseConnection } from "../../store/database-context";
 import ModalCustom from "../../components/modal/modal";
 import Carrossel from "../../components/carrossel/carrossel";
-import { FlatItem } from "../../components/flatItem/flatItem";
 import { logTimeTook } from "../../utility/logger";
+import { FlatCalendar } from "../../components/flatCalender/FlatCalender";
+import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
+import CardWrapper from "../../components/cardWrapper/cardWrapper";
+import { TradeItem } from "./tradeComponents/tradeItem";
+import { verticalScale } from "../../functions/responsive";
+import { months } from "../../utility/calendar";
 
 export default function Trade({ navigation }) {
   const appCtx = useContext(AppContext);
@@ -26,73 +31,80 @@ export default function Trade({ navigation }) {
   const [inputName, setInputName] = useState("");
   const [inputTicker, setInputTicker] = useState("");
   const [inputBuyPrice, setInputBuyPrice] = useState("");
-  const [inputBuyDate, setInputBuyDate] = useState("");
+  const [inputBuyDate, setInputBuyDate] = useState<Date>(new Date());
   const [inputShareValue, setInputShareValue] = useState("");
   const [inputInvestmentTicker, setInputInvestmentTicker] = useState("");
   const [securities, setSecurities] = useState<SecurityEntity[]>([]);
   const [investments, setInvestments] = useState<InvestmentEntity[]>([]);
   const [refresh, setRefresh] = useState(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<"Trade" | "Security">(null);
+
+  const [sortedDates, setSortedDates] = useState([]);
   const [selectedTicker, setSelectedTicker] = useState<string>();
 
   const createInvestment = (): InvestmentEntity => {
-    return { shares: Number(inputShareValue), buyPrice: Number(inputBuyPrice), buyDate: new Date(), userId: appCtx.email };
+    return { shares: Number(inputShareValue), buyPrice: Number(inputBuyPrice), buyDate: inputBuyDate, userId: appCtx.email };
   };
 
   const addInvestmentCallback = async () => {
     if (inputInvestmentTicker === "") return;
-    console.log("Adding investment...");
     await securityInvestmentService.insertInvestment(createInvestment(), inputInvestmentTicker);
     setRefresh((prev) => !prev);
-    setModalVisible(false);
+    //setModalVisible(null);
+    setInputBuyPrice("0");
+    setInputShareValue("0");
   };
 
   const addSecurityCallback = async () => {
     if (inputName === "" || inputTicker === "") return;
 
-    console.log("Adding security...");
     await securityRepository.updateOrCreate({ name: inputName, ticker: inputTicker });
     setInputName("");
     setInputTicker("");
     setRefresh((prev) => !prev);
-    setModalVisible(false);
+    //setModalVisible(null);
   };
 
   const addForm = () => {
-    return (
-      <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible} size={15} hasColor={true}>
-        {/* Security - Name Ticket Investments */}
+    if (modalType === "Security") {
+      return (
         <View style={{ flex: 1, gap: 20 }}>
-          <CustomTitle title={"Security"} />
+          <CustomTitle title={"Add Security"} textStyle={{ padding: 0, fontSize: 18, fontWeight: "bold" }} containerStyle={{ paddingTop: verticalScale(10), paddingBottom: verticalScale(15) }} />
           <CustomInput Icon={undefined} placeholder={"Name"} value={inputName} setValue={setInputName} />
-          <CustomInput Icon={undefined} placeholder={"Ticker"} value={inputTicker} setValue={setInputTicker} />
-          <Pressable
-            onPress={async () => {
-              await addSecurityCallback();
-            }}
-            style={({ pressed }) => [{ borderRadius: 10, padding: 10, margin: pressed ? 1 : 0, alignItems: "center", backgroundColor: pressed ? "orange" : dark.button }]}
-          >
-            <Text>Security</Text>
-          </Pressable>
+          <CustomInput Icon={undefined} placeholder={"Ticker"} value={inputTicker} setValue={setInputTicker} capitalize="characters" />
+          <View style={{ flex: 1, justifyContent: "flex-end", bottom: 20 }}>
+            <Pressable
+              onPress={async () => {
+                await addSecurityCallback();
+              }}
+              style={({ pressed }) => [{ borderRadius: 10, padding: 10, margin: pressed ? 1 : 0, alignItems: "center", backgroundColor: pressed ? "orange" : dark.button }]}
+            >
+              <Text style={{ color: "white", fontSize: 18 }}>Security</Text>
+            </Pressable>
+          </View>
         </View>
-        {/* Investments - BuyPrice, BuyDate, Shares, SellPrice, SellDate, Security */}
+      );
+    } else {
+      return (
         <View style={{ flex: 2, gap: 20 }}>
-          <CustomTitle title={"Investment"} />
-          <CustomInput Icon={undefined} placeholder={"BuyPrice"} value={inputBuyPrice} setValue={setInputBuyPrice} />
-          <CustomInput Icon={undefined} placeholder={"BuyDate"} value={inputBuyDate} setValue={setInputBuyDate} />
+          <MoneyInputHeader verticalHeight={180} value={inputBuyPrice} setValue={setInputBuyPrice} />
+          <FlatCalendar setInputBuyDate={setInputBuyDate} />
           <CustomInput Icon={undefined} placeholder={"Shares"} value={inputShareValue} setValue={setInputShareValue} />
-          <CustomInput Icon={undefined} placeholder={"Ticker"} value={inputInvestmentTicker} setValue={setInputInvestmentTicker} />
-          <Pressable
-            onPress={async () => {
-              await addInvestmentCallback();
-            }}
-            style={({ pressed }) => [{ borderRadius: 10, padding: 10, margin: pressed ? 1 : 0, alignItems: "center", backgroundColor: pressed ? "orange" : dark.button }]}
-          >
-            <Text>Investment</Text>
-          </Pressable>
+          <Carrossel items={loadSecurityItems()} type={inputInvestmentTicker} setType={setInputInvestmentTicker} size={60} iconBackground={dark.complementary} />
+          <View style={{ flex: 1, justifyContent: "flex-end", bottom: 20 }}>
+            <Pressable
+              onPress={async () => {
+                await addInvestmentCallback();
+              }}
+              style={({ pressed }) => [{ borderRadius: 10, padding: 10, margin: pressed ? 1 : 0, alignItems: "center", backgroundColor: pressed ? "orange" : dark.button }]}
+            >
+              <Text style={{ color: "white", fontSize: 18 }}>Trade</Text>
+            </Pressable>
+          </View>
         </View>
-      </ModalCustom>
-    );
+      );
+    }
   };
 
   const loadSecurityIcon = (ticker: string) => (
@@ -105,6 +117,18 @@ export default function Trade({ navigation }) {
     return securities.map((security) => ({ label: security.ticker, color: dark.secundary, component: loadSecurityIcon(security.ticker) }));
   };
 
+  const dateTitleFormat = (dates) => {
+    let date = new Date(dates);
+
+    return (
+      <View key={dates} style={{ flexDirection: "row", justifyContent: "space-around", paddingBottom: 5, gap: 5, width: 80 }}>
+        <Text style={{ color: dark.textPrimary, textAlign: "right", width: 20 }}>{date.getDate()}</Text>
+        <Text style={{ color: dark.textPrimary, textAlign: "right", width: 25 }}>{months[date.getMonth()]}</Text>
+        <Text style={{ color: dark.textPrimary, textAlign: "right", width: 35 }}>{date.getFullYear()}</Text>
+      </View>
+    );
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
@@ -112,12 +136,16 @@ export default function Trade({ navigation }) {
           if (appCtx.email) {
             try {
               const listSecurity = await securityRepository.getAll(appCtx.email);
-              //listSecurity.map((security) => console.log(security));
               setSecurities(listSecurity);
               setSelectedTicker(listSecurity[0].ticker);
 
+              let dateList = [];
+
               const listInvestment = await investmentRepository.getAll(appCtx.email);
-              //listInvestment.map((investment) => console.log(investment));
+              listInvestment.map((investment) => dateList.push(investment.buyDate.toISOString().split("T")[0]));
+              const sortedList = new Set(dateList.sort((a, b) => b - a).reverse());
+              setSortedDates(Array.from(sortedList));
+              //console.log(Array.from(sortedList));
               setInvestments(listInvestment);
             } catch (e) {
               setSecurities([]);
@@ -143,23 +171,61 @@ export default function Trade({ navigation }) {
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={appCtx.email} navigation={navigation} />
       <View style={styles.usableScreen}>
-        <View style={{ flex: 1, gap: 20 }}>
-          {modalVisible && addForm()}
-          <View>
-            <Carrossel items={loadSecurityItems()} type={selectedTicker} setType={setSelectedTicker} size={60} iconBackground={dark.complementary} />
-          </View>
-          <View style={{ alignItems: "flex-end" }}>
-            <Pressable onPress={() => setModalVisible(true)} style={{ borderRadius: 10, borderWidth: 1, borderColor: dark.textPrimary }}>
-              <CustomTitle title="Trade" />
+        <View style={{ flex: 1, gap: 30, padding: 10 }}>
+          {modalVisible && (
+            <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible} size={15} hasColor={true}>
+              {addForm()}
+            </ModalCustom>
+          )}
+          <Carrossel items={loadSecurityItems()} type={selectedTicker} setType={setSelectedTicker} size={60} iconBackground={dark.complementary} />
+          <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 10 }}>
+            <Pressable
+              onPress={() => {
+                setModalVisible(true);
+                setModalType("Security");
+              }}
+              style={{ borderRadius: 10, borderWidth: 1, borderColor: dark.textPrimary }}
+            >
+              <CustomTitle textStyle={{ padding: 5 }} title="Security" />
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setModalVisible(true);
+                setModalType("Trade");
+              }}
+              style={{ borderRadius: 10, borderWidth: 1, borderColor: dark.textPrimary }}
+            >
+              <CustomTitle textStyle={{ padding: 5 }} title="Trade" />
             </Pressable>
           </View>
-          <View style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={{ gap: 10 }}>
-              {investments.map((item) => (
-                <FlatItem key={item.id} padding={10} icon={loadSecurityIcon(item.security.ticker)} name={item.shares.toString()} value={item.buyPrice} />
-              ))}
+          <CardWrapper style={{ flex: 1, paddingHorizontal: 20, paddingVertical: 10 }}>
+            <CustomTitle title={"Investments"} textStyle={{ padding: 0, fontSize: 16, fontWeight: "bold" }} containerStyle={{ paddingTop: verticalScale(10), paddingBottom: verticalScale(15) }} />
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 30 }}>
+              {sortedDates.map((dates) => {
+                return (
+                  <View key={`Date${dates}`} style={{ gap: 10 }}>
+                    {dateTitleFormat(dates)}
+                    {investments
+                      .filter((item) => item.buyDate.toISOString().split("T")[0] === dates)
+                      .map((item) => {
+                        return (
+                          <View key={`View${item.id}`}>
+                            <TradeItem
+                              key={item.id}
+                              icon={loadSecurityIcon(item.security.ticker)}
+                              shares={item.shares.toString()}
+                              cost={Number(item.buyPrice) * item.shares}
+                              ticker={item.security.ticker}
+                              name={item.security.name}
+                            />
+                          </View>
+                        );
+                      })}
+                  </View>
+                );
+              })}
             </ScrollView>
-          </View>
+          </CardWrapper>
         </View>
       </View>
     </LinearGradient>

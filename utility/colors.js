@@ -12,6 +12,7 @@ export const dark = {
   button: "#F4981B",
   gradientColourLight: ["#010103", "#12102E"],
   textPrimary: "rgba(214, 210, 230, 1)",
+  textComplementary: "rgba(214, 210, 230, 0.5)",
   textSecundary: "lightgray",
   textExpenses: "red",
   incomeBackgroundColor: "rgb(180, 255, 180)",
