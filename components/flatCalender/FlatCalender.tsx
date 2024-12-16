@@ -1,8 +1,8 @@
 import { View, ScrollView, Pressable, Text } from "react-native";
 import { _styles } from "./style";
-import { months } from "../../utility/calendar";
+import { months, years } from "../../utility/calendar";
 import { dark } from "../../utility/colors";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import React from "react";
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -13,14 +13,20 @@ type FlatCalendarProps = {
 export const FlatCalendar = ({ setInputBuyDate }: FlatCalendarProps) => {
   const refMonth = useRef<ScrollView>();
   const refDate = useRef<ScrollView>();
+  const refYear = useRef<ScrollView>();
+  const timeoutRef = useRef(null);
+
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentDate, setCurrentDate] = useState(new Date().getDate());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [isYearVisible, setIsYearVisible] = useState(false);
+
   const styles = _styles;
 
   function getDaysOfMonthAndWeek() {
-    const daysInMonth = new Date(2024, currentMonth + 1, 0).getDate();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     // 0 (Sunday) to 6 (Saturday)
-    const firstDayOfMonth = new Date(2024, currentMonth, 1).getDay();
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
     const days = [];
     const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -36,17 +42,54 @@ export const FlatCalendar = ({ setInputBuyDate }: FlatCalendarProps) => {
     return days;
   }
 
+  // Allows to temporarily shows the years scrollview
+  const handleTimeout = () => {
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setIsYearVisible(false);
+    }, 2000);
+  };
+
+  const handleMonthClick = (index: number) => {
+    setCurrentMonth(index);
+    setIsYearVisible(true);
+    handleTimeout();
+  };
+
+  const handleYearClick = (year: number) => {
+    setCurrentYear(year);
+    setIsYearVisible(true);
+    handleTimeout();
+  };
+
   useFocusEffect(
     React.useCallback(() => {
-      const today = new Date();
-      const buyDate = new Date(Date.UTC(today.getFullYear(), currentMonth, currentDate));
+      const buyDate = new Date(Date.UTC(currentYear, currentMonth, currentDate));
       buyDate.setUTCHours(0, 0, 0, 0); // Set UTC hours, minutes, seconds, milliseconds to 0
       setInputBuyDate(buyDate);
-    }, [currentDate, currentMonth])
+    }, [currentDate, currentMonth, currentYear])
   );
 
   return (
     <View style={{ gap: 10, marginBottom: -5 }}>
+      {isYearVisible ? (
+        <ScrollView
+          ref={refYear}
+          onContentSizeChange={() => refYear.current.scrollTo({ x: currentMonth * 55, animated: true })}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 5 }}
+          snapToInterval={55}
+        >
+          {years.map((year) => (
+            <Pressable key={year} onPress={() => handleYearClick(year)} style={{ ...styles.calendarMonthContainer, backgroundColor: year === currentYear ? dark.secundary : "transparent" }}>
+              <Text style={{ color: dark.textPrimary, textAlign: "center", fontSize: 12, fontWeight: year === currentYear ? "bold" : "normal" }}>{year}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      ) : (
+        <View style={{ height: 16 }}></View>
+      )}
       <ScrollView
         ref={refMonth}
         onContentSizeChange={() => refMonth.current.scrollTo({ x: currentMonth * 55, animated: true })}
@@ -56,7 +99,7 @@ export const FlatCalendar = ({ setInputBuyDate }: FlatCalendarProps) => {
         snapToInterval={55}
       >
         {months.map((month, index) => (
-          <Pressable key={month} onPress={() => setCurrentMonth(index)} style={{ ...styles.calendarMonthContainer, backgroundColor: month === months[currentMonth] ? dark.secundary : "transparent" }}>
+          <Pressable key={month} onPress={() => handleMonthClick(index)} style={{ ...styles.calendarMonthContainer, backgroundColor: month === months[currentMonth] ? dark.secundary : "transparent" }}>
             <Text style={{ color: dark.textPrimary, textAlign: "center", fontSize: 12, fontWeight: month === months[currentMonth] ? "bold" : "normal" }}>{month}</Text>
           </Pressable>
         ))}

@@ -21,6 +21,7 @@ import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { TradeItem } from "./tradeComponents/tradeItem";
 import { verticalScale } from "../../functions/responsive";
 import { months } from "../../utility/calendar";
+import { dateSorterAsc } from "../../functions/dates";
 
 export default function Trade({ navigation }) {
   const appCtx = useContext(AppContext);
@@ -143,7 +144,7 @@ export default function Trade({ navigation }) {
 
               const listInvestment = await investmentRepository.getAll(appCtx.email);
               listInvestment.map((investment) => dateList.push(investment.buyDate.toISOString().split("T")[0]));
-              const sortedList = new Set(dateList.sort((a, b) => b - a).reverse());
+              const sortedList = new Set(dateSorterAsc(dateList).reverse());
               setSortedDates(Array.from(sortedList));
               //console.log(Array.from(sortedList));
               setInvestments(listInvestment);

@@ -20,7 +20,7 @@ export const _styles = StyleSheet.create({
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
   calendarBox: { width: 50, padding: 10, borderRadius: 10, justifyContent: "center" },
-  calendarMonthContainer: { width: 50, borderRadius: 5 },
+  calendarMonthContainer: { width: 50, borderRadius: 5, height: 16 },
   primaryText: { color: dark.textPrimary, textAlign: "center", fontSize: 12 },
   primaryTextDates: { color: dark.textPrimary, textAlign: "center", fontWeight: "bold" },
 });

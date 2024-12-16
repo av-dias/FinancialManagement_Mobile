@@ -57,7 +57,6 @@ export default function Statistics() {
           }
 
           resSplitDeptData[currentYear] = resSplitDeptData[currentYear].sort(sortMonths);
-          console.log(resSplitDeptData[currentYear.toString()]);
           setSplitDeptData(resSplitDeptData);
           let resSplitTotal = getSumArrayObject(resSplitDeptData[currentYear.toString()]);
           if (isNaN(resSplitTotal)) resSplitTotal = 0;
