@@ -22,7 +22,6 @@ export class SecurityRepository {
   }
 
   public async updateOrCreate(security: SecurityEntity) {
-    console.log(security);
     let startTime = performance.now();
     await this.ormRepository.save(security);
     let endTime = performance.now();

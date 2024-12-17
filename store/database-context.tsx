@@ -43,7 +43,7 @@ export const DatabaseConnectionProvider = ({ children }) => {
 
         //If you're not using migrations, you can delete these lines,
         //since the default is no migrations:
-        migrations: [],
+        //migrations: [],
         migrationsRun: false,
         // If you're not using migrations also set this to true
         synchronize: true,

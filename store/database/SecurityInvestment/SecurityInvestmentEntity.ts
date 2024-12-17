@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity("investment")
+@Entity("investments")
 export class InvestmentModel {
   @PrimaryGeneratedColumn("increment")
   id: number;
@@ -38,7 +38,7 @@ export type InvestmentEntity = {
   userId: string;
 };
 
-@Entity("security")
+@Entity("securities")
 export class SecurityModel {
   @PrimaryGeneratedColumn("increment")
   id: number;
