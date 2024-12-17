@@ -12,6 +12,7 @@ type CustomInputProps = {
   capitalize?: "none" | "sentences" | "words" | "characters";
   secureTextEntry?: boolean;
   textAlign?: "left" | "center" | "right"; // align text to left, center, or right in text input field. Default is center.
+  keyboardType?: "default" | "numeric"; // type of keyboard to show. Default is default.
 };
 
 export default function CustomInput({
@@ -24,6 +25,7 @@ export default function CustomInput({
   capitalize = "none",
   secureTextEntry = false,
   textAlign = "center",
+  keyboardType = "default",
 }: CustomInputProps) {
   const styles = _styles;
 
@@ -43,6 +45,7 @@ export default function CustomInput({
           editable={editable}
           autoCapitalize={capitalize}
           secureTextEntry={secureTextEntry}
+          keyboardType={keyboardType}
         />
         <View style={{ flex: 2, backgroundColor: "transparent", justifyContent: "center", alignSelf: "center" }}>{}</View>
       </View>

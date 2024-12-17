@@ -36,7 +36,7 @@ export default function Trade({ navigation }) {
   const [inputTicker, setInputTicker] = useState("");
   const [inputBuyPrice, setInputBuyPrice] = useState("");
   const [inputBuyDate, setInputBuyDate] = useState<Date>(new Date());
-  const [inputShareValue, setInputShareValue] = useState("");
+  const [inputShareValue, setInputShareValue] = useState<string>("");
   const [inputInvestmentTicker, setInputInvestmentTicker] = useState("");
   const [securities, setSecurities] = useState<SecurityEntity[]>([]);
   const [investments, setInvestments] = useState<InvestmentEntity[]>([]);
@@ -48,7 +48,7 @@ export default function Trade({ navigation }) {
   const [selectedTicker, setSelectedTicker] = useState<string>(noFilter);
 
   const createInvestment = (): InvestmentEntity => {
-    return { shares: Number(inputShareValue), buyPrice: Number(inputBuyPrice), buyDate: inputBuyDate, userId: appCtx.email };
+    return { shares: Number(inputShareValue.replace(",", ".")), buyPrice: Number(inputBuyPrice.replace(",", ".")), buyDate: inputBuyDate, userId: appCtx.email };
   };
 
   const addInvestmentCallback = async () => {
@@ -94,7 +94,7 @@ export default function Trade({ navigation }) {
         <View style={{ flex: 2, gap: 20 }}>
           <MoneyInputHeader verticalHeight={180} value={inputBuyPrice} setValue={setInputBuyPrice} />
           <FlatCalendar setInputBuyDate={setInputBuyDate} />
-          <CustomInput Icon={undefined} placeholder={"Shares"} value={inputShareValue} setValue={setInputShareValue} />
+          <CustomInput keyboardType="numeric" Icon={undefined} placeholder={"Shares"} value={inputShareValue} setValue={setInputShareValue} />
           <Carrossel items={loadSecurityItems()} type={inputInvestmentTicker} setType={setInputInvestmentTicker} size={60} iconBackground={dark.complementary} />
           <View style={{ flex: 1, justifyContent: "flex-end", bottom: 20 }}>
             <Pressable
