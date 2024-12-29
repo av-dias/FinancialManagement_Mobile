@@ -32,7 +32,7 @@ export class PortfolioRepository {
       list = await this.ormRepository
         .createQueryBuilder("p")
         .leftJoinAndSelect("p.items", "items")
-        .where("p.userId = :userId AND items.month <= :month AND items.year <= :year", { userId: userId, month: currMonth, year: currYear })
+        .where("p.userId = :userId AND ((items.month <= :month AND items.year = :year) OR items.year <= :year)", { userId: userId, month: currMonth, year: currYear })
         .orderBy("items.year", "DESC")
         .orderBy("items.month", "DESC")
         .distinct()
