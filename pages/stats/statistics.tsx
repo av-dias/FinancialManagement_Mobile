@@ -9,14 +9,13 @@ import TypeCard from "../../components/TypeCard/TypeCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { calculateSplitData, calculateSplitDeptData, findAllSplitExpenses } from "../../functions/statistics";
 import { getSumArrayObject } from "../../functions/array";
-import { months } from "../../utility/calendar";
+import { months, years } from "../../utility/calendar";
 import ModalCustom from "../../components/modal/modal";
 import { ExpenseType, PurchaseType, TransactionType } from "../../models/types";
 import { FlatItem } from "../../components/flatItem/flatItem";
 import { categoryIcons } from "../../utility/icons";
 import { Badge } from "react-native-paper";
 import { CustomBarChart } from "../../components/CustomBarChart/CustomBarChart";
-import { dark } from "../../utility/colors";
 import { verticalScale } from "../../functions/responsive";
 import { logTimeTook } from "../../utility/logger";
 
@@ -30,7 +29,7 @@ export default function Statistics() {
   const [splitDeptData, setSplitDeptData] = useState({});
   const [expensesWithSplit, setExpensesWithSplit] = useState({});
   const [transactionsWithSplit, setTransactionsWithSplit] = useState({});
-  const [yearsRange, setYearsRange] = useState<string[]>([new Date().getFullYear().toString()]);
+  const [yearsRange, setYearsRange] = useState<number[]>(years);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [chartIndex, setChartIndex] = useState<number>(null);
 
@@ -61,8 +60,6 @@ export default function Statistics() {
           let resSplitTotal = getSumArrayObject(resSplitDeptData[currentYear.toString()]);
           if (isNaN(resSplitTotal)) resSplitTotal = 0;
           setSplitTotal(resSplitTotal);
-
-          setYearsRange(Object.keys(resSplitDeptData));
         }
       }
       let startTime = performance.now();
@@ -130,7 +127,7 @@ export default function Statistics() {
           <Text style={styles.textSecundary}>{`Split: ${splitTotal.toFixed(0)}€`}</Text>
         </View>
         <View style={styles.containerRowGap}>
-          <TypeCard setItem={setCurrentYear} itemList={[yearsRange]} />
+          <TypeCard setItem={setCurrentYear} itemList={yearsRange} defaultValue={new Date().getFullYear()} />
         </View>
       </View>
       <View style={{ paddingTop: verticalScale(60), paddingHorizontal: 10, paddingRight: verticalScale(20), flexDirection: "row" }}>

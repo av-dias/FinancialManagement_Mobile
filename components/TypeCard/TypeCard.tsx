@@ -5,7 +5,13 @@ import { _styles } from "./style";
 import { verticalScale } from "../../functions/responsive";
 import Carousel from "react-native-reanimated-carousel";
 
-export default function TypeCard({ setItem, itemList }) {
+type TypeCardProps = {
+  setItem: React.Dispatch<React.SetStateAction<any>>;
+  itemList: any[];
+  defaultValue?: number;
+};
+
+export default function TypeCard({ setItem, itemList, defaultValue = null }: TypeCardProps) {
   const styles = _styles;
 
   return (
@@ -20,7 +26,7 @@ export default function TypeCard({ setItem, itemList }) {
             onSnapToItem={(index) => {
               setItem(itemList[index]);
             }}
-            defaultIndex={0}
+            defaultIndex={defaultValue ? itemList.findIndex((i) => i == defaultValue) : 0}
             renderItem={({ index }) => (
               <View
                 style={{
