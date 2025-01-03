@@ -24,6 +24,7 @@ import { getSplitUser, getSplitEmail } from "../../functions/split";
 import { handleTransaction } from "./handler";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { TransactionType } from "../../models/types";
+import { FlatCalendar } from "../../components/flatCalender/FlatCalender";
 
 type TransactionProps = {
   handleEdit?: (newTransaction: TransactionType, receivedActive: boolean, destination: string) => void;
@@ -104,9 +105,8 @@ export default function Transaction({ handleEdit, transaction }: TransactionProp
           iconSize={30}
         />
         <View style={styles.form}>
-          <CustomCalendarStrip
-            pickerCurrentDate={newTransaction.dot}
-            setPickerCurrentDate={(_date) => {
+          <FlatCalendar
+            setInputBuyDate={(_date) => {
               setNewTransaction({ ...newTransaction, dot: new Date(_date).toISOString().split("T")[0] });
             }}
           />

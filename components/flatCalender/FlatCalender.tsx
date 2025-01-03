@@ -2,7 +2,7 @@ import { View, ScrollView, Pressable, Text } from "react-native";
 import { _styles } from "./style";
 import { months, years } from "../../utility/calendar";
 import { dark } from "../../utility/colors";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import React from "react";
 import { useFocusEffect } from "@react-navigation/native";
 

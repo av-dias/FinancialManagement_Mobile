@@ -25,6 +25,7 @@ import { handlePurchase, modalContent } from "./handler";
 import { getSplitUser, getSplitEmail } from "../../functions/split";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { PurchaseType } from "../../models/types";
+import { FlatCalendar } from "../../components/flatCalender/FlatCalender";
 
 type PurchaseProps = {
   handleEdit?: (purchase: PurchaseType, splitStatus: boolean, slider: number, splitEmail) => void;
@@ -117,9 +118,8 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
           iconSize={30}
         />
         <View style={styles.form}>
-          <CustomCalendarStrip
-            pickerCurrentDate={new Date(newPurchase.dop)}
-            setPickerCurrentDate={(_date) => {
+          <FlatCalendar
+            setInputBuyDate={(_date) => {
               setNewPurchase({ ...newPurchase, dop: _date.toISOString().split("T")[0] });
             }}
           />

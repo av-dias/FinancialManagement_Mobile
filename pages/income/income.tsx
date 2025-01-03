@@ -22,6 +22,7 @@ import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { IncomeEntity, IncomeModel } from "../../store/database/Income/IncomeEntity";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDatabaseConnection } from "../../store/database-context";
+import { FlatCalendar } from "../../components/flatCalender/FlatCalender";
 
 type IncomeProps = {
   income?: IncomeEntity;
@@ -112,9 +113,8 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
           iconBorderColor={dark.secundary}
         />
         <View style={styles.form}>
-          <CustomCalendarStrip
-            pickerCurrentDate={newIncome.doi}
-            setPickerCurrentDate={(_date) => {
+          <FlatCalendar
+            setInputBuyDate={(_date) => {
               setNewIncome({ ...newIncome, doi: new Date(_date) });
             }}
           />

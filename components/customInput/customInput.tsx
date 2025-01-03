@@ -7,7 +7,7 @@ type CustomInputProps = {
   placeholder: string;
   value: string;
   editable?: boolean;
-  setValue: (value: string) => void;
+  setValue: (value: any) => void;
   noStyle?: boolean;
   capitalize?: "none" | "sentences" | "words" | "characters";
   secureTextEntry?: boolean;
@@ -22,7 +22,7 @@ export default function CustomInput({
   editable = true,
   setValue,
   noStyle = false,
-  capitalize = "none",
+  capitalize = "words",
   secureTextEntry = false,
   textAlign = "center",
   keyboardType = "default",
@@ -40,7 +40,7 @@ export default function CustomInput({
           ref={(input) => {
             this.textInputName = input;
           }}
-          value={value}
+          value={value?.trimEnd() || value}
           onChangeText={setValue}
           editable={editable}
           autoCapitalize={capitalize}

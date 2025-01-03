@@ -1,14 +1,20 @@
 import { View, Text } from "react-native";
 import { dark } from "../../../utility/colors";
 
+const sharesThreshold = 13;
+
 export const TradeItem = ({ icon, shares, cost, ticker, name }) => {
+  if (shares.length > sharesThreshold) {
+    shares = shares.slice(0, sharesThreshold) + "...";
+  }
+
   return (
-    <View style={{ flex: 1, flexDirection: "row", maxHeight: 60 }}>
+    <View style={{ flex: 1, flexDirection: "row", maxHeight: 60, gap: 20 }}>
       <View style={{ flex: 1, alignItems: "flex-start" }}>{icon}</View>
       <View style={{ flex: 3, alignItems: "flex-start", justifyContent: "center" }}>
         <Text style={{ color: dark.textComplementary }}>{name}</Text>
       </View>
-      <View style={{ flex: 1, alignItems: "flex-end" }}>
+      <View style={{ flex: 3, alignItems: "flex-end" }}>
         <View style={{ gap: 1 }}>
           <Text style={{ textAlign: "right" }}>
             <Text style={{ color: dark.textPrimary, textAlignVertical: "bottom", fontSize: 12 }}>{cost.toFixed(2)}</Text>
