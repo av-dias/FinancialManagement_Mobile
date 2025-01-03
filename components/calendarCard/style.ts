@@ -49,4 +49,5 @@ export const _styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "transparent",
   },
+  calendarMonthContainer: { width: 50, borderRadius: 5, height: 20 },
 });

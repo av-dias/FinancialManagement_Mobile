@@ -19,7 +19,7 @@ import { _styles } from "./style";
 import { STATS_TYPE, STATS_MODE, KEYS } from "../../utility/keys";
 
 import { horizontalScale, verticalScale } from "../../functions/responsive";
-import { loadCalendarCard, loadPieChartData, loadPurchaseTotalData, loadSpendTableData, loadExpenses } from "./handler";
+import { loadPieChartData, loadPurchaseTotalData, loadSpendTableData, loadExpenses } from "./handler";
 import { calcExpensesByType, calcExpensesAverage, calcExpensesTotalFromType } from "../../functions/expenses";
 import { dark } from "../../utility/colors";
 import { FlatItem } from "../../components/flatItem/flatItem";
@@ -224,7 +224,7 @@ export default function Home({ navigation }) {
                   <View style={{ paddingBottom: 10 }}>
                     <Text style={styles.expensesText}>{`${loadPurchaseTotalData(statsMode, statsType, expenseTotal, purchaseAverageTotal)}€`}</Text>
                   </View>
-                  {loadCalendarCard(statsMode, currentMonth, setCurrentMonth, currentYear, setCurrentYear)}
+                  {statsMode == STATS_MODE[0] && <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />}
                 </View>
               </View>
             </CardWrapper>

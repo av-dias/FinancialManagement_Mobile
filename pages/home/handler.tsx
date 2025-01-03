@@ -1,5 +1,3 @@
-import CalendarCard from "../../components/calendarCard/calendarCard";
-
 import { categoryIcons } from "../../utility/icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { _styles } from "./style";
@@ -71,10 +69,6 @@ export const refinePurchaseStats = (purchasesStats) => {
   });
 
   return [array, arrayTables];
-};
-
-export const loadCalendarCard = (statsMode, currentMonth, setCurrentMonth, currentYear, setCurrentYear) => {
-  if (statsMode == STATS_MODE[0]) return <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />;
 };
 
 export const loadPieChartData = (statsMode: any, statsType: any, pieChartData: any, pieChartAverageData: any) => {

@@ -18,6 +18,7 @@ import { Badge } from "react-native-paper";
 import { CustomBarChart } from "../../components/CustomBarChart/CustomBarChart";
 import { verticalScale } from "../../functions/responsive";
 import { logTimeTook } from "../../utility/logger";
+import CalendarCard from "../../components/calendarCard/calendarCard";
 
 const sortMonths = (a, b) => months.indexOf(a.label) - months.indexOf(b.label);
 
@@ -127,7 +128,7 @@ export default function Statistics() {
           <Text style={styles.textSecundary}>{`Split: ${splitTotal.toFixed(0)}€`}</Text>
         </View>
         <View style={styles.containerRowGap}>
-          <TypeCard setItem={setCurrentYear} itemList={yearsRange} defaultValue={new Date().getFullYear()} />
+          <CalendarCard monthState={[null, null]} yearState={[currentYear, setCurrentYear]} />
         </View>
       </View>
       <View style={{ paddingTop: verticalScale(60), paddingHorizontal: 10, paddingRight: verticalScale(20), flexDirection: "row" }}>
