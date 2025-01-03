@@ -156,7 +156,7 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
             setSplitStatus={setSplitStatus}
             slider={slider}
             setSlider={setSlider}
-            size={verticalScale(90)}
+            size={verticalScale(60)}
           />
         </View>
         <CustomButton

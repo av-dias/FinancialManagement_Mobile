@@ -9,17 +9,7 @@ import commonStyles from "../../utility/commonStyles";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
 
-export default function SplitSlider({
-  value,
-  setModalVisible,
-  setModalContentFlag,
-  splitStatus,
-  setSplitStatus,
-  slider,
-  setSlider,
-  size,
-  userInfo = true,
-}) {
+export default function SplitSlider({ value, setModalVisible, setModalContentFlag, splitStatus, setSplitStatus, slider, setSlider, size, userInfo = true }) {
   const styles = _styles;
 
   return (
@@ -34,7 +24,7 @@ export default function SplitSlider({
             }}
             style={{
               position: "absolute",
-              right: verticalScale(10),
+              right: verticalScale(25),
               width: verticalScale(35),
               padding: 5,
               backgroundColor: "transparent",
@@ -49,11 +39,10 @@ export default function SplitSlider({
           style={{
             ...styles.button,
             backgroundColor: splitStatus ? dark.secundary : dark.complementary,
-
             width: "25%",
             maxWidth: 100,
             alignSelf: "center",
-            paddingVertical: verticalScale(8),
+            paddingVertical: verticalScale(4),
           }}
           onPress={async () => {
             setSplitStatus(!splitStatus);
@@ -69,7 +58,7 @@ export default function SplitSlider({
           }}
           style={{
             position: "absolute",
-            left: verticalScale(10),
+            left: verticalScale(25),
             width: verticalScale(35),
             padding: 6,
             backgroundColor: "transparent",
@@ -81,13 +70,11 @@ export default function SplitSlider({
         </Pressable>
       </View>
 
-      <View style={{ paddingHorizontal: 10, flexDirection: "row", backgroundColor: "transparent", justifyContent: "center" }}>
+      <View style={{ paddingHorizontal: 10, flexDirection: "row" }}>
         <View
           style={{
-            alignSelf: "center",
             borderRadius: commonStyles.borderRadius,
             paddingHorizontal: verticalScale(15),
-            paddingVertical: verticalScale(10),
             width: verticalScale(70),
           }}
         >
@@ -102,18 +89,16 @@ export default function SplitSlider({
           disabled={splitStatus ? false : true}
           allowTouchTrack={!splitStatus ? false : true}
           trackStyle={{ height: 5, backgroundColor: "transparent" }}
-          thumbStyle={{ height: verticalScale(32), width: verticalScale(32), backgroundColor: "transparent" }}
+          thumbStyle={{ height: verticalScale(20), width: verticalScale(32), backgroundColor: "transparent" }}
           thumbProps={{
-            children: <FontAwesome name="circle" size={verticalScale(30)} color="black" />,
+            children: <FontAwesome name="circle" size={verticalScale(20)} color="black" />,
           }}
-          style={{ flex: 1, backgroundColor: "transparent", height: "100%" }}
+          style={{ flex: 1, backgroundColor: "transparent", height: "50%" }}
         />
         <View
           style={{
-            alignSelf: "center",
             borderRadius: 50,
             paddingHorizontal: verticalScale(15),
-            paddingVertical: verticalScale(10),
             width: verticalScale(70),
           }}
         >
