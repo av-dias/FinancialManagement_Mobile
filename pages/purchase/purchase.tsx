@@ -103,7 +103,7 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
       </View>
       <View style={{ flex: 1 }}>
         <MoneyInputHeader
-          value={newPurchase.value}
+          value={newPurchase.value.replace("-", "")}
           setValue={(_value) => {
             setNewPurchase({ ...newPurchase, value: _value });
           }}
