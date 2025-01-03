@@ -1,10 +1,5 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
-import { dark } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
-import { StatusBar, Dimensions } from "react-native";
-const statusBarHeight = StatusBar.currentHeight;
-const naviagtionBarHeight = verticalScale(90);
-const height = Dimensions.get("window").height;
+import { StyleSheet } from "react-native";
+import { horizontalScale } from "../../functions/responsive";
 
 const borderRadius = 10;
 

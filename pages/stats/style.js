@@ -2,8 +2,6 @@ import { StyleSheet } from "react-native";
 import { dark } from "../../utility/colors";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
-const statusBarHeight = StatusBar.currentHeight;
-const naviagtionBarHeight = verticalScale(110);
 import commonStyles from "../../utility/commonStyles";
 
 export const _styles = StyleSheet.create({
@@ -14,7 +12,7 @@ export const _styles = StyleSheet.create({
     height: "97%",
   },
   usableScreen: {
-    height: Dimensions.get("window").height - statusBarHeight - naviagtionBarHeight,
+    height: Dimensions.get("window").height - commonStyles.statusBarHeight - commonStyles.naviagtionBarHeight,
     backgroundColor: "transparent",
     marginTop: verticalScale(5),
     paddingHorizontal: commonStyles.paddingHorizontal,

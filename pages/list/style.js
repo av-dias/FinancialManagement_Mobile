@@ -4,12 +4,9 @@ import { horizontalScale, verticalScale, moderateScale } from "../../functions/r
 import { StatusBar, Dimensions } from "react-native";
 import commonStyles from "../../utility/commonStyles";
 
-const statusBarHeight = StatusBar.currentHeight;
-const naviagtionBarHeight = verticalScale(90);
-
 export const _styles = StyleSheet.create({
   usableScreen: {
-    height: Dimensions.get("window").height - statusBarHeight - naviagtionBarHeight,
+    height: Dimensions.get("window").height - commonStyles.statusBarHeight - commonStyles.naviagtionBarHeight,
     backgroundColor: "transparent",
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
@@ -20,9 +17,8 @@ export const _styles = StyleSheet.create({
     height: "97%",
   },
   calendar: {
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "flex-end",
-    flex: 1,
     width: "98%",
     backgroundColor: "transparent",
     alignSelf: "center",

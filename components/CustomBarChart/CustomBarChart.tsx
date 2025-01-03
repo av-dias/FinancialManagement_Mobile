@@ -29,6 +29,7 @@ export const CustomBarChart = ({ maxBarValue = 1, data, labels, onPressCallback 
   const styles = _styles;
   const ref = useRef<ScrollView>(null); // Improve scrollView positioning based on current month
   if (!data) return null;
+  if (maxBarValue == null || maxBarValue == 0) maxBarValue = 1;
 
   return (
     <CardWrapper noStyle={true}>

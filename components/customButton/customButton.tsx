@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView, Alert, ViewStyle } from "react-native";
 import { _styles } from "./style";
 
 type CustomButtonProps = {
   handlePress: () => void;
   text?: string;
-  addStyle?: object; // Add any additional styling here, e.g., borderRadius, backgroundColor, etc.
+  addStyle?: ViewStyle; // Add any additional styling here, e.g., borderRadius, backgroundColor, etc.
 };
 
 export default function CustomButton({ handlePress, text = "Submit", addStyle = {} }: CustomButtonProps) {

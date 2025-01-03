@@ -4,14 +4,11 @@ import { horizontalScale, verticalScale, moderateScale, heightTreshold } from ".
 import { StatusBar, Dimensions } from "react-native";
 import commonStyles from "../../utility/commonStyles";
 
-const statusBarHeight = StatusBar.currentHeight;
-const naviagtionBarHeight = verticalScale(90);
-
 const borderRadius = commonStyles.borderRadius;
 
 export const _styles = StyleSheet.create({
   usableScreen: {
-    height: Dimensions.get("window").height - statusBarHeight - naviagtionBarHeight,
+    height: Dimensions.get("window").height - commonStyles.statusBarHeight - commonStyles.naviagtionBarHeight,
     backgroundColor: "transparent",
     paddingHorizontal: commonStyles.paddingHorizontal,
   },

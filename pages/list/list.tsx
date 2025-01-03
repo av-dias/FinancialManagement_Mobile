@@ -191,7 +191,7 @@ export default function List({ navigation }) {
               value={searchQuery}
             />
           </View>
-          <View style={{ flex: verticalScale(7), backgroundColor: "transparent" }}>
+          <View style={{ flex: 1 }}>
             <ScrollView>
               {listDays.map((date) => (
                 <View key={KEYS_SERIALIZER.EXPENSE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date} style={{ paddingHorizontal: 5 }}>

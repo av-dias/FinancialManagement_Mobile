@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { StatusBar } from "react-native";
-const statusBarHeight = StatusBar.currentHeight;
+import commonStyles from "../../utility/commonStyles";
 
 const headerSize = 45;
 const fontSize = 17;
@@ -12,7 +12,7 @@ export const _styles = StyleSheet.create({
     paddingVertical: verticalScale(15),
     paddingHorizontal: verticalScale(20),
     gap: 10,
-    marginTop: statusBarHeight,
+    marginTop: commonStyles.statusBarHeight,
     width: "100%",
     flexDirection: "row",
     backgroundColor: "black",

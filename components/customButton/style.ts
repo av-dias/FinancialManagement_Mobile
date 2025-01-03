@@ -12,7 +12,7 @@ export const _styles = StyleSheet.create({
     backgroundColor: dark.button,
     elevation: 1,
   },
-  submitButton: { bottom: horizontalScale(15), alignItems: "center", justifyContent: "center", backgroundColor: "transparent " },
+  submitButton: { alignItems: "center", justifyContent: "center", backgroundColor: "transparent " },
   buttonText: {
     fontSize: 20,
     color: "white",
