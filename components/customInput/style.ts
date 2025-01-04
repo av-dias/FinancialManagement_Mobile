@@ -19,6 +19,7 @@ export const _styles = StyleSheet.create({
     flex: 10,
     fontSize: verticalScale(15),
     paddingVertical: moderateScale(6),
+    paddingHorizontal: verticalScale(10),
     textAlign: "center",
     justifyContent: "center",
     borderRadius: borderRadius,

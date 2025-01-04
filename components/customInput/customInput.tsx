@@ -1,6 +1,8 @@
-import { View, TextInput } from "react-native";
+import { View, TextInput, Text } from "react-native";
 import { _styles } from "./style";
 import CardWrapper from "../cardWrapper/cardWrapper";
+import { dark } from "../../utility/colors";
+import commonStyles from "../../utility/commonStyles";
 
 type CustomInputProps = {
   Icon: any;
@@ -30,9 +32,9 @@ export default function CustomInput({
   const styles = _styles;
 
   return (
-    <CardWrapper noStyle={noStyle}>
-      <View style={{ ...styles.row, backgroundColor: "transparent" }}>
-        <View style={{ flex: 2, backgroundColor: "transparent", justifyContent: "center", alignSelf: "center" }}>{Icon}</View>
+    <CardWrapper noStyle={true}>
+      <View style={{ position: "absolute", top: -5, left: 10, zIndex: 1, backgroundColor: dark.complementarySolid, borderRadius: commonStyles.borderRadius }}>{Icon}</View>
+      <View style={{ ...styles.row, backgroundColor: "transparent", borderColor: dark.complementarySolid, borderWidth: 1 }}>
         <TextInput
           style={{ ...styles.textInput, textAlign: textAlign }}
           placeholder={placeholder}
@@ -47,7 +49,6 @@ export default function CustomInput({
           secureTextEntry={secureTextEntry}
           keyboardType={keyboardType}
         />
-        <View style={{ flex: 2, backgroundColor: "transparent", justifyContent: "center", alignSelf: "center" }}>{}</View>
       </View>
     </CardWrapper>
   );
