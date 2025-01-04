@@ -34,6 +34,6 @@ export const _styles = StyleSheet.create({
     flex: 7,
     gap: verticalScale(20),
     //paddingVertical: verticalScale(10),
-    paddingTop: verticalScale(20),
+    paddingTop: verticalScale(10),
   },
 });

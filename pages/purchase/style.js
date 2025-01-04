@@ -20,9 +20,9 @@ export const _styles = StyleSheet.create({
   },
   form: {
     flex: 7,
-    gap: verticalScale(20),
+    gap: verticalScale(30),
     //paddingVertical: verticalScale(10),
-    paddingTop: verticalScale(20),
+    paddingTop: verticalScale(10),
   },
   tableInfo: {
     width: "100%",

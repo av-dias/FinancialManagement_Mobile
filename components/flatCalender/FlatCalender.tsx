@@ -71,7 +71,7 @@ export const FlatCalendar = ({ setInputBuyDate }: FlatCalendarProps) => {
   );
 
   return (
-    <View style={{ gap: 10, marginBottom: -5 }}>
+    <View style={{ gap: 10 }}>
       {isYearVisible ? (
         <ScrollView
           ref={refYear}
@@ -109,14 +109,14 @@ export const FlatCalendar = ({ setInputBuyDate }: FlatCalendarProps) => {
         onContentSizeChange={() => refDate.current.scrollTo({ x: (currentDate - 1) * 55, animated: true })}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ gap: 5 }}
+        contentContainerStyle={{ gap: 5, alignItems: "center" }}
         snapToInterval={55}
       >
         {getDaysOfMonthAndWeek()?.map((item) => (
           <Pressable
             key={item.date}
             onPress={() => setCurrentDate(item.date)}
-            style={{ ...styles.calendarBox, marginVertical: item.date === currentDate ? 5 : 10, backgroundColor: item.date === currentDate ? dark.secundary : dark.complementary }}
+            style={{ ...styles.calendarBox, height: item.date === currentDate ? 60 : 50, backgroundColor: item.date === currentDate ? dark.secundary : dark.complementary }}
           >
             <Text style={styles.primaryText}>{item.dayOfWeek}</Text>
             <Text style={styles.primaryTextDates}>{item.date}</Text>
