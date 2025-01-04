@@ -123,14 +123,8 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
               setNewPurchase({ ...newPurchase, dop: _date.toISOString().split("T")[0] });
             }}
           />
-          <CardWrapper
-            style={{
-              paddingHorizontal: horizontalScale(10),
-              height: verticalScale(90),
-            }}
-          >
+          <View style={{ gap: verticalScale(5) }}>
             <CustomInput
-              noStyle={true}
               Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
               placeholder="Name"
               setValue={(_name) => {
@@ -139,7 +133,6 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
               value={newPurchase.name}
             />
             <CustomInput
-              noStyle={true}
               Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color={dark.textPrimary} />}
               placeholder="Notes"
               setValue={(_note) => {
@@ -147,7 +140,7 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
               }}
               value={newPurchase.note}
             />
-          </CardWrapper>
+          </View>
           <SplitSlider
             value={newPurchase.value}
             setModalVisible={setModalVisible}

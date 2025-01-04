@@ -118,14 +118,8 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
               setNewIncome({ ...newIncome, doi: new Date(_date) });
             }}
           />
-          <CardWrapper
-            style={{
-              paddingHorizontal: horizontalScale(10),
-              paddingVertical: horizontalScale(5),
-            }}
-          >
+          <View style={{ gap: verticalScale(5) }}>
             <CustomInput
-              noStyle={true}
               Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
               placeholder="Name"
               setValue={(name: string) => {
@@ -133,7 +127,7 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
               }}
               value={newIncome.name}
             />
-          </CardWrapper>
+          </View>
         </View>
         <CustomButton handlePress={onPressCallback} />
       </View>

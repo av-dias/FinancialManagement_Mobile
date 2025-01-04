@@ -110,14 +110,12 @@ export default function Transaction({ handleEdit, transaction }: TransactionProp
               setNewTransaction({ ...newTransaction, dot: new Date(_date).toISOString().split("T")[0] });
             }}
           />
-          <CardWrapper
+          <View
             style={{
-              paddingHorizontal: horizontalScale(10),
-              height: verticalScale(90),
+              gap: verticalScale(5),
             }}
           >
             <CustomInput
-              noStyle={true}
               Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
               placeholder="Description"
               setValue={(_description) => {
@@ -126,14 +124,13 @@ export default function Transaction({ handleEdit, transaction }: TransactionProp
               value={newTransaction.description}
             />
             <CustomInput
-              noStyle={true}
               Icon={<Entypo style={styles.iconCenter} name="email" size={verticalScale(20)} color={dark.textPrimary} />}
               placeholder="Email"
               value={getSplitEmail(destination)}
               setValue={() => {}}
               editable={false}
             />
-          </CardWrapper>
+          </View>
         </View>
         <CustomButton
           handlePress={() => {

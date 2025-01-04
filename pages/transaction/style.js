@@ -32,7 +32,7 @@ export const _styles = StyleSheet.create({
   iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center", backgroundColor: "transparent" },
   form: {
     flex: 7,
-    gap: verticalScale(20),
+    gap: verticalScale(30),
     //paddingVertical: verticalScale(10),
     paddingTop: verticalScale(10),
   },
