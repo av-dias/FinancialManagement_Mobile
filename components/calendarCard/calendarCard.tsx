@@ -47,34 +47,61 @@ export default function CalendarCard({ monthState: [currentMonth, setCurrentMont
     <View style={styles.calendarContainer}>
       <View style={styles.calendarBox}>
         <View style={styles.rowGap}>
-          <Carousel
-            width={verticalScale(100)}
-            height={verticalScale(40)}
-            data={months}
-            scrollAnimationDuration={100}
-            onSnapToItem={(index) => {
-              if (newMonth === 0 && index == 11) {
-                setCurrentYear(newYear - 1);
-              } else if (newMonth === 11 && index == 0) {
-                setCurrentYear(newYear + 1);
-              }
-              setCurrentMonth(index);
-            }}
-            defaultIndex={newMonth}
-            renderItem={({}) => (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  backgroundColor: "transparent",
-                }}
-              >
-                <Pressable onPress={() => setDatePicker(true)}>
-                  <Text style={styles.text}>{dateItem()}</Text>
-                </Pressable>
-              </View>
-            )}
-          />
+          {currentMonth != null ? (
+            <Carousel
+              width={verticalScale(100)}
+              height={verticalScale(40)}
+              data={months}
+              scrollAnimationDuration={100}
+              onSnapToItem={(index) => {
+                if (newMonth === 0 && index == 11) {
+                  setCurrentYear(newYear - 1);
+                } else if (newMonth === 11 && index == 0) {
+                  setCurrentYear(newYear + 1);
+                }
+                setCurrentMonth(index);
+              }}
+              defaultIndex={newMonth}
+              renderItem={({}) => (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    backgroundColor: "transparent",
+                  }}
+                >
+                  <Pressable onPress={() => setDatePicker(true)}>
+                    <Text style={styles.text}>{dateItem()}</Text>
+                  </Pressable>
+                </View>
+              )}
+            />
+          ) : (
+            <Carousel
+              width={verticalScale(100)}
+              height={verticalScale(40)}
+              data={years}
+              scrollAnimationDuration={100}
+              onSnapToItem={(index) => {
+                setCurrentYear(years[index]);
+              }}
+              snapEnabled={true}
+              defaultIndex={years.indexOf(newYear)}
+              renderItem={({}) => (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    backgroundColor: "transparent",
+                  }}
+                >
+                  <Pressable onPress={() => setDatePicker(true)}>
+                    <Text style={styles.text}>{dateItem()}</Text>
+                  </Pressable>
+                </View>
+              )}
+            />
+          )}
         </View>
         {datePicker && (
           <ModalCustom modalVisible={datePicker} setModalVisible={setDatePicker} size={6} hasColor={false}>
