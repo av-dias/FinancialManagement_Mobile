@@ -15,6 +15,7 @@ type CustomInputProps = {
   secureTextEntry?: boolean;
   textAlign?: "left" | "center" | "right"; // align text to left, center, or right in text input field. Default is center.
   keyboardType?: "default" | "numeric"; // type of keyboard to show. Default is default.
+  onBlurHandle?: () => void; // handle onBlur event. Default is empty function.
 };
 
 export default function CustomInput({
@@ -23,16 +24,18 @@ export default function CustomInput({
   value = "",
   editable = true,
   setValue,
-  noStyle = false,
+  noStyle = true,
   capitalize = "words",
   secureTextEntry = false,
   textAlign = "center",
   keyboardType = "default",
+  onBlurHandle,
 }: CustomInputProps) {
   const styles = _styles;
 
+  /* Refrator code to have generic onBlur Handle */
   return (
-    <CardWrapper noStyle={true}>
+    <CardWrapper noStyle={noStyle}>
       <View style={{ position: "absolute", top: -5, left: 10, zIndex: 1, backgroundColor: dark.complementarySolid, borderRadius: commonStyles.borderRadius }}>{Icon}</View>
       <View style={{ ...styles.row, backgroundColor: "transparent", borderColor: dark.complementarySolid, borderWidth: 1 }}>
         <TextInput
@@ -42,8 +45,9 @@ export default function CustomInput({
           ref={(input) => {
             this.textInputName = input;
           }}
-          value={value?.trimEnd() || value}
+          value={value}
           onChangeText={setValue}
+          onBlur={onBlurHandle}
           editable={editable}
           autoCapitalize={capitalize}
           secureTextEntry={secureTextEntry}

@@ -114,6 +114,7 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
         />
         <View style={styles.form}>
           <FlatCalendar
+            date={newIncome.doi}
             setInputBuyDate={(_date) => {
               setNewIncome({ ...newIncome, doi: new Date(_date) });
             }}

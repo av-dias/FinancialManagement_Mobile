@@ -6,9 +6,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { AppContext } from "../../store/app-context";
 
 //Custom Components
-import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import ModalCustom from "../../components/modal/modal";
-import CustomCalendarStrip from "../../components/customCalendarStrip/customCalendarStrip";
 import CustomButton from "../../components/customButton/customButton";
 import SplitSlider from "../../components/splitSlider/splitSlider";
 import CustomInput from "../../components/customInput/customInput";
@@ -119,6 +117,7 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
         />
         <View style={styles.form}>
           <FlatCalendar
+            date={newPurchase.dop}
             setInputBuyDate={(_date) => {
               setNewPurchase({ ...newPurchase, dop: _date.toISOString().split("T")[0] });
             }}
@@ -130,6 +129,12 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
               setValue={(_name) => {
                 setNewPurchase({ ...newPurchase, name: _name });
               }}
+              onBlurHandle={() =>
+                setNewPurchase((prev) => ({
+                  ...prev,
+                  name: prev.name.trimEnd().trimStart(),
+                }))
+              }
               value={newPurchase.name}
             />
             <CustomInput

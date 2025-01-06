@@ -106,6 +106,7 @@ export default function Transaction({ handleEdit, transaction }: TransactionProp
         />
         <View style={styles.form}>
           <FlatCalendar
+            date={newTransaction.dot}
             setInputBuyDate={(_date) => {
               setNewTransaction({ ...newTransaction, dot: new Date(_date).toISOString().split("T")[0] });
             }}
