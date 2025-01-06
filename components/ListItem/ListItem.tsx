@@ -6,12 +6,16 @@ import { TypeIcon } from "../TypeIcon/TypeIcon";
 import { categoryIcons, utilIcons } from "../../utility/icons";
 import { verticalScale } from "../../functions/responsive";
 import { PurchaseType, TransactionType } from "../../models/types";
+import { Dispatch, SetStateAction } from "react";
 
 type ListItemProps = {
+  id: string;
   innerData: any;
   options: { callback: () => void; type: string }[];
   label?: { text: string };
   onPress?: () => void;
+  onLongPress?: Dispatch<SetStateAction<any[]>>;
+  selected: any[];
 };
 
 const getLabel = (innerData) => {
@@ -39,7 +43,7 @@ const getValue = (innerData: any) => {
   return value;
 };
 
-export const CustomListItem = ({ innerData, options, label, onPress = () => {} }: ListItemProps) => {
+export const CustomListItem = ({ id, innerData, options, label, onPress = () => {}, onLongPress = () => {}, selected = [] }: ListItemProps) => {
   const styles = _styles;
   let iconComponent;
 
@@ -55,8 +59,20 @@ export const CustomListItem = ({ innerData, options, label, onPress = () => {} }
     }
   };
 
+  const onLongPressHandle = () => {
+    onLongPress((prev): any[] => {
+      if (prev.includes(id)) return prev.filter((item) => item !== id);
+      else return [...prev, id];
+    });
+  };
+
   return (
-    <Pressable key={`${innerData.id}`} style={({ pressed }) => commonStyles.onPressBounce(pressed, styles.button, onPress, 12)} onPress={onPress}>
+    <Pressable
+      key={`${innerData.id}`}
+      style={({ pressed }) => [commonStyles.onPressBounce(pressed, styles.button, onPress, 12), { backgroundColor: selected.includes(id) ? dark.secundary : dark.complementary }]}
+      onPress={onPress}
+      onLongPress={onLongPressHandle}
+    >
       <View style={styles.rowGap}>
         <View style={{ ...styles.row, flex: 1, backgroundColor: "transparent", height: verticalScale(40) }}>
           <TypeIcon icon={loadIcon(innerData)} />

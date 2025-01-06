@@ -29,7 +29,7 @@ import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
 import { AlertData, IncomeAlertData, PurchaseAlertData, TransactionAlertData } from "../../constants/listConstants/deleteDialog";
 import { removeFromStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
-import { Searchbar } from "react-native-paper";
+import { Checkbox, Searchbar } from "react-native-paper";
 import { logTimeTook } from "../../utility/logger";
 
 export default function List({ navigation }) {
@@ -57,6 +57,7 @@ export default function List({ navigation }) {
 
   const [expenses, setExpenses] = useState(appCtx.expenses);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [multiSelect, setMultiSelect] = useState<string[]>([]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -204,11 +205,14 @@ export default function List({ navigation }) {
                         (expenses: ExpenseType) =>
                           searchItem(expenses, searchQuery) && (
                             <CustomListItem
-                              key={`Income${expenses.index}`}
-                              innerData={expenses.element}
+                              key={`Expenses${expenses.index}${expenses.key}${expenses.element.type}`}
+                              id={`Expenses${expenses.index}${expenses.key}${expenses.element.type}`}
+                              innerData={{ ...expenses.element }}
                               options={expensesOptions(expenses)}
                               label={expenseLabel(expenses.element)}
                               onPress={() => loadModalDialog(expenses)}
+                              onLongPress={setMultiSelect}
+                              selected={multiSelect}
                             />
                           )
                       )}
@@ -219,9 +223,12 @@ export default function List({ navigation }) {
                           searchItem(income, searchQuery) && (
                             <CustomListItem
                               key={`Income${income.id}`}
+                              id={`Income${income.id}`}
                               innerData={{ ...income, type: "Income" }}
                               options={incomeOptions(income)}
                               onPress={() => loadModalDialog({ ...income, key: KEYS_SERIALIZER.INCOME })}
+                              onLongPress={setMultiSelect}
+                              selected={multiSelect}
                             />
                           )
                       )}
@@ -230,6 +237,17 @@ export default function List({ navigation }) {
               ))}
             </ScrollView>
           </View>
+          {multiSelect.length > 0 && (
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Checkbox
+                status={multiSelect.length > 0 ? "checked" : "unchecked"}
+                onPress={() => {
+                  setMultiSelect([]);
+                }}
+              />
+              <Text style={{ color: dark.textPrimary }}>{`Selected items: ${multiSelect.length}`}</Text>
+            </View>
+          )}
           <View style={styles.calendar}>
             <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
           </View>
