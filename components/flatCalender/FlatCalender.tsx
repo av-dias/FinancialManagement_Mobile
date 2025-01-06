@@ -8,17 +8,19 @@ import { useFocusEffect } from "@react-navigation/native";
 
 type FlatCalendarProps = {
   setInputBuyDate: React.Dispatch<React.SetStateAction<any>>;
+  date?: string | Date;
 };
 
-export const FlatCalendar = ({ setInputBuyDate }: FlatCalendarProps) => {
+export const FlatCalendar = ({ setInputBuyDate, date }: FlatCalendarProps) => {
   const refMonth = useRef<ScrollView>();
   const refDate = useRef<ScrollView>();
   const refYear = useRef<ScrollView>();
   const timeoutRef = useRef(null);
 
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentDate, setCurrentDate] = useState(new Date().getDate());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(new Date(date).getMonth() ?? new Date().getMonth());
+  const [currentDate, setCurrentDate] = useState(new Date(date).getDate() ?? new Date().getDate());
+  const [currentYear, setCurrentYear] = useState(new Date(date).getFullYear() ?? new Date().getFullYear());
+
   const [isYearVisible, setIsYearVisible] = useState(false);
 
   const styles = _styles;
@@ -75,7 +77,7 @@ export const FlatCalendar = ({ setInputBuyDate }: FlatCalendarProps) => {
       {isYearVisible ? (
         <ScrollView
           ref={refYear}
-          onContentSizeChange={() => refYear.current.scrollTo({ x: currentMonth * 55, animated: true })}
+          onContentSizeChange={() => refYear.current.scrollTo({ x: currentYear * 55, animated: true })}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ gap: 5 }}
