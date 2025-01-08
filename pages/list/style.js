@@ -17,11 +17,12 @@ export const _styles = StyleSheet.create({
     height: "97%",
   },
   calendar: {
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignItems: "flex-end",
     width: "98%",
     backgroundColor: "transparent",
     alignSelf: "center",
+    flexDirection: "row",
   },
   hitBox: {
     alignItems: "center",

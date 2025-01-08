@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, Pressable } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { _styles } from "./style";
@@ -31,6 +31,7 @@ import { removeFromStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 import { Checkbox, Searchbar } from "react-native-paper";
 import { logTimeTook } from "../../utility/logger";
+import { utilIcons } from "../../utility/icons";
 
 export default function List({ navigation }) {
   const appCtx = useContext(AppContext);
@@ -138,6 +139,8 @@ export default function List({ navigation }) {
     setSelectedItem(data);
   };
 
+  const onRecurringHandle = () => {};
+
   /* Loads the dialog data when list item is pressed */
   const getModalDialogData = (data: ExpenseType | IncomeType): AlertData => {
     if (data.hasOwnProperty("doi")) {
@@ -181,6 +184,9 @@ export default function List({ navigation }) {
             </ModalCustom>
           )}
           {alertVisible && <ModalDialog visible={alertVisible} setVisible={setAlertVisible} size={2.5} data={getModalDialogData(selectedItem)} />}
+          {/*
+           * Searchbar to filter items
+           */}
           <View style={{ paddingHorizontal: 5 }}>
             <Searchbar
               iconColor="white"
@@ -192,6 +198,9 @@ export default function List({ navigation }) {
               value={searchQuery}
             />
           </View>
+          {/*
+           * CustomListItem for Expenses and Income
+           */}
           <View style={{ flex: 1 }}>
             <ScrollView>
               {listDays.map((date) => (
@@ -237,18 +246,29 @@ export default function List({ navigation }) {
               ))}
             </ScrollView>
           </View>
-          {multiSelect.length > 0 && (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Checkbox
-                status={multiSelect.length > 0 ? "checked" : "unchecked"}
-                onPress={() => {
-                  setMultiSelect([]);
-                }}
-              />
-              <Text style={{ color: dark.textPrimary }}>{`Selected items: ${multiSelect.length}`}</Text>
-            </View>
-          )}
+          {/*
+           * Bottom Options
+           *  Recurring - Show all recurring expenses
+           *  CheckBox  - Number of selected items
+           *  Calendar  - Change current view date
+           */}
           <View style={styles.calendar}>
+            <View style={{ flexDirection: "row", gap: 5 }}>
+              <Pressable onPress={onRecurringHandle}>
+                <CardWrapper style={{ height: verticalScale(40), padding: 5 }}>{utilIcons(35, dark.textPrimary).find((icon) => icon.label === "Recurring").icon}</CardWrapper>
+              </Pressable>
+              {multiSelect.length > 0 && (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Checkbox
+                    status={multiSelect.length > 0 ? "checked" : "unchecked"}
+                    onPress={() => {
+                      setMultiSelect([]);
+                    }}
+                  />
+                  <Text style={{ color: dark.textPrimary }}>{`Selected items: ${multiSelect.length}`}</Text>
+                </View>
+              )}
+            </View>
             <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
           </View>
         </View>

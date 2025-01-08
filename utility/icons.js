@@ -182,5 +182,10 @@ export const utilIcons = (size = 25, _color) => {
       icon: <FontAwesome name="circle" style={{ alignSelf: "center" }} size={size} color={_color} />,
       color: _color,
     },
+    {
+      label: "Recurring",
+      icon: <MaterialCommunityIcons name="calendar-refresh-outline" size={35} color={_color} />,
+      color: _color,
+    },
   ];
 };
