@@ -141,6 +141,8 @@ export default function List({ navigation }) {
 
   const onRecurringHandle = () => {};
 
+  const onBulkDeleteHandle = () => {};
+
   /* Loads the dialog data when list item is pressed */
   const getModalDialogData = (data: ExpenseType | IncomeType): AlertData => {
     if (data.hasOwnProperty("doi")) {
@@ -248,25 +250,27 @@ export default function List({ navigation }) {
           </View>
           {/*
            * Bottom Options
-           *  Recurring - Show all recurring expenses
            *  CheckBox  - Number of selected items
+           *  Recurring - Show all recurring expenses
            *  Calendar  - Change current view date
            */}
+          {multiSelect.length > 0 && (
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Checkbox status={multiSelect.length > 0 ? "checked" : "unchecked"} onPress={() => setMultiSelect([])} />
+              <Pressable onPress={() => setMultiSelect([])}>
+                <Text style={{ color: dark.textPrimary }}>{`Selected items: ${multiSelect.length}`}</Text>
+              </Pressable>
+            </View>
+          )}
           <View style={styles.calendar}>
             <View style={{ flexDirection: "row", gap: 5 }}>
               <Pressable onPress={onRecurringHandle}>
                 <CardWrapper style={{ height: verticalScale(40), padding: 5 }}>{utilIcons(35, dark.textPrimary).find((icon) => icon.label === "Recurring").icon}</CardWrapper>
               </Pressable>
               {multiSelect.length > 0 && (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Checkbox
-                    status={multiSelect.length > 0 ? "checked" : "unchecked"}
-                    onPress={() => {
-                      setMultiSelect([]);
-                    }}
-                  />
-                  <Text style={{ color: dark.textPrimary }}>{`Selected items: ${multiSelect.length}`}</Text>
-                </View>
+                <Pressable onPress={onBulkDeleteHandle}>
+                  <CardWrapper style={{ height: verticalScale(40), padding: 5 }}>{utilIcons(35, dark.textPrimary).find((icon) => icon.label === "Delete").icon}</CardWrapper>
+                </Pressable>
               )}
             </View>
             <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />

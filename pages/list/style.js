@@ -23,6 +23,7 @@ export const _styles = StyleSheet.create({
     backgroundColor: "transparent",
     alignSelf: "center",
     flexDirection: "row",
+    //bottom: 50,
   },
   hitBox: {
     alignItems: "center",
@@ -80,6 +81,7 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
     width: "100%",
     maxWidth: 750,
+    gap: 1,
     marginVertical: verticalScale(15),
     borderRadius: commonStyles.borderRadius,
   },

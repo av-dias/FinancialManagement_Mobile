@@ -69,8 +69,8 @@ export const CustomListItem = ({ id, innerData, options, label, onPress = () => 
   return (
     <Pressable
       key={`${innerData.id}`}
-      style={({ pressed }) => [commonStyles.onPressBounce(pressed, styles.button, onPress, 12), { backgroundColor: selected.includes(id) ? dark.secundary : dark.complementary }]}
-      onPress={onPress}
+      style={({ pressed }) => [commonStyles.onPressBounce(pressed, styles.button, onPress, 12), { backgroundColor: selected.includes(id) ? dark.secundary : "transparent" }]}
+      onPress={selected.length < 1 ? onPress : onLongPressHandle}
       onLongPress={onLongPressHandle}
     >
       <View style={styles.rowGap}>
