@@ -196,7 +196,7 @@ export const searchIncome = (incomeData, searchQuery, listOfDays) => {
   });
 };
 
-export const loadEditModal = (selectedItem: ExpenseType | IncomeType, email, sliderStatus, setEditVisible, setExpenses, setIncomeData) => {
+export const loadEditModal = (selectedItem: ExpenseType | IncomeType, email, setEditVisible, setExpenses, setIncomeData) => {
   if (selectedItem.key === KEYS_SERIALIZER.PURCHASE) {
     const updatePurchase = (selectedItem as ExpenseType).element as PurchaseType;
     return (

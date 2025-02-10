@@ -47,7 +47,7 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
   );
 
   const [slider, setSlider] = useState<number>(Number(purchase?.split?.weight) || 50);
-  const [splitStatus, setSplitStatus] = useState<boolean>(purchase?.split !== undefined || false);
+  const [splitStatus, setSplitStatus] = useState<boolean>(purchase?.split !== null || false);
   const [splitUser, setSplitUser] = useState("");
 
   const [modalVisible, setModalVisible] = useState(false);

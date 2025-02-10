@@ -182,7 +182,7 @@ export default function List({ navigation }) {
           {editVisible && (
             /* TODO Improve ModalList implementation to prevent code duplication */
             <ModalCustom modalVisible={editVisible} setModalVisible={setEditVisible} size={18} hasColor={true}>
-              {loadEditModal(selectedItem, email, sliderStatus, setEditVisible, setExpenses, setIncomeData)}
+              {loadEditModal(selectedItem, email, setEditVisible, setExpenses, setIncomeData)}
             </ModalCustom>
           )}
           {alertVisible && <ModalDialog visible={alertVisible} setVisible={setAlertVisible} size={2.5} data={getModalDialogData(selectedItem)} />}
