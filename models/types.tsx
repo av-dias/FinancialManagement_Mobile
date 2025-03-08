@@ -1,5 +1,11 @@
 import { IncomeEntity } from "../store/database/Income/IncomeEntity";
 
+export enum ExpenseEnum {
+  Transaction = "Transaction",
+  Purchase = "Purchase",
+  Income = "Income",
+}
+
 export type PurchaseType = {
   value: string;
   name: string;
