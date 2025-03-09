@@ -13,4 +13,6 @@ export const KEYS = {
   REMEMBER_ME: "remember",
   ACCESS_TOKEN: "access_token",
   USER_ID: "userId",
+  MIGRATION_PURCHASE: "migration_purchase",
+  MIGRATION_TRANSACTION: "migration_transaction",
 };
