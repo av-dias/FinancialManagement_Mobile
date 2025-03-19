@@ -11,7 +11,7 @@ import Header from "../../components/header/header";
 
 //Custom Constants
 import { _styles } from "./style";
-import { STATS_TYPE } from "../../utility/keys";
+import { ANALYSES_TYPE } from "../../utility/keys";
 
 //Functions
 import { calcExpensesAverage, calcExpensesByType, calcExpensesTotalFromType, calcTotalExpensesByType } from "../../functions/expenses";
@@ -70,7 +70,7 @@ export default function Budget({ navigation }) {
             });
           });
 
-          resExpensesTotal = { [currentYear]: { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 } };
+          resExpensesTotal = { [currentYear]: { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 } };
         }
 
         if (appCtx.expenses[parseFloat(currentYear) - 1]) {
@@ -83,7 +83,7 @@ export default function Budget({ navigation }) {
         }
 
         // Sort the average expenses by the most expensive type to least expensive
-        resType[currentYear][STATS_TYPE[1]] = Object.fromEntries(Object.entries(resType[currentYear][STATS_TYPE[1]]).sort(([, a], [, b]) => Number(b) - Number(a)));
+        resType[currentYear][ANALYSES_TYPE.Personal] = Object.fromEntries(Object.entries(resType[currentYear][ANALYSES_TYPE.Personal]).sort(([, a], [, b]) => Number(b) - Number(a)));
 
         setSpendAverageByType(resType);
         setPurchaseAverageTotal(resTotal);
@@ -110,7 +110,7 @@ export default function Budget({ navigation }) {
               {spendAverageByType[currentYear] &&
                 purchaseCurrentStats[currentYear] &&
                 expensesTotalByType[currentYear] &&
-                Object.keys(spendAverageByType[currentYear][STATS_TYPE[1]]).map((type) => {
+                Object.keys(spendAverageByType[currentYear][ANALYSES_TYPE.Personal]).map((type) => {
                   return (
                     <StatsProgressBar
                       key={`StatsProgressBar${type}`}

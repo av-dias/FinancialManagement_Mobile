@@ -3,7 +3,7 @@ import { categoryIcons } from "../../../utility/icons";
 import { _styles } from "../style";
 import { ProgressBar } from "react-native-paper";
 import { dark, ProgressBarColors } from "../../../utility/colors";
-import { STATS_TYPE } from "../../../utility/keys";
+import { ANALYSES_TYPE } from "../../../utility/keys";
 import { TypeIcon } from "../../../components/TypeIcon/TypeIcon";
 
 type StatsProgressBar = {
@@ -24,18 +24,18 @@ export const StatsProgressBar = ({ type, spendAverageByType, expensesTotalByType
   };
 
   const getLastAvailableAverageTypeValue = (data, currentYear, type) => {
-    if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1][STATS_TYPE[1]].hasOwnProperty(type)) {
-      return parseFloat(data[currentYear - 1][STATS_TYPE[1]][type]).toFixed(0);
+    if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1][ANALYSES_TYPE.Personal].hasOwnProperty(type)) {
+      return parseFloat(data[currentYear - 1][ANALYSES_TYPE.Personal][type]).toFixed(0);
     } else {
-      return parseFloat(data[currentYear][STATS_TYPE[1]][type]).toFixed(0);
+      return parseFloat(data[currentYear][ANALYSES_TYPE.Personal][type]).toFixed(0);
     }
   };
 
   const getLastAvailableTypeValue = (data, currentYear, type) => {
-    if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1][STATS_TYPE[1]].hasOwnProperty(type)) {
-      return parseFloat(data[currentYear - 1][STATS_TYPE[1]][type]).toFixed(0);
+    if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1][ANALYSES_TYPE.Personal].hasOwnProperty(type)) {
+      return parseFloat(data[currentYear - 1][ANALYSES_TYPE.Personal][type]).toFixed(0);
     } else {
-      return parseFloat(data[currentYear][STATS_TYPE[1]][type]).toFixed(0);
+      return parseFloat(data[currentYear][ANALYSES_TYPE.Personal][type]).toFixed(0);
     }
   };
 
@@ -44,11 +44,11 @@ export const StatsProgressBar = ({ type, spendAverageByType, expensesTotalByType
   let currentTypeValue = 0,
     currentTotalTypeValue = 0;
 
-  if (purchaseCurrentStats[currentYear][currentMonth][STATS_TYPE[1]].hasOwnProperty(type)) {
-    currentTypeValue = parseFloat(purchaseCurrentStats[currentYear][currentMonth][STATS_TYPE[1]][type].toFixed(0));
+  if (purchaseCurrentStats[currentYear][currentMonth][ANALYSES_TYPE.Personal].hasOwnProperty(type)) {
+    currentTypeValue = parseFloat(purchaseCurrentStats[currentYear][currentMonth][ANALYSES_TYPE.Personal][type].toFixed(0));
   }
-  if (expensesTotalByType[currentYear][STATS_TYPE[1]].hasOwnProperty(type)) {
-    currentTotalTypeValue = parseFloat(expensesTotalByType[currentYear][STATS_TYPE[1]][type].toFixed(0));
+  if (expensesTotalByType[currentYear][ANALYSES_TYPE.Personal].hasOwnProperty(type)) {
+    currentTotalTypeValue = parseFloat(expensesTotalByType[currentYear][ANALYSES_TYPE.Personal][type].toFixed(0));
   }
 
   const ProgressBarComponent = ({ type, color, currentTypeValue, lastAverageTypeValue, totalProgress }) => (

@@ -16,7 +16,7 @@ import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
 //Custom Constants
 import { _styles } from "./style";
-import { STATS_TYPE, STATS_MODE, KEYS } from "../../utility/keys";
+import { ANALYSES_TYPE, TIME_MODE, KEYS } from "../../utility/keys";
 
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import { loadPieChartData, loadPurchaseTotalData, loadSpendTableData, loadExpenses } from "./handler";
@@ -28,22 +28,24 @@ import { ExpenseType, PurchaseType, TransactionType } from "../../models/types";
 import { categoryIcons, utilIcons } from "../../utility/icons";
 import { Badge } from "react-native-paper";
 import { logTimeTook } from "../../utility/logger";
+import { ExpensesService } from "../../service/ExpensesService";
 
 export default function Home({ navigation }) {
   const styles = _styles;
+  const expensesService = new ExpensesService();
 
-  const [statsType, setStatsType] = useState(STATS_TYPE[0]);
-  const [statsMode, setStatsMode] = useState(STATS_MODE[0]);
+  const [statsType, setStatsType] = useState(ANALYSES_TYPE.Total);
+  const [statsMode, setStatsMode] = useState(TIME_MODE.Monthly);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
-  const [pieChartData, setPieChartData] = useState({ [STATS_TYPE[0]]: [] });
-  const [spendByType, setSpendByType] = useState({ [STATS_TYPE[0]]: [[""]] });
-  const [expenseTotal, setExpenseTotal] = useState<any>({ [STATS_TYPE[0]]: "0.00" });
+  const [pieChartData, setPieChartData] = useState({ [ANALYSES_TYPE.Total]: [] });
+  const [spendByType, setSpendByType] = useState({ [ANALYSES_TYPE.Total]: [[""]] });
+  const [expenseTotal, setExpenseTotal] = useState<any>({ [ANALYSES_TYPE.Total]: "0.00" });
 
-  const [pieChartAverageData, setPieChartAverageData] = useState({ [STATS_TYPE[0]]: [] });
-  const [spendAverageByType, setSpendAverageByType] = useState({ [STATS_TYPE[0]]: [[""]] });
-  const [purchaseAverageTotal, setPurchaseAverageTotal] = useState<any>({ [STATS_TYPE[0]]: "0.00" });
+  const [pieChartAverageData, setPieChartAverageData] = useState({ [ANALYSES_TYPE.Total]: [] });
+  const [spendAverageByType, setSpendAverageByType] = useState({ [ANALYSES_TYPE.Total]: [[""]] });
+  const [purchaseAverageTotal, setPurchaseAverageTotal] = useState<any>({ [ANALYSES_TYPE.Total]: "0.00" });
   const [prediction, setPrediction] = useState(0);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [rowType, setRowType] = useState<string>(null);
@@ -74,13 +76,13 @@ export default function Home({ navigation }) {
           setSpendAverageByType(resAverageTableChart);
           setPurchaseAverageTotal(resTotal[currentYear]);
         } else {
-          setPieChartData({ [STATS_TYPE[0]]: [] });
-          setSpendByType({ [STATS_TYPE[0]]: [[""]] });
-          setExpenseTotal({ [STATS_TYPE[0]]: "0.00" });
+          setPieChartData({ [ANALYSES_TYPE.Total]: [] });
+          setSpendByType({ [ANALYSES_TYPE.Total]: [[""]] });
+          setExpenseTotal({ [ANALYSES_TYPE.Total]: "0.00" });
 
-          setPieChartAverageData({ [STATS_TYPE[0]]: [] });
-          setSpendAverageByType({ [STATS_TYPE[0]]: [[""]] });
-          setPurchaseAverageTotal({ [STATS_TYPE[0]]: "0.00" });
+          setPieChartAverageData({ [ANALYSES_TYPE.Total]: [] });
+          setSpendAverageByType({ [ANALYSES_TYPE.Total]: [[""]] });
+          setPurchaseAverageTotal({ [ANALYSES_TYPE.Total]: "0.00" });
         }
       }
       let startTime = performance.now();
@@ -115,7 +117,9 @@ export default function Home({ navigation }) {
   const loadIcon = (expense: ExpenseType) => {
     if (expense.key === KEYS.PURCHASE) return <View>{categoryIcons().find((category) => category.label === expense.element.type).icon}</View>;
     else {
-      return <View>{utilIcons().find((category) => category.label === "Transaction").icon}</View>;
+      expense.element = expense.element as TransactionType;
+      if (expense.key === KEYS.TRANSACTION && !expense.element.user_origin_id) return <View>{utilIcons().find((category) => category.label === "Transaction").icon}</View>;
+      else return <View>{utilIcons().find((category) => category.label === "Received").icon}</View>;
     }
   };
 
@@ -149,7 +153,7 @@ export default function Home({ navigation }) {
    */
   const loadPurchaseValue = (expense: ExpenseType) => {
     const element = expense.element as PurchaseType;
-    if (statsType === STATS_TYPE[0]) {
+    if (statsType === ANALYSES_TYPE.Total) {
       return Number(element.value);
     } else {
       let value: number;
@@ -168,7 +172,7 @@ export default function Home({ navigation }) {
         (expense: ExpenseType) =>
           rowType === expense.element.type && (
             <View key={`V${expense.key + expense.index}`}>
-              {(expense.element as PurchaseType)?.split && statsType === STATS_TYPE[0] && (
+              {(expense.element as PurchaseType)?.split && statsType === ANALYSES_TYPE.Total && (
                 <Badge size={24} style={{ top: -5, zIndex: 1, position: "absolute" }}>
                   {`${(expense.element as PurchaseType).split.weight}%`}
                 </Badge>
@@ -224,13 +228,13 @@ export default function Home({ navigation }) {
                   <View style={{ paddingBottom: 10 }}>
                     <Text style={styles.expensesText}>{`${loadPurchaseTotalData(statsMode, statsType, expenseTotal, purchaseAverageTotal)}€`}</Text>
                   </View>
-                  {statsMode == STATS_MODE[0] && <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />}
+                  {statsMode == TIME_MODE.Monthly && <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />}
                 </View>
               </View>
             </CardWrapper>
             <View style={styles.typeCardContainer}>
-              <TypeCard setItem={setStatsType} itemList={Object.values(STATS_TYPE)} />
-              <TypeCard setItem={setStatsMode} itemList={Object.values(STATS_MODE)} />
+              <TypeCard setItem={setStatsType} itemList={Object.values(ANALYSES_TYPE)} />
+              <TypeCard setItem={setStatsMode} itemList={Object.values(TIME_MODE)} />
             </View>
             <View style={{ flex: 4 }}>
               <View style={{ flex: 4 }}>
@@ -242,7 +246,7 @@ export default function Home({ navigation }) {
                       name={rowData[1]}
                       value={rowData[2]}
                       onPressCallback={() => {
-                        if (statsMode === STATS_MODE[0]) {
+                        if (statsMode === TIME_MODE.Monthly) {
                           setModalVisible(true);
                           setRowType(rowData[1]);
                         }

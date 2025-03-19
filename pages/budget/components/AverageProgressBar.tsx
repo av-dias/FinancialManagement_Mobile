@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 import { _styles } from "../style";
-import { STATS_TYPE } from "../../../utility/keys";
+import { ANALYSES_TYPE } from "../../../utility/keys";
 import { ProgressBar } from "react-native-paper";
 import { ProgressBarColors } from "../../../utility/colors";
 
@@ -23,10 +23,10 @@ export const AverageProgressBar = ({ purchaseTotal, purchaseAverageTotal, curren
   };
 
   const getLastAvailableAverageValue = (data, currentYear) => {
-    if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1][STATS_TYPE[1]]) {
-      return parseFloat(data[currentYear - 1][STATS_TYPE[1]]).toFixed(0);
+    if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1][ANALYSES_TYPE.Personal]) {
+      return parseFloat(data[currentYear - 1][ANALYSES_TYPE.Personal]).toFixed(0);
     } else {
-      return parseFloat(data[currentYear][STATS_TYPE[1]]).toFixed(0);
+      return parseFloat(data[currentYear][ANALYSES_TYPE.Personal]).toFixed(0);
     }
   };
 
@@ -38,7 +38,7 @@ export const AverageProgressBar = ({ purchaseTotal, purchaseAverageTotal, curren
         </Text>
         <View style={styles.averageTextValue}>
           <Text key={"TotalText1"} style={styles.textValue}>
-            {`${getCurrentValue(purchaseTotal[STATS_TYPE[1]])}/`}
+            {`${getCurrentValue(purchaseTotal[ANALYSES_TYPE.Personal])}/`}
           </Text>
           <Text key={"TotalText2"} style={styles.textTotal}>
             {getLastAvailableAverageValue(purchaseAverageTotal, currentYear)}
@@ -47,7 +47,7 @@ export const AverageProgressBar = ({ purchaseTotal, purchaseAverageTotal, curren
       </View>
       <ProgressBar
         key={"PTtotal"}
-        progress={getTotalProgress(getCurrentValue(purchaseTotal[STATS_TYPE[1]]), getLastAvailableAverageValue(purchaseAverageTotal, currentYear))}
+        progress={getTotalProgress(getCurrentValue(purchaseTotal[ANALYSES_TYPE.Personal]), getLastAvailableAverageValue(purchaseAverageTotal, currentYear))}
         style={styles.progressStyle}
         color={ProgressBarColors.red}
       />

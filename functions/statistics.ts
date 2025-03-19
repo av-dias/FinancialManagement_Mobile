@@ -1,6 +1,6 @@
 import { ExpensesByYear } from "../models/interfaces";
 import { months } from "../utility/calendar";
-import { STATS_TYPE, TRANSACTION_TYPE } from "../utility/keys";
+import { ANALYSES_TYPE, TRANSACTION_TYPE } from "../utility/keys";
 import { calcExpensesByType, calcExpensesTotalFromType, calcSplitDept, calcTotalExpensesByType, calcTransactionStats } from "./expenses";
 
 export const calculateSplitData = (expenses: any[], currentYear: number) => {
@@ -49,14 +49,14 @@ export const calculateTransactionStats = (expenses, currentYear) => {
   let resTransactionTotal = {};
   resTransactionTotal = calcTransactionStats(expenses[currentYear]);
   for (let year of Object.keys(resTransactionTotal)) {
-    resTransactionTotal[year][TRANSACTION_TYPE[0]] = [];
+    resTransactionTotal[year][TRANSACTION_TYPE.Total] = [];
     for (let month of Object.keys(resTransactionTotal[year])) {
-      if (month == TRANSACTION_TYPE[0]) continue;
-      if (!resTransactionTotal[year][TRANSACTION_TYPE[0]]) resTransactionTotal[year][TRANSACTION_TYPE[0]] = [];
+      if (month == TRANSACTION_TYPE.Total) continue;
+      if (!resTransactionTotal[year][TRANSACTION_TYPE.Total]) resTransactionTotal[year][TRANSACTION_TYPE.Total] = [];
 
-      resTransactionTotal[year][TRANSACTION_TYPE[0]].push({
+      resTransactionTotal[year][TRANSACTION_TYPE.Total].push({
         x: months[month],
-        y: parseFloat(resTransactionTotal[year][month][TRANSACTION_TYPE[0]]),
+        y: parseFloat(resTransactionTotal[year][month][TRANSACTION_TYPE.Total]),
       });
     }
   }
@@ -70,11 +70,11 @@ export const calculateSpendByType = (expenses, currentYear) => {
   // Load Split Dept Data
   let resTotalExpensesByType = calcTotalExpensesByType(expenses, currentYear);
   for (let year of Object.keys(resTotalExpensesByType)) {
-    for (let type of Object.keys(resTotalExpensesByType[year][STATS_TYPE[1]])) {
+    for (let type of Object.keys(resTotalExpensesByType[year][ANALYSES_TYPE.Personal])) {
       if (!resSpendByType[year]) {
         resSpendByType[year] = [];
       }
-      resSpendByType[year].push({ x: type, y: resTotalExpensesByType[year][STATS_TYPE[1]][type] });
+      resSpendByType[year].push({ x: type, y: resTotalExpensesByType[year][ANALYSES_TYPE.Personal][type] });
     }
   }
 

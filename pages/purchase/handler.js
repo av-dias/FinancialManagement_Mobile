@@ -9,7 +9,7 @@ import ModalSplit from "../../components/modalSplit/modalSplit";
 
 const TABLE_ICON_SIZE = 15;
 
-export const modalContent = (list, value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider) => {
+export const modalContent = (value, email, modalContentFlag, modalVisible, setModalVisible, splitName, slider) => {
   if (modalContentFlag == "split_info") {
     return ModalSplit(value, email, modalVisible, setModalVisible, splitName, slider);
   }

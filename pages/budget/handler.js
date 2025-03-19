@@ -1,7 +1,6 @@
 import { categoryIcons } from "../../utility/icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { _styles } from "./style";
-import { STATS_MODE } from "../../utility/keys";
 
 const styles = _styles;
 

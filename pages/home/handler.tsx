@@ -1,7 +1,7 @@
 import { categoryIcons } from "../../utility/icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { _styles } from "./style";
-import { STATS_MODE, STATS_TYPE } from "../../utility/keys";
+import { TIME_MODE, ANALYSES_TYPE } from "../../utility/keys";
 import { Chart, Table } from "../../models/charts";
 
 const styles = _styles;
@@ -22,8 +22,8 @@ export const isCtxLoaded = (ctx, year, month) => {
 };
 
 export const loadExpenses = (expenses: any) => {
-  let array = { [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] };
-  let arrayTables = { [STATS_TYPE[0]]: [], [STATS_TYPE[1]]: [] };
+  let array = { [ANALYSES_TYPE.Total]: [], [ANALYSES_TYPE.Personal]: [] };
+  let arrayTables = { [ANALYSES_TYPE.Total]: [], [ANALYSES_TYPE.Personal]: [] };
   Object.keys(expenses).forEach((stats) => {
     Object.keys(expenses[stats]).forEach((type) => {
       let _color;
@@ -72,17 +72,17 @@ export const refinePurchaseStats = (purchasesStats) => {
 };
 
 export const loadPieChartData = (statsMode: any, statsType: any, pieChartData: any, pieChartAverageData: any) => {
-  if (statsMode == STATS_MODE[0]) return pieChartData[statsType];
+  if (statsMode == TIME_MODE.Monthly) return pieChartData[statsType];
   else return pieChartAverageData[statsType];
 };
 
 export const loadPurchaseTotalData = (statsMode: any, statsType: any, purchaseTotal: any, purchaseAverageTotal: any) => {
-  if (statsMode == STATS_MODE[0]) {
+  if (statsMode == TIME_MODE.Monthly) {
     return Number(purchaseTotal[statsType]).toFixed(1);
   } else return Number(purchaseAverageTotal[statsType]).toFixed(1);
 };
 
 export const loadSpendTableData = (statsMode, statsType, spendByType, spendAverageByType) => {
-  if (statsMode == STATS_MODE[0]) return spendByType[statsType];
+  if (statsMode == TIME_MODE.Monthly) return spendByType[statsType];
   else return spendAverageByType[statsType];
 };

@@ -1,6 +1,6 @@
 import { ExpensesByYear } from "../models/interfaces";
 import { ExpenseType, ExpensesByDateType, PurchaseType, TransactionType } from "../models/types";
-import { KEYS, STATS_TYPE, TRANSACTION_TYPE } from "../utility/keys";
+import { KEYS, ANALYSES_TYPE, TRANSACTION_TYPE } from "../utility/keys";
 
 export const calcExpensesByType = (expenses: ExpenseType[]) => {
   let res = {};
@@ -21,12 +21,12 @@ export const calcExpensesByType = (expenses: ExpenseType[]) => {
 
     // Verify if year already exists
     if (!res[year]) {
-      res[year] = { [month]: { [STATS_TYPE[0]]: {}, [STATS_TYPE[1]]: {} } };
+      res[year] = { [month]: { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} } };
     }
 
     // Verify if month already exists
     if (!res[year][month]) {
-      res[year][month] = { [STATS_TYPE[0]]: {}, [STATS_TYPE[1]]: {} };
+      res[year][month] = { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} };
     }
 
     if (key == KEYS.TRANSACTION) {
@@ -35,25 +35,25 @@ export const calcExpensesByType = (expenses: ExpenseType[]) => {
       let value = parseFloat(element.amount);
 
       // Verify if type already exists
-      if (!Object.keys(res[year][month][STATS_TYPE[0]]).includes(element.type)) {
-        res[year][month][STATS_TYPE[0]][element.type] = 0;
-        res[year][month][STATS_TYPE[1]][element.type] = 0;
+      if (!Object.keys(res[year][month][ANALYSES_TYPE.Total]).includes(element.type)) {
+        res[year][month][ANALYSES_TYPE.Total][element.type] = 0;
+        res[year][month][ANALYSES_TYPE.Personal][element.type] = 0;
       }
 
       // if transaction received expenses are reduced
       if (element.user_origin_id) {
-        res[year][month][STATS_TYPE[0]][element.type] -= value;
+        res[year][month][ANALYSES_TYPE.Total][element.type] -= value;
       } else {
-        res[year][month][STATS_TYPE[0]][element.type] += value;
-        res[year][month][STATS_TYPE[1]][element.type] += value;
+        res[year][month][ANALYSES_TYPE.Total][element.type] += value;
+        res[year][month][ANALYSES_TYPE.Personal][element.type] += value;
       }
     } else if (key == KEYS.PURCHASE) {
       element = element as PurchaseType;
 
       // Verify if type already exists
-      if (!Object.keys(res[year][month][STATS_TYPE[0]]).includes(element.type)) {
-        res[year][month][STATS_TYPE[0]][element.type] = 0;
-        res[year][month][STATS_TYPE[1]][element.type] = 0;
+      if (!Object.keys(res[year][month][ANALYSES_TYPE.Total]).includes(element.type)) {
+        res[year][month][ANALYSES_TYPE.Total][element.type] = 0;
+        res[year][month][ANALYSES_TYPE.Personal][element.type] = 0;
       }
 
       let type0Value = parseFloat(element.value);
@@ -64,8 +64,8 @@ export const calcExpensesByType = (expenses: ExpenseType[]) => {
         type1Value = (type0Value * (100 - weight)) / 100;
       }
 
-      res[year][month][STATS_TYPE[0]][element.type] += type0Value;
-      res[year][month][STATS_TYPE[1]][element.type] += type1Value;
+      res[year][month][ANALYSES_TYPE.Total][element.type] += type0Value;
+      res[year][month][ANALYSES_TYPE.Personal][element.type] += type1Value;
     }
   });
 
@@ -73,7 +73,7 @@ export const calcExpensesByType = (expenses: ExpenseType[]) => {
 };
 
 export const calcExpensesTotalFromType = (expenses: any) => {
-  let res = { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 };
+  let res = { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 };
   Object.keys(expenses).forEach((stats) => {
     Object.keys(expenses[stats]).forEach((type) => {
       res[stats] += expenses[stats][type];
@@ -84,8 +84,8 @@ export const calcExpensesTotalFromType = (expenses: any) => {
 };
 
 export const calcExpensesAverage = (expenses: any, year: number) => {
-  let resTotal = { [year]: { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 } };
-  let resType = { [year]: { [STATS_TYPE[0]]: {}, [STATS_TYPE[1]]: {} } };
+  let resTotal = { [year]: { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 } };
+  let resType = { [year]: { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} } };
   let monthCount = Object.keys(expenses[year]).length;
 
   Object.keys(expenses[year]).forEach((month) => {
@@ -109,28 +109,28 @@ export const calcExpensesAverage = (expenses: any, year: number) => {
         let value = parseFloat(element.amount);
 
         // Verify if type already exists
-        if (!Object.keys(resType[year][STATS_TYPE[0]]).includes(element.type)) {
-          resType[year][STATS_TYPE[0]][element.type] = 0;
-          resType[year][STATS_TYPE[1]][element.type] = 0;
+        if (!Object.keys(resType[year][ANALYSES_TYPE.Total]).includes(element.type)) {
+          resType[year][ANALYSES_TYPE.Total][element.type] = 0;
+          resType[year][ANALYSES_TYPE.Personal][element.type] = 0;
         }
 
         // if transaction received expenses are reduced
         if (element.user_origin_id) {
-          resType[year][STATS_TYPE[0]][element.type] -= value;
-          resTotal[year][STATS_TYPE[0]] -= value;
+          resType[year][ANALYSES_TYPE.Total][element.type] -= value;
+          resTotal[year][ANALYSES_TYPE.Total] -= value;
         } else {
-          resType[year][STATS_TYPE[0]][element.type] += value;
-          resTotal[year][STATS_TYPE[0]] += value;
-          resType[year][STATS_TYPE[1]][element.type] += value;
-          resTotal[year][STATS_TYPE[0]] += value;
+          resType[year][ANALYSES_TYPE.Total][element.type] += value;
+          resTotal[year][ANALYSES_TYPE.Total] += value;
+          resType[year][ANALYSES_TYPE.Personal][element.type] += value;
+          resTotal[year][ANALYSES_TYPE.Personal] += value;
         }
       } else if (key == KEYS.PURCHASE) {
         element = element as PurchaseType;
 
         // Verify if type already exists
-        if (!Object.keys(resType[year][STATS_TYPE[0]]).includes(element.type)) {
-          resType[year][STATS_TYPE[0]][element.type] = 0;
-          resType[year][STATS_TYPE[1]][element.type] = 0;
+        if (!Object.keys(resType[year][ANALYSES_TYPE.Total]).includes(element.type)) {
+          resType[year][ANALYSES_TYPE.Total][element.type] = 0;
+          resType[year][ANALYSES_TYPE.Personal][element.type] = 0;
         }
 
         let type0Value = parseFloat(element.value);
@@ -140,11 +140,10 @@ export const calcExpensesAverage = (expenses: any, year: number) => {
           let weight = parseFloat(element.split.weight);
           type1Value = (type0Value * (100 - weight)) / 100;
         }
-
-        resType[year][STATS_TYPE[0]][element.type] += type0Value;
-        resType[year][STATS_TYPE[1]][element.type] += type1Value;
-        resTotal[year][STATS_TYPE[0]] += type0Value;
-        resTotal[year][STATS_TYPE[1]] += type1Value;
+        resType[year][ANALYSES_TYPE.Total][element.type] += type0Value;
+        resType[year][ANALYSES_TYPE.Personal][element.type] += type1Value;
+        resTotal[year][ANALYSES_TYPE.Total] += type0Value;
+        resTotal[year][ANALYSES_TYPE.Personal] += type1Value;
       }
     });
   });
@@ -177,7 +176,7 @@ export const calcSplitDept = (expenses: any, year: number) => {
       res[year] = { [month]: 0 };
     }
 
-    res[year][month] = expenses[year][month][STATS_TYPE[0]] - expenses[year][month][STATS_TYPE[1]];
+    res[year][month] = expenses[year][month][ANALYSES_TYPE.Total] - expenses[year][month][ANALYSES_TYPE.Personal];
   });
 
   return res;
@@ -199,21 +198,21 @@ export const calcTransactionStats = (expenses: any) => {
 
         // Verify if year already exists
         if (!res[year]) {
-          res[year] = { [month]: { [TRANSACTION_TYPE[0]]: 0, [TRANSACTION_TYPE[1]]: 0, [TRANSACTION_TYPE[2]]: 0 } };
+          res[year] = { [month]: { [TRANSACTION_TYPE.Total]: 0, [TRANSACTION_TYPE["Sent"]]: 0, [TRANSACTION_TYPE["Received"]]: 0 } };
         }
 
         // Verify if month already exists
         if (!res[year][month]) {
-          res[year][month] = { [TRANSACTION_TYPE[0]]: 0, [TRANSACTION_TYPE[1]]: 0, [TRANSACTION_TYPE[2]]: 0 };
+          res[year][month] = { [TRANSACTION_TYPE.Total]: 0, [TRANSACTION_TYPE["Sent"]]: 0, [TRANSACTION_TYPE["Received"]]: 0 };
         }
 
         // if transaction received expenses are reduced
         if (element.user_origin_id) {
-          res[year][month][TRANSACTION_TYPE[0]] -= value;
-          res[year][month][TRANSACTION_TYPE[2]] += value;
+          res[year][month][TRANSACTION_TYPE.Total] -= value;
+          res[year][month][TRANSACTION_TYPE["Received"]] += value;
         } else {
-          res[year][month][TRANSACTION_TYPE[0]] += value;
-          res[year][month][TRANSACTION_TYPE[1]] += value;
+          res[year][month][TRANSACTION_TYPE.Total] += value;
+          res[year][month][TRANSACTION_TYPE["Sent"]] += value;
         }
       }
     });
@@ -223,7 +222,7 @@ export const calcTransactionStats = (expenses: any) => {
 };
 
 export const calcTotalExpensesByType = (expenses: any, year: number) => {
-  let resType = { [year]: { [STATS_TYPE[0]]: {}, [STATS_TYPE[1]]: {} } };
+  let resType = { [year]: { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} } };
 
   Object.keys(expenses[year]).forEach((month) => {
     expenses[year][month].forEach(({ element, index, key }: ExpenseType) => {
@@ -246,25 +245,25 @@ export const calcTotalExpensesByType = (expenses: any, year: number) => {
         let value = parseFloat(element.amount);
 
         // Verify if type already exists
-        if (!Object.keys(resType[year][STATS_TYPE[0]]).includes(element.type)) {
-          resType[year][STATS_TYPE[0]][element.type] = 0;
-          resType[year][STATS_TYPE[1]][element.type] = 0;
+        if (!Object.keys(resType[year][ANALYSES_TYPE.Total]).includes(element.type)) {
+          resType[year][ANALYSES_TYPE.Total][element.type] = 0;
+          resType[year][ANALYSES_TYPE.Personal][element.type] = 0;
         }
 
         // if transaction received expenses are reduced
         if (element.user_origin_id) {
-          resType[year][STATS_TYPE[0]][element.type] -= value;
+          resType[year][ANALYSES_TYPE.Total][element.type] -= value;
         } else {
-          resType[year][STATS_TYPE[0]][element.type] += value;
-          resType[year][STATS_TYPE[1]][element.type] += value;
+          resType[year][ANALYSES_TYPE.Total][element.type] += value;
+          resType[year][ANALYSES_TYPE.Personal][element.type] += value;
         }
       } else if (key == KEYS.PURCHASE) {
         element = element as PurchaseType;
 
         // Verify if type already exists
-        if (!Object.keys(resType[year][STATS_TYPE[0]]).includes(element.type)) {
-          resType[year][STATS_TYPE[0]][element.type] = 0;
-          resType[year][STATS_TYPE[1]][element.type] = 0;
+        if (!Object.keys(resType[year][ANALYSES_TYPE.Total]).includes(element.type)) {
+          resType[year][ANALYSES_TYPE.Total][element.type] = 0;
+          resType[year][ANALYSES_TYPE.Personal][element.type] = 0;
         }
 
         let type0Value = parseFloat(element.value);
@@ -275,8 +274,8 @@ export const calcTotalExpensesByType = (expenses: any, year: number) => {
           type1Value = (type0Value * (100 - weight)) / 100;
         }
 
-        resType[year][STATS_TYPE[0]][element.type] += type0Value;
-        resType[year][STATS_TYPE[1]][element.type] += type1Value;
+        resType[year][ANALYSES_TYPE.Total][element.type] += type0Value;
+        resType[year][ANALYSES_TYPE.Personal][element.type] += type1Value;
       }
     });
   });
