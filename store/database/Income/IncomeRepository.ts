@@ -1,5 +1,5 @@
 import { Connection, DeleteResult, Repository } from "typeorm";
-import { IncomeModel } from "./IncomeEntity";
+import { IncomeEntity, incomeMapper, IncomeModel } from "./IncomeEntity";
 
 export class IncomeRepository {
   private ormRepository: Repository<IncomeModel>;
@@ -23,7 +23,7 @@ export class IncomeRepository {
     return distinctNames.map((income) => income.name);
   }
 
-  public async getIncomeFromDate(userId: string, month: number, year: number): Promise<IncomeModel[]> {
+  public async getIncomeFromDate(userId: string, month: number, year: number): Promise<IncomeEntity[]> {
     const firstDateOfMonth = new Date(year, month, 1).toISOString();
     const lastDateOfMonth = new Date(year, month + 1, 0).toISOString();
     const incomeData = await this.ormRepository
@@ -36,7 +36,7 @@ export class IncomeRepository {
       })
       .getRawMany();
 
-    return incomeData;
+    return incomeData.length > 0 ? incomeData.map((i) => incomeMapper(i)) : [];
   }
 
   public async getTotalIncomeFromDate(userId: string, month: number, year: number): Promise<number> {

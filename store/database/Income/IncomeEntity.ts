@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { ExpenseEnum } from "../../../models/types";
 
 @Entity("income")
 export class IncomeModel {
@@ -24,4 +25,15 @@ export type IncomeEntity = {
   amount: number;
   doi: Date;
   userId: string;
+  entity: ExpenseEnum.Income;
 };
+
+export const incomeMapper = (i: IncomeModel): IncomeEntity =>
+  ({
+    id: i.id,
+    name: i.name,
+    amount: i.amount,
+    doi: i.doi,
+    userId: i.userId,
+    entity: ExpenseEnum.Income,
+  } as IncomeEntity);
