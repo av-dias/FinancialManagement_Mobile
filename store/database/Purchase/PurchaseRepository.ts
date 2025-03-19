@@ -12,6 +12,14 @@ export class PurchaseRepository {
     return this.ormRepository == undefined ? false : true;
   };
 
+  public async getById(userId: string, purchaseId): Promise<PurchaseModel> {
+    const purchase = await this.ormRepository?.findOne({
+      where: { userId: userId, id: purchaseId },
+      relations: ["split"], // Add this line
+    });
+    return purchase;
+  }
+
   public async getAll(userId: string): Promise<PurchaseModel[]> {
     const purchases = await this.ormRepository?.find({
       where: { userId: userId },
@@ -21,27 +29,20 @@ export class PurchaseRepository {
   }
 
   public async getByDate(userId: string, month: number, year: number): Promise<PurchaseModel[]> {
-    const firstDayOfMonth = new Date(year, month - 1, 1).toLocaleDateString();
-    const lastDayOfMonth = new Date(year, month, 0).toLocaleDateString();
-
-    const purchases = await this.ormRepository.find({
-      where: {
-        userId: userId,
-        date: Between(firstDayOfMonth, lastDayOfMonth),
-      },
-      relations: ["split"], // Add this line
-    });
-
-    console.log(purchases);
-    console.log(firstDayOfMonth);
-    console.log(lastDayOfMonth);
+    const purchases = await this.ormRepository
+      .createQueryBuilder("purchase")
+      .where("purchase.userId = :userId", { userId: userId })
+      .andWhere("strftime('%Y', purchase.date) = :year", { year: year.toString() })
+      .andWhere("strftime('%m', purchase.date) = :month", { month: month < 10 ? `0${month}` : month.toString() })
+      .leftJoinAndSelect("purchase.split", "split")
+      .leftJoinAndSelect("purchase.wasRefunded", "wasRefunded")
+      .getMany();
 
     return purchases;
   }
 
   public async updateOrCreate(purchaseModel: PurchaseModel): Promise<PurchaseModel> {
     const newPurchase = await this.ormRepository.save(purchaseModel);
-    console.log(newPurchase);
     return newPurchase;
   }
 
@@ -79,7 +80,7 @@ export class PurchaseRepository {
     return distinctTypes.map((item) => item.type);
   }
 
-  public async sumPurchaseYearPerType(userId: string, year: number) {
+  public async sumPurchaseYearPerType(userId: string, year: number, analysesType?: string) {
     const sumByType = {};
     const sumArray = await this.ormRepository
       .createQueryBuilder("p")

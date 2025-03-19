@@ -12,21 +12,23 @@ export class TransactionRepository {
     return this.ormRepository == undefined ? false : true;
   };
 
+  public async getById(userId: string, transactionId): Promise<TransactionModel> {
+    const transaction = await this.ormRepository?.findOne({ where: { userId: userId, id: transactionId } });
+    return transaction;
+  }
+
   public async getAll(userId: string): Promise<TransactionModel[]> {
     const transactions = await this.ormRepository?.find({ where: { userId: userId } });
     return transactions;
   }
 
   public async getByDate(userId: string, month: number, year: number): Promise<TransactionModel[]> {
-    const firstDayOfMonth = new Date(year, month - 1, 1).toISOString();
-    const lastDayOfMonth = new Date(year, month, 0).toISOString();
-
-    const transactions = await this.ormRepository.find({
-      where: {
-        userId: userId,
-        date: Between(firstDayOfMonth, lastDayOfMonth),
-      },
-    });
+    const transactions = await this.ormRepository
+      .createQueryBuilder("transactions")
+      .where("userId = :userId", { userId: userId })
+      .andWhere("strftime('%Y', transactions.date) = :year", { year: year.toString() })
+      .andWhere("strftime('%m', transactions.date) = :month", { month: month < 10 ? `0${month}` : month.toString() })
+      .getMany();
 
     return transactions;
   }
@@ -46,7 +48,7 @@ export class TransactionRepository {
     return transactions;
   }
 
-  public async sumTransactionYearPerType(userId: string, year: number) {
+  public async sumTransactionYearPerType(userId: string, year: number, analysesType?: string) {
     const sumByType = {};
 
     const sumArray = await this.ormRepository

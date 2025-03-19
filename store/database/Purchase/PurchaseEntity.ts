@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { SplitEntity, splitMapper, SplitModel } from "../Split/SplitEntity";
 import { ExpenseEnum } from "../../../models/types";
+import { TransactionModel } from "../Transaction/TransactionEntity";
 
 @Entity("purchase")
 export class PurchaseModel {
@@ -28,8 +29,9 @@ export class PurchaseModel {
   @Column({ nullable: true })
   isRefund: boolean;
 
-  @Column({ nullable: true })
-  wasRefunded: boolean;
+  @OneToOne(() => TransactionModel, { cascade: true })
+  @JoinColumn()
+  wasRefunded: TransactionModel;
 
   @OneToOne(() => SplitModel, { cascade: true })
   @JoinColumn()
@@ -48,7 +50,7 @@ export type PurchaseEntity = {
   note: string;
   date: string;
   isRefund: boolean;
-  wasRefunded: boolean;
+  wasRefunded: number;
   split?: SplitEntity;
   userId: string;
   entity: ExpenseEnum.Purchase;
@@ -63,8 +65,8 @@ export const clearPurchaseEntity = (purchaseEntity: PurchaseEntity, user?: strin
   note: "",
   date: purchaseEntity?.date || new Date().toISOString().split("T")[0],
   isRefund: purchaseEntity?.isRefund || false,
-  wasRefunded: false,
-  split: undefined,
+  wasRefunded: null,
+  split: null,
   userId: purchaseEntity?.userId || user,
   entity: ExpenseEnum.Purchase,
 });
@@ -79,7 +81,7 @@ export const purchaseMapper = (p: PurchaseModel): PurchaseEntity =>
     note: p.note,
     date: p.date.toISOString().split("T")[0],
     isRefund: p.isRefund,
-    wasRefunded: p.wasRefunded,
+    wasRefunded: p?.wasRefunded?.id,
     split: p.split ? splitMapper(p.split) : null,
     userId: p.userId,
     entity: ExpenseEnum.Purchase,
