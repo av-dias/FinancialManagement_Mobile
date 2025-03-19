@@ -44,18 +44,18 @@ const calcExpensesByType = (resPurchases, resTransactions) => {
 
     // Verify if year already exists
     if (!res[year]) {
-      res[year] = { [month]: { [ANALYSES_TYPE["Total"]]: {}, [ANALYSES_TYPE["Personal"]]: {} } };
+      res[year] = { [month]: { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} } };
     }
 
     // Verify if month already exists
     if (!res[year][month]) {
-      res[year][month] = { [ANALYSES_TYPE["Total"]]: {}, [ANALYSES_TYPE["Personal"]]: {} };
+      res[year][month] = { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} };
     }
 
     // Verify if type already exists
-    if (!Object.keys(res[year][month][ANALYSES_TYPE["Total"]]).includes(curr.type)) {
-      res[year][month][ANALYSES_TYPE["Total"]][curr.type] = 0;
-      res[year][month][ANALYSES_TYPE["Personal"]][curr.type] = 0;
+    if (!Object.keys(res[year][month][ANALYSES_TYPE.Total]).includes(curr.type)) {
+      res[year][month][ANALYSES_TYPE.Total][curr.type] = 0;
+      res[year][month][ANALYSES_TYPE.Personal][curr.type] = 0;
     }
 
     let type0Value = parseFloat(curr.value);
@@ -63,8 +63,8 @@ const calcExpensesByType = (resPurchases, resTransactions) => {
 
     if (curr.split) type1Value = (type0Value * (100 - parseFloat(curr.split.weight))) / 100;
 
-    res[year][month][ANALYSES_TYPE["Total"]][curr.type] += type0Value;
-    res[year][month][ANALYSES_TYPE["Personal"]][curr.type] += type1Value;
+    res[year][month][ANALYSES_TYPE.Total][curr.type] += type0Value;
+    res[year][month][ANALYSES_TYPE.Personal][curr.type] += type1Value;
   });
 
   resTransactions.forEach((transaction) => {
@@ -76,26 +76,26 @@ const calcExpensesByType = (resPurchases, resTransactions) => {
 
     // Verify if year already exists
     if (!res[year]) {
-      res[year] = { [month]: { [ANALYSES_TYPE["Total"]]: {}, [ANALYSES_TYPE["Personal"]]: {} } };
+      res[year] = { [month]: { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} } };
     }
 
     // Verify if month already exists
     if (!res[year][month]) {
-      res[year][month] = { [ANALYSES_TYPE["Total"]]: {}, [ANALYSES_TYPE["Personal"]]: {} };
+      res[year][month] = { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} };
     }
 
     // Verify if type already exists
-    if (!Object.keys(res[year][month][ANALYSES_TYPE["Total"]]).includes(curr.type)) {
-      res[year][month][ANALYSES_TYPE["Total"]][curr.type] = 0;
-      res[year][month][ANALYSES_TYPE["Personal"]][curr.type] = 0;
+    if (!Object.keys(res[year][month][ANALYSES_TYPE.Total]).includes(curr.type)) {
+      res[year][month][ANALYSES_TYPE.Total][curr.type] = 0;
+      res[year][month][ANALYSES_TYPE.Personal][curr.type] = 0;
     }
 
     // if transaction received expenses are reduced
     if (curr.user_origin_id) {
-      res[year][month][ANALYSES_TYPE["Total"]][curr.type] -= value;
+      res[year][month][ANALYSES_TYPE.Total][curr.type] -= value;
     } else {
-      res[year][month][ANALYSES_TYPE["Total"]][curr.type] += value;
-      res[year][month][ANALYSES_TYPE["Personal"]][curr.type] += value;
+      res[year][month][ANALYSES_TYPE.Total][curr.type] += value;
+      res[year][month][ANALYSES_TYPE.Personal][curr.type] += value;
     }
   });
 
@@ -107,7 +107,7 @@ const calcTotalExpensesByType = (resExpensesByType) => {
 
   for (let year of Object.keys(resExpensesByType)) {
     for (let month of Object.keys(resExpensesByType[year])) {
-      for (let type of Object.keys(resExpensesByType[year][month][ANALYSES_TYPE["Total"]])) {
+      for (let type of Object.keys(resExpensesByType[year][month][ANALYSES_TYPE.Total])) {
         if (!resTotal[year]) {
           resTotal[year] = { [type]: 0 };
         }
@@ -116,7 +116,7 @@ const calcTotalExpensesByType = (resExpensesByType) => {
           resTotal[year][type] = 0;
         }
 
-        resTotal[year][type] += resExpensesByType[year][month][ANALYSES_TYPE["Total"]][type];
+        resTotal[year][type] += resExpensesByType[year][month][ANALYSES_TYPE.Total][type];
       }
     }
   }
@@ -134,16 +134,16 @@ const calcExpensesTotal = (purchases, transaction) => {
 
       // Verify if year already exists
       if (!res[year]) {
-        res[year] = { [month]: { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 } };
+        res[year] = { [month]: { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 } };
       }
 
       // Verify if month already exists
       if (!res[year][month]) {
-        res[year][month] = { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 };
+        res[year][month] = { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 };
       }
 
-      res[year][month][ANALYSES_TYPE["Total"]] += parseFloat(curr[ANALYSES_TYPE["Total"]]);
-      res[year][month][ANALYSES_TYPE["Personal"]] += parseFloat(curr[ANALYSES_TYPE["Personal"]]);
+      res[year][month][ANALYSES_TYPE.Total] += parseFloat(curr[ANALYSES_TYPE.Total]);
+      res[year][month][ANALYSES_TYPE.Personal] += parseFloat(curr[ANALYSES_TYPE.Personal]);
     });
   }
 
@@ -153,16 +153,16 @@ const calcExpensesTotal = (purchases, transaction) => {
 
       // Verify if year already exists
       if (!res[year]) {
-        res[year] = { [month]: { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 } };
+        res[year] = { [month]: { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 } };
       }
 
       // Verify if month already exists
       if (!res[year][month]) {
-        res[year][month] = { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 };
+        res[year][month] = { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 };
       }
 
-      res[year][month][ANALYSES_TYPE["Total"]] += parseFloat(curr[TRANSACTION_TYPE["Total"]]);
-      res[year][month][ANALYSES_TYPE["Personal"]] += parseFloat(curr[TRANSACTION_TYPE["Sent"]]);
+      res[year][month][ANALYSES_TYPE.Total] += parseFloat(curr[TRANSACTION_TYPE.Total]);
+      res[year][month][ANALYSES_TYPE.Personal] += parseFloat(curr[TRANSACTION_TYPE.Sent]);
     });
   }
 
@@ -178,12 +178,12 @@ const calcPurchaseTotal = (purchases) => {
 
     // Verify if year already exists
     if (!res[year]) {
-      res[year] = { [month]: { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 } };
+      res[year] = { [month]: { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 } };
     }
 
     // Verify if month already exists
     if (!res[year][month]) {
-      res[year][month] = { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 };
+      res[year][month] = { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 };
     }
 
     let type0Value = parseFloat(curr.value);
@@ -193,8 +193,8 @@ const calcPurchaseTotal = (purchases) => {
       type1Value = (type0Value * (100 - parseFloat(curr.split.weight))) / 100;
     }
 
-    res[year][month][ANALYSES_TYPE["Total"]] += type0Value;
-    res[year][month][ANALYSES_TYPE["Personal"]] += type1Value;
+    res[year][month][ANALYSES_TYPE.Total] += type0Value;
+    res[year][month][ANALYSES_TYPE.Personal] += type1Value;
   });
 
   return res;
@@ -211,21 +211,21 @@ const calcTransactionTotal = (transactions) => {
 
     // Verify if year already exists
     if (!res[year]) {
-      res[year] = { [month]: { [TRANSACTION_TYPE["Total"]]: 0, [TRANSACTION_TYPE["Sent"]]: 0, [TRANSACTION_TYPE["Received"]]: 0 } };
+      res[year] = { [month]: { [TRANSACTION_TYPE.Total]: 0, [TRANSACTION_TYPE.Sent]: 0, [TRANSACTION_TYPE.Received]: 0 } };
     }
 
     // Verify if month already exists
     if (!res[year][month]) {
-      res[year][month] = { [TRANSACTION_TYPE["Total"]]: 0, [TRANSACTION_TYPE["Sent"]]: 0, [TRANSACTION_TYPE["Received"]]: 0 };
+      res[year][month] = { [TRANSACTION_TYPE.Total]: 0, [TRANSACTION_TYPE.Sent]: 0, [TRANSACTION_TYPE.Received]: 0 };
     }
 
     // if transaction received expenses are reduced
     if (curr.user_origin_id) {
-      res[year][month][TRANSACTION_TYPE["Total"]] -= value;
-      res[year][month][TRANSACTION_TYPE["Received"]] += value;
+      res[year][month][TRANSACTION_TYPE.Total] -= value;
+      res[year][month][TRANSACTION_TYPE.Received] += value;
     } else {
-      res[year][month][TRANSACTION_TYPE["Total"]] += value;
-      res[year][month][TRANSACTION_TYPE["Sent"]] += value;
+      res[year][month][TRANSACTION_TYPE.Total] += value;
+      res[year][month][TRANSACTION_TYPE.Sent] += value;
     }
   });
 
@@ -242,14 +242,14 @@ const calcExpensesTotalAverage = (expenses) => {
 
       // Verify if year already exists
       if (!expensesAverage[year]) {
-        expensesAverage[year] = { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 };
+        expensesAverage[year] = { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 };
       }
 
-      expensesAverage[year][ANALYSES_TYPE["Total"]] += expenses[year][month][ANALYSES_TYPE["Total"]];
-      expensesAverage[year][ANALYSES_TYPE["Personal"]] += expenses[year][month][ANALYSES_TYPE["Personal"]];
+      expensesAverage[year][ANALYSES_TYPE.Total] += expenses[year][month][ANALYSES_TYPE.Total];
+      expensesAverage[year][ANALYSES_TYPE.Personal] += expenses[year][month][ANALYSES_TYPE.Personal];
     });
-    expensesAverage[year][ANALYSES_TYPE["Total"]] /= monthCount;
-    expensesAverage[year][ANALYSES_TYPE["Personal"]] /= monthCount;
+    expensesAverage[year][ANALYSES_TYPE.Total] /= monthCount;
+    expensesAverage[year][ANALYSES_TYPE.Personal] /= monthCount;
   }
   return expensesAverage;
 };
@@ -264,7 +264,7 @@ const calcExpensesByTypeAverage = (expenses) => {
 
       // Verify if year already exists
       if (!expensesByTypeAverage[year]) {
-        expensesByTypeAverage[year] = { [ANALYSES_TYPE["Total"]]: {}, [ANALYSES_TYPE["Personal"]]: {} };
+        expensesByTypeAverage[year] = { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} };
       }
 
       let elementStatsList = Object.keys(expenses[year][month]);
@@ -300,7 +300,7 @@ const calcSplitDept = (expenses, splitDept) => {
         res[year] = { [month]: 0 };
       }
 
-      res[year][month] = expenses[year][month][ANALYSES_TYPE["Total"]] - expenses[year][month][ANALYSES_TYPE["Personal"]];
+      res[year][month] = expenses[year][month][ANALYSES_TYPE.Total] - expenses[year][month][ANALYSES_TYPE.Personal];
     });
   }
   return res;
