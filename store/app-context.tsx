@@ -3,10 +3,14 @@ import { useFocusEffect } from "@react-navigation/native";
 import { getAllPurchaseStats } from "../functions/purchase";
 import { getAllTransactionsStats } from "../functions/transaction";
 import { UserContext } from "./user-context";
-import { STATS_TYPE, TRANSACTION_TYPE, KEYS as KEYS_SERIALIZER, KEYS } from "../utility/keys";
+import { ANALYSES_TYPE, TRANSACTION_TYPE, KEYS as KEYS_SERIALIZER, KEYS } from "../utility/keys";
+import { KEYS as STORAGE_KEYS } from "../utility/storageKeys";
 import { ExpenseType, PurchaseType, TransactionType } from "../models/types";
 import { ExpensesByYear } from "../models/interfaces";
 import { logTimeTook } from "../utility/logger";
+import { addToStorage, getFromStorage, saveToStorage } from "../functions/secureStorage";
+import { transferPurchase, transferTransaction } from "../pages/list/handler";
+import { ExpensesService } from "../service/ExpensesService";
 
 interface AppContext {
   email: any;
@@ -40,18 +44,18 @@ const calcExpensesByType = (resPurchases, resTransactions) => {
 
     // Verify if year already exists
     if (!res[year]) {
-      res[year] = { [month]: { [STATS_TYPE[0]]: {}, [STATS_TYPE[1]]: {} } };
+      res[year] = { [month]: { [ANALYSES_TYPE["Total"]]: {}, [ANALYSES_TYPE["Personal"]]: {} } };
     }
 
     // Verify if month already exists
     if (!res[year][month]) {
-      res[year][month] = { [STATS_TYPE[0]]: {}, [STATS_TYPE[1]]: {} };
+      res[year][month] = { [ANALYSES_TYPE["Total"]]: {}, [ANALYSES_TYPE["Personal"]]: {} };
     }
 
     // Verify if type already exists
-    if (!Object.keys(res[year][month][STATS_TYPE[0]]).includes(curr.type)) {
-      res[year][month][STATS_TYPE[0]][curr.type] = 0;
-      res[year][month][STATS_TYPE[1]][curr.type] = 0;
+    if (!Object.keys(res[year][month][ANALYSES_TYPE["Total"]]).includes(curr.type)) {
+      res[year][month][ANALYSES_TYPE["Total"]][curr.type] = 0;
+      res[year][month][ANALYSES_TYPE["Personal"]][curr.type] = 0;
     }
 
     let type0Value = parseFloat(curr.value);
@@ -59,8 +63,8 @@ const calcExpensesByType = (resPurchases, resTransactions) => {
 
     if (curr.split) type1Value = (type0Value * (100 - parseFloat(curr.split.weight))) / 100;
 
-    res[year][month][STATS_TYPE[0]][curr.type] += type0Value;
-    res[year][month][STATS_TYPE[1]][curr.type] += type1Value;
+    res[year][month][ANALYSES_TYPE["Total"]][curr.type] += type0Value;
+    res[year][month][ANALYSES_TYPE["Personal"]][curr.type] += type1Value;
   });
 
   resTransactions.forEach((transaction) => {
@@ -72,26 +76,26 @@ const calcExpensesByType = (resPurchases, resTransactions) => {
 
     // Verify if year already exists
     if (!res[year]) {
-      res[year] = { [month]: { [STATS_TYPE[0]]: {}, [STATS_TYPE[1]]: {} } };
+      res[year] = { [month]: { [ANALYSES_TYPE["Total"]]: {}, [ANALYSES_TYPE["Personal"]]: {} } };
     }
 
     // Verify if month already exists
     if (!res[year][month]) {
-      res[year][month] = { [STATS_TYPE[0]]: {}, [STATS_TYPE[1]]: {} };
+      res[year][month] = { [ANALYSES_TYPE["Total"]]: {}, [ANALYSES_TYPE["Personal"]]: {} };
     }
 
     // Verify if type already exists
-    if (!Object.keys(res[year][month][STATS_TYPE[0]]).includes(curr.type)) {
-      res[year][month][STATS_TYPE[0]][curr.type] = 0;
-      res[year][month][STATS_TYPE[1]][curr.type] = 0;
+    if (!Object.keys(res[year][month][ANALYSES_TYPE["Total"]]).includes(curr.type)) {
+      res[year][month][ANALYSES_TYPE["Total"]][curr.type] = 0;
+      res[year][month][ANALYSES_TYPE["Personal"]][curr.type] = 0;
     }
 
     // if transaction received expenses are reduced
     if (curr.user_origin_id) {
-      res[year][month][STATS_TYPE[0]][curr.type] -= value;
+      res[year][month][ANALYSES_TYPE["Total"]][curr.type] -= value;
     } else {
-      res[year][month][STATS_TYPE[0]][curr.type] += value;
-      res[year][month][STATS_TYPE[1]][curr.type] += value;
+      res[year][month][ANALYSES_TYPE["Total"]][curr.type] += value;
+      res[year][month][ANALYSES_TYPE["Personal"]][curr.type] += value;
     }
   });
 
@@ -103,7 +107,7 @@ const calcTotalExpensesByType = (resExpensesByType) => {
 
   for (let year of Object.keys(resExpensesByType)) {
     for (let month of Object.keys(resExpensesByType[year])) {
-      for (let type of Object.keys(resExpensesByType[year][month][STATS_TYPE[0]])) {
+      for (let type of Object.keys(resExpensesByType[year][month][ANALYSES_TYPE["Total"]])) {
         if (!resTotal[year]) {
           resTotal[year] = { [type]: 0 };
         }
@@ -112,7 +116,7 @@ const calcTotalExpensesByType = (resExpensesByType) => {
           resTotal[year][type] = 0;
         }
 
-        resTotal[year][type] += resExpensesByType[year][month][STATS_TYPE[0]][type];
+        resTotal[year][type] += resExpensesByType[year][month][ANALYSES_TYPE["Total"]][type];
       }
     }
   }
@@ -130,16 +134,16 @@ const calcExpensesTotal = (purchases, transaction) => {
 
       // Verify if year already exists
       if (!res[year]) {
-        res[year] = { [month]: { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 } };
+        res[year] = { [month]: { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 } };
       }
 
       // Verify if month already exists
       if (!res[year][month]) {
-        res[year][month] = { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 };
+        res[year][month] = { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 };
       }
 
-      res[year][month][STATS_TYPE[0]] += parseFloat(curr[STATS_TYPE[0]]);
-      res[year][month][STATS_TYPE[1]] += parseFloat(curr[STATS_TYPE[1]]);
+      res[year][month][ANALYSES_TYPE["Total"]] += parseFloat(curr[ANALYSES_TYPE["Total"]]);
+      res[year][month][ANALYSES_TYPE["Personal"]] += parseFloat(curr[ANALYSES_TYPE["Personal"]]);
     });
   }
 
@@ -149,16 +153,16 @@ const calcExpensesTotal = (purchases, transaction) => {
 
       // Verify if year already exists
       if (!res[year]) {
-        res[year] = { [month]: { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 } };
+        res[year] = { [month]: { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 } };
       }
 
       // Verify if month already exists
       if (!res[year][month]) {
-        res[year][month] = { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 };
+        res[year][month] = { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 };
       }
 
-      res[year][month][STATS_TYPE[0]] += parseFloat(curr[TRANSACTION_TYPE[0]]);
-      res[year][month][STATS_TYPE[1]] += parseFloat(curr[TRANSACTION_TYPE[1]]);
+      res[year][month][ANALYSES_TYPE["Total"]] += parseFloat(curr[TRANSACTION_TYPE["Total"]]);
+      res[year][month][ANALYSES_TYPE["Personal"]] += parseFloat(curr[TRANSACTION_TYPE["Sent"]]);
     });
   }
 
@@ -174,12 +178,12 @@ const calcPurchaseTotal = (purchases) => {
 
     // Verify if year already exists
     if (!res[year]) {
-      res[year] = { [month]: { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 } };
+      res[year] = { [month]: { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 } };
     }
 
     // Verify if month already exists
     if (!res[year][month]) {
-      res[year][month] = { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 };
+      res[year][month] = { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 };
     }
 
     let type0Value = parseFloat(curr.value);
@@ -189,8 +193,8 @@ const calcPurchaseTotal = (purchases) => {
       type1Value = (type0Value * (100 - parseFloat(curr.split.weight))) / 100;
     }
 
-    res[year][month][STATS_TYPE[0]] += type0Value;
-    res[year][month][STATS_TYPE[1]] += type1Value;
+    res[year][month][ANALYSES_TYPE["Total"]] += type0Value;
+    res[year][month][ANALYSES_TYPE["Personal"]] += type1Value;
   });
 
   return res;
@@ -207,21 +211,21 @@ const calcTransactionTotal = (transactions) => {
 
     // Verify if year already exists
     if (!res[year]) {
-      res[year] = { [month]: { [TRANSACTION_TYPE[0]]: 0, [TRANSACTION_TYPE[1]]: 0, [TRANSACTION_TYPE[2]]: 0 } };
+      res[year] = { [month]: { [TRANSACTION_TYPE["Total"]]: 0, [TRANSACTION_TYPE["Sent"]]: 0, [TRANSACTION_TYPE["Received"]]: 0 } };
     }
 
     // Verify if month already exists
     if (!res[year][month]) {
-      res[year][month] = { [TRANSACTION_TYPE[0]]: 0, [TRANSACTION_TYPE[1]]: 0, [TRANSACTION_TYPE[2]]: 0 };
+      res[year][month] = { [TRANSACTION_TYPE["Total"]]: 0, [TRANSACTION_TYPE["Sent"]]: 0, [TRANSACTION_TYPE["Received"]]: 0 };
     }
 
     // if transaction received expenses are reduced
     if (curr.user_origin_id) {
-      res[year][month][TRANSACTION_TYPE[0]] -= value;
-      res[year][month][TRANSACTION_TYPE[2]] += value;
+      res[year][month][TRANSACTION_TYPE["Total"]] -= value;
+      res[year][month][TRANSACTION_TYPE["Received"]] += value;
     } else {
-      res[year][month][TRANSACTION_TYPE[0]] += value;
-      res[year][month][TRANSACTION_TYPE[1]] += value;
+      res[year][month][TRANSACTION_TYPE["Total"]] += value;
+      res[year][month][TRANSACTION_TYPE["Sent"]] += value;
     }
   });
 
@@ -238,14 +242,14 @@ const calcExpensesTotalAverage = (expenses) => {
 
       // Verify if year already exists
       if (!expensesAverage[year]) {
-        expensesAverage[year] = { [STATS_TYPE[0]]: 0, [STATS_TYPE[1]]: 0 };
+        expensesAverage[year] = { [ANALYSES_TYPE["Total"]]: 0, [ANALYSES_TYPE["Personal"]]: 0 };
       }
 
-      expensesAverage[year][STATS_TYPE[0]] += expenses[year][month][STATS_TYPE[0]];
-      expensesAverage[year][STATS_TYPE[1]] += expenses[year][month][STATS_TYPE[1]];
+      expensesAverage[year][ANALYSES_TYPE["Total"]] += expenses[year][month][ANALYSES_TYPE["Total"]];
+      expensesAverage[year][ANALYSES_TYPE["Personal"]] += expenses[year][month][ANALYSES_TYPE["Personal"]];
     });
-    expensesAverage[year][STATS_TYPE[0]] /= monthCount;
-    expensesAverage[year][STATS_TYPE[1]] /= monthCount;
+    expensesAverage[year][ANALYSES_TYPE["Total"]] /= monthCount;
+    expensesAverage[year][ANALYSES_TYPE["Personal"]] /= monthCount;
   }
   return expensesAverage;
 };
@@ -260,7 +264,7 @@ const calcExpensesByTypeAverage = (expenses) => {
 
       // Verify if year already exists
       if (!expensesByTypeAverage[year]) {
-        expensesByTypeAverage[year] = { [STATS_TYPE[0]]: {}, [STATS_TYPE[1]]: {} };
+        expensesByTypeAverage[year] = { [ANALYSES_TYPE["Total"]]: {}, [ANALYSES_TYPE["Personal"]]: {} };
       }
 
       let elementStatsList = Object.keys(expenses[year][month]);
@@ -296,7 +300,7 @@ const calcSplitDept = (expenses, splitDept) => {
         res[year] = { [month]: 0 };
       }
 
-      res[year][month] = expenses[year][month][STATS_TYPE[0]] - expenses[year][month][STATS_TYPE[1]];
+      res[year][month] = expenses[year][month][ANALYSES_TYPE["Total"]] - expenses[year][month][ANALYSES_TYPE["Personal"]];
     });
   }
   return res;
@@ -383,9 +387,9 @@ const AppContextProvider = ({ children }) => {
   const [purchases, setPurchases] = useState({});
   const [transactions, setTransactions] = useState({});
   const [expenses, setExpenses] = useState({});
+  const expenseService = new ExpensesService();
 
   const userCtx = useContext(UserContext);
-
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
@@ -397,6 +401,35 @@ const AppContextProvider = ({ children }) => {
           // [Year][Month]
           // Index
           let resPurchases = await getAllPurchaseStats(userCtx.email);
+          let purchaseSucceeded = [];
+
+          // purchase migration process
+          let migratedPList = [];
+          try {
+            migratedPList = JSON.parse(await getFromStorage(STORAGE_KEYS.MIGRATION_PURCHASE, userCtx.email));
+          } catch (e) {
+            console.log(e);
+          }
+
+          let pIndex = 0;
+          console.log(migratedPList);
+          for (let p of resPurchases) {
+            try {
+              if (!migratedPList.includes(pIndex.toString())) {
+                console.log(p);
+                await transferPurchase(userCtx.email, p as PurchaseType, expenseService);
+                purchaseSucceeded.push(pIndex.toString());
+                pIndex++;
+              }
+            } catch (e) {
+              alert("Purchase migration failedd: " + pIndex);
+              console.log("Purchase migration failed: " + pIndex);
+            }
+          }
+          console.log(purchaseSucceeded);
+          await addToStorage(STORAGE_KEYS.MIGRATION_PURCHASE, JSON.stringify(purchaseSucceeded), userCtx.email);
+          // * END PURCHASE
+
           setPurchases(loadPurchases(resPurchases, resExpense));
           let purchaseTime = performance.now();
           logTimeTook("App-Context", "Load Purchase", purchaseTime, startTime);
@@ -404,16 +437,57 @@ const AppContextProvider = ({ children }) => {
           // [Year][Month]
           // Index
           let resTransactions = await getAllTransactionsStats(userCtx.email);
+          let transactionSucceeded = [];
+
+          // purchase migration process
+          let migratedTList = [];
+          try {
+            migratedTList = JSON.parse(await getFromStorage(STORAGE_KEYS.MIGRATION_TRANSACTION, userCtx.email));
+          } catch (e) {
+            console.log(e);
+          }
+          let tIndex = 0;
+          console.log(migratedTList);
+          for (let t of resTransactions) {
+            try {
+              if (!migratedTList.includes(tIndex.toString())) {
+                console.log(t);
+                await transferTransaction(userCtx.email, t as TransactionType, expenseService);
+                transactionSucceeded.push(tIndex.toString());
+                tIndex++;
+              }
+            } catch (e) {
+              alert("Transaction migration failed: " + tIndex);
+              console.log("Transaction migration failed: " + tIndex);
+            }
+          }
+          console.log(transactionSucceeded);
+          await addToStorage(STORAGE_KEYS.MIGRATION_TRANSACTION, JSON.stringify(transactionSucceeded), userCtx.email);
+          // * END TRANSACTION
+
+          // Notify the user that the transaction process has been completed
+          alert(
+            `Migration Purchase - Initial: ${migratedPList.length} Finish: ${purchaseSucceeded.length}\nMigration Transaction - Initial: ${migratedTList.length} Finish: ${transactionSucceeded.length}`
+          );
+
+          /* // IN CASE DATABASE PURGE IS REQUIRED
+
+          await saveToStorage(STORAGE_KEYS.MIGRATION_TRANSACTION, JSON.stringify([]), userCtx.email);
+          await saveToStorage(STORAGE_KEYS.MIGRATION_PURCHASE, JSON.stringify([]), userCtx.email);
+
+          console.log("CLEANED"); */
+
           setTransactions(loadTransactions(resTransactions, resExpense));
           let transactionTime = performance.now();
           logTimeTook("App-Context", "Load Transaction", transactionTime, purchaseTime);
+
           setExpenses(resExpense);
           let endTime = performance.now();
           logTimeTook("App-Context", "Load useFocusEffect", endTime, startTime);
         }
       }
-      fetchData();
-    }, [userCtx.email])
+      if (expenseService.isReady()) fetchData();
+    }, [userCtx.email, expenseService.isReady()])
   );
 
   const value = {
