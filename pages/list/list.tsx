@@ -5,13 +5,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { _styles } from "./style";
 
 //Context
-import { AppContext } from "../../store/app-context";
 import { UserContext } from "../../store/user-context";
 
 import { verticalScale } from "../../functions/responsive";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
-import { getSplitEmail, getSplitUser } from "../../functions/split";
-import { expenseLabel, isIncomeOnDate, splitOption, settleOption, editOption, searchItem, searchExpenses, searchIncome, editIncomeOption, loadEditModal } from "./handler";
+import { getSplitUser } from "../../functions/split";
+import { expenseLabel, isIncomeOnDate, splitOption, settleOption, editOption, searchItem, searchExpenses, searchIncome, editIncomeOption, loadEditModal, isExpenseOnDate } from "./handler";
 import { months } from "../../utility/calendar";
 
 import Header from "../../components/header/header";
@@ -19,46 +18,44 @@ import CalendarCard from "../../components/calendarCard/calendarCard";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
 import ModalCustom from "../../components/modal/modal";
 
-import { deleteExpenses, groupExpensesByDate } from "../../functions/expenses";
 import { dark } from "../../utility/colors";
-import { ExpenseType, ExpensesByDateType, IncomeType, PurchaseType, TransactionType } from "../../models/types";
+import { ExpenseEnum, IncomeType } from "../../models/types";
 import { useDatabaseConnection } from "../../store/database-context";
-import { IncomeEntity, IncomeModel } from "../../store/database/Income/IncomeEntity";
+import { IncomeEntity } from "../../store/database/Income/IncomeEntity";
 import { CustomListItem } from "../../components/ListItem/ListItem";
 import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
 import { AlertData, IncomeAlertData, PurchaseAlertData, TransactionAlertData } from "../../constants/listConstants/deleteDialog";
-import { removeFromStorage } from "../../functions/secureStorage";
-import { KEYS } from "../../utility/storageKeys";
 import { Checkbox, Searchbar } from "react-native-paper";
 import { logTimeTook } from "../../utility/logger";
 import { utilIcons } from "../../utility/icons";
+import { ExpensesService } from "../../service/ExpensesService";
+import { TransactionEntity } from "../../store/database/Transaction/TransactionEntity";
+import { PurchaseEntity } from "../../store/database/Purchase/PurchaseEntity";
 
 export default function List({ navigation }) {
-  const appCtx = useContext(AppContext);
   const email = useContext(UserContext).email;
   const { incomeRepository } = useDatabaseConnection();
+  const expensesService = new ExpensesService();
 
   const styles = _styles;
 
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
-  const [expensesGroupedByDate, setExpensesGroupedByDate] = useState<ExpensesByDateType>({});
   const [incomeData, setIncomeData] = useState<IncomeEntity[]>([]);
+  const [expenseData, setExpenseData] = useState<(PurchaseEntity | TransactionEntity)[]>([]);
 
-  const [selectedItem, setSelectedItem] = useState<ExpenseType | IncomeType>();
-  const [splitUser, setSplitUser] = useState("");
-  const [sliderStatus, setSliderStatus] = useState(false);
-  const [destination, setDestination] = useState("");
+  const [selectedItem, setSelectedItem] = useState<PurchaseEntity | TransactionEntity | IncomeType>();
+  const [destination, setDestination] = useState({ email: "", name: "" });
 
   const [listDays, setListDays] = useState([]);
 
   const [editVisible, setEditVisible] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
 
-  const [expenses, setExpenses] = useState(appCtx.expenses);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [multiSelect, setMultiSelect] = useState<string[]>([]);
+  const [multiSelect, setMultiSelect] = useState<(PurchaseEntity | TransactionEntity | IncomeType)[]>([]);
+  const [refresh, setRefresh] = useState<boolean>(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -77,17 +74,17 @@ export default function List({ navigation }) {
     React.useCallback(() => {
       async function fetchData() {
         setListDays([]); // There is no data for the selected month
-        if (expenses && email && expenses.hasOwnProperty(currentYear) && expenses[currentYear].hasOwnProperty(currentMonth)) {
+        if (email) {
           console.log("List: Fetching app data...");
           const startTime = performance.now();
 
-          let resExpensesGroupedByDate = groupExpensesByDate(expenses, currentYear, currentMonth);
-          setExpensesGroupedByDate(resExpensesGroupedByDate);
-
-          let incomeList: IncomeModel[] = [];
+          let incomeList = [];
+          let expensesList = [];
 
           try {
             incomeList = await incomeRepository.getIncomeFromDate(email, currentMonth, currentYear);
+            expensesList = await expensesService.getExpensesList(email, currentMonth + 1, currentYear);
+            setExpenseData(expensesList);
             setIncomeData(incomeList);
           } catch (e) {
             console.log(e);
@@ -97,7 +94,7 @@ export default function List({ navigation }) {
         }
       }
       fetchData();
-    }, [appCtx.expenses, email, expenses, currentYear, currentMonth, incomeData.length, incomeRepository])
+    }, [email, currentYear, currentMonth, incomeRepository, refresh])
   );
 
   /* Loads dates based on Expenses, Income Items and Search Query */
@@ -105,15 +102,38 @@ export default function List({ navigation }) {
     React.useCallback(() => {
       const startTime = performance.now();
       let listOfDays = [];
-      searchExpenses(expensesGroupedByDate, searchQuery, listOfDays);
+      searchExpenses(expenseData, searchQuery, listOfDays);
       searchIncome(incomeData, searchQuery, listOfDays);
 
       let list = listOfDays.sort().reverse();
       setListDays([...new Set(list)]);
       const endTime = performance.now();
       logTimeTook("List", "useFocusEffect list days", endTime, startTime);
-    }, [searchQuery, incomeData, expensesGroupedByDate])
+    }, [searchQuery, incomeData, expenseData])
   );
+
+  const removeExpense = (item: PurchaseEntity | TransactionEntity) => {
+    setExpenseData((prev: (TransactionEntity | PurchaseEntity)[]) => {
+      const filteredList = prev.filter((prevItem) => !(prevItem.id === item.id && prevItem.entity === item.entity));
+
+      // If it is a transaction
+      if (item.entity === ExpenseEnum.Transaction) {
+        for (let prevItem of filteredList) {
+          // We need to check if its associated with purchase
+          if (prevItem.entity === ExpenseEnum.Purchase && prevItem.wasRefunded && prevItem.wasRefunded === item.id) {
+            prevItem.wasRefunded = null;
+            break;
+          }
+        }
+      }
+
+      return filteredList;
+    });
+  };
+
+  const addExpense = (item: PurchaseEntity | TransactionEntity) => {
+    setExpenseData((prev) => [...prev, item]);
+  };
 
   /* Load income options for list item */
   const incomeOptions = (income: IncomeEntity) => {
@@ -121,57 +141,85 @@ export default function List({ navigation }) {
   };
 
   /* Load expenses options for list item */
-  const expensesOptions = (expenses: ExpenseType) => {
+  const expensesOptions = (expense: PurchaseEntity | TransactionEntity) => {
     let options = [];
-    const innerData = expenses.element;
-    if (expenses.key === KEYS_SERIALIZER.PURCHASE && !(innerData as PurchaseType).split) {
-      options.push(splitOption(setSelectedItem, expenses, email, getSplitEmail(splitUser), setExpenses));
-    } else if (expenses.key === KEYS_SERIALIZER.PURCHASE && (innerData as PurchaseType)) {
-      options.push(settleOption(email, expenses, destination, setExpenses));
+    if (expense.entity === ExpenseEnum.Purchase && !expense.split) {
+      options.push(splitOption(expense, destination.email, expensesService, reload));
+    } else if (expense.entity === ExpenseEnum.Purchase && !expense?.wasRefunded) {
+      options.push(settleOption(email, expense, destination.email, expensesService, (expense: PurchaseEntity) => addExpense(expense)));
     }
-    options.push(editOption(setSelectedItem, expenses, setSliderStatus, setEditVisible));
+
+    options.push(editOption(setSelectedItem, expense, setEditVisible));
 
     return options;
   };
 
-  const loadModalDialog = (data: ExpenseType | IncomeType) => {
+  const loadModalDialog = (data: PurchaseEntity | TransactionEntity | IncomeType) => {
     setAlertVisible(true);
     setSelectedItem(data);
   };
 
-  const onRecurringHandle = () => {};
+  const onRecurringHandle = () => {
+    alert("Feature is not implemented yet.");
+  };
 
-  const onBulkDeleteHandle = () => {};
+  const onBulkDeleteHandle = () => {
+    multiSelect.map((item) => {
+      switch (item.entity) {
+        case ExpenseEnum.Purchase: {
+          expensesService.deletePurchase(item);
+          removeExpense(item);
+          break;
+        }
+        case ExpenseEnum.Transaction: {
+          expensesService.deleteTransaction(item);
+          removeExpense(item);
+          break;
+        }
+        case ExpenseEnum.Income: {
+          incomeRepository.delete(item.id);
+          setIncomeData((prev) => prev.filter((item) => item.id !== item.id));
+          break;
+        }
+      }
+    });
+    setMultiSelect([]);
+  };
 
   /* Loads the dialog data when list item is pressed */
-  const getModalDialogData = (data: ExpenseType | IncomeType): AlertData => {
-    if (data.hasOwnProperty("doi")) {
-      data = data as IncomeType;
+  const getModalDialogData = (data: IncomeEntity | PurchaseEntity | TransactionEntity): AlertData => {
+    if (data.entity === ExpenseEnum.Income) {
+      data = data as IncomeEntity;
 
-      const handleConfirm = async (data: IncomeType) => {
-        await incomeRepository.delete(data.id);
-        setIncomeData((prev) => prev.filter((item) => item.id !== data.id));
+      const handleConfirm = async (income: IncomeEntity) => {
+        await incomeRepository.delete(income.id);
+        setIncomeData((prev) => prev.filter((item) => item.id !== income.id));
       };
 
       return IncomeAlertData(data.name, data.amount.toString(), async () => await handleConfirm(data as IncomeType));
-    } else {
-      data = data as ExpenseType;
+    } else if (data.entity === ExpenseEnum.Purchase) {
+      data = data as PurchaseEntity;
 
-      const handleConfirm = async (data: ExpenseType) => {
-        const key = data.key == KEYS_SERIALIZER.PURCHASE ? KEYS.PURCHASE : KEYS.TRANSACTION;
-        await removeFromStorage(key, data.index, email);
-        deleteExpenses(data, setExpenses);
+      const handleConfirm = async (purchase: PurchaseEntity) => {
+        await expensesService.deletePurchase(purchase);
+        removeExpense(purchase);
       };
+      return PurchaseAlertData(data.name, data.amount.toString(), async () => await handleConfirm(data as PurchaseEntity));
+    } else {
+      data = data as TransactionEntity;
 
-      if (data.key == KEYS_SERIALIZER.PURCHASE) {
-        const element = data.element as PurchaseType;
-        return PurchaseAlertData(element.name, element.value, async () => await handleConfirm(data as ExpenseType));
-      } else if (data.key == KEYS_SERIALIZER.TRANSACTION) {
-        const element = data.element as TransactionType;
-        return TransactionAlertData(element.description, element.amount, async () => await handleConfirm(data as ExpenseType));
-      }
-      return null;
+      const handleConfirm = async (transaction: TransactionEntity) => {
+        await expensesService.deleteTransaction(transaction);
+        removeExpense(transaction);
+      };
+      return TransactionAlertData(data.description, data.amount.toString(), async () => await handleConfirm(data as TransactionEntity));
     }
+  };
+
+  // TODO This migrated to state change
+  const reload = () => {
+    setEditVisible(false);
+    setRefresh((prev) => !prev);
   };
 
   return (
@@ -182,7 +230,7 @@ export default function List({ navigation }) {
           {editVisible && (
             /* TODO Improve ModalList implementation to prevent code duplication */
             <ModalCustom modalVisible={editVisible} setModalVisible={setEditVisible} size={18} hasColor={true}>
-              {loadEditModal(selectedItem, email, setEditVisible, setExpenses, setIncomeData)}
+              {loadEditModal(selectedItem, email, reload, setIncomeData)}
             </ModalCustom>
           )}
           {alertVisible && <ModalDialog visible={alertVisible} setVisible={setAlertVisible} size={2.5} data={getModalDialogData(selectedItem)} />}
@@ -211,17 +259,17 @@ export default function List({ navigation }) {
                     <Text style={styles.listDate}>{new Date(date).getDate() + " " + months[new Date(date).getMonth()]}</Text>
                   </View>
                   <CardWrapper key={date} style={styles.listBox}>
-                    {expensesGroupedByDate[date] &&
-                      expensesGroupedByDate[date].map(
-                        (expenses: ExpenseType) =>
-                          searchItem(expenses, searchQuery) && (
+                    {expenseData &&
+                      expenseData.map(
+                        (expense: PurchaseEntity | TransactionEntity) =>
+                          isExpenseOnDate(expense, date) &&
+                          searchItem(expense, searchQuery) && (
                             <CustomListItem
-                              key={`Expenses${expenses.index}${expenses.key}${expenses.element.type}`}
-                              id={`Expenses${expenses.index}${expenses.key}${expenses.element.type}`}
-                              innerData={{ ...expenses.element }}
-                              options={expensesOptions(expenses)}
-                              label={expenseLabel(expenses.element)}
-                              onPress={() => loadModalDialog(expenses)}
+                              key={`Expenses${expense.id}${expense.entity}${expense.type}`}
+                              item={expense}
+                              options={expensesOptions(expense)}
+                              label={expenseLabel(expense)}
+                              onPress={() => loadModalDialog(expense)}
                               onLongPress={setMultiSelect}
                               selected={multiSelect}
                             />
@@ -234,8 +282,7 @@ export default function List({ navigation }) {
                           searchItem(income, searchQuery) && (
                             <CustomListItem
                               key={`Income${income.id}`}
-                              id={`Income${income.id}`}
-                              innerData={{ ...income, type: "Income" }}
+                              item={income}
                               options={incomeOptions(income)}
                               onPress={() => loadModalDialog({ ...income, key: KEYS_SERIALIZER.INCOME })}
                               onLongPress={setMultiSelect}

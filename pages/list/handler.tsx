@@ -1,6 +1,6 @@
 import { editOnStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
-import { ExpenseType, IncomeType, PurchaseType, TransactionType } from "../../models/types";
+import { ExpenseEnum, ExpenseType, IncomeType, PurchaseType, TransactionType } from "../../models/types";
 import { updateExpenses } from "../../functions/expenses";
 import { handleTransaction } from "../transaction/handler";
 import { IncomeEntity } from "../../store/database/Income/IncomeEntity";
@@ -9,17 +9,45 @@ import Transaction from "../transaction/transaction";
 import Purchase from "../purchase/purchase";
 import Income from "../income/income";
 import { getSplitEmail } from "../../functions/split";
+import { ExpensesService } from "../../service/ExpensesService";
+import { PurchaseEntity, PurchaseModel } from "../../store/database/Purchase/PurchaseEntity";
+import { TransactionEntity, transactionMapper, TransactionModel, TransactionOperation } from "../../store/database/Transaction/TransactionEntity";
+import { SplitEntity } from "../../store/database/Split/SplitEntity";
 
 export const isCtxLoaded = (ctx) => {
   return Object.keys(ctx).length > 0 && Object.keys(ctx["expensesByDate"]).length > 0;
 };
 
-export const handleSplit = async (email, expense: ExpenseType, splitUser, setExpenses) => {
-  expense.element = expense.element as PurchaseType;
-  expense.element = { ...expense.element, split: { userId: splitUser, weight: "50" } };
+export const handleSplit = async (expense: PurchaseEntity, splitUser, expensesService: ExpensesService) => {
+  const newSplit: SplitEntity = { userId: splitUser, weight: 50 };
+  expense.split = newSplit;
 
-  await editOnStorage(KEYS.PURCHASE, JSON.stringify(expense.element), expense.index, email);
-  updateExpenses(expense, setExpenses);
+  await expensesService.updatePurchase(expense);
+};
+
+export const handleSettleSplit = async (email, expense: PurchaseEntity, destination, expenseService: ExpensesService) => {
+  let splitPercentage = Number(expense.split.weight) / 100;
+  let settleValue = Number(expense.amount) * splitPercentage;
+
+  let newTransaction: TransactionEntity = {
+    amount: settleValue,
+    description: expense.name,
+    type: expense.type,
+    date: new Date().toISOString().split("T")[0],
+    transactionType: TransactionOperation.RECEIVED,
+    userTransactionId: destination,
+    userId: email,
+    entity: ExpenseEnum.Transaction,
+  };
+
+  try {
+    const transactionModel = await expenseService.createTransaction(newTransaction);
+    expense.wasRefunded = transactionModel.id;
+    await expenseService.updatePurchase(expense);
+    return transactionModel;
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 // Major refatoring is required upon sqlite is implemented
@@ -81,25 +109,13 @@ export const groupByDate = (data: any) => {
   return grouped_data;
 };
 
-export const handleSettleSplit = async (email, expense: ExpenseType, handleTransaction, destination, setExpenses) => {
-  let selectedPurchase = expense.element as PurchaseType;
-  let splitPercentage = Number(selectedPurchase.split.weight) / 100;
-  let settleValue = Number(selectedPurchase.value) * splitPercentage;
-
-  let newTransaction: TransactionType = {
-    amount: settleValue.toString(),
-    description: selectedPurchase.name,
-    type: selectedPurchase.type,
-    dot: new Date().toISOString().split("T")[0],
-    user_destination_id: "",
-    user_origin_id: "",
-  };
-  await handleTransaction(newTransaction, () => {}, destination, true, email, setExpenses);
-};
-
 export const isIncomeOnDate = (i_doi, date) => {
   let doi = new Date(i_doi).toISOString().slice(0, 19).replace("T", " ").split(" ")[0];
   return doi == date ? true : false;
+};
+
+export const isExpenseOnDate = (expense: PurchaseEntity | TransactionEntity, date) => {
+  return expense.date === date ? true : false;
 };
 
 export const expenseLabel = (innerData) => {
@@ -109,25 +125,25 @@ export const expenseLabel = (innerData) => {
     };
 };
 
-export const splitOption = (setSelectedItem, expenses, email, splitUser, setExpenses) => ({
+export const splitOption = (expense, splitUser, expenseService: ExpensesService, callback) => ({
   callback: async () => {
-    setSelectedItem({ ...expenses });
-    await handleSplit(email, expenses, splitUser, setExpenses);
+    await handleSplit(expense, splitUser, expenseService);
+    callback();
   },
   type: "Split",
 });
 
-export const settleOption = (email, expenses, destination, setExpenses) => ({
+export const settleOption = (email, expense, destination, expenseService: ExpensesService, addCallback) => ({
   callback: async () => {
-    await handleSettleSplit(email, expenses, handleTransaction, destination, setExpenses);
+    const newTransaction = await handleSettleSplit(email, expense, destination, expenseService);
+    addCallback(transactionMapper(newTransaction));
   },
   type: "Settle",
 });
 
-export const editOption = (setSelectedItem, expenses, setSliderStatus, setEditVisible) => ({
+export const editOption = (setSelectedItem, expense, setEditVisible) => ({
   callback: async () => {
-    setSelectedItem({ ...expenses });
-    setSliderStatus("split" in expenses.element ? true : false);
+    setSelectedItem({ ...expense });
     setEditVisible(true);
   },
   type: "Edit",
@@ -141,46 +157,88 @@ export const editIncomeOption = (income, setSelectedItem, setEditVisible) => ({
   type: "Edit",
 });
 
-export const searchItem = (data: IncomeEntity | ExpenseType, searchQuery: string) => {
+export const transferPurchase = async (email, purchase: PurchaseType, expensesService: ExpensesService) => {
+  const refund = purchase.note == "Refund" ? true : false;
+
+  let newPurchase: PurchaseEntity = {
+    amount: Number(purchase.value.replace("-", "")),
+    name: purchase.name,
+    type: purchase.type,
+    description: purchase.description,
+    note: purchase.note,
+    date: purchase.dop,
+    isRefund: refund,
+    wasRefunded: null,
+    entity: ExpenseEnum.Purchase,
+    userId: email,
+  };
+
+  if (purchase.split) {
+    newPurchase.split = {
+      userId: purchase.split.userId,
+      weight: Number(purchase.split.weight),
+    };
+  }
+
+  await expensesService.createPurchase(newPurchase);
+};
+
+export const transferTransaction = async (email, transaction: TransactionType, expensesService: ExpensesService) => {
+  let transactionOperation: TransactionOperation;
+
+  // Validate if the transaction is received or sent
+  if (transaction.user_origin_id === null) {
+    // Transaction is sent, hence the origin is blank
+    transactionOperation = TransactionOperation.SENT;
+  } else {
+    // Transaction is received, hence the origin is populated
+    transactionOperation = TransactionOperation.RECEIVED;
+  }
+
+  let newTransaction: TransactionEntity = {
+    amount: Number(transaction.amount),
+    description: transaction.description,
+    type: transaction.type,
+    date: transaction.dot,
+    transactionType: transactionOperation,
+    userTransactionId: transaction.user_destination_id,
+    entity: ExpenseEnum.Transaction,
+    userId: email,
+  };
+
+  await expensesService.createTransaction(newTransaction);
+};
+
+export const searchItem = (data: IncomeEntity | PurchaseEntity | TransactionEntity, searchQuery: string) => {
   // If the search query is empty, return true to display all items
   if (searchQuery.trim().length == 0) return true;
   // Filter income based on search query
-  else if (data.hasOwnProperty("doi")) {
-    data = data as IncomeEntity;
+  else if (data.entity === ExpenseEnum.Income) {
     if (data.name.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim())) {
       return true;
     }
     return false;
     // Filter expenses based on search query
   } else {
-    data = data as ExpenseType;
-    if (data.key == KEYS_SERIALIZER.PURCHASE) {
-      const element = data.element as PurchaseType;
-      if (element.name.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim()) || element.type.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase().trim())) return true;
-    } else if (data.key == KEYS_SERIALIZER.TRANSACTION) {
-      const element = data.element as TransactionType;
-      if (element.description.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim()) || element.type.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim())) return true;
-    }
+    if (data.entity != ExpenseEnum.Transaction && data?.name.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim())) return true;
+    if (
+      data.entity != ExpenseEnum.Purchase &&
+      (data?.description.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim()) || data?.type.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim()))
+    )
+      return true;
+
     return false;
   }
 };
 
-export const searchExpenses = (expensesByDate, searchQuery, listOfDays) => {
-  Object.keys(expensesByDate).forEach((date) => {
-    expensesByDate[date].forEach((expense) => {
-      let hasItem = searchItem(expense, searchQuery);
-      if (hasItem) {
-        let expenseDate: string;
-        if (expense.key === KEYS_SERIALIZER.PURCHASE) {
-          expenseDate = (expense.element as PurchaseType).dop;
-        } else if (expense.key === KEYS_SERIALIZER.TRANSACTION) {
-          expenseDate = (expense.element as TransactionType).dot;
-        }
-        if (!listOfDays.includes(expenseDate)) {
-          listOfDays.push(expenseDate);
-        }
+export const searchExpenses = (expenseData: (TransactionEntity | PurchaseEntity)[], searchQuery, listOfDays) => {
+  expenseData.forEach((expense) => {
+    let hasItem = searchItem(expense, searchQuery);
+    if (hasItem) {
+      if (!listOfDays.includes(expense.date)) {
+        listOfDays.push(expense.date);
       }
-    });
+    }
   });
 };
 
@@ -196,34 +254,20 @@ export const searchIncome = (incomeData, searchQuery, listOfDays) => {
   });
 };
 
-export const loadEditModal = (selectedItem: ExpenseType | IncomeType, email, setEditVisible, setExpenses, setIncomeData) => {
-  if (selectedItem.key === KEYS_SERIALIZER.PURCHASE) {
-    const updatePurchase = (selectedItem as ExpenseType).element as PurchaseType;
-    return (
-      <Purchase
-        purchase={updatePurchase}
-        handleEdit={(newPurchase: PurchaseType, splitStatus: boolean, slider: number, splitEmail: string) =>
-          handleEditPurchase(email, newPurchase, (selectedItem as ExpenseType).index, splitStatus, slider, splitEmail, setEditVisible, setExpenses)
-        }
-      />
-    );
-  } else if (selectedItem.key === KEYS_SERIALIZER.TRANSACTION) {
-    const updateTransaction = (selectedItem as ExpenseType).element as TransactionType;
-    return (
-      <Transaction
-        transaction={updateTransaction}
-        handleEdit={(newTransaction: TransactionType, receivedActive: boolean, destination: string) =>
-          handleEditTransaction(email, newTransaction, (selectedItem as ExpenseType).index, setEditVisible, setExpenses, receivedActive, destination)
-        }
-      />
-    );
+export const loadEditModal = (selectedItem: PurchaseEntity | TransactionEntity | IncomeType, email, reload, setIncomeData) => {
+  if (selectedItem.entity === ExpenseEnum.Purchase) {
+    const updatePurchase = selectedItem as PurchaseEntity;
+    return <Purchase purchase={updatePurchase} callback={reload} />;
+  } else if (selectedItem.entity === ExpenseEnum.Transaction) {
+    const updateTransaction = selectedItem as TransactionEntity;
+    return <Transaction transaction={updateTransaction} callback={reload} />;
   } else if (selectedItem.key === KEYS_SERIALIZER.INCOME) {
     const updateIncome = selectedItem as IncomeType;
     return (
       <Income
         income={updateIncome}
         handleEditCallback={(newIncome: IncomeEntity) => {
-          setEditVisible(false);
+          reload();
           try {
             setIncomeData((prev) => prev.map((i: IncomeEntity) => (i.id === newIncome.id ? newIncome : i)));
           } catch (e) {
