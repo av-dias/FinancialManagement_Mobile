@@ -48,7 +48,7 @@ export class TransactionRepository {
     return transactions;
   }
 
-  public async sumTransactionYearPerType(userId: string, year: number, analysesType?: string) {
+  public async sumTransactionYearPerType(userId: string, year: number) {
     const sumByType = {};
 
     const sumArray = await this.ormRepository
@@ -62,6 +62,32 @@ export class TransactionRepository {
     sumArray.map((sum) => (sumByType[sum.type] = sum.total));
 
     return sumByType;
+  }
+
+  public async sumTransactionYearPerTypePersonal(userId: string, year: number) {
+    const sumByType = {};
+
+    const sumArray = await this.ormRepository
+      .createQueryBuilder("t")
+      .select("type, SUM(CASE WHEN transactionType = :sent then amount ELSE 0 END) as total")
+      .setParameters({ sent: TransactionOperation.SENT })
+      .where(`t.userId = :userId AND strftime('%Y', t.date) = :year`, { userId: userId, year: year.toString() })
+      .groupBy("type")
+      .getRawMany();
+
+    sumArray.map((sum) => (sumByType[sum.type] = sum.total));
+
+    return sumByType;
+  }
+
+  public async findTransactionReceivedYear(userId: string, year: number) {
+    const transactionReceived = await this.ormRepository
+      .createQueryBuilder("t")
+      .where(`t.userId = :userId AND strftime('%Y', t.date) = :year`, { userId: userId, year: year.toString() })
+      .andWhere("t.transactionType = :tReceived", { tReceived: TransactionOperation.RECEIVED })
+      .getMany();
+
+    return transactionReceived;
   }
 
   public async updateOrCreate(transactionModel: TransactionModel): Promise<TransactionModel> {
