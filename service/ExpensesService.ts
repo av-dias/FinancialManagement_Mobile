@@ -5,6 +5,7 @@ import { SplitModel } from "../store/database/Split/SplitEntity";
 import { SplitRepository } from "../store/database/Split/SplitRepository";
 import { TransactionEntity, transactionMapper, TransactionModel, TransactionOperation } from "../store/database/Transaction/TransactionEntity";
 import { TransactionRepository } from "../store/database/Transaction/TransactionRepository";
+import { months } from "../utility/calendar";
 import { ANALYSES_TYPE } from "../utility/keys";
 
 export class ExpensesService {
@@ -278,5 +279,17 @@ export class ExpensesService {
     if (transactionList.length > 0) expenseList.push(...transactionList.map((t) => transactionMapper(t)));
 
     return expenseList;
+  }
+
+  public async getExpensesYearWithSplit(userId: string, year: number) {
+    const expenseList = await this.purchaseRepository.findPurchaseYearWithSplit(userId, year);
+    const transactionList = await this.transactionRepository.findTransactionReceivedYear(userId, year);
+    return { purchaseWithSplit: expenseList.map((p) => purchaseMapper(p)), transactionsWithSplit: transactionList.map((t) => transactionMapper(t)) };
+  }
+
+  public async calculateSplitDept(userId: string, year: number) {
+    months.forEach(async (month, currentMonth) => {
+      await this.purchaseRepository.calcTotalPerMonthAndYear(userId, year);
+    });
   }
 }
