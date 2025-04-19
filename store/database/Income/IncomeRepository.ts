@@ -55,9 +55,9 @@ export class IncomeRepository {
     return totalIncomeData[0].totalIncome || 0;
   }
 
-  public async updateOrCreate(incomeEntity: IncomeModel): Promise<IncomeModel> {
+  public async updateOrCreate(incomeEntity: IncomeModel): Promise<IncomeEntity> {
     await this.ormRepository.save(incomeEntity);
-    return incomeEntity;
+    return incomeMapper(incomeEntity);
   }
 
   public async delete(id: number): Promise<DeleteResult> {

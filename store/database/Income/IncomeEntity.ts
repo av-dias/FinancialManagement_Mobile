@@ -28,6 +28,15 @@ export type IncomeEntity = {
   entity: ExpenseEnum.Income;
 };
 
+export const clearIncomeEntity = (email: string): IncomeEntity => ({
+  doi: new Date(),
+  name: null,
+  amount: null,
+  userId: email,
+  entity: ExpenseEnum.Income,
+  id: null,
+});
+
 export const incomeMapper = (i: IncomeModel): IncomeEntity =>
   ({
     id: i.id,
