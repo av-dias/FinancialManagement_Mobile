@@ -3,7 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import Header from "../../components/header/header";
 import { dark } from "../../utility/colors";
 import { useContext, useState } from "react";
-import { AppContext } from "../../store/app-context";
+import { UserContext } from "../../store/user-context";
 import { _styles } from "./styles";
 import CustomInput from "../../components/customInput/customInput";
 import { CustomTitle } from "../../components/customTitle/CustomTitle";
@@ -26,7 +26,7 @@ import { IconButton } from "../../components/iconButton/IconButton";
 import { EvilIcons } from "@expo/vector-icons";
 
 export default function Trade({ navigation }) {
-  const appCtx = useContext(AppContext);
+  const email = useContext(UserContext).email;
   const securityInvestmentService = new SecurityInvestmentService();
   const { investmentRepository, securityRepository } = useDatabaseConnection();
   const noFilter = "NoFilter";
@@ -48,7 +48,7 @@ export default function Trade({ navigation }) {
   const [selectedTicker, setSelectedTicker] = useState<string>(noFilter);
 
   const createInvestment = (): InvestmentEntity => {
-    return { shares: Number(inputShareValue.replace(",", ".")), buyPrice: Number(inputBuyPrice.replace(",", ".")), buyDate: inputBuyDate, userId: appCtx.email };
+    return { shares: Number(inputShareValue.replace(",", ".")), buyPrice: Number(inputBuyPrice.replace(",", ".")), buyDate: inputBuyDate, userId: email };
   };
 
   const addInvestmentCallback = async () => {
@@ -137,13 +137,13 @@ export default function Trade({ navigation }) {
     React.useCallback(() => {
       async function fetchData() {
         try {
-          if (appCtx.email) {
+          if (email) {
             try {
-              const listSecurity = await securityRepository.getAll(appCtx.email);
+              const listSecurity = await securityRepository.getAll(email);
               setSecurities(listSecurity);
 
               let dateList = [];
-              let listInvestment = await investmentRepository.getAll(appCtx.email);
+              let listInvestment = await investmentRepository.getAll(email);
 
               // Check if filter is selected and filter appropriately
               if (selectedTicker != noFilter) {
@@ -171,12 +171,12 @@ export default function Trade({ navigation }) {
         let endTime = performance.now();
         logTimeTook("Trade", "Fetch", endTime, startTime);
       }
-    }, [appCtx.email, securityRepository, investmentRepository, refresh, selectedTicker])
+    }, [email, securityRepository, investmentRepository, refresh, selectedTicker])
   );
 
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
-      <Header email={appCtx.email} navigation={navigation} />
+      <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1, gap: 30, padding: 10 }}>
           {modalVisible && (

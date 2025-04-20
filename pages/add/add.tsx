@@ -5,7 +5,7 @@ import { dark } from "../../utility/colors";
 //Custom Constants
 import { _styles } from "./style";
 import { useContext, useState } from "react";
-import { AppContext } from "../../store/app-context";
+import { UserContext } from "../../store/user-context";
 import { LinearGradient } from "expo-linear-gradient";
 import ButtonSwitch from "../../components/ButtonSwitch/ButtonSwitch";
 import Purchase from "../purchase/purchase";
@@ -16,12 +16,12 @@ const options = ["Purchase", "Transaction", "Income"];
 
 export default function Add({ navigation }) {
   const styles = _styles;
-  const appCtx = useContext(AppContext);
+  const email = useContext(UserContext).email;
   const [selectedOption, setSelectedOption] = useState(options[0]);
 
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
-      <Header email={appCtx.email} navigation={navigation} />
+      <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View>
           <ButtonSwitch selectedOption={selectedOption} setSelectedOption={setSelectedOption} options={options} />

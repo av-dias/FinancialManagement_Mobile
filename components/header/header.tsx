@@ -5,15 +5,15 @@ import React, { useContext } from "react";
 import { _styles } from "./style";
 import { saveToStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
-import { AppContext } from "../../store/app-context";
+import { UserContext } from "../../store/user-context";
 import CardWrapper from "../cardWrapper/cardWrapper";
 const title = "Financial Manager";
 
 export default function Header(props) {
   const styles = _styles;
-  const appCtx = useContext(AppContext);
+  const email = useContext(UserContext).email;
   let nameLetter: string = "";
-  if (appCtx?.email) nameLetter = appCtx?.email[0]?.toUpperCase();
+  if (email) nameLetter = email[0]?.toUpperCase();
 
   return (
     <View style={styles.header}>

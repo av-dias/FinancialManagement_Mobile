@@ -10,7 +10,7 @@ import CustomButton from "../../components/customButton/customButton";
 import Carrossel from "../../components/carrossel/carrossel";
 
 //Context
-import { AppContext } from "../../store/app-context";
+import { UserContext } from "../../store/user-context";
 
 //Custom Constants
 import { _styles } from "./style";
@@ -19,10 +19,11 @@ import { dark } from "../../utility/colors";
 //Functions
 import { horizontalScale, verticalScale } from "../../functions/responsive";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
-import { IncomeEntity, IncomeModel } from "../../store/database/Income/IncomeEntity";
+import { clearIncomeEntity, IncomeEntity, IncomeModel } from "../../store/database/Income/IncomeEntity";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDatabaseConnection } from "../../store/database-context";
 import { FlatCalendar } from "../../components/flatCalender/FlatCalender";
+import { ExpenseEnum } from "../../models/types";
 
 type IncomeProps = {
   income?: IncomeEntity;
@@ -31,7 +32,7 @@ type IncomeProps = {
 
 export default function Income({ income, handleEditCallback }: IncomeProps) {
   const styles = _styles;
-  const appCtx = useContext(AppContext);
+  const email = useContext(UserContext).email;
   const { incomeRepository } = useDatabaseConnection();
 
   const [listNames, setListNames] = useState<string[]>([]);
@@ -41,7 +42,8 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
       doi: new Date(),
       name: null,
       amount: null,
-      userId: appCtx.email,
+      userId: email,
+      entity: ExpenseEnum.Income,
       id: null,
     }
   );
@@ -64,13 +66,7 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
     income.userId = newIncome.userId;
     const resIncome = await incomeRepository.updateOrCreate(income);
 
-    setNewIncome({
-      doi: new Date(),
-      name: null,
-      amount: null,
-      userId: appCtx.email,
-      id: null,
-    });
+    setNewIncome(clearIncomeEntity(email));
     setTriggerRefresh((refresh) => !refresh);
     // Trigger refresh for edit callback
     if (handleEditCallback) handleEditCallback(resIncome);
@@ -80,8 +76,8 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
     React.useCallback(() => {
       async function fetchData() {
         try {
-          if (appCtx.email) {
-            const distinctIncomeNames = await incomeRepository.getDistinctIncomeNames(appCtx.email);
+          if (email) {
+            const distinctIncomeNames = await incomeRepository.getDistinctIncomeNames(email);
             setListNames(distinctIncomeNames);
           }
         } catch (e) {
@@ -89,7 +85,7 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
         }
       }
       fetchData();
-    }, [appCtx.email, triggerRefresh])
+    }, [email, triggerRefresh])
   );
 
   return (

@@ -5,7 +5,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { dark } from "../../utility/colors";
 import Header from "../../components/header/header";
 import { useContext, useState } from "react";
-import { AppContext } from "../../store/app-context";
+import { UserContext } from "../../store/user-context";
 import { _styles } from "./style";
 import { FlatItem } from "../../components/flatItem/flatItem";
 import { MainCard } from "./components/mainCard";
@@ -27,7 +27,7 @@ import { NetworthAlertData } from "../../constants/networthConstants/networthDel
 type PortfolioStatusType = { networth: { absolute: number; relative: number }; grossworth: { absolute: number; relative: number } };
 
 export default function Networth({ navigation }) {
-  const appCtx = useContext(AppContext);
+  const email = useContext(UserContext).email;
   const { portfolioRepository } = useDatabaseConnection();
   const portfolioService = new PortfolioService();
 
@@ -127,7 +127,7 @@ export default function Networth({ navigation }) {
   };
 
   const deleteQuery = async ({ name, value }) => {
-    await portfolioService.deletePortfolioItem(appCtx.email, name, value, currentMonth, currentYear);
+    await portfolioService.deletePortfolioItem(email, name, value, currentMonth, currentYear);
   };
 
   /* Loads the dialog data when list item is pressed */
@@ -147,15 +147,15 @@ export default function Networth({ navigation }) {
     React.useCallback(() => {
       async function fetchData() {
         try {
-          if (appCtx.email) {
+          if (email) {
             //console.log("UseEffect Triggered...");
-            const p = await portfolioRepository.getAll(appCtx.email);
+            const p = await portfolioRepository.getAll(email);
             //p.map((item) => console.log(item));
 
-            const distinctPortfolioNames = await portfolioRepository.getDistinctPortfolioNames(appCtx.email);
+            const distinctPortfolioNames = await portfolioRepository.getDistinctPortfolioNames(email);
             setItems(distinctPortfolioNames);
 
-            const sortedPortfolio = await portfolioRepository.getSortedPortfolio(appCtx.email, currentMonth, currentYear);
+            const sortedPortfolio = await portfolioRepository.getSortedPortfolio(email, currentMonth, currentYear);
             const { currPortfolio, prevPortfolio } = loadPortfolioData(sortedPortfolio);
             setPortfolio(currPortfolio);
 
@@ -170,7 +170,7 @@ export default function Networth({ navigation }) {
         }
       }
       fetchData();
-    }, [appCtx.email, modalVisible, currentMonth, currentYear, triggerRefresh, portfolioRepository])
+    }, [email, modalVisible, currentMonth, currentYear, triggerRefresh, portfolioRepository])
   );
 
   const isItemMonthYear = (item) => {
@@ -201,11 +201,11 @@ export default function Networth({ navigation }) {
    */
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
-      <Header email={appCtx.email} navigation={navigation} />
+      <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         {modalVisible && (
           <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible} size={15} hasColor={true}>
-            <AddForm items={items} onSubmit={onSubmiteCallback} email={appCtx.email} />
+            <AddForm items={items} onSubmit={onSubmiteCallback} email={email} />
           </ModalCustom>
         )}
         {alertVisible && <ModalDialog visible={alertVisible} setVisible={setAlertVisible} size={2.5} data={getModalDialogData(selectedItem)} />}
