@@ -4,7 +4,7 @@ import React, { useState, useContext } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 
 //Context
-import { AppContext } from "../../store/app-context";
+import { UserContext } from "../../store/user-context";
 
 //Custom Components
 import Header from "../../components/header/header";
@@ -14,7 +14,6 @@ import { _styles } from "./style";
 import { ANALYSES_TYPE } from "../../utility/keys";
 
 //Functions
-import { calcExpensesAverage, calcExpensesByType, calcExpensesTotalFromType, calcTotalExpensesByType } from "../../functions/expenses";
 import { dark } from "../../utility/colors";
 import Statistics from "../stats/statistics";
 import { AverageProgressBar } from "./components/AverageProgressBar";
@@ -22,109 +21,94 @@ import { StatsProgressBar } from "./components/StatsProgressBar";
 import { ProgressItemsHeader } from "./components/ProgressItemsHeader";
 import { logTimeTook } from "../../utility/logger";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
+import { ExpensesService } from "../../service/ExpensesService";
+import { isLoaded } from "./handler";
 
 export default function Budget({ navigation }) {
   const styles = _styles;
+  const email = useContext(UserContext).email;
+  const expensesService = new ExpensesService();
 
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth().toString());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear().toString());
 
   const [spendAverageByType, setSpendAverageByType] = useState({});
-  const [purchaseAverageTotal, setPurchaseAverageTotal] = useState({});
-  const [purchaseTotal, setPurchaseTotal] = useState({});
+  const [purchaseAverageTotal, setPurchaseAverageTotal] = useState(0);
+  const [purchaseTotal, setPurchaseTotal] = useState(0);
   const [purchaseCurrentStats, setPurchaseCurrentStats] = useState({});
   const [expensesTotalByType, setExpensesTotalByType] = useState({});
 
-  const appCtx = useContext(AppContext);
-
   useFocusEffect(
     React.useCallback(() => {
-      if (
-        appCtx &&
-        appCtx.expenses &&
-        appCtx.expenses.hasOwnProperty(currentYear) &&
-        appCtx.expenses[currentYear].hasOwnProperty(currentMonth) &&
-        appCtx.expenses[currentYear][currentMonth].length > 0
-      ) {
-        console.log("Budget: Fetching app data...");
-        const startTime = performance.now();
+      async function fetchaData() {
+        const month = Number(currentMonth) + 1;
 
-        /* 
-            TODO: Enable Previous Year Data
-            TODO: If the average previous year does not have a type make the current one
-        */
-        let [resTotal, resType] = calcExpensesAverage(appCtx.expenses, parseFloat(currentYear));
-        let resTotalExpensesByType = calcTotalExpensesByType(appCtx.expenses, parseFloat(currentYear));
+        // The expenses Average by type should check if previous year contains data
+        const expensesAverageByType = await expensesService.getExpenseAverageByType(email, Number(currentYear), ANALYSES_TYPE.Personal);
+        const expensesPrevAverageByType = await expensesService.getExpenseAverageByType(email, Number(currentYear) - 1, ANALYSES_TYPE.Personal);
+        let expensesAverageTotal = await expensesService.getExpensesTotalAverage(email, Number(currentYear), ANALYSES_TYPE.Personal);
+        const expensesPrevAverageTotal = await expensesService.getExpensesTotalAverage(email, Number(currentYear) - 1, ANALYSES_TYPE.Personal);
 
-        let resExpensesByType = { ...resType },
-          resExpensesTotal;
+        // Check whether previous year data will complement
+        Object.keys(expensesPrevAverageByType).map((type) => {
+          if (!expensesAverageByType.hasOwnProperty(type)) {
+            expensesAverageByType[type] = expensesPrevAverageByType[type];
+          }
+        });
 
-        if (appCtx.expenses[currentYear][currentMonth]) {
-          resExpensesByType = calcExpensesByType(appCtx.expenses[currentYear][currentMonth]);
-          resExpensesTotal = calcExpensesTotalFromType(resExpensesByType[currentYear][currentMonth]);
-        } else {
-          // TODO: If no data for current year and month
-          Object.keys(resType[currentYear]).forEach((statsType) => {
-            Object.keys(resType[currentYear][statsType]).forEach((type) => {
-              resExpensesByType[currentYear][statsType][type] = 0;
-            });
-          });
+        // Check whether previous year data is lower then current year
+        if (expensesAverageTotal < expensesPrevAverageTotal) expensesAverageTotal = expensesPrevAverageTotal;
 
-          resExpensesTotal = { [currentYear]: { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 } };
-        }
+        const expensesCurrentMonthPerType = await expensesService.getMonthExpensesByType(email, month, Number(currentYear), ANALYSES_TYPE.Personal);
+        const expensesMonthTotal = await expensesService.getTotalExpensesOnMonth(email, month, Number(currentYear), ANALYSES_TYPE.Personal);
+        const expensesYearTotalByType = await expensesService.getExpenseTotalByType(email, Number(currentYear), ANALYSES_TYPE.Personal);
 
-        if (appCtx.expenses[parseFloat(currentYear) - 1]) {
-          let [resTotalPrev, resTypePrev] = calcExpensesAverage(appCtx.expenses, parseFloat(currentYear) - 1);
-          let resTotalExpensesByTypePrev = calcTotalExpensesByType(appCtx.expenses, parseFloat(currentYear) - 1);
-
-          resTotal = { ...resTotal, ...resTotalPrev };
-          resType = { ...resType, ...resTypePrev };
-          resTotalExpensesByType = { ...resTotalExpensesByType, ...resTotalExpensesByTypePrev };
-        }
-
-        // Sort the average expenses by the most expensive type to least expensive
-        resType[currentYear][ANALYSES_TYPE.Personal] = Object.fromEntries(Object.entries(resType[currentYear][ANALYSES_TYPE.Personal]).sort(([, a], [, b]) => Number(b) - Number(a)));
-
-        setSpendAverageByType(resType);
-        setPurchaseAverageTotal(resTotal);
-        setPurchaseCurrentStats(resExpensesByType);
-        setPurchaseTotal(resExpensesTotal);
-        setExpensesTotalByType(resTotalExpensesByType);
-
-        const endTime = performance.now();
-        logTimeTook("Budget", "useFocusEffect", endTime, startTime);
+        setSpendAverageByType(expensesAverageByType);
+        setPurchaseAverageTotal(expensesAverageTotal);
+        setPurchaseCurrentStats(expensesCurrentMonthPerType);
+        setPurchaseTotal(expensesMonthTotal);
+        setExpensesTotalByType(expensesYearTotalByType);
       }
-    }, [appCtx.expenses])
+
+      console.log("Budget: Fetching app data...");
+      const startTime = performance.now();
+
+      if (email && expensesService.isReady()) {
+        fetchaData();
+      }
+      const endTime = performance.now();
+      logTimeTook("Budget", "useFocusEffect", endTime, startTime);
+    }, [email, expensesService.isReady()])
   );
 
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
-      <Header email={appCtx.email} navigation={navigation} />
+      <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
         <View style={{ flex: 1, gap: 20 }}>
-          {purchaseAverageTotal[currentYear] && <AverageProgressBar purchaseTotal={purchaseTotal} purchaseAverageTotal={purchaseAverageTotal} currentYear={currentYear} />}
+          <AverageProgressBar purchaseTotal={purchaseTotal} purchaseAverageTotal={purchaseAverageTotal} />
           <ScrollView horizontal={false} style={{ flex: 1 }} contentContainerStyle={styles.scrollviewContainer}>
-            <Statistics />
+            <Statistics currentYear={Number(currentYear)} setCurrentYear={setCurrentYear} />
             <CardWrapper style={{ flex: 1, justifyContent: "flex-start" }}>
               <ProgressItemsHeader />
-              {spendAverageByType[currentYear] &&
-                purchaseCurrentStats[currentYear] &&
-                expensesTotalByType[currentYear] &&
-                Object.keys(spendAverageByType[currentYear][ANALYSES_TYPE.Personal]).map((type) => {
-                  return (
-                    <StatsProgressBar
-                      key={`StatsProgressBar${type}`}
-                      type={type}
-                      spendAverageByType={spendAverageByType}
-                      expensesTotalByType={expensesTotalByType}
-                      purchaseCurrentStats={purchaseCurrentStats}
-                      currentYear={currentYear}
-                      currentMonth={currentMonth}
-                    />
-                  );
-                })}
+              {isLoaded(spendAverageByType, purchaseCurrentStats, expensesTotalByType) &&
+                Object.keys(spendAverageByType)
+                  .sort((a, b) => spendAverageByType[b] - spendAverageByType[a])
+                  .map((type) => {
+                    return (
+                      <StatsProgressBar
+                        key={`StatsProgressBar${type}`}
+                        type={type}
+                        spendAverageByType={spendAverageByType}
+                        expensesTotalByType={expensesTotalByType}
+                        purchaseCurrentStats={purchaseCurrentStats}
+                        currentYear={currentYear}
+                        currentMonth={currentMonth}
+                      />
+                    );
+                  })}
             </CardWrapper>
-            {!spendAverageByType[currentYear] && !purchaseCurrentStats[currentYear] && !expensesTotalByType[currentYear] && (
+            {!isLoaded(spendAverageByType, purchaseCurrentStats, expensesTotalByType) && (
               <View style={styles.containerNoData}>
                 <Text style={{ color: "white" }}>NO DATA</Text>
               </View>

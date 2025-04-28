@@ -3,7 +3,6 @@ import { categoryIcons } from "../../../utility/icons";
 import { _styles } from "../style";
 import { ProgressBar } from "react-native-paper";
 import { dark, ProgressBarColors } from "../../../utility/colors";
-import { ANALYSES_TYPE } from "../../../utility/keys";
 import { TypeIcon } from "../../../components/TypeIcon/TypeIcon";
 
 type StatsProgressBar = {
@@ -23,33 +22,10 @@ export const StatsProgressBar = ({ type, spendAverageByType, expensesTotalByType
     return monthValue / monthAverage;
   };
 
-  const getLastAvailableAverageTypeValue = (data, currentYear, type) => {
-    if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1][ANALYSES_TYPE.Personal].hasOwnProperty(type)) {
-      return parseFloat(data[currentYear - 1][ANALYSES_TYPE.Personal][type]).toFixed(0);
-    } else {
-      return parseFloat(data[currentYear][ANALYSES_TYPE.Personal][type]).toFixed(0);
-    }
-  };
-
-  const getLastAvailableTypeValue = (data, currentYear, type) => {
-    if (data[parseFloat(currentYear) - 1] && data[parseFloat(currentYear) - 1][ANALYSES_TYPE.Personal].hasOwnProperty(type)) {
-      return parseFloat(data[currentYear - 1][ANALYSES_TYPE.Personal][type]).toFixed(0);
-    } else {
-      return parseFloat(data[currentYear][ANALYSES_TYPE.Personal][type]).toFixed(0);
-    }
-  };
-
-  let lastAverageTypeValue = getLastAvailableAverageTypeValue(spendAverageByType, currentYear, type);
-  let lastTotalTypeValue = getLastAvailableTypeValue(expensesTotalByType, currentYear, type);
-  let currentTypeValue = 0,
-    currentTotalTypeValue = 0;
-
-  if (purchaseCurrentStats[currentYear][currentMonth][ANALYSES_TYPE.Personal].hasOwnProperty(type)) {
-    currentTypeValue = parseFloat(purchaseCurrentStats[currentYear][currentMonth][ANALYSES_TYPE.Personal][type].toFixed(0));
-  }
-  if (expensesTotalByType[currentYear][ANALYSES_TYPE.Personal].hasOwnProperty(type)) {
-    currentTotalTypeValue = parseFloat(expensesTotalByType[currentYear][ANALYSES_TYPE.Personal][type].toFixed(0));
-  }
+  let lastAverageTypeValue = spendAverageByType[type] || 0;
+  let lastTotalTypeValue = expensesTotalByType[type] || 0;
+  let currentTypeValue = parseFloat(purchaseCurrentStats[type]?.toFixed(0)) || 0;
+  let currentTotalTypeValue = parseFloat(expensesTotalByType[type]?.toFixed(0)) || 0;
 
   const ProgressBarComponent = ({ type, color, currentTypeValue, lastAverageTypeValue, totalProgress }) => (
     <View style={{ flex: 1, justifyContent: "center", paddingHorizontal: 20 }}>
@@ -76,9 +52,6 @@ export const StatsProgressBar = ({ type, spendAverageByType, expensesTotalByType
       />
       <View style={styles.itemContainer}>
         <TypeIcon icon={categoryIcons(25).find((category) => category.label === type)} />
-        {/*  <Text key={type + "TextA"} style={styles.textItem}>
-          {type.substring(0, 8)}
-        </Text> */}
       </View>
       <ProgressBarComponent
         color={ProgressBarColors.blue}

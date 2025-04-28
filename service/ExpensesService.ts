@@ -162,7 +162,7 @@ export class ExpensesService {
   }
 
   /*  Get total expenses object by type */
-  public async getExpensesByType(userId: string, month: number, year: number, analysesType?: string): Promise<{}> {
+  public async getMonthExpensesByType(userId: string, month: number, year: number, analysesType?: string): Promise<{}> {
     const expensesByType = {};
     const transaction = await this.transactionRepository.getByDate(userId, month, year);
 
@@ -288,8 +288,23 @@ export class ExpensesService {
   }
 
   public async calculateSplitDept(userId: string, year: number) {
-    months.forEach(async (month, currentMonth) => {
-      await this.purchaseRepository.calcTotalPerMonthAndYear(userId, year);
-    });
+    const splitDept = {};
+    const purchaseSplit = await this.purchaseRepository.calcTotalPerMonthAndYear(userId, year);
+    const transactionSplit = await this.transactionRepository.calcReceivedPerMonthAndYear(userId, year);
+    for (let month = 0; month < months.length; month++) {
+      const p = purchaseSplit?.find((p) => p.month === month + 1);
+      const t = transactionSplit?.find((t) => t.month === month + 1);
+
+      if (p) splitDept[month] = p.total - p.personalTotal;
+      if (t) splitDept[month] += t.total;
+    }
+
+    return splitDept;
+  }
+
+  public async findSplitUserId(userId: string) {
+    const splitUserId = await this.purchaseRepository.findSplitUserId(userId);
+
+    return splitUserId;
   }
 }

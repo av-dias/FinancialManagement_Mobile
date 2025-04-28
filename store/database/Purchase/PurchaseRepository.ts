@@ -111,21 +111,20 @@ export class PurchaseRepository {
   }
 
   public async calcTotalPerMonthAndYear(userId: string, year: number) {
-    const sumByType = {};
-
     const sumArray = await this.ormRepository
       .createQueryBuilder("p")
       .leftJoinAndSelect("p.split", "split")
-      .select(["type as type", "SUM(CASE " + "WHEN isRefund = true THEN -amount " + "WHEN split.id IS NOT NULL THEN (amount * (1 - 1.0 * split.splitWeight / 100 ))" + "ELSE amount END) as total"])
+      .select([
+        "CAST(strftime('%Y', p.date) AS INTEGER) as year",
+        "CAST(strftime('%m', p.date) AS INTEGER)  as month ",
+        "SUM(CASE " + "WHEN isRefund = true THEN -amount " + "WHEN split.id IS NOT NULL THEN (amount * (1 - 1.0 * split.splitWeight / 100 ))" + "ELSE amount END) as personalTotal",
+        "SUM(CASE " + "WHEN isRefund = true THEN -amount " + "ELSE amount END) as total",
+      ])
       .where(`p.userId = :userId AND strftime('%Y', p.date) = :year`, { userId: userId, year: year.toString() })
-      .groupBy("strftime('%Y', p.date) AND strftime('%m', p.date)")
+      .groupBy("year, month")
       .getRawMany();
 
-    console.log(sumArray);
-
-    sumArray.map((sum) => (sumByType[sum.type] = sum.total));
-
-    return sumByType;
+    return sumArray;
   }
 
   public async findPurchaseYearWithSplit(userId: string, year: number) {
@@ -137,6 +136,18 @@ export class PurchaseRepository {
       .getMany();
 
     return purchaseWithSplit;
+  }
+
+  public async findSplitUserId(userId) {
+    const splitUserId = await this.ormRepository
+      .createQueryBuilder("p")
+      .leftJoinAndSelect("p.split", "split")
+      .where(`p.userId = :userId`, { userId: userId })
+      .andWhere("p.split IS NOT NULL")
+      .andWhere("split.splitUserId NOT IN ('null@gmail.com', '')")
+      .getOne();
+
+    return splitUserId?.split?.splitUserId;
   }
 
   public async delete(id: number): Promise<void> {

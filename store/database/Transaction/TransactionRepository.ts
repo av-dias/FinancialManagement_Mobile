@@ -90,6 +90,21 @@ export class TransactionRepository {
     return transactionReceived;
   }
 
+  public async calcReceivedPerMonthAndYear(userId: string, year: number) {
+    const sumArray = await this.ormRepository
+      .createQueryBuilder("t")
+      .select([
+        "CAST(strftime('%Y', t.date) AS INTEGER) as year",
+        "CAST(strftime('%m', t.date) AS INTEGER)  as month ",
+        `SUM(CASE WHEN t.transactionType = "${TransactionOperation.RECEIVED}" THEN -amount ELSE 0 END) as total`,
+      ])
+      .where(`t.userId = :userId AND strftime('%Y', t.date) = :year`, { userId: userId, year: year.toString() })
+      .groupBy("year, month")
+      .getRawMany();
+
+    return sumArray;
+  }
+
   public async updateOrCreate(transactionModel: TransactionModel): Promise<TransactionModel> {
     await this.ormRepository.save(transactionModel);
     return transactionModel;
