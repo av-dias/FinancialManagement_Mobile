@@ -32,7 +32,7 @@ export const AverageProgressBar = ({ purchaseTotal, purchaseAverageTotal }: Aver
             {`${getCurrentValue(purchaseTotal)}/`}
           </Text>
           <Text key={"TotalText2"} style={styles.textTotal}>
-            {purchaseAverageTotal}
+            {getCurrentValue(purchaseAverageTotal)}
           </Text>
         </View>
       </View>

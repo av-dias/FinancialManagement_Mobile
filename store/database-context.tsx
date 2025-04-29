@@ -10,6 +10,12 @@ import { IncomeModel } from "./database/Income/IncomeEntity";
 import { InvestmentRepository } from "./database/SecurityInvestment/InvestmentRepository";
 import { InvestmentModel, SecurityModel } from "./database/SecurityInvestment/SecurityInvestmentEntity";
 import { SecurityRepository } from "./database/SecurityInvestment/SecurityRepository";
+import { PurchaseRepository } from "./database/Purchase/PurchaseRepository";
+import { SplitRepository } from "./database/Split/SplitRepository";
+import { TransactionRepository } from "./database/Transaction/TransactionRepository";
+import { PurchaseModel } from "./database/Purchase/PurchaseEntity";
+import { SplitModel } from "./database/Split/SplitEntity";
+import { TransactionModel } from "./database/Transaction/TransactionEntity";
 
 interface DatabaseConnectionContextData {
   portfolioRepository: PortfolioRepository;
@@ -17,6 +23,9 @@ interface DatabaseConnectionContextData {
   incomeRepository: IncomeRepository;
   investmentRepository: InvestmentRepository;
   securityRepository: SecurityRepository;
+  purchaseRepository: PurchaseRepository;
+  splitRepository: SplitRepository;
+  transactionRepository: TransactionRepository;
 }
 
 export const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>({} as DatabaseConnectionContextData);
@@ -39,7 +48,7 @@ export const DatabaseConnectionProvider = ({ children }) => {
         type: "expo",
         database: "fm_mobile.db",
         driver: require("expo-sqlite"),
-        entities: [PortfolioModel, PortfolioItemModel, IncomeModel, InvestmentModel, SecurityModel],
+        entities: [PortfolioModel, PortfolioItemModel, IncomeModel, InvestmentModel, SecurityModel, PurchaseModel, SplitModel, TransactionModel],
 
         //If you're not using migrations, you can delete these lines,
         //since the default is no migrations:
@@ -79,6 +88,9 @@ export const DatabaseConnectionProvider = ({ children }) => {
         incomeRepository: new IncomeRepository(connection),
         investmentRepository: new InvestmentRepository(connection),
         securityRepository: new SecurityRepository(connection),
+        purchaseRepository: new PurchaseRepository(connection),
+        splitRepository: new SplitRepository(connection),
+        transactionRepository: new TransactionRepository(connection),
       }}
     >
       {children}

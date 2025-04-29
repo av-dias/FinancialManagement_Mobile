@@ -59,8 +59,8 @@ export default function Home({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
-        const expensesByTypeTotal = await expensesService.getExpensesByType(email, currentMonth + 1, currentYear, ANALYSES_TYPE.Total);
-        const expensesByTypePersonal = await expensesService.getExpensesByType(email, currentMonth + 1, currentYear, ANALYSES_TYPE.Personal);
+        const expensesByTypeTotal = await expensesService.getMonthExpensesByType(email, currentMonth + 1, currentYear, ANALYSES_TYPE.Total);
+        const expensesByTypePersonal = await expensesService.getMonthExpensesByType(email, currentMonth + 1, currentYear, ANALYSES_TYPE.Personal);
 
         let resExpensesByType = { [ANALYSES_TYPE.Total]: expensesByTypeTotal, [ANALYSES_TYPE.Personal]: expensesByTypePersonal };
 
@@ -86,7 +86,7 @@ export default function Home({ navigation }) {
         let endTime = performance.now();
         logTimeTook("Home", "Fetch", endTime, startTime);
       }
-    }, [expensesService.isReady(), currentMonth, currentYear])
+    }, [email, expensesService.isReady(), currentMonth, currentYear])
   );
 
   useFocusEffect(

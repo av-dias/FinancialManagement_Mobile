@@ -2,7 +2,7 @@
   "expo": {
     "name": "Finbel",
     "slug": "fm_mobile",
-    "version": "3.01",
+    "version": "3.04",
     "orientation": "portrait",
     "icon": "./images/icon.png",
     "userInterfaceStyle": "light",

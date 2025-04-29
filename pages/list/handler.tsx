@@ -158,55 +158,71 @@ export const editIncomeOption = (income, setSelectedItem, setEditVisible) => ({
 });
 
 export const transferPurchase = async (email, purchase: PurchaseType, expensesService: ExpensesService) => {
-  const refund = purchase.note == "Refund" ? true : false;
+  try {
+    const refund = purchase.note == "Refund" ? true : false;
 
-  let newPurchase: PurchaseEntity = {
-    amount: Number(purchase.value.replace("-", "")),
-    name: purchase.name,
-    type: purchase.type,
-    description: purchase.description,
-    note: purchase.note,
-    date: purchase.dop,
-    isRefund: refund,
-    wasRefunded: null,
-    entity: ExpenseEnum.Purchase,
-    userId: email,
-  };
-
-  if (purchase.split) {
-    newPurchase.split = {
-      userId: purchase.split.userId,
-      weight: Number(purchase.split.weight),
+    let newPurchase: PurchaseEntity = {
+      amount: Number(purchase.value.replace("-", "")),
+      name: purchase.name,
+      type: purchase.type,
+      description: purchase.description,
+      note: purchase.note,
+      date: purchase.dop,
+      isRefund: refund,
+      wasRefunded: null,
+      entity: ExpenseEnum.Purchase,
+      userId: email,
     };
-  }
 
-  await expensesService.createPurchase(newPurchase);
+    if (purchase.split) {
+      purchase.split.userId = null;
+
+      const splitUserId = await expensesService.findSplitUserId(email);
+
+      newPurchase.split = {
+        userId: purchase.split?.userId || splitUserId || "null@gmail.com",
+        weight: Number(purchase.split.weight),
+      };
+    }
+
+    await expensesService.createPurchase(newPurchase);
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
 };
 
 export const transferTransaction = async (email, transaction: TransactionType, expensesService: ExpensesService) => {
-  let transactionOperation: TransactionOperation;
+  try {
+    let transactionOperation: TransactionOperation;
 
-  // Validate if the transaction is received or sent
-  if (transaction.user_origin_id === null) {
-    // Transaction is sent, hence the origin is blank
-    transactionOperation = TransactionOperation.SENT;
-  } else {
-    // Transaction is received, hence the origin is populated
-    transactionOperation = TransactionOperation.RECEIVED;
+    // Validate if the transaction is received or sent
+    if (transaction.user_origin_id === null) {
+      // Transaction is sent, hence the origin is blank
+      transactionOperation = TransactionOperation.SENT;
+    } else {
+      // Transaction is received, hence the origin is populated
+      transactionOperation = TransactionOperation.RECEIVED;
+    }
+
+    let newTransaction: TransactionEntity = {
+      amount: Number(transaction.amount),
+      description: transaction.description,
+      type: transaction.type,
+      date: transaction.dot,
+      transactionType: transactionOperation,
+      userTransactionId: transaction.user_destination_id,
+      entity: ExpenseEnum.Transaction,
+      userId: email,
+    };
+
+    await expensesService.createTransaction(newTransaction);
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
   }
-
-  let newTransaction: TransactionEntity = {
-    amount: Number(transaction.amount),
-    description: transaction.description,
-    type: transaction.type,
-    date: transaction.dot,
-    transactionType: transactionOperation,
-    userTransactionId: transaction.user_destination_id,
-    entity: ExpenseEnum.Transaction,
-    userId: email,
-  };
-
-  await expensesService.createTransaction(newTransaction);
 };
 
 export const searchItem = (data: IncomeEntity | PurchaseEntity | TransactionEntity, searchQuery: string) => {

@@ -2,181 +2,12 @@ import { ExpensesByYear } from "../models/interfaces";
 import { ExpenseType, ExpensesByDateType, PurchaseType, TransactionType } from "../models/types";
 import { KEYS, ANALYSES_TYPE, TRANSACTION_TYPE } from "../utility/keys";
 
-export const calcExpensesByType = (expenses: ExpenseType[]) => {
-  let res = {};
-
-  expenses.forEach(({ element, index, key }) => {
-    let year: number, month: number;
-    if (key == KEYS.TRANSACTION) {
-      element = element as TransactionType;
-      month = new Date(element.dot).getMonth();
-      year = new Date(element.dot).getFullYear();
-    } else if (key == KEYS.PURCHASE) {
-      element = element as PurchaseType;
-      month = new Date(element.dop).getMonth();
-      year = new Date(element.dop).getFullYear();
-    } else {
-      alert("Invalid Expense Element");
-    }
-
-    // Verify if year already exists
-    if (!res[year]) {
-      res[year] = { [month]: { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} } };
-    }
-
-    // Verify if month already exists
-    if (!res[year][month]) {
-      res[year][month] = { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} };
-    }
-
-    if (key == KEYS.TRANSACTION) {
-      element = element as TransactionType;
-
-      let value = parseFloat(element.amount);
-
-      // Verify if type already exists
-      if (!Object.keys(res[year][month][ANALYSES_TYPE.Total]).includes(element.type)) {
-        res[year][month][ANALYSES_TYPE.Total][element.type] = 0;
-        res[year][month][ANALYSES_TYPE.Personal][element.type] = 0;
-      }
-
-      // if transaction received expenses are reduced
-      if (element.user_origin_id) {
-        res[year][month][ANALYSES_TYPE.Total][element.type] -= value;
-      } else {
-        res[year][month][ANALYSES_TYPE.Total][element.type] += value;
-        res[year][month][ANALYSES_TYPE.Personal][element.type] += value;
-      }
-    } else if (key == KEYS.PURCHASE) {
-      element = element as PurchaseType;
-
-      // Verify if type already exists
-      if (!Object.keys(res[year][month][ANALYSES_TYPE.Total]).includes(element.type)) {
-        res[year][month][ANALYSES_TYPE.Total][element.type] = 0;
-        res[year][month][ANALYSES_TYPE.Personal][element.type] = 0;
-      }
-
-      let type0Value = parseFloat(element.value);
-      let type1Value = parseFloat(element.value);
-
-      if (element.split) {
-        let weight = parseFloat(element.split.weight);
-        type1Value = (type0Value * (100 - weight)) / 100;
-      }
-
-      res[year][month][ANALYSES_TYPE.Total][element.type] += type0Value;
-      res[year][month][ANALYSES_TYPE.Personal][element.type] += type1Value;
-    }
-  });
-
-  return res;
-};
-
 export const calcExpensesTotalFromType = (expenses: any) => {
   let res = { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 };
   Object.keys(expenses).forEach((stats) => {
     Object.keys(expenses[stats]).forEach((type) => {
       res[stats] += expenses[stats][type];
     });
-  });
-
-  return res;
-};
-
-export const calcExpensesAverage = (expenses: any, year: number) => {
-  let resTotal = { [year]: { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 } };
-  let resType = { [year]: { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} } };
-  let monthCount = Object.keys(expenses[year]).length;
-
-  Object.keys(expenses[year]).forEach((month) => {
-    expenses[year][month].forEach(({ element, index, key }: ExpenseType) => {
-      let year: number, month: number;
-      if (key == KEYS.TRANSACTION) {
-        element = element as TransactionType;
-        month = new Date(element.dot).getMonth();
-        year = new Date(element.dot).getFullYear();
-      } else if (key == KEYS.PURCHASE) {
-        element = element as PurchaseType;
-        month = new Date(element.dop).getMonth();
-        year = new Date(element.dop).getFullYear();
-      } else {
-        alert("Invalid Expense Element");
-      }
-
-      if (key == KEYS.TRANSACTION) {
-        element = element as TransactionType;
-
-        let value = parseFloat(element.amount);
-
-        // Verify if type already exists
-        if (!Object.keys(resType[year][ANALYSES_TYPE.Total]).includes(element.type)) {
-          resType[year][ANALYSES_TYPE.Total][element.type] = 0;
-          resType[year][ANALYSES_TYPE.Personal][element.type] = 0;
-        }
-
-        // if transaction received expenses are reduced
-        if (element.user_origin_id) {
-          resType[year][ANALYSES_TYPE.Total][element.type] -= value;
-          resTotal[year][ANALYSES_TYPE.Total] -= value;
-        } else {
-          resType[year][ANALYSES_TYPE.Total][element.type] += value;
-          resTotal[year][ANALYSES_TYPE.Total] += value;
-          resType[year][ANALYSES_TYPE.Personal][element.type] += value;
-          resTotal[year][ANALYSES_TYPE.Personal] += value;
-        }
-      } else if (key == KEYS.PURCHASE) {
-        element = element as PurchaseType;
-
-        // Verify if type already exists
-        if (!Object.keys(resType[year][ANALYSES_TYPE.Total]).includes(element.type)) {
-          resType[year][ANALYSES_TYPE.Total][element.type] = 0;
-          resType[year][ANALYSES_TYPE.Personal][element.type] = 0;
-        }
-
-        let type0Value = parseFloat(element.value);
-        let type1Value = parseFloat(element.value);
-
-        if (element.split) {
-          let weight = parseFloat(element.split.weight);
-          type1Value = (type0Value * (100 - weight)) / 100;
-        }
-        resType[year][ANALYSES_TYPE.Total][element.type] += type0Value;
-        resType[year][ANALYSES_TYPE.Personal][element.type] += type1Value;
-        resTotal[year][ANALYSES_TYPE.Total] += type0Value;
-        resTotal[year][ANALYSES_TYPE.Personal] += type1Value;
-      }
-    });
-  });
-
-  Object.keys(resTotal[year]).forEach((statsType) => {
-    resTotal[year][statsType] = resTotal[year][statsType] / monthCount;
-  });
-
-  Object.keys(resType[year]).forEach((statsType) => {
-    Object.keys(resType[year][statsType]).forEach((type) => {
-      resType[year][statsType][type] = resType[year][statsType][type] / monthCount;
-    });
-  });
-
-  return [resTotal, resType];
-};
-
-/* 
-    Total: [Purchase, TransactionSent]
-    Personal: [Purchase, TransactionSent, TransactionReceived]
-    Dept: The difference between total and personal is 
-        how much still remains to be received.
-*/
-export const calcSplitDept = (expenses: any, year: number) => {
-  let res = {};
-
-  Object.keys(expenses[year]).forEach((month) => {
-    // Verify if year already exists
-    if (!res[year]) {
-      res[year] = { [month]: 0 };
-    }
-
-    res[year][month] = expenses[year][month][ANALYSES_TYPE.Total] - expenses[year][month][ANALYSES_TYPE.Personal];
   });
 
   return res;
@@ -283,26 +114,6 @@ export const calcTotalExpensesByType = (expenses: any, year: number) => {
   return resType;
 };
 
-export const groupExpensesByDate = (expenses: any, year: number, month: number): ExpensesByDateType => {
-  let groupedPurchases = {};
-
-  expenses[year][month].forEach(({ element, index, key }: ExpenseType) => {
-    if (key == KEYS.TRANSACTION) {
-      element = element as TransactionType;
-      let dateValue = element.dot;
-      (groupedPurchases[dateValue] = groupedPurchases[dateValue] || []).push({ element, index, key });
-    } else if (key == KEYS.PURCHASE) {
-      element = element as PurchaseType;
-      let dateValue = element.dop;
-      (groupedPurchases[dateValue] = groupedPurchases[dateValue] || []).push({ element, index, key });
-    } else {
-      alert("Invalid Expense Element");
-    }
-  });
-
-  return groupedPurchases;
-};
-
 export const updateExpenses = (expense: ExpenseType, setExpenses: any) => {
   let year: number, month: number, updatedState: any;
   setExpenses((prev: any) => {
@@ -322,30 +133,6 @@ export const updateExpenses = (expense: ExpenseType, setExpenses: any) => {
 
     let index = prev[year][month].findIndex((e: ExpenseType) => e.index == expense.index && e.key == expense.key);
     updatedState[year][month][index] = expense;
-
-    return updatedState;
-  });
-};
-
-export const deleteExpenses = (expense: ExpenseType, setExpenses: any) => {
-  let year: number, month: number, updatedState: any;
-  setExpenses((prev: any) => {
-    updatedState = { ...prev };
-    if (KEYS.PURCHASE == expense.key) {
-      let purchase = expense.element as PurchaseType;
-      month = new Date(purchase.dop).getMonth();
-      year = new Date(purchase.dop).getFullYear();
-    } else if (KEYS.TRANSACTION == expense.key) {
-      let transaction = expense.element as TransactionType;
-      month = new Date(transaction.dot).getMonth();
-      year = new Date(transaction.dot).getFullYear();
-    } else {
-      alert("Invalid Expense Element");
-      return prev;
-    }
-
-    let index = prev[year][month].findIndex((e: ExpenseType) => e.index == expense.index && e.key == expense.key);
-    updatedState[year][month].splice(index, 1);
 
     return updatedState;
   });
