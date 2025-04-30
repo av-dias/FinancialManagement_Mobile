@@ -11,18 +11,4 @@ export const _styles = StyleSheet.create({
     backgroundColor: "white",
     gap: verticalScale(10),
   },
-  row: {
-    flexDirection: "row",
-    justifyContent: "center",
-    width: "100%",
-    borderRadius: borderRadius,
-  },
-  button: {
-    alignItems: "center",
-    paddingVertical: verticalScale(15),
-    width: "100%",
-    borderRadius: commonStyles.borderRadius,
-    backgroundColor: dark.button,
-    elevation: 1,
-  },
 });

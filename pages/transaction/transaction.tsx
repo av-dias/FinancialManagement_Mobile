@@ -5,62 +5,64 @@ import { MaterialIcons, Entypo } from "@expo/vector-icons";
 
 //Custom Components
 import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
-import CustomInput from "../../components/customInput/customInput";
-import CustomCalendarStrip from "../../components/customCalendarStrip/customCalendarStrip";
 import CustomButton from "../../components/customButton/customButton";
 import Carrossel from "../../components/carrossel/carrossel";
 
 //Context
-import { AppContext } from "../../store/app-context";
+import { UserContext } from "../../store/user-context";
 
 //Custom Constants
 import { _styles } from "./style";
 import { dark } from "../../utility/colors";
 
 //Functions
-import { horizontalScale, verticalScale } from "../../functions/responsive";
-import { getUser } from "../../functions/basic";
+import { verticalScale } from "../../functions/responsive";
 import { getSplitUser, getSplitEmail } from "../../functions/split";
-import { handleTransaction } from "./handler";
-import CardWrapper from "../../components/cardWrapper/cardWrapper";
-import { TransactionType } from "../../models/types";
 import { FlatCalendar } from "../../components/flatCalender/FlatCalender";
+import { clearTransactionEntity, TransactionEntity, TransactionOperation } from "../../store/database/Transaction/TransactionEntity";
+import { ExpensesService } from "../../service/ExpensesService";
+import DualTextInput, { textInputType } from "../../components/DualTextInput/DualTextInput";
 
 type TransactionProps = {
-  handleEdit?: (newTransaction: TransactionType, receivedActive: boolean, destination: string) => void;
-  transaction?: TransactionType;
+  transaction?: TransactionEntity;
+  callback?: () => void;
 };
 
-const loadReceivedActive = (transaction: TransactionType) => {
-  if (!transaction) return false;
-  if (transaction?.user_origin_id) return true;
-  return false;
-};
-
-export default function Transaction({ handleEdit, transaction }: TransactionProps) {
+export default function Transaction({ transaction, callback }: TransactionProps) {
   const styles = _styles;
-  const [email, setEmail] = useState("");
-  const [receivedActive, setReceivedActive] = useState<boolean>(loadReceivedActive(transaction));
-  const [destination, setDestination] = useState("");
-  const [newTransaction, setNewTransaction] = useState<TransactionType>(
-    transaction || {
-      amount: "",
-      type: "",
-      description: "",
-      user_destination_id: null,
-      user_origin_id: null,
-      dot: new Date().toISOString().split("T")[0].toString(),
-    }
-  );
+  const expenseService = new ExpensesService();
+  const email = useContext(UserContext).email;
 
-  const appCtx = useContext(AppContext);
+  const [newTransaction, setNewTransaction] = useState<TransactionEntity>(transaction || clearTransactionEntity(null, email));
+  const [destination, setDestination] = useState({ email: "", name: "" });
+
+  const inputConfig: textInputType[] = [
+    {
+      value: newTransaction.description,
+      setValue: (_description) => {
+        setNewTransaction({ ...newTransaction, description: _description });
+      },
+      onBlurHandle: () =>
+        setNewTransaction((prev) => ({
+          ...prev,
+          name: prev.description.trimEnd().trimStart(),
+        })),
+      placeholder: "Description",
+      icon: <MaterialIcons style={{ display: "flex", justifyContent: "center", alignSelf: "center" }} name="notes" size={verticalScale(12)} color={dark.textPrimary} />,
+    },
+    {
+      value: getSplitEmail(destination),
+      setValue: () => {},
+      onBlurHandle: () => {},
+      placeholder: "Email",
+      icon: <Entypo style={styles.iconCenter} name="email" size={verticalScale(10)} color={dark.textPrimary} />,
+      editable: false,
+    },
+  ];
 
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
-        let email = await getUser();
-        setEmail(email);
-
         await getSplitUser(setDestination, email);
         try {
         } catch (e) {
@@ -78,12 +80,14 @@ export default function Transaction({ handleEdit, transaction }: TransactionProp
           style={{
             paddingHorizontal: 10,
             paddingVertical: 5,
-            backgroundColor: receivedActive ? dark.secundary : dark.complementary,
+            backgroundColor: newTransaction.transactionType === TransactionOperation.RECEIVED ? dark.secundary : dark.complementary,
             borderRadius: 10,
             zIndex: 1,
           }}
           onPress={() => {
-            setReceivedActive(!receivedActive);
+            newTransaction.transactionType === TransactionOperation.RECEIVED
+              ? setNewTransaction({ ...newTransaction, transactionType: TransactionOperation.SENT })
+              : setNewTransaction({ ...newTransaction, transactionType: TransactionOperation.RECEIVED });
           }}
         >
           <Text style={styles.text}>Received</Text>
@@ -91,10 +95,16 @@ export default function Transaction({ handleEdit, transaction }: TransactionProp
       </View>
       <View style={{ flex: 1 }}>
         <MoneyInputHeader
-          value={newTransaction.amount}
+          value={newTransaction.amount.toString()}
           setValue={(_amount) => {
-            setNewTransaction({ ...newTransaction, amount: _amount });
+            setNewTransaction({ ...newTransaction, amount: Number(_amount) });
           }}
+          onBlurHandle={() =>
+            setNewTransaction((prev) => ({
+              ...prev,
+              amount: Number(prev.amount),
+            }))
+          }
         />
         <Carrossel
           type={newTransaction.type}
@@ -106,36 +116,22 @@ export default function Transaction({ handleEdit, transaction }: TransactionProp
         />
         <View style={styles.form}>
           <FlatCalendar
-            date={newTransaction.dot}
+            date={newTransaction.date}
             setInputBuyDate={(_date) => {
-              setNewTransaction({ ...newTransaction, dot: new Date(_date).toISOString().split("T")[0] });
+              setNewTransaction({ ...newTransaction, date: new Date(_date).toISOString().split("T")[0] });
             }}
           />
-          <View
-            style={{
-              gap: verticalScale(5),
-            }}
-          >
-            <CustomInput
-              Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
-              placeholder="Description"
-              setValue={(_description) => {
-                setNewTransaction({ ...newTransaction, description: _description });
-              }}
-              value={newTransaction.description}
-            />
-            <CustomInput
-              Icon={<Entypo style={styles.iconCenter} name="email" size={verticalScale(20)} color={dark.textPrimary} />}
-              placeholder="Email"
-              value={getSplitEmail(destination)}
-              setValue={() => {}}
-              editable={false}
-            />
-          </View>
+          <DualTextInput values={inputConfig} direction="column" />
         </View>
         <CustomButton
-          handlePress={() => {
-            handleEdit ? handleEdit(newTransaction, receivedActive, destination) : handleTransaction(newTransaction, setNewTransaction, destination, receivedActive, email, appCtx.setExpenses);
+          handlePress={async () => {
+            try {
+              await expenseService.createTransaction({ ...newTransaction, userTransactionId: destination.email });
+              setNewTransaction(clearTransactionEntity(newTransaction));
+              callback && callback();
+            } catch (e) {
+              console.log(e);
+            }
           }}
         />
       </View>

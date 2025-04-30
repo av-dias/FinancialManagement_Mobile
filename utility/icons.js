@@ -192,5 +192,10 @@ export const utilIcons = (size = 25, _color) => {
       icon: <AntDesign name="delete" size={30} color={_color} />,
       color: _color,
     },
+    {
+      label: "Transfer",
+      icon: <MaterialCommunityIcons style={{ alignSelf: "center" }} name="transfer" size={24} color={"white"} />,
+      color: _color,
+    },
   ];
 };

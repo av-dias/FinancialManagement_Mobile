@@ -53,7 +53,7 @@ type AddFormProps = {
 };
 
 export const AddForm = (props: AddFormProps) => {
-  const [value, setValue] = useState();
+  const [value, setValue] = useState<number>(0);
   const [name, setName] = useState();
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -114,8 +114,7 @@ export const AddForm = (props: AddFormProps) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <MoneyInputHeader value={value} setValue={setValue} />
-
+      <MoneyInputHeader value={value.toString()} setValue={setValue} onBlurHandle={() => setValue((prev) => Number(prev))} />
       <View style={{ flex: 1, gap: 10 }}>
         <View style={{ alignItems: "flex-end" }}>
           <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />

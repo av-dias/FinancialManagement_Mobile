@@ -6,6 +6,6 @@ export const KEYS = {
   TOKEN_SEPARATOR: "-=-=+=+",
 };
 
-export const STATS_TYPE = { 0: "Total", 1: "Personal" };
-export const STATS_MODE = { 0: "Monthly", 1: "Average" };
-export const TRANSACTION_TYPE = { 0: "Total", 1: "Sent", 2: "Received" };
+export const ANALYSES_TYPE = { Total: "Total", Personal: "Personal" };
+export const TIME_MODE = { Monthly: "Monthly", Average: "Average" };
+export const TRANSACTION_TYPE = { Total: "Total", Sent: "Sent", Received: "Received" };

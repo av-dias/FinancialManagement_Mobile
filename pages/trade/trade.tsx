@@ -34,7 +34,7 @@ export default function Trade({ navigation }) {
 
   const [inputName, setInputName] = useState("");
   const [inputTicker, setInputTicker] = useState("");
-  const [inputBuyPrice, setInputBuyPrice] = useState("");
+  const [inputBuyPrice, setInputBuyPrice] = useState<number>(0);
   const [inputBuyDate, setInputBuyDate] = useState<Date>(new Date());
   const [inputShareValue, setInputShareValue] = useState<string>("");
   const [inputInvestmentTicker, setInputInvestmentTicker] = useState("");
@@ -48,7 +48,7 @@ export default function Trade({ navigation }) {
   const [selectedTicker, setSelectedTicker] = useState<string>(noFilter);
 
   const createInvestment = (): InvestmentEntity => {
-    return { shares: Number(inputShareValue.replace(",", ".")), buyPrice: Number(inputBuyPrice.replace(",", ".")), buyDate: inputBuyDate, userId: email };
+    return { shares: Number(inputShareValue.replace(",", ".")), buyPrice: Number(inputBuyPrice), buyDate: inputBuyDate, userId: email };
   };
 
   const addInvestmentCallback = async () => {
@@ -56,7 +56,7 @@ export default function Trade({ navigation }) {
     await securityInvestmentService.insertInvestment(createInvestment(), inputInvestmentTicker);
     setRefresh((prev) => !prev);
     //setModalVisible(null);
-    setInputBuyPrice("0");
+    setInputBuyPrice(0);
     setInputShareValue("0");
   };
 
@@ -92,7 +92,7 @@ export default function Trade({ navigation }) {
     } else {
       return (
         <View style={{ flex: 2, gap: 20 }}>
-          <MoneyInputHeader verticalHeight={180} value={inputBuyPrice} setValue={setInputBuyPrice} />
+          <MoneyInputHeader verticalHeight={180} value={inputBuyPrice.toString()} setValue={setInputBuyPrice} onBlurHandle={() => setInputBuyPrice((prev) => Number(prev))} />
           <FlatCalendar setInputBuyDate={setInputBuyDate} />
           <CustomInput keyboardType="numeric" Icon={undefined} placeholder={"Shares"} value={inputShareValue} setValue={setInputShareValue} />
           <Carrossel items={loadSecurityItems()} type={inputInvestmentTicker} setType={setInputInvestmentTicker} size={60} iconBackground={dark.complementary} />

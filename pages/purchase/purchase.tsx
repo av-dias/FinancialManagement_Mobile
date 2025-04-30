@@ -3,13 +3,11 @@ import React, { useState, useEffect, useContext } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 
 //Context
-import { AppContext } from "../../store/app-context";
+import { UserContext } from "../../store/user-context";
 
 //Custom Components
-import ModalCustom from "../../components/modal/modal";
 import CustomButton from "../../components/customButton/customButton";
 import SplitSlider from "../../components/splitSlider/splitSlider";
-import CustomInput from "../../components/customInput/customInput";
 import Carrossel from "../../components/carrossel/carrossel";
 import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
 import { dark } from "../../utility/colors";
@@ -18,50 +16,55 @@ import { dark } from "../../utility/colors";
 import { _styles } from "./style";
 
 //Functions
-import { getUser } from "../../functions/basic";
-import { handlePurchase, modalContent } from "./handler";
-import { getSplitUser, getSplitEmail } from "../../functions/split";
-import { horizontalScale, verticalScale } from "../../functions/responsive";
-import { PurchaseType } from "../../models/types";
+import { getSplitUser } from "../../functions/split";
+import { verticalScale } from "../../functions/responsive";
 import { FlatCalendar } from "../../components/flatCalender/FlatCalender";
+import { clearPurchaseEntity, PurchaseEntity } from "../../store/database/Purchase/PurchaseEntity";
+import { ExpensesService } from "../../service/ExpensesService";
+import DualTextInput, { textInputType } from "../../components/DualTextInput/DualTextInput";
 
 type PurchaseProps = {
-  handleEdit?: (purchase: PurchaseType, splitStatus: boolean, slider: number, splitEmail) => void;
-  purchase?: PurchaseType;
+  purchase?: PurchaseEntity;
+  callback?: () => void;
 };
 
-export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
+export default function Purchase({ purchase, callback }: PurchaseProps) {
   const styles = _styles;
+  const expenseService = new ExpensesService();
+  const email = useContext(UserContext).email;
 
-  const [email, setEmail] = useState("");
-  const [newPurchase, setNewPurchase] = useState<PurchaseType>(
-    purchase || {
-      value: "",
-      name: "",
-      type: "",
-      description: "",
-      note: "",
-      dop: new Date().toISOString().split("T")[0].toString(),
-      split: null,
-    }
-  );
-
+  const [newPurchase, setNewPurchase] = useState<PurchaseEntity>(purchase || clearPurchaseEntity(null, email));
   const [slider, setSlider] = useState<number>(Number(purchase?.split?.weight) || 50);
-  const [splitStatus, setSplitStatus] = useState<boolean>(purchase?.split !== null || false);
-  const [splitUser, setSplitUser] = useState("");
+  const [splitStatus, setSplitStatus] = useState<boolean>((purchase !== undefined && purchase?.split !== null) || false);
+  const [splitUser, setSplitUser] = useState({ email: "", value: "" });
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalContentFlag, setModalContentFlag] = useState("");
-  const [list, setList] = useState([]);
-
-  const [refundActive, setRefundActive] = useState<boolean>(purchase?.note == "Refund" || false);
-
-  const appCtx = useContext(AppContext);
+  const inputConfig: textInputType[] = [
+    {
+      value: newPurchase.name,
+      setValue: (_name) => setNewPurchase((prev) => ({ ...prev, name: _name })),
+      onBlurHandle: () =>
+        setNewPurchase((prev) => ({
+          ...prev,
+          name: prev.name.trimEnd().trimStart(),
+        })),
+      placeholder: "Name",
+      icon: <MaterialIcons style={{ display: "flex", justifyContent: "center", alignSelf: "center" }} name="notes" size={verticalScale(12)} color={dark.textPrimary} />,
+    },
+    {
+      value: newPurchase.note,
+      setValue: (_note) => setNewPurchase((prev) => ({ ...prev, note: _note })),
+      onBlurHandle: () =>
+        setNewPurchase((prev) => ({
+          ...prev,
+          note: prev.note.trimEnd().trimStart(),
+        })),
+      placeholder: "Note",
+      icon: <MaterialIcons style={{ display: "flex", justifyContent: "center", alignSelf: "center" }} name="drive-file-rename-outline" size={verticalScale(12)} color={dark.textPrimary} />,
+    },
+  ];
 
   useEffect(() => {
     async function fetchData() {
-      let email = await getUser();
-      setEmail(email);
       await getSplitUser(setSplitUser, email);
     }
     // write your code here, it's like componentWillMount
@@ -69,31 +72,39 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
   }, [email]);
 
   useEffect(() => {
-    if (refundActive) {
-      setNewPurchase({ ...newPurchase, note: "Refund" });
-    } else {
-      setNewPurchase({ ...newPurchase, note: "" });
+    async function fetchSplit() {
+      if (splitStatus) {
+        setNewPurchase({ ...newPurchase, split: { userId: splitUser.email, weight: slider } });
+      } else {
+        setNewPurchase({ ...newPurchase, split: undefined });
+      }
     }
-  }, [refundActive]);
+    // write your code here, it's like componentWillMount
+    fetchSplit();
+  }, [splitStatus, slider]);
+
+  useEffect(() => {
+    async function load() {
+      if (!newPurchase?.split) {
+        setSplitStatus(false);
+      }
+    }
+    load();
+  }, [newPurchase]);
 
   return (
     <View style={{ flex: 1 }}>
-      {modalVisible && (
-        <ModalCustom modalVisible={modalVisible} setModalVisible={setModalVisible}>
-          {modalContent(list, newPurchase.value, email, modalContentFlag, modalVisible, setModalVisible, getSplitEmail(splitUser), slider)}
-        </ModalCustom>
-      )}
       <View style={{ position: "absolute", right: 0, paddingTop: 50, gap: 10 }}>
         <Pressable
           style={{
             paddingHorizontal: 10,
             paddingVertical: 5,
-            backgroundColor: refundActive ? dark.secundary : dark.complementary,
+            backgroundColor: newPurchase.isRefund ? dark.secundary : dark.complementary,
             borderRadius: 10,
             zIndex: 1,
           }}
           onPress={() => {
-            setRefundActive(!refundActive);
+            setNewPurchase({ ...newPurchase, isRefund: !newPurchase.isRefund });
           }}
         >
           <Text style={styles.text}>Refund</Text>
@@ -101,11 +112,17 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
       </View>
       <View style={{ flex: 1 }}>
         <MoneyInputHeader
-          value={newPurchase.value.replace("-", "")}
+          value={newPurchase.amount.toString()}
           setValue={(_value) => {
-            setNewPurchase({ ...newPurchase, value: _value });
+            setNewPurchase({ ...newPurchase, amount: _value });
           }}
-          signal={refundActive ? "-" : "+"}
+          onBlurHandle={() =>
+            setNewPurchase((prev) => ({
+              ...prev,
+              amount: Number(prev.amount),
+            }))
+          }
+          signal={newPurchase.isRefund ? "-" : "+"}
         />
         <Carrossel
           type={newPurchase.type}
@@ -117,52 +134,24 @@ export default function Purchase({ handleEdit, purchase }: PurchaseProps) {
         />
         <View style={styles.form}>
           <FlatCalendar
-            date={newPurchase.dop}
+            date={newPurchase.date}
             setInputBuyDate={(_date) => {
-              setNewPurchase({ ...newPurchase, dop: _date.toISOString().split("T")[0] });
+              setNewPurchase({ ...newPurchase, date: _date.toISOString().split("T")[0] });
             }}
           />
-          <View style={{ gap: verticalScale(5) }}>
-            <CustomInput
-              Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
-              placeholder="Name"
-              setValue={(_name) => {
-                setNewPurchase({ ...newPurchase, name: _name });
-              }}
-              onBlurHandle={() =>
-                setNewPurchase((prev) => ({
-                  ...prev,
-                  name: prev.name.trimEnd().trimStart(),
-                }))
-              }
-              value={newPurchase.name}
-            />
-            <CustomInput
-              Icon={<MaterialIcons style={styles.iconCenter} name="notes" size={verticalScale(20)} color={dark.textPrimary} />}
-              placeholder="Notes"
-              setValue={(_note) => {
-                setNewPurchase({ ...newPurchase, note: _note });
-              }}
-              value={newPurchase.note}
-            />
-          </View>
-          <SplitSlider
-            value={newPurchase.value}
-            setModalVisible={setModalVisible}
-            setModalContentFlag={setModalContentFlag}
-            splitStatus={splitStatus}
-            setSplitStatus={setSplitStatus}
-            slider={slider}
-            setSlider={setSlider}
-            size={verticalScale(60)}
-          />
+          <DualTextInput values={inputConfig} />
+          <SplitSlider value={newPurchase.amount} splitStatus={splitStatus} setSplitStatus={setSplitStatus} slider={slider} setSlider={setSlider} size={verticalScale(40)} />
         </View>
         <CustomButton
-          addStyle={{ top: handleEdit ? 15 : 0 }}
-          handlePress={() => {
-            handleEdit
-              ? handleEdit(newPurchase, splitStatus, slider, getSplitEmail(splitUser))
-              : handlePurchase(email, newPurchase, setNewPurchase, splitStatus, setSplitStatus, getSplitEmail(splitUser), slider, setList, refundActive, setRefundActive, appCtx.setExpenses);
+          addStyle={{ top: 0 }}
+          handlePress={async () => {
+            try {
+              await expenseService.createPurchase(newPurchase);
+              setNewPurchase(clearPurchaseEntity(newPurchase));
+              callback && callback();
+            } catch (e) {
+              console.log(e);
+            }
           }}
         />
       </View>

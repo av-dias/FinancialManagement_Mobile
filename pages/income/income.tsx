@@ -4,8 +4,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 //Custom Components
 import MoneyInputHeader from "../../components/moneyInputHeader/moneyInputHeader";
-import CustomInput from "../../components/customInput/customInput";
-import CustomCalendarStrip from "../../components/customCalendarStrip/customCalendarStrip";
 import CustomButton from "../../components/customButton/customButton";
 import Carrossel from "../../components/carrossel/carrossel";
 
@@ -17,13 +15,13 @@ import { _styles } from "./style";
 import { dark } from "../../utility/colors";
 
 //Functions
-import { horizontalScale, verticalScale } from "../../functions/responsive";
-import CardWrapper from "../../components/cardWrapper/cardWrapper";
+import { verticalScale } from "../../functions/responsive";
 import { clearIncomeEntity, IncomeEntity, IncomeModel } from "../../store/database/Income/IncomeEntity";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDatabaseConnection } from "../../store/database-context";
 import { FlatCalendar } from "../../components/flatCalender/FlatCalender";
 import { ExpenseEnum } from "../../models/types";
+import DualTextInput, { textInputType } from "../../components/DualTextInput/DualTextInput";
 
 type IncomeProps = {
   income?: IncomeEntity;
@@ -47,6 +45,22 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
       id: null,
     }
   );
+
+  const inputConfig: textInputType[] = [
+    {
+      placeholder: "Name",
+      icon: <MaterialIcons style={{ display: "flex", justifyContent: "center", alignSelf: "center" }} name="notes" size={verticalScale(12)} color={dark.textPrimary} />,
+      value: newIncome.name,
+      setValue: (name: string) => {
+        setNewIncome({ ...newIncome, name: name });
+      },
+      onBlurHandle: () =>
+        setNewIncome((prev) => ({
+          ...prev,
+          name: prev.name.trimEnd().trimStart(),
+        })),
+    },
+  ];
 
   const loadCarroselItems = (items: string[]) => {
     return items.map((item: string) => ({ label: item, color: dark.secundary }));
@@ -97,6 +111,12 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
           setValue={(_amount) => {
             setNewIncome({ ...newIncome, amount: _amount });
           }}
+          onBlurHandle={() =>
+            setNewIncome((prev) => ({
+              ...prev,
+              amount: Number(prev.amount),
+            }))
+          }
         />
         <Carrossel
           type={newIncome.name}
@@ -115,16 +135,7 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
               setNewIncome({ ...newIncome, doi: new Date(_date) });
             }}
           />
-          <View style={{ gap: verticalScale(5) }}>
-            <CustomInput
-              Icon={<MaterialIcons style={styles.iconCenter} name="drive-file-rename-outline" size={verticalScale(20)} color={dark.textPrimary} />}
-              placeholder="Name"
-              setValue={(name: string) => {
-                setNewIncome({ ...newIncome, name: name });
-              }}
-              value={newIncome.name}
-            />
-          </View>
+          <DualTextInput values={inputConfig} direction="column" />
         </View>
         <CustomButton handlePress={onPressCallback} />
       </View>

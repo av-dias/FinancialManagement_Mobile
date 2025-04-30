@@ -2,7 +2,15 @@ import { Text, View, TextInput } from "react-native";
 import { _styles } from "./style";
 import { verticalScale } from "../../functions/responsive";
 
-export default function MoneyInputHeader({ value = "", setValue, signal = "+", verticalHeight = 150 }) {
+type MoneyInputHeaderProps = {
+  value: string;
+  setValue: (value) => void;
+  onBlurHandle: () => any;
+  signal?: string;
+  verticalHeight?: number;
+};
+
+export default function MoneyInputHeader({ value = "", setValue, onBlurHandle, signal = "+", verticalHeight = 200 }: MoneyInputHeaderProps) {
   const styles = _styles;
 
   return (
@@ -17,6 +25,7 @@ export default function MoneyInputHeader({ value = "", setValue, signal = "+", v
         placeholderTextColor={signal != "+" ? "lightblue" : "white"}
         placeholder="0"
         onChangeText={setValue}
+        onBlur={onBlurHandle}
         value={value}
       />
       <Text style={styles.symbolBig}>€</Text>

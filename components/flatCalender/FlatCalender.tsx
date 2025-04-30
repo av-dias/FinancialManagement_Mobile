@@ -5,6 +5,7 @@ import { dark } from "../../utility/colors";
 import { useRef, useState } from "react";
 import React from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import { loadTimer } from "../../utility/timer";
 
 type FlatCalendarProps = {
   setInputBuyDate: React.Dispatch<React.SetStateAction<any>>;
@@ -45,12 +46,7 @@ export const FlatCalendar = ({ setInputBuyDate, date }: FlatCalendarProps) => {
   }
 
   // Allows to temporarily shows the years scrollview
-  const handleTimeout = () => {
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      setIsYearVisible(false);
-    }, 2000);
-  };
+  const handleTimeout = () => loadTimer(timeoutRef, () => setIsYearVisible(false), 2000);
 
   const handleMonthClick = (index: number) => {
     setCurrentMonth(index);
