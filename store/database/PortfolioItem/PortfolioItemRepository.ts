@@ -8,6 +8,10 @@ export class PortfolioItemRepository {
     this.ormRepository = connection?.getRepository(PortfolioItemModel);
   }
 
+  public isReady = () => {
+    return this.ormRepository == undefined ? false : true;
+  };
+
   public async get(userId: string, name: string, value: number, month: number, year: number): Promise<number> {
     const portfolios = await this.ormRepository
       .createQueryBuilder("i")

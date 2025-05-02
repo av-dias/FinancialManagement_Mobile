@@ -16,13 +16,15 @@ import { AddForm } from "./components/addForm";
 import { useFocusEffect } from "@react-navigation/native";
 import React from "react";
 import { useDatabaseConnection } from "../../store/database-context";
-import { PortfolioModel } from "../../store/database/Portfolio/PortfolioEntity";
+import { PortfolioModel, PortfolioWithItemEntity } from "../../store/database/Portfolio/PortfolioEntity";
 import { PortfolioDAO } from "../../models/portfolio.models";
 import CalendarCard from "../../components/calendarCard/calendarCard";
-import { PortfolioService } from "../../store/database/Portfolio/PortfolioService";
+import { PortfolioService } from "../../service/PortfolioService";
 import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
 import { AlertData } from "../../constants/listConstants/deleteDialog";
 import { NetworthAlertData } from "../../constants/networthConstants/networthDeleteDialog";
+import { PortfolioItemEntity } from "../../store/database/PortfolioItem/PortfolioItemEntity";
+import { logTimeTook } from "../../utility/logger";
 
 type PortfolioStatusType = { networth: { absolute: number; relative: number }; grossworth: { absolute: number; relative: number } };
 
@@ -35,7 +37,7 @@ export default function Networth({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [triggerRefresh, setTriggerRefresh] = useState(false);
   const [items, setItems] = useState<PortfolioDAO[]>([]);
-  const [portfolio, setPortfolio] = useState<PortfolioDAO[]>([]);
+  const [portfolio, setPortfolio] = useState<PortfolioWithItemEntity[]>([]);
   const [portfolioWorth, setPortfolioWorth] = useState({ networth: 0, grossworth: 0 });
   const [portfolioStatus, setPortfolioStatus] = useState<PortfolioStatusType>({
     networth: { absolute: 0, relative: 0 },
@@ -82,20 +84,20 @@ export default function Networth({ navigation }) {
     return { currPortfolio: currPortfolio, prevPortfolio: prevPortfolio };
   };
 
-  const loadWorthData = (curr: PortfolioDAO[], prev: PortfolioDAO[]) => {
+  const loadWorthData = (curr: PortfolioWithItemEntity[], prev: PortfolioWithItemEntity[]) => {
     let networth = 0,
       grossworth = 0,
       prevNetworth = 0,
       prevGrossworth = 0;
 
-    curr.map((item) => {
-      item.networthFlag && (networth += Number(item.value));
-      item.grossworthFlag && (grossworth += Number(item.value));
+    curr.map((p) => {
+      p.networthFlag && (networth += Number(p.item.value));
+      p.grossworthFlag && (grossworth += Number(p.item.value));
     });
 
-    prev.map((item) => {
-      item.networthFlag && (prevNetworth += Number(item.value));
-      item.grossworthFlag && (prevGrossworth += Number(item.value));
+    prev.map((p) => {
+      p.networthFlag && (prevNetworth += Number(p.item.value));
+      p.grossworthFlag && (prevGrossworth += Number(p.item.value));
     });
 
     return { currWorth: { networth: networth, grossworth: grossworth }, prevWorth: { networth: prevNetworth, grossworth: prevGrossworth } };
@@ -138,51 +140,46 @@ export default function Networth({ navigation }) {
     });
   };
 
-  /* TODO BUG
-   * Portefolio Calculation is wrong
-   * when lastest item does not exist in current month
-   */
-
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
         try {
           if (email) {
-            //console.log("UseEffect Triggered...");
-            const p = await portfolioRepository.getAll(email);
-            //p.map((item) => console.log(item));
-
+            // TODO: Remove repository and use service instead
             const distinctPortfolioNames = await portfolioRepository.getDistinctPortfolioNames(email);
             setItems(distinctPortfolioNames);
 
-            const sortedPortfolio = await portfolioRepository.getSortedPortfolio(email, currentMonth, currentYear);
-            const { currPortfolio, prevPortfolio } = loadPortfolioData(sortedPortfolio);
-            setPortfolio(currPortfolio);
-
-            const { currWorth, prevWorth } = loadWorthData(currPortfolio, prevPortfolio);
+            const nearestPortfolioItems = await portfolioService.getNearestPortfolioItem(email, currentMonth, currentYear);
+            const lastMonthNearestPortfolioItems = await portfolioService.getNearestPortfolioItem(email, currentMonth - 1, currentYear);
+            const { currWorth, prevWorth } = loadWorthData(nearestPortfolioItems, lastMonthNearestPortfolioItems);
             setPortfolioWorth(currWorth);
-
             const worthStats = loadPortfolioAnalyses(currWorth, prevWorth);
             setPortfolioStatus(worthStats);
+            setPortfolio(nearestPortfolioItems);
           }
         } catch (e) {
           console.log("Networth: " + e);
         }
       }
-      fetchData();
-    }, [email, modalVisible, currentMonth, currentYear, triggerRefresh, portfolioRepository])
+      if (portfolioService.isReady()) {
+        let startTime = performance.now();
+        fetchData();
+        let endTime = performance.now();
+        logTimeTook("Networth", "Fetch", endTime, startTime);
+      }
+    }, [email, modalVisible, currentMonth, currentYear, triggerRefresh, portfolioRepository, portfolioService.isReady()])
   );
 
-  const isItemMonthYear = (item) => {
-    return item.month == currentMonth && item.year == currentYear;
+  const isItemMonthYear = (item: PortfolioItemEntity) => {
+    return item.value !== 0 && item.month == currentMonth && item.year == currentYear;
   };
 
-  const loadOptions = (item: PortfolioDAO) => {
+  const loadOptions = (p: PortfolioWithItemEntity) => {
     return (
       <View style={styles.rowGap}>
-        {isItemMonthYear(item) && <Ionicons name="add-circle" size={20} color="lightgray" />}
-        <FontAwesome5 name="money-check" size={20} color={item.grossworthFlag ? dark.secundary : "gray"} />
-        <FontAwesome5 name="money-check-alt" size={20} color={item.networthFlag ? "lightblue" : "gray"} />
+        {isItemMonthYear(p.item) && <Ionicons name="add-circle" size={20} color="lightgray" />}
+        <FontAwesome5 name="money-check" size={20} color={p.grossworthFlag ? dark.secundary : "gray"} />
+        <FontAwesome5 name="money-check-alt" size={20} color={p.networthFlag ? "lightblue" : "gray"} />
       </View>
     );
   };
@@ -247,8 +244,8 @@ export default function Networth({ navigation }) {
            * Fix Item giving its date to allow delete
            */}
           <ScrollView contentContainerStyle={{ gap: 5 }}>
-            {portfolio?.map((item) => (
-              <FlatItem key={item.name} name={item.name} value={item.value} options={loadOptions(item)} onPressCallback={isItemMonthYear(item) ? loadModalDialog : undefined} />
+            {portfolio?.map((p) => (
+              <FlatItem key={p.name} name={p.name} value={p.item.value} options={loadOptions(p)} onPressCallback={isItemMonthYear(p.item) ? loadModalDialog : undefined} />
             ))}
           </ScrollView>
         </View>

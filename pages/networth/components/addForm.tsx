@@ -11,7 +11,7 @@ import React from "react";
 import CalendarCard from "../../../components/calendarCard/calendarCard";
 import { PortfolioEntity } from "../../../store/database/Portfolio/PortfolioEntity";
 import { PortfolioItemEntity } from "../../../store/database/PortfolioItem/PortfolioItemEntity";
-import { PortfolioService } from "../../../store/database/Portfolio/PortfolioService";
+import { PortfolioService } from "../../../service/PortfolioService";
 import { useFocusEffect } from "@react-navigation/native";
 import { PortfolioDAO } from "../../../models/portfolio.models";
 import AntDesign from "@expo/vector-icons/AntDesign";

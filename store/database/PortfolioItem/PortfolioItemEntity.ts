@@ -20,7 +20,26 @@ export class PortfolioItemModel {
 }
 
 export type PortfolioItemEntity = {
+  id?: number;
   value: number;
   month: number;
   year: number;
 };
+
+export const clearPortfolioItemEntity = (month: number, year: number): PortfolioItemEntity => ({
+  id: null,
+  value: 0,
+  month: month,
+  year: year,
+});
+
+export const portfolioItemMapper = (i: PortfolioItemModel[]): PortfolioItemEntity[] =>
+  i.map(
+    (entity) =>
+      ({
+        id: entity.id,
+        value: entity.value,
+        month: entity.month,
+        year: entity.year,
+      } as PortfolioItemEntity)
+  );

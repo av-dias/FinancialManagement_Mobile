@@ -8,6 +8,10 @@ export class PortfolioRepository {
     this.ormRepository = connection?.getRepository(PortfolioModel);
   }
 
+  public isReady = () => {
+    return this.ormRepository == undefined ? false : true;
+  };
+
   public async getAll(userId: string): Promise<PortfolioModel[]> {
     const portfolios = await this.ormRepository?.find({ where: { userId: userId }, relations: ["items"] });
     return portfolios;
@@ -26,7 +30,7 @@ export class PortfolioRepository {
     }));
   }
 
-  public async getSortedPortfolio(userId: string, currMonth: number, currYear: number) {
+  public async getSortedPortfolio(userId: string, currMonth: number, currYear: number): Promise<PortfolioModel[]> {
     let list = [];
     try {
       list = await this.ormRepository
