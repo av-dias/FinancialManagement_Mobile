@@ -1,5 +1,5 @@
 import { ExpensesByYear } from "../models/interfaces";
-import { ExpenseType, ExpensesByDateType, PurchaseType, TransactionType } from "../models/types";
+import { ExpenseType, PurchaseType, TransactionType } from "../models/types";
 import { KEYS, ANALYSES_TYPE, TRANSACTION_TYPE } from "../utility/keys";
 
 export const calcExpensesTotalFromType = (expenses: any) => {

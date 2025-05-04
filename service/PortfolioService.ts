@@ -3,10 +3,11 @@ import { clearPortfolioItemEntity, PortfolioItemEntity, PortfolioItemModel } fro
 import { PortfolioRepository } from "../store/database/Portfolio/PortfolioRepository";
 import { PortfolioItemRepository } from "../store/database/PortfolioItem/PortfolioItemRepository";
 import { useDatabaseConnection } from "../store/database-context";
+import { loadWorthData } from "../functions/networth";
 
 export class PortfolioService {
-  private portfolioRepository: PortfolioRepository = useDatabaseConnection().portfolioRepository;
-  private portfolioItemRepository: PortfolioItemRepository = useDatabaseConnection().portfolioItemRepository;
+  private readonly portfolioRepository: PortfolioRepository = useDatabaseConnection().portfolioRepository;
+  private readonly portfolioItemRepository: PortfolioItemRepository = useDatabaseConnection().portfolioItemRepository;
 
   public isReady() {
     return this.portfolioRepository.isReady() && this.portfolioItemRepository.isReady() && this.portfolioItemRepository.isReady();
@@ -51,6 +52,20 @@ export class PortfolioService {
       .sort((a, b) => b.item.value - a.item.value);
 
     return nearestPortfolioItems;
+  }
+
+  public async getWorthGroupedByMonth(userId: string, month: number, year: number) {
+    const worthGroupedByMonth = { grossworth: [], networth: [] };
+
+    for (let currMonth = 0; currMonth < month; currMonth++) {
+      const nearestPortfolioItems = await this.getNearestPortfolioItem(userId, currMonth, year);
+      const lastMonthNearestPortfolioItems = await this.getNearestPortfolioItem(userId, currMonth - 1, year);
+      const { currWorth } = loadWorthData(nearestPortfolioItems, lastMonthNearestPortfolioItems);
+      worthGroupedByMonth.grossworth.push(currWorth.grossworth);
+      worthGroupedByMonth.networth.push(currWorth.networth);
+    }
+
+    return worthGroupedByMonth;
   }
 
   public async deletePortfolioItem(userId: string, name: string, value: number, month: number, year: number) {

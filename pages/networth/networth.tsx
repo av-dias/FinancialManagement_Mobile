@@ -16,7 +16,7 @@ import { AddForm } from "./components/addForm";
 import { useFocusEffect } from "@react-navigation/native";
 import React from "react";
 import { useDatabaseConnection } from "../../store/database-context";
-import { PortfolioModel, PortfolioWithItemEntity } from "../../store/database/Portfolio/PortfolioEntity";
+import { PortfolioWithItemEntity } from "../../store/database/Portfolio/PortfolioEntity";
 import { PortfolioDAO } from "../../models/portfolio.models";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import { PortfolioService } from "../../service/PortfolioService";
@@ -25,6 +25,7 @@ import { AlertData } from "../../constants/listConstants/deleteDialog";
 import { NetworthAlertData } from "../../constants/networthConstants/networthDeleteDialog";
 import { PortfolioItemEntity } from "../../store/database/PortfolioItem/PortfolioItemEntity";
 import { logTimeTook } from "../../utility/logger";
+import { loadPortfolioAnalyses, loadWorthData } from "../../functions/networth";
 
 type PortfolioStatusType = { networth: { absolute: number; relative: number }; grossworth: { absolute: number; relative: number } };
 
@@ -43,78 +44,11 @@ export default function Networth({ navigation }) {
     networth: { absolute: 0, relative: 0 },
     grossworth: { absolute: 0, relative: 0 },
   });
+  const [worthData, setWorthData] = useState({ grossworth: [], networth: [] });
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [alertVisible, setAlertVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<PortfolioDAO>();
-
-  const loadPortfolioData = (sortedPortfolio: PortfolioModel[]) => {
-    let currPortfolio = [];
-    let prevPortfolio = [];
-
-    sortedPortfolio.map((portfolio) => {
-      let currItem = portfolio.items[0];
-      let prevItem = { value: 0 };
-
-      if (currItem.month == currentMonth && currItem.year == currentYear) {
-        prevItem = portfolio?.items[1] || { value: 0 };
-      } else {
-        prevItem = currItem;
-      }
-
-      // Push most recent item
-      currPortfolio.push({
-        name: portfolio.name,
-        value: currItem.value,
-        networthFlag: portfolio.networthFlag,
-        grossworthFlag: portfolio.grossworthFlag,
-        month: currItem.month,
-        year: currItem.year,
-      });
-
-      // Push most recent last item
-      prevPortfolio.push({
-        name: portfolio.name,
-        value: prevItem.value,
-        networthFlag: portfolio.networthFlag,
-        grossworthFlag: portfolio.grossworthFlag,
-      });
-    });
-
-    return { currPortfolio: currPortfolio, prevPortfolio: prevPortfolio };
-  };
-
-  const loadWorthData = (curr: PortfolioWithItemEntity[], prev: PortfolioWithItemEntity[]) => {
-    let networth = 0,
-      grossworth = 0,
-      prevNetworth = 0,
-      prevGrossworth = 0;
-
-    curr.map((p) => {
-      p.networthFlag && (networth += Number(p.item.value));
-      p.grossworthFlag && (grossworth += Number(p.item.value));
-    });
-
-    prev.map((p) => {
-      p.networthFlag && (prevNetworth += Number(p.item.value));
-      p.grossworthFlag && (prevGrossworth += Number(p.item.value));
-    });
-
-    return { currWorth: { networth: networth, grossworth: grossworth }, prevWorth: { networth: prevNetworth, grossworth: prevGrossworth } };
-  };
-
-  const loadPortfolioAnalyses = (currWorth, prevWorth) => {
-    const networthAbsolute = currWorth.networth - prevWorth.networth;
-    const grossworthAbsolute = currWorth.grossworth - prevWorth.grossworth;
-
-    const networthRelative = (networthAbsolute / currWorth.networth) * 100 || 0;
-    const grosswortRelative = (grossworthAbsolute / currWorth.grossworth) * 100 || 0;
-
-    return {
-      networth: { absolute: networthAbsolute, relative: networthRelative },
-      grossworth: { absolute: grossworthAbsolute, relative: grosswortRelative },
-    };
-  };
 
   const onSubmiteCallback = () => {
     setModalVisible(false);
@@ -156,6 +90,9 @@ export default function Networth({ navigation }) {
             const worthStats = loadPortfolioAnalyses(currWorth, prevWorth);
             setPortfolioStatus(worthStats);
             setPortfolio(nearestPortfolioItems);
+
+            const worthGroupedByMonth = await portfolioService.getWorthGroupedByMonth(email, currentMonth, currentYear);
+            setWorthData(worthGroupedByMonth);
           }
         } catch (e) {
           console.log("Networth: " + e);
@@ -213,6 +150,7 @@ export default function Networth({ navigation }) {
             relativeIncrease={portfolioStatus.grossworth.relative.toFixed(0)}
             title={"Grossworth"}
             icon={<FontAwesome5 name="money-check" size={15} color={dark.secundary} />}
+            data={worthData.grossworth}
           />
           <MainCard
             value={portfolioWorth.networth.toFixed(0)}
@@ -220,6 +158,7 @@ export default function Networth({ navigation }) {
             relativeIncrease={portfolioStatus.networth.relative.toFixed(0)}
             title={"Networth"}
             icon={<FontAwesome5 name="money-check-alt" size={15} color="lightblue" />}
+            data={worthData.networth}
           />
         </View>
         <View style={{ flex: 1, gap: 10, padding: 5 }}>
