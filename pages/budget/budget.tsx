@@ -50,7 +50,7 @@ export default function Budget({ navigation }) {
         const expensesPrevAverageTotal = await expensesService.getExpensesTotalAverage(email, Number(currentYear) - 1, ANALYSES_TYPE.Personal);
 
         // Check whether previous year data will complement
-        Object.keys(expensesPrevAverageByType).map((type) => {
+        Object.keys(expensesPrevAverageByType).forEach((type) => {
           if (!expensesAverageByType.hasOwnProperty(type)) {
             expensesAverageByType[type] = expensesPrevAverageByType[type];
           }
@@ -61,7 +61,7 @@ export default function Budget({ navigation }) {
 
         const expensesCurrentMonthPerType = await expensesService.getMonthExpensesByType(email, month, Number(currentYear), ANALYSES_TYPE.Personal);
         const expensesMonthTotal = await expensesService.getTotalExpensesOnMonth(email, month, Number(currentYear), ANALYSES_TYPE.Personal);
-        const expensesYearTotalByType = await expensesService.getExpenseTotalByType(email, Number(currentYear), ANALYSES_TYPE.Personal);
+        const expensesYearTotalByType = await expensesService.getExpenseTotalByType(email, Number(currentYear) - 1, ANALYSES_TYPE.Personal);
 
         setSpendAverageByType(expensesAverageByType);
         setPurchaseAverageTotal(expensesAverageTotal);
@@ -81,6 +81,8 @@ export default function Budget({ navigation }) {
     }, [email, expensesService.isReady()])
   );
 
+  console.log(expensesTotalByType);
+
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
@@ -91,7 +93,7 @@ export default function Budget({ navigation }) {
             <Statistics currentYear={Number(currentYear)} setCurrentYear={setCurrentYear} />
             <CardWrapper style={{ flex: 1, justifyContent: "flex-start" }}>
               <ProgressItemsHeader />
-              {isLoaded(spendAverageByType, purchaseCurrentStats, expensesTotalByType) &&
+              {isLoaded([spendAverageByType, expensesTotalByType]) &&
                 Object.keys(spendAverageByType)
                   .sort((a, b) => spendAverageByType[b] - spendAverageByType[a])
                   .map((type) => {
@@ -108,7 +110,7 @@ export default function Budget({ navigation }) {
                     );
                   })}
             </CardWrapper>
-            {!isLoaded(spendAverageByType, purchaseCurrentStats, expensesTotalByType) && (
+            {!isLoaded([spendAverageByType, expensesTotalByType]) && (
               <View style={styles.containerNoData}>
                 <Text style={{ color: "white" }}>NO DATA</Text>
               </View>
