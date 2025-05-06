@@ -3,7 +3,7 @@ import CardWrapper from "../../../components/cardWrapper/cardWrapper";
 import { Entypo } from "@expo/vector-icons";
 import { dark } from "../../../utility/colors";
 import React, { ReactNode } from "react";
-import { LineChart } from "react-native-gifted-charts";
+import { VictoryChart, VictoryAxis, VictoryLine } from "victory-native";
 
 type MainCardPropsType = {
   title: string;
@@ -35,10 +35,15 @@ const StatsIcon = ({ value }) => {
   }
 };
 
+const axisStyle = {
+  axis: { stroke: "transparent" }, // Adjust strokeWidth
+};
+
 export const MainCard = (content: MainCardPropsType) => {
+  const lineChartData = content.data.slice();
+
   const maxValue = content.data.sort((a, b) => b - a)[0];
   const minValue = content.data.sort((a, b) => a - b)[0];
-  const lineChartData = content.data.map((v) => ({ value: v }));
 
   return (
     <CardWrapper style={styles.wrapperContainer}>
@@ -49,22 +54,28 @@ export const MainCard = (content: MainCardPropsType) => {
       <View style={styles.valueContainer}>
         <Text style={styles.valueStyle}>{content.value}</Text>
       </View>
-      <View style={styles.chartContainer}>
-        <LineChart
-          data={lineChartData}
-          lineGradient
-          height={20}
-          width={100}
-          adjustToWidth={true}
-          initialSpacing={0}
-          yAxisOffset={minValue}
-          maxValue={maxValue + 5}
-          color="green"
-          dataPointsColor="transparent"
-          hideAxesAndRules
-          curved={true}
+      <VictoryChart
+        height={20} // Adjust this value to control the chart's height
+        width={130} // Adjust this value to control the chart's width
+        domain={{ y: [minValue * 0.99, maxValue * 1.01] }} // Set the Y-axis domain
+        padding={0}
+      >
+        <VictoryAxis
+          tickLabelComponent={<></>} // Remove tick labels
+          style={axisStyle}
         />
-      </View>
+        <VictoryAxis
+          style={axisStyle}
+          tickLabelComponent={<></>} // Remove tick labels
+        />
+        <VictoryLine
+          style={{
+            data: { stroke: "green", strokeWidth: 2 }, // Set the stroke color to green
+          }}
+          data={lineChartData}
+          interpolation="natural"
+        />
+      </VictoryChart>
       <View style={styles.statusContainer}>
         <View style={{ flexDirection: "row" }}>
           <Text style={styles.titleStyle}>{`${content.absoluteIncrease}`}</Text>

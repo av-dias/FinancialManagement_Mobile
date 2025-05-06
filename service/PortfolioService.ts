@@ -57,7 +57,7 @@ export class PortfolioService {
   public async getWorthGroupedByMonth(userId: string, month: number, year: number) {
     const worthGroupedByMonth = { grossworth: [], networth: [] };
 
-    for (let currMonth = 0; currMonth < month; currMonth++) {
+    for (let currMonth = 0; currMonth <= month; currMonth++) {
       const nearestPortfolioItems = await this.getNearestPortfolioItem(userId, currMonth, year);
       const lastMonthNearestPortfolioItems = await this.getNearestPortfolioItem(userId, currMonth - 1, year);
       const { currWorth } = loadWorthData(nearestPortfolioItems, lastMonthNearestPortfolioItems);
