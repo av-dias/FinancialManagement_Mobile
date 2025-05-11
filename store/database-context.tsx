@@ -16,6 +16,8 @@ import { TransactionRepository } from "./database/Transaction/TransactionReposit
 import { PurchaseModel } from "./database/Purchase/PurchaseEntity";
 import { SplitModel } from "./database/Split/SplitEntity";
 import { TransactionModel } from "./database/Transaction/TransactionEntity";
+import { SubscriptionRepository } from "./database/Subscription/SubscriptionRepository";
+import { SubscriptionModel } from "./database/Subscription/SubscriptionEntity";
 
 interface DatabaseConnectionContextData {
   portfolioRepository: PortfolioRepository;
@@ -26,6 +28,7 @@ interface DatabaseConnectionContextData {
   purchaseRepository: PurchaseRepository;
   splitRepository: SplitRepository;
   transactionRepository: TransactionRepository;
+  subscriptionRepository: SubscriptionRepository;
 }
 
 export const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>({} as DatabaseConnectionContextData);
@@ -48,7 +51,7 @@ export const DatabaseConnectionProvider = ({ children }) => {
         type: "expo",
         database: "fm_mobile.db",
         driver: require("expo-sqlite"),
-        entities: [PortfolioModel, PortfolioItemModel, IncomeModel, InvestmentModel, SecurityModel, PurchaseModel, SplitModel, TransactionModel],
+        entities: [PortfolioModel, PortfolioItemModel, IncomeModel, InvestmentModel, SecurityModel, PurchaseModel, SplitModel, TransactionModel, SubscriptionModel],
 
         //If you're not using migrations, you can delete these lines,
         //since the default is no migrations:
@@ -91,6 +94,7 @@ export const DatabaseConnectionProvider = ({ children }) => {
         purchaseRepository: new PurchaseRepository(connection),
         splitRepository: new SplitRepository(connection),
         transactionRepository: new TransactionRepository(connection),
+        subscriptionRepository: new SubscriptionRepository(connection),
       }}
     >
       {children}

@@ -1,3 +1,4 @@
+import { ExpenseEnum } from "../models/types";
 import { useDatabaseConnection } from "../store/database-context";
 import { PurchaseEntity, purchaseMapper, PurchaseModel } from "../store/database/Purchase/PurchaseEntity";
 import { PurchaseRepository } from "../store/database/Purchase/PurchaseRepository";
@@ -15,6 +16,19 @@ export class ExpensesService {
 
   public isReady() {
     return this.purchaseRepository.isReady() && this.transactionRepository.isReady() && this.splitRepository.isReady();
+  }
+
+  public async getExpenseByIdAndType(userId: string, expenseId: number, expenseEntity: ExpenseEnum): Promise<PurchaseModel | TransactionModel> {
+    switch (expenseEntity) {
+      case ExpenseEnum.Purchase: {
+        return await this.purchaseRepository.getById(userId, expenseId);
+      }
+      case ExpenseEnum.Transaction: {
+        return await this.transactionRepository.getById(userId, expenseId);
+      }
+      default:
+        return null;
+    }
   }
 
   public async createPurchase(purchaseEntity: PurchaseEntity): Promise<void> {
