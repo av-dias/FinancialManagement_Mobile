@@ -17,6 +17,11 @@ export class SubscriptionService {
     return subscriptions.map((s) => subscriptionMapper(s));
   }
 
+  public async getAllBeforeDate(userId: string, date: Date): Promise<SubscriptionEntity[]> {
+    const subscriptions = await this.subscriptionRepository.getAllBeforeDate(userId, date);
+    return subscriptions.map((s) => subscriptionMapper(s));
+  }
+
   public async createSubscription(userId: string, subscriptionEntity: SubscriptionEntity): Promise<void> {
     if (!subscriptionEntity.dayOfMonth || !subscriptionEntity.item) {
       alert("Please fill all fields.");
@@ -38,7 +43,18 @@ export class SubscriptionService {
       subscription.item = JSON.stringify(await this.expenseService.getExpenseByIdAndType(userId, subscriptionEntity.item.id, subscriptionEntity.item.entity));
     }
 
-    console.log(subscription);
     await this.subscriptionRepository.updateOrCreate(subscription);
+  }
+
+  public async updateLastUpdateDate(userId: string, subscriptionId: number) {
+    await this.subscriptionRepository.updateLastUpdateDate(userId, subscriptionId);
+  }
+
+  public async deleteById(id: number) {
+    await this.subscriptionRepository.delete(id);
+  }
+
+  public async deleteAll(userId: string) {
+    await this.subscriptionRepository.deleteAll(userId);
   }
 }

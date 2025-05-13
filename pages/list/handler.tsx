@@ -270,15 +270,15 @@ export const searchIncome = (incomeData, searchQuery, listOfDays) => {
   });
 };
 
-export const loadEditModal = (selectedItem: PurchaseEntity | TransactionEntity | IncomeType, email, reload, setIncomeData) => {
+export const loadEditModal = (selectedItem: PurchaseEntity | TransactionEntity | IncomeEntity, email, reload, setIncomeData) => {
   if (selectedItem.entity === ExpenseEnum.Purchase) {
-    const updatePurchase = selectedItem as PurchaseEntity;
+    const updatePurchase = selectedItem;
     return <Purchase purchase={updatePurchase} callback={reload} />;
   } else if (selectedItem.entity === ExpenseEnum.Transaction) {
-    const updateTransaction = selectedItem as TransactionEntity;
+    const updateTransaction = selectedItem;
     return <Transaction transaction={updateTransaction} callback={reload} />;
-  } else if (selectedItem.key === KEYS_SERIALIZER.INCOME) {
-    const updateIncome = selectedItem as IncomeType;
+  } else if (selectedItem.entity === ExpenseEnum.Income) {
+    const updateIncome = selectedItem;
     return (
       <Income
         income={updateIncome}

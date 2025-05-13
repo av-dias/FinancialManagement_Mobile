@@ -24,6 +24,7 @@ import { LogBox } from "react-native";
 import Networth from "./pages/networth/networth";
 import { DatabaseConnectionProvider } from "./store/database-context";
 import Trade from "./pages/trade/trade";
+import Subscription from "./pages/subscription/subscription";
 
 const IGNORED_LOGS = ["Warning: Failed prop type: Invalid prop `domain` supplied to `VictoryLine`."];
 LogBox.ignoreLogs(IGNORED_LOGS);
@@ -51,6 +52,7 @@ function HomeTabs() {
             <Tab.Screen name="List" component={List} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <FontAwesome5 name="clipboard-list" size={iconSize} color="white" /> }} />
             <Tab.Screen name="Settings" component={Settings} options={{ headerShown: false, tabBarButton: (props) => null }} />
             <Tab.Screen name="Trade" component={Trade} options={{ headerShown: false, tabBarButton: (props) => null }} />
+            <Tab.Screen name="Subscription" component={Subscription} options={{ headerShown: false, tabBarButton: (props) => null }} />
           </Tab.Navigator>
         </AppContextProvider>
       </DatabaseConnectionProvider>

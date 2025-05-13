@@ -31,11 +31,15 @@ import { utilIcons } from "../../utility/icons";
 import { ExpensesService } from "../../service/ExpensesService";
 import { TransactionEntity } from "../../store/database/Transaction/TransactionEntity";
 import { PurchaseEntity } from "../../store/database/Purchase/PurchaseEntity";
+import { SubscriptionService } from "../../service/SubscriptionService";
+import { SubscriptionEntity } from "../../store/database/Subscription/SubscriptionEntity";
+import { getExpenseDate } from "../../functions/expenses";
 
 export default function List({ navigation }) {
   const email = useContext(UserContext).email;
   const { incomeRepository } = useDatabaseConnection();
   const expensesService = new ExpensesService();
+  const subscriptionService = new SubscriptionService();
 
   const styles = _styles;
 
@@ -45,7 +49,7 @@ export default function List({ navigation }) {
   const [incomeData, setIncomeData] = useState<IncomeEntity[]>([]);
   const [expenseData, setExpenseData] = useState<(PurchaseEntity | TransactionEntity)[]>([]);
 
-  const [selectedItem, setSelectedItem] = useState<PurchaseEntity | TransactionEntity | IncomeType>();
+  const [selectedItem, setSelectedItem] = useState<PurchaseEntity | TransactionEntity | IncomeEntity>();
   const [destination, setDestination] = useState({ email: "", name: "" });
 
   const [listDays, setListDays] = useState([]);
@@ -54,14 +58,14 @@ export default function List({ navigation }) {
   const [alertVisible, setAlertVisible] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [multiSelect, setMultiSelect] = useState<(PurchaseEntity | TransactionEntity | IncomeType)[]>([]);
+  const [multiSelect, setMultiSelect] = useState<(PurchaseEntity | TransactionEntity | IncomeEntity)[]>([]);
   const [refresh, setRefresh] = useState<boolean>(false);
 
   useFocusEffect(
     React.useCallback(() => {
       async function fetchData() {
-        await getSplitUser(setDestination, email);
         try {
+          await getSplitUser(setDestination, email);
         } catch (e) {
           console.log("Transaction: " + e);
         }
@@ -154,17 +158,33 @@ export default function List({ navigation }) {
     return options;
   };
 
+  const removeSelection = () => setMultiSelect([]);
+
   const loadModalDialog = (data: PurchaseEntity | TransactionEntity | IncomeType) => {
     setAlertVisible(true);
     setSelectedItem(data);
   };
 
-  const onRecurringHandle = () => {
-    alert("Feature is not implemented yet.");
+  const onRecurringHandle = async () => {
+    if (multiSelect.length == 0) {
+      navigation.navigate("Subscription");
+    } else {
+      for (const itemSelected of multiSelect) {
+        const subscriptionEntity: SubscriptionEntity = {
+          dayOfMonth: getExpenseDate(itemSelected),
+          lastUpdateDate: null,
+          entity: itemSelected?.entity,
+          userId: email,
+          item: itemSelected,
+        };
+        await subscriptionService.createSubscription(email, subscriptionEntity);
+      }
+    }
+    removeSelection();
   };
 
   const onBulkDeleteHandle = () => {
-    multiSelect.map((item) => {
+    multiSelect.forEach((item) => {
       switch (item.entity) {
         case ExpenseEnum.Purchase: {
           expensesService.deletePurchase(item);
@@ -183,36 +203,30 @@ export default function List({ navigation }) {
         }
       }
     });
-    setMultiSelect([]);
+    removeSelection();
   };
 
   /* Loads the dialog data when list item is pressed */
   const getModalDialogData = (data: IncomeEntity | PurchaseEntity | TransactionEntity): AlertData => {
     if (data.entity === ExpenseEnum.Income) {
-      data = data as IncomeEntity;
-
       const handleConfirm = async (income: IncomeEntity) => {
         await incomeRepository.delete(income.id);
         setIncomeData((prev) => prev.filter((item) => item.id !== income.id));
       };
 
-      return IncomeAlertData(data.name, data.amount.toString(), async () => await handleConfirm(data as IncomeType));
+      return IncomeAlertData(data.name, data.amount.toString(), async () => await handleConfirm(data));
     } else if (data.entity === ExpenseEnum.Purchase) {
-      data = data as PurchaseEntity;
-
       const handleConfirm = async (purchase: PurchaseEntity) => {
         await expensesService.deletePurchase(purchase);
         removeExpense(purchase);
       };
-      return PurchaseAlertData(data.name, data.amount.toString(), async () => await handleConfirm(data as PurchaseEntity));
+      return PurchaseAlertData(data.name, data.amount.toString(), async () => await handleConfirm(data));
     } else {
-      data = data as TransactionEntity;
-
       const handleConfirm = async (transaction: TransactionEntity) => {
         await expensesService.deleteTransaction(transaction);
         removeExpense(transaction);
       };
-      return TransactionAlertData(data.description, data.amount.toString(), async () => await handleConfirm(data as TransactionEntity));
+      return TransactionAlertData(data.description, data.amount.toString(), async () => await handleConfirm(data));
     }
   };
 
@@ -259,37 +273,35 @@ export default function List({ navigation }) {
                     <Text style={styles.listDate}>{new Date(date).getDate() + " " + months[new Date(date).getMonth()]}</Text>
                   </View>
                   <CardWrapper key={date} style={styles.listBox}>
-                    {expenseData &&
-                      expenseData.map(
-                        (expense: PurchaseEntity | TransactionEntity) =>
-                          isExpenseOnDate(expense, date) &&
-                          searchItem(expense, searchQuery) && (
-                            <CustomListItem
-                              key={`Expenses${expense.id}${expense.entity}${expense.type}`}
-                              item={expense}
-                              options={expensesOptions(expense)}
-                              label={expenseLabel(expense)}
-                              onPress={() => loadModalDialog(expense)}
-                              onLongPress={setMultiSelect}
-                              selected={multiSelect}
-                            />
-                          )
-                      )}
-                    {incomeData &&
-                      incomeData.map(
-                        (income) =>
-                          isIncomeOnDate(income.doi, date) &&
-                          searchItem(income, searchQuery) && (
-                            <CustomListItem
-                              key={`Income${income.id}`}
-                              item={income}
-                              options={incomeOptions(income)}
-                              onPress={() => loadModalDialog({ ...income, key: KEYS_SERIALIZER.INCOME })}
-                              onLongPress={setMultiSelect}
-                              selected={multiSelect}
-                            />
-                          )
-                      )}
+                    {expenseData?.map(
+                      (expense: PurchaseEntity | TransactionEntity) =>
+                        isExpenseOnDate(expense, date) &&
+                        searchItem(expense, searchQuery) && (
+                          <CustomListItem
+                            key={`Expenses${expense.id}${expense.entity}${expense.type}`}
+                            item={expense}
+                            options={expensesOptions(expense)}
+                            label={expenseLabel(expense)}
+                            onPress={() => loadModalDialog(expense)}
+                            onLongPress={setMultiSelect}
+                            selected={multiSelect}
+                          />
+                        )
+                    )}
+                    {incomeData?.map(
+                      (income) =>
+                        isIncomeOnDate(income.doi, date) &&
+                        searchItem(income, searchQuery) && (
+                          <CustomListItem
+                            key={`Income${income.id}`}
+                            item={income}
+                            options={incomeOptions(income)}
+                            onPress={() => loadModalDialog({ ...income, key: KEYS_SERIALIZER.INCOME })}
+                            onLongPress={setMultiSelect}
+                            selected={multiSelect}
+                          />
+                        )
+                    )}
                   </CardWrapper>
                 </View>
               ))}
@@ -303,15 +315,15 @@ export default function List({ navigation }) {
            */}
           {multiSelect.length > 0 && (
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Checkbox status={multiSelect.length > 0 ? "checked" : "unchecked"} onPress={() => setMultiSelect([])} />
-              <Pressable onPress={() => setMultiSelect([])}>
+              <Checkbox status={multiSelect.length > 0 ? "checked" : "unchecked"} onPress={removeSelection} />
+              <Pressable onPress={removeSelection}>
                 <Text style={{ color: dark.textPrimary }}>{`Selected items: ${multiSelect.length}`}</Text>
               </Pressable>
             </View>
           )}
           <View style={styles.calendar}>
             <View style={{ flexDirection: "row", gap: 5 }}>
-              <Pressable onPress={onRecurringHandle}>
+              <Pressable onPress={async () => await onRecurringHandle()}>
                 <CardWrapper style={{ height: verticalScale(40), padding: 5 }}>{utilIcons(35, dark.textPrimary).find((icon) => icon.label === "Recurring").icon}</CardWrapper>
               </Pressable>
               {multiSelect.length > 0 && (

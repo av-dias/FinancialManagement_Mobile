@@ -1,6 +1,41 @@
 import { ExpensesByYear } from "../models/interfaces";
-import { ExpenseType, PurchaseType, TransactionType } from "../models/types";
+import { ExpenseEnum, ExpenseType, PurchaseType, TransactionType } from "../models/types";
+import { IncomeEntity } from "../store/database/Income/IncomeEntity";
+import { PurchaseEntity } from "../store/database/Purchase/PurchaseEntity";
+import { TransactionEntity } from "../store/database/Transaction/TransactionEntity";
 import { KEYS, ANALYSES_TYPE, TRANSACTION_TYPE } from "../utility/keys";
+
+export const getExpenseDate = (itemSelected: PurchaseEntity | TransactionEntity | IncomeEntity) => {
+  switch (itemSelected.entity) {
+    case ExpenseEnum.Purchase: {
+      return new Date(itemSelected.date).getDate();
+    }
+    case ExpenseEnum.Transaction: {
+      return new Date(itemSelected.date).getDate();
+    }
+    case ExpenseEnum.Income: {
+      return new Date(itemSelected.doi).getDate();
+    }
+    default:
+      null;
+  }
+};
+
+export const getExpenseName = (itemSelected: PurchaseEntity | TransactionEntity | IncomeEntity) => {
+  switch (itemSelected?.entity) {
+    case ExpenseEnum.Purchase: {
+      return itemSelected.name;
+    }
+    case ExpenseEnum.Transaction: {
+      return itemSelected.description;
+    }
+    case ExpenseEnum.Income: {
+      return itemSelected.name;
+    }
+    default:
+      null;
+  }
+};
 
 export const calcExpensesTotalFromType = (expenses: any) => {
   let res = { [ANALYSES_TYPE.Total]: 0, [ANALYSES_TYPE.Personal]: 0 };
