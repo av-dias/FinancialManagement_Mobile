@@ -24,7 +24,7 @@ export const FlatItem = (content: FlatItemType) => {
     //style={({ pressed }) => [{ backgroundColor: pressed ? 'black' : 'white' }, styles.btn ]}>
 
     <Pressable onPress={onPress} style={({ pressed }) => commonStyles.onPressBounce(pressed, {}, content.onPressCallback)}>
-      <CardWrapper style={{ paddingVertical: content.padding ? content.padding : 20, paddingHorizontal: 30, maxHeight: 100 }}>
+      <CardWrapper style={{ paddingVertical: content.padding ? content.padding : 15, paddingHorizontal: 30, maxHeight: 80 }}>
         <View style={styles.row}>
           {content.icon && <View style={styles.left}>{content?.icon}</View>}
           <View style={content.icon ? styles.center : styles.left}>

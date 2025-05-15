@@ -64,10 +64,12 @@ export default function Home({ navigation }) {
 
         let resExpensesByType = { [ANALYSES_TYPE.Total]: expensesByTypeTotal, [ANALYSES_TYPE.Personal]: expensesByTypePersonal };
 
-        let [resPieChart, resTableChart] = loadExpenses(resExpensesByType);
-        setPieChartData(resPieChart);
-        setSpendByType(resTableChart);
-        setExpenseTotal(calcExpensesTotalFromType(resExpensesByType));
+        if (resExpensesByType[ANALYSES_TYPE.Personal] && resExpensesByType[ANALYSES_TYPE.Total]) {
+          let [resPieChart, resTableChart] = loadExpenses(resExpensesByType);
+          setPieChartData(resPieChart);
+          setSpendByType(resTableChart);
+          setExpenseTotal(calcExpensesTotalFromType(resExpensesByType));
+        }
 
         const averageTotal = await expensesService.getExpensesTotalAverage(email, currentYear, ANALYSES_TYPE.Total);
         const averagePersonal = await expensesService.getExpensesTotalAverage(email, currentYear, ANALYSES_TYPE.Personal);
@@ -75,10 +77,12 @@ export default function Home({ navigation }) {
         const averageTypeTotal = await expensesService.getExpenseAverageByType(email, currentYear, ANALYSES_TYPE.Total);
         const averageTypePersonal = await expensesService.getExpenseAverageByType(email, currentYear, ANALYSES_TYPE.Personal);
 
-        let [resAveragePieChart, resAverageTableChart] = loadExpenses({ Total: averageTypeTotal, Personal: averageTypePersonal });
-        setPieChartAverageData(resAveragePieChart);
-        setSpendAverageByType(resAverageTableChart);
-        setPurchaseAverageTotal({ Total: averageTotal, Personal: averagePersonal });
+        if (averageTypeTotal && averageTypePersonal) {
+          let [resAveragePieChart, resAverageTableChart] = loadExpenses({ Total: averageTypeTotal, Personal: averageTypePersonal });
+          setPieChartAverageData(resAveragePieChart);
+          setSpendAverageByType(resAverageTableChart);
+          setPurchaseAverageTotal({ Total: averageTotal, Personal: averagePersonal });
+        }
       }
       if (email && expensesService.isReady()) {
         let startTime = performance.now();

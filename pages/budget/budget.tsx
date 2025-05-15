@@ -81,8 +81,6 @@ export default function Budget({ navigation }) {
     }, [email, expensesService.isReady()])
   );
 
-  console.log(expensesTotalByType);
-
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
