@@ -92,7 +92,9 @@ export default function CalendarCard({
     currentMonth ? calendarDateRange : calendarYearsRange
   );
   const [defaultIndex] = useState(
-    dateOffset + (currentYear - deviceTodayYear) * monthOffset + currentMonth
+    dateOffset +
+      (currentYear - deviceTodayYear) * monthOffset +
+      (currentMonth ? currentMonth : 0)
   );
 
   const handleMonthClick = (index: number) => {

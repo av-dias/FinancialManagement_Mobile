@@ -8,5 +8,5 @@ const forwYearsRange = 1;
 const currentYear = new Date().getFullYear();
 export const years = Array.from({ length: currentYear - new Date().getFullYear() + prevYearsRange + forwYearsRange + 1 }, (_, i) => currentYear - prevYearsRange + i);
 export const calendarDateRange = years.slice(calendarOffset).flatMap((y) => months.map((m) => ({ month: m, year: y })));
-export const calendarYearsRange = years.slice(calendarOffset).flatMap((y) =>  ({ month: null, year: y }));
+export const calendarYearsRange = years.slice(calendarOffset).map((y) =>  ({ month: null, year: y }));
 
