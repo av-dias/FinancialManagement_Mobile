@@ -111,18 +111,25 @@ export default function CalendarCard({
    * year and new month in relation with current
    */
   const handleDate = () => {
-    // If we are using month then we need to check the deviation
-    // Otherwise lets keep it zero
-    const monthChange = currentMonth ? newMonth - currentMonth : 0;
-    // Check year deviation and multiple with offset
-    // This is because when we use months a change in
-    // One year refers to 12 positions in the range array
-    refCarousel.current.scrollTo({
-      count: (newYear - currentYear) * monthOffset + monthChange,
-    });
+    if (currentMonth !== null) {
+      // If we are using month then we need to check the deviation
+      // Otherwise lets keep it zero
+      const monthChange = newMonth - currentMonth;
+      const yearChange = newYear - currentYear;
+      // Check year deviation and multiple with offset
+      // This is because when we use months a change in
+      // One year refers to 12 positions in the range array
+      refCarousel.current.scrollTo({
+        count: yearChange * monthOffset + monthChange,
+      });
+      setCurrentMonth(newMonth);
+      setCurrentYear(newYear);
+    } else {
+      const targetIndex = dateRange.findIndex((item) => item.year === newYear);
+      refCarousel.current.scrollTo({ index: targetIndex });
+      setCurrentYear(newYear);
+    }
 
-    if (currentMonth != null) setCurrentMonth(newMonth);
-    if (currentYear != null) setCurrentYear(newYear);
     setDatePicker(false);
   };
 
