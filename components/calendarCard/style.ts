@@ -24,9 +24,22 @@ export const _styles = StyleSheet.create({
     borderRadius: commonStyles.borderRadius,
     elevation: 2,
   },
-  iconCenterLeft: { display: "flex", justifyContent: "center", alignSelf: "flex-end" },
-  iconCenterRight: { display: "flex", justifyContent: "center", alignSelf: "flex-start" },
-  text: { fontSize: verticalScale(15), textAlign: "center", justifyContent: "center", color: dark.textPrimary },
+  iconCenterLeft: {
+    display: "flex",
+    justifyContent: "center",
+    alignSelf: "flex-end",
+  },
+  iconCenterRight: {
+    display: "flex",
+    justifyContent: "center",
+    alignSelf: "flex-start",
+  },
+  text: {
+    fontSize: verticalScale(15),
+    textAlign: "center",
+    justifyContent: "center",
+    color: dark.textPrimary,
+  },
   rowGap: {
     flexDirection: "row",
     justifyContent: "center",
@@ -50,4 +63,5 @@ export const _styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   calendarMonthContainer: { width: 50, borderRadius: 5, height: 20 },
+  centered: { justifyContent: "center", alignItems: "center" },
 });

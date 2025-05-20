@@ -1,6 +1,5 @@
 import { Text, View, Pressable, ScrollView } from "react-native";
 import React, { useRef, useState } from "react";
-import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { Button } from "react-native-paper";
 
 import { _styles } from "./style";
@@ -17,6 +16,7 @@ import ModalCustom from "../modal/modal";
 import { dark } from "../../utility/colors";
 import commonStyles from "../../utility/commonStyles";
 import { DateFormat } from "../../models/basicUtils";
+import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
 
 /**
  * DateItem Shows date item on calendar date picker
@@ -76,11 +76,12 @@ export default function CalendarCard({
   yearState: [currentYear, setCurrentYear],
 }) {
   const styles = _styles;
-  const refMonth = useRef<ScrollView>();
-  const refYear = useRef<ScrollView>();
-  const refCarousel = useRef<ICarouselInstance>();
+  const monthRef = useRef<ScrollView>();
+  const yearRef = useRef<ScrollView>();
+  const flatListRef = useRef<FlatList>();
   const deviceTodayYear = new Date().getFullYear();
   const monthOffset = currentMonth ? 12 : 1; // If we are using months we need to offset
+  const ITEM_WIDTH = Math.floor(verticalScale(100));
 
   const [datePicker, setDatePicker] = useState(false);
   const [newMonth, setNewMonth] = useState(currentMonth);
@@ -115,18 +116,18 @@ export default function CalendarCard({
       // If we are using month then we need to check the deviation
       // Otherwise lets keep it zero
       const monthChange = newMonth - currentMonth;
-      const yearChange = newYear - currentYear;
+      const targetIndex = dateRange.findIndex((item) => item.year === newYear);
       // Check year deviation and multiple with offset
       // This is because when we use months a change in
       // One year refers to 12 positions in the range array
-      refCarousel.current.scrollTo({
-        count: yearChange * monthOffset + monthChange,
+      flatListRef.current?.scrollToIndex({
+        index: targetIndex * monthOffset + monthChange,
       });
       setCurrentMonth(newMonth);
       setCurrentYear(newYear);
     } else {
       const targetIndex = dateRange.findIndex((item) => item.year === newYear);
-      refCarousel.current.scrollTo({ index: targetIndex });
+      flatListRef.current?.scrollToIndex({ index: targetIndex });
       setCurrentYear(newYear);
     }
 
@@ -136,40 +137,56 @@ export default function CalendarCard({
   return (
     <View style={styles.calendarContainer}>
       <View style={styles.calendarBox}>
-        <Carousel
-          ref={refCarousel}
-          width={verticalScale(100)}
-          height={verticalScale(40)}
-          data={dateRange}
-          scrollAnimationDuration={100}
-          defaultIndex={defaultIndex === -1 ? 0 : defaultIndex}
-          renderItem={(element) => (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                backgroundColor: "transparent",
-              }}
-            >
-              <Pressable onPress={() => setDatePicker(true)}>
-                <Text style={styles.text}>{`${
-                  currentMonth ? element.item.month : ""
-                } ${element.item.year}`}</Text>
-              </Pressable>
-            </View>
-          )}
-          onSnapToItem={(index) => {
-            if (currentMonth !== null && currentMonth !== undefined) {
-              const month = dateRange[index].month;
-              const year = dateRange[index].year;
-              setCurrentYear(year);
-              setCurrentMonth(months.findIndex((v) => v === month));
-            } else {
-              const year = dateRange[index].year;
-              setCurrentYear(year);
-            }
-          }}
-        />
+        <GestureHandlerRootView>
+          <FlatList
+            ref={flatListRef}
+            horizontal={true}
+            snapToInterval={ITEM_WIDTH}
+            snapToAlignment="center"
+            pagingEnabled
+            decelerationRate={0.5}
+            data={dateRange}
+            showsHorizontalScrollIndicator={false}
+            initialScrollIndex={defaultIndex}
+            getItemLayout={(data, index) => ({
+              length: ITEM_WIDTH,
+              offset: ITEM_WIDTH * index,
+              index,
+            })}
+            onMomentumScrollEnd={(event) => {
+              const offsetX = event.nativeEvent.contentOffset.x;
+              const index = Math.round(offsetX / ITEM_WIDTH);
+
+              if (currentMonth !== null && currentMonth !== undefined) {
+                const month = dateRange[index].month;
+                const year = dateRange[index].year;
+                setCurrentYear(year);
+                setCurrentMonth(months.findIndex((v) => v === month));
+              } else {
+                const year = dateRange[index].year;
+                setCurrentYear(year);
+              }
+            }}
+            renderItem={(element) => (
+              <View
+                style={{
+                  ...styles.centered,
+                  width: ITEM_WIDTH,
+                }}
+              >
+                <Pressable onPress={() => setDatePicker(true)}>
+                  <Text style={styles.text}>{`${
+                    currentMonth !== null ? element.item.month : ""
+                  } ${element.item.year}`}</Text>
+                </Pressable>
+              </View>
+            )}
+            style={{
+              height: verticalScale(40),
+              width: ITEM_WIDTH,
+            }}
+          />
+        </GestureHandlerRootView>
         {datePicker && (
           <ModalCustom
             modalVisible={datePicker}
@@ -186,7 +203,7 @@ export default function CalendarCard({
               }}
             >
               {currentYear != null && (
-                <DatePickerScrollView refDate={refYear} newValue={newYear}>
+                <DatePickerScrollView refDate={yearRef} newValue={newYear}>
                   {years.map((year: number) => (
                     <DateItem
                       key={year}
@@ -198,7 +215,7 @@ export default function CalendarCard({
                 </DatePickerScrollView>
               )}
               {currentMonth != null && (
-                <DatePickerScrollView refDate={refMonth} newValue={newMonth}>
+                <DatePickerScrollView refDate={monthRef} newValue={newMonth}>
                   {months.map((month: string, index: number) => (
                     <DateItem
                       key={month}
