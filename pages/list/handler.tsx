@@ -1,8 +1,7 @@
 import { editOnStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
-import { ExpenseEnum, ExpenseType, IncomeType, PurchaseType, TransactionType } from "../../models/types";
+import { ExpenseEnum, PurchaseType, TransactionType } from "../../models/types";
 import { updateExpenses } from "../../functions/expenses";
-import { handleTransaction } from "../transaction/handler";
 import { IncomeEntity } from "../../store/database/Income/IncomeEntity";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import Transaction from "../transaction/transaction";
@@ -10,22 +9,37 @@ import Purchase from "../purchase/purchase";
 import Income from "../income/income";
 import { getSplitEmail } from "../../functions/split";
 import { ExpensesService } from "../../service/ExpensesService";
-import { PurchaseEntity, PurchaseModel } from "../../store/database/Purchase/PurchaseEntity";
-import { TransactionEntity, transactionMapper, TransactionModel, TransactionOperation } from "../../store/database/Transaction/TransactionEntity";
+import { PurchaseEntity } from "../../store/database/Purchase/PurchaseEntity";
+import {
+  TransactionEntity,
+  transactionMapper,
+  TransactionOperation,
+} from "../../store/database/Transaction/TransactionEntity";
 import { SplitEntity } from "../../store/database/Split/SplitEntity";
 
 export const isCtxLoaded = (ctx) => {
-  return Object.keys(ctx).length > 0 && Object.keys(ctx["expensesByDate"]).length > 0;
+  return (
+    Object.keys(ctx).length > 0 && Object.keys(ctx["expensesByDate"]).length > 0
+  );
 };
 
-export const handleSplit = async (expense: PurchaseEntity, splitUser, expensesService: ExpensesService) => {
+export const handleSplit = async (
+  expense: PurchaseEntity,
+  splitUser,
+  expensesService: ExpensesService
+) => {
   const newSplit: SplitEntity = { userId: splitUser, weight: 50 };
   expense.split = newSplit;
 
   await expensesService.updatePurchase(expense);
 };
 
-export const handleSettleSplit = async (email, expense: PurchaseEntity, destination, expenseService: ExpensesService) => {
+export const handleSettleSplit = async (
+  email,
+  expense: PurchaseEntity,
+  destination,
+  expenseService: ExpensesService
+) => {
   let splitPercentage = Number(expense.split.weight) / 100;
   let settleValue = Number(expense.amount) * splitPercentage;
 
@@ -41,7 +55,9 @@ export const handleSettleSplit = async (email, expense: PurchaseEntity, destinat
   };
 
   try {
-    const transactionModel = await expenseService.createTransaction(newTransaction);
+    const transactionModel = await expenseService.createTransaction(
+      newTransaction
+    );
     expense.wasRefunded = transactionModel.id;
     await expenseService.updatePurchase(expense);
     return transactionModel;
@@ -51,8 +67,18 @@ export const handleSettleSplit = async (email, expense: PurchaseEntity, destinat
 };
 
 // Major refatoring is required upon sqlite is implemented
-export const handleEditPurchase = async (email, selectedPurchase: PurchaseType, index: number, splitStatus: boolean, slider: number, splitEmail, setEditVisible, setExpenses) => {
-  if (!selectedPurchase.name && selectedPurchase.name == "") selectedPurchase.name = selectedPurchase.type;
+export const handleEditPurchase = async (
+  email,
+  selectedPurchase: PurchaseType,
+  index: number,
+  splitStatus: boolean,
+  slider: number,
+  splitEmail,
+  setEditVisible,
+  setExpenses
+) => {
+  if (!selectedPurchase.name && selectedPurchase.name == "")
+    selectedPurchase.name = selectedPurchase.type;
   if (!splitStatus) delete selectedPurchase.split;
 
   if (isNaN(Number(selectedPurchase.value))) {
@@ -60,17 +86,37 @@ export const handleEditPurchase = async (email, selectedPurchase: PurchaseType, 
     return;
   }
 
-  selectedPurchase.value = selectedPurchase.note === "Refund" ? "-" + selectedPurchase.value : selectedPurchase.value;
+  selectedPurchase.value =
+    selectedPurchase.note === "Refund"
+      ? "-" + selectedPurchase.value
+      : selectedPurchase.value;
 
-  if (splitStatus) selectedPurchase.split = { userId: splitEmail, weight: slider.toString() };
+  if (splitStatus)
+    selectedPurchase.split = { userId: splitEmail, weight: slider.toString() };
 
-  await editOnStorage(KEYS.PURCHASE, JSON.stringify(selectedPurchase), index, email);
-  updateExpenses({ element: selectedPurchase, index: index, key: KEYS_SERIALIZER.PURCHASE }, setExpenses);
+  await editOnStorage(
+    KEYS.PURCHASE,
+    JSON.stringify(selectedPurchase),
+    index,
+    email
+  );
+  updateExpenses(
+    { element: selectedPurchase, index: index, key: KEYS_SERIALIZER.PURCHASE },
+    setExpenses
+  );
   setEditVisible(false);
 };
 
 // Major refatoring is required upon sqlite is implemented
-export const handleEditTransaction = async (email, selectedTransaction: TransactionType, index: number, setEditVisible, setExpenses, receivedActive: boolean, destination: string) => {
+export const handleEditTransaction = async (
+  email,
+  selectedTransaction: TransactionType,
+  index: number,
+  setEditVisible,
+  setExpenses,
+  receivedActive: boolean,
+  destination: string
+) => {
   let _destination = getSplitEmail(destination);
   if (
     !selectedTransaction.amount ||
@@ -84,16 +130,37 @@ export const handleEditTransaction = async (email, selectedTransaction: Transact
     return;
   }
 
-  if (!selectedTransaction.type || selectedTransaction.type == "") selectedTransaction.type = "Other";
+  if (!selectedTransaction.type || selectedTransaction.type == "")
+    selectedTransaction.type = "Other";
 
   if (!receivedActive) {
-    selectedTransaction = { ...selectedTransaction, user_origin_id: null, user_destination_id: _destination };
+    selectedTransaction = {
+      ...selectedTransaction,
+      user_origin_id: null,
+      user_destination_id: _destination,
+    };
   } else {
-    selectedTransaction = { ...selectedTransaction, user_origin_id: _destination, user_destination_id: email };
+    selectedTransaction = {
+      ...selectedTransaction,
+      user_origin_id: _destination,
+      user_destination_id: email,
+    };
   }
 
-  await editOnStorage(KEYS.TRANSACTION, JSON.stringify(selectedTransaction), index, email);
-  updateExpenses({ element: selectedTransaction, index: index, key: KEYS_SERIALIZER.TRANSACTION }, setExpenses);
+  await editOnStorage(
+    KEYS.TRANSACTION,
+    JSON.stringify(selectedTransaction),
+    index,
+    email
+  );
+  updateExpenses(
+    {
+      element: selectedTransaction,
+      index: index,
+      key: KEYS_SERIALIZER.TRANSACTION,
+    },
+    setExpenses
+  );
   setEditVisible(false);
 };
 
@@ -109,12 +176,15 @@ export const groupByDate = (data: any) => {
   return grouped_data;
 };
 
-export const isIncomeOnDate = (i_doi, date) => {
-  let doi = new Date(i_doi).toISOString().slice(0, 19).replace("T", " ").split(" ")[0];
-  return doi == date ? true : false;
+export const isIncomeOnDate = (doi, date) => {
+  let incomeDate = doi.toString().split(" ")[0];
+  return incomeDate == date ? true : false;
 };
 
-export const isExpenseOnDate = (expense: PurchaseEntity | TransactionEntity, date) => {
+export const isExpenseOnDate = (
+  expense: PurchaseEntity | TransactionEntity,
+  date
+) => {
   return expense.date === date ? true : false;
 };
 
@@ -125,7 +195,12 @@ export const expenseLabel = (innerData) => {
     };
 };
 
-export const splitOption = (expense, splitUser, expenseService: ExpensesService, callback) => ({
+export const splitOption = (
+  expense,
+  splitUser,
+  expenseService: ExpensesService,
+  callback
+) => ({
   callback: async () => {
     await handleSplit(expense, splitUser, expenseService);
     callback();
@@ -133,9 +208,20 @@ export const splitOption = (expense, splitUser, expenseService: ExpensesService,
   type: "Split",
 });
 
-export const settleOption = (email, expense, destination, expenseService: ExpensesService, addCallback) => ({
+export const settleOption = (
+  email,
+  expense,
+  destination,
+  expenseService: ExpensesService,
+  addCallback
+) => ({
   callback: async () => {
-    const newTransaction = await handleSettleSplit(email, expense, destination, expenseService);
+    const newTransaction = await handleSettleSplit(
+      email,
+      expense,
+      destination,
+      expenseService
+    );
     addCallback(transactionMapper(newTransaction));
   },
   type: "Settle",
@@ -157,7 +243,11 @@ export const editIncomeOption = (income, setSelectedItem, setEditVisible) => ({
   type: "Edit",
 });
 
-export const transferPurchase = async (email, purchase: PurchaseType, expensesService: ExpensesService) => {
+export const transferPurchase = async (
+  email,
+  purchase: PurchaseType,
+  expensesService: ExpensesService
+) => {
   try {
     const refund = purchase.note == "Refund" ? true : false;
 
@@ -193,7 +283,11 @@ export const transferPurchase = async (email, purchase: PurchaseType, expensesSe
   }
 };
 
-export const transferTransaction = async (email, transaction: TransactionType, expensesService: ExpensesService) => {
+export const transferTransaction = async (
+  email,
+  transaction: TransactionType,
+  expensesService: ExpensesService
+) => {
   try {
     let transactionOperation: TransactionOperation;
 
@@ -225,21 +319,35 @@ export const transferTransaction = async (email, transaction: TransactionType, e
   }
 };
 
-export const searchItem = (data: IncomeEntity | PurchaseEntity | TransactionEntity, searchQuery: string) => {
+export const searchItem = (
+  data: IncomeEntity | PurchaseEntity | TransactionEntity,
+  searchQuery: string
+) => {
   // If the search query is empty, return true to display all items
   if (searchQuery.trim().length == 0) return true;
   // Filter income based on search query
   else if (data.entity === ExpenseEnum.Income) {
-    if (data.name.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim())) {
+    if (
+      data.name.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim())
+    ) {
       return true;
     }
     return false;
     // Filter expenses based on search query
   } else {
-    if (data.entity != ExpenseEnum.Transaction && data?.name.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim())) return true;
+    if (
+      data.entity != ExpenseEnum.Transaction &&
+      data?.name.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim())
+    )
+      return true;
     if (
       data.entity != ExpenseEnum.Purchase &&
-      (data?.description.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim()) || data?.type.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim()))
+      (data?.description
+        .toLowerCase()
+        .includes(searchQuery.toLocaleLowerCase().trim()) ||
+        data?.type
+          .toLowerCase()
+          .includes(searchQuery.toLocaleLowerCase().trim()))
     )
       return true;
 
@@ -247,7 +355,11 @@ export const searchItem = (data: IncomeEntity | PurchaseEntity | TransactionEnti
   }
 };
 
-export const searchExpenses = (expenseData: (TransactionEntity | PurchaseEntity)[], searchQuery, listOfDays) => {
+export const searchExpenses = (
+  expenseData: (TransactionEntity | PurchaseEntity)[],
+  searchQuery,
+  listOfDays
+) => {
   expenseData.forEach((expense) => {
     let hasItem = searchItem(expense, searchQuery);
     if (hasItem) {
@@ -262,7 +374,7 @@ export const searchIncome = (incomeData, searchQuery, listOfDays) => {
   incomeData.forEach((income: IncomeEntity) => {
     let hasItem = searchItem(income, searchQuery);
     if (hasItem) {
-      const date = new Date(income.doi).toISOString().slice(0, 19).replace("T", " ").split(" ")[0];
+      const date = income.doi.toString().split(" ")[0];
       if (!listOfDays.includes(date)) {
         listOfDays.push(date);
       }
@@ -270,7 +382,12 @@ export const searchIncome = (incomeData, searchQuery, listOfDays) => {
   });
 };
 
-export const loadEditModal = (selectedItem: PurchaseEntity | TransactionEntity | IncomeEntity, email, reload, setIncomeData) => {
+export const loadEditModal = (
+  selectedItem: PurchaseEntity | TransactionEntity | IncomeEntity,
+  email,
+  reload,
+  setIncomeData
+) => {
   if (selectedItem.entity === ExpenseEnum.Purchase) {
     const updatePurchase = selectedItem;
     return <Purchase purchase={updatePurchase} callback={reload} />;
@@ -285,7 +402,11 @@ export const loadEditModal = (selectedItem: PurchaseEntity | TransactionEntity |
         handleEditCallback={(newIncome: IncomeEntity) => {
           reload();
           try {
-            setIncomeData((prev) => prev.map((i: IncomeEntity) => (i.id === newIncome.id ? newIncome : i)));
+            setIncomeData((prev) =>
+              prev.map((i: IncomeEntity) =>
+                i.id === newIncome.id ? newIncome : i
+              )
+            );
           } catch (e) {
             console.log(e);
           }
