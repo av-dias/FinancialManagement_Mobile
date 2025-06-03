@@ -4,6 +4,7 @@ import { PortfolioRepository } from "../store/database/Portfolio/PortfolioReposi
 import { PortfolioItemRepository } from "../store/database/PortfolioItem/PortfolioItemRepository";
 import { useDatabaseConnection } from "../store/database-context";
 import { loadWorthData } from "../functions/networth";
+import Networth from "../pages/networth/networth";
 
 export class PortfolioService {
   private readonly portfolioRepository: PortfolioRepository = useDatabaseConnection().portfolioRepository;
@@ -66,6 +67,40 @@ export class PortfolioService {
     }
 
     return worthGroupedByMonth;
+  }
+
+  public async getMinMaxWorth(userId: string) {
+    let values = [];
+
+    const dates = await this.portfolioItemRepository.getAllAvailableDates(userId);
+
+    for (const date of dates) {
+      let networth = 0,
+        grossworth = 0;
+      const { month, year } = date;
+      const curr = await this.getNearestPortfolioItem(userId, month, year);
+      curr.forEach((p) => {
+        p.networthFlag && (networth += Number(p.item.value));
+        p.grossworthFlag && (grossworth += Number(p.item.value));
+      });
+
+      values.push({ month: month, year: year, networth: networth, grossworth: grossworth });
+    }
+
+    return {
+      min: {
+        grossWorth: values[0].grossworth,
+        networth: values[0].networth,
+        month: values[0].month,
+        year: values[0].year,
+      },
+      max: {
+        grossWorth: values[values.length - 1].grossworth,
+        networth: values[values.length - 1].networth,
+        month: values[values.length - 1].month,
+        year: values[values.length - 1].year,
+      },
+    };
   }
 
   public async deletePortfolioItem(userId: string, name: string, value: number, month: number, year: number) {

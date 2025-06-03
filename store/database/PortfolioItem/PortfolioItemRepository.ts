@@ -29,6 +29,21 @@ export class PortfolioItemRepository {
     return portfolios;
   }
 
+  public async getAllAvailableDates(userId: string) {
+    const dates = await this.ormRepository
+      .createQueryBuilder("i")
+      .leftJoinAndSelect("i.portfolio", "p")
+      .select(["i.year AS year", "i.month AS month"])
+      .where("p.userId = :userId ", {
+        userId,
+      })
+      .distinct()
+      .orderBy("i.year, i.month")
+      .getRawMany();
+
+    return dates;
+  }
+
   public async create(portfolioItemEntity: PortfolioItemEntity): Promise<PortfolioItemModel> {
     const portfolio = this.ormRepository.create(portfolioItemEntity);
     await this.ormRepository.save(portfolio);

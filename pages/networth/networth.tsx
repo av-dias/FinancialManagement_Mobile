@@ -151,6 +151,7 @@ export default function Networth({ navigation }) {
             title={"Grossworth"}
             icon={<FontAwesome5 name="money-check" size={15} color={dark.secundary} />}
             data={worthData.grossworth}
+            onPress={() => navigation.navigate("NetworthStats")}
           />
           <MainCard
             value={portfolioWorth.networth.toFixed(0)}
@@ -159,6 +160,7 @@ export default function Networth({ navigation }) {
             title={"Networth"}
             icon={<FontAwesome5 name="money-check-alt" size={15} color="lightblue" />}
             data={worthData.networth}
+            onPress={() => navigation.navigate("NetworthStats")}
           />
         </View>
         <View style={{ flex: 1, gap: 10, padding: 5 }}>
@@ -184,7 +186,13 @@ export default function Networth({ navigation }) {
            */}
           <ScrollView contentContainerStyle={{ gap: 5 }}>
             {portfolio?.map((p) => (
-              <FlatItem key={p.name} name={p.name} value={p.item.value} options={loadOptions(p)} onPressCallback={isItemMonthYear(p.item) ? loadModalDialog : undefined} />
+              <FlatItem
+                key={p.name}
+                name={p.name}
+                value={p.item.value}
+                options={loadOptions(p)}
+                onPressCallback={isItemMonthYear(p.item) ? loadModalDialog : undefined}
+              />
             ))}
           </ScrollView>
         </View>

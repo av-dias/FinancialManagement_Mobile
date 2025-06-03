@@ -25,6 +25,7 @@ import Networth from "./pages/networth/networth";
 import { DatabaseConnectionProvider } from "./store/database-context";
 import Trade from "./pages/trade/trade";
 import Subscription from "./pages/subscription/subscription";
+import NetworthStats from "./pages/networthStats/networthStats";
 
 const IGNORED_LOGS = ["Warning: Failed prop type: Invalid prop `domain` supplied to `VictoryLine`."];
 LogBox.ignoreLogs(IGNORED_LOGS);
@@ -45,14 +46,31 @@ function HomeTabs() {
       <DatabaseConnectionProvider>
         <AppContextProvider>
           <Tab.Navigator screenOptions={() => ({ tabBarShowLabel: false, headerShown: false, tabBarStyle: styles.tab, navigationBarColor: "gold" })}>
-            <Tab.Screen name="Dashboard" component={Home} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="dashboard" size={iconSize} color="white" /> }} />
-            <Tab.Screen name="Stats" component={Budget} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={iconSize} color="white" /> }} />
+            <Tab.Screen
+              name="Dashboard"
+              component={Home}
+              options={{ headerShown: false, tabBarIcon: ({ color, size }) => <MaterialIcons name="dashboard" size={iconSize} color="white" /> }}
+            />
+            <Tab.Screen
+              name="Stats"
+              component={Budget}
+              options={{ headerShown: false, tabBarIcon: ({ color, size }) => <Ionicons name="stats-chart" size={iconSize} color="white" /> }}
+            />
             <Tab.Screen name="Purchase" component={Add} options={{ tabBarIcon: ({ color, size }) => <MainIcon /> }} />
-            <Tab.Screen name="Networth" component={Networth} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <AntDesign name="piechart" size={iconSize} color="white" /> }} />
-            <Tab.Screen name="List" component={List} options={{ headerShown: false, tabBarIcon: ({ color, size }) => <FontAwesome5 name="clipboard-list" size={iconSize} color="white" /> }} />
+            <Tab.Screen
+              name="Networth"
+              component={Networth}
+              options={{ headerShown: false, tabBarIcon: ({ color, size }) => <AntDesign name="piechart" size={iconSize} color="white" /> }}
+            />
+            <Tab.Screen
+              name="List"
+              component={List}
+              options={{ headerShown: false, tabBarIcon: ({ color, size }) => <FontAwesome5 name="clipboard-list" size={iconSize} color="white" /> }}
+            />
             <Tab.Screen name="Settings" component={Settings} options={{ headerShown: false, tabBarButton: (props) => null }} />
             <Tab.Screen name="Trade" component={Trade} options={{ headerShown: false, tabBarButton: (props) => null }} />
             <Tab.Screen name="Subscription" component={Subscription} options={{ headerShown: false, tabBarButton: (props) => null }} />
+            <Tab.Screen name="NetworthStats" component={NetworthStats} options={{ headerShown: false, tabBarButton: (props) => null }} />
           </Tab.Navigator>
         </AppContextProvider>
       </DatabaseConnectionProvider>
