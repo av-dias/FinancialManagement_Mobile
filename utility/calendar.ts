@@ -14,5 +14,5 @@ export const calendarDateRange = years.slice(calendarOffset).flatMap((y) => mont
 export const calendarYearsRange = years.slice(calendarOffset).map((y) => ({ month: null, year: y }));
 
 export function getMonthsBetween(startMonth: number, startYear: number, endMonth: number, endYear: number): number {
-  return (endYear - startYear) * 12 + (endMonth - startMonth) + 1;
+  return (endYear - startYear) * 12 + (endMonth - startMonth);
 }

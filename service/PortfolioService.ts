@@ -73,7 +73,6 @@ export class PortfolioService {
     let values = [];
 
     const dates = await this.portfolioItemRepository.getAllAvailableDates(userId);
-
     for (const date of dates) {
       let networth = 0,
         grossworth = 0;
@@ -88,6 +87,7 @@ export class PortfolioService {
     }
 
     return {
+      values: values,
       min: {
         grossWorth: values[0].grossworth,
         networth: values[0].networth,

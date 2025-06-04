@@ -43,5 +43,17 @@ export const _styles = StyleSheet.create({
   wrapperContainer: { padding: 20, flex: 1, justifyContent: "center" },
   titleContainer: { flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 },
   titleStyle: { fontSize: 14, color: dark.textPrimary },
+  btnTitleStyle: { fontSize: 14, color: "white" },
   AverageTitleStyle: { fontSize: 10, color: dark.textPrimary },
+  button: {
+    width: 45,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 2,
+    borderRadius: commonStyles.borderRadius,
+    borderWidth: 1,
+    borderColor: dark.button,
+    backgroundColor: dark.button,
+    elevation: 1,
+  },
 });
