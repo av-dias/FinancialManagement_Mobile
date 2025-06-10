@@ -47,7 +47,14 @@ export default function Subscription({ navigation }) {
       <View style={styles.usableScreen}>
         <View style={{ flex: 1, gap: 5 }}>
           {subscriptions?.map((s) => (
-            <FlatItem key={s.id} name={getExpenseName(s?.item)} value={s?.item?.amount} padding={15} icon={loadIcon(s?.dayOfMonth)} onPressCallback={() => console.log(s.id)} />
+            <FlatItem
+              key={s.id}
+              name={getExpenseName(s?.item)}
+              value={s?.item?.amount}
+              paddingVertical={15}
+              icon={loadIcon(s?.dayOfMonth)}
+              onPressCallback={() => console.log(s.id)}
+            />
           ))}
         </View>
         <CustomButton

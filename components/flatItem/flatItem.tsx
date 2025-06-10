@@ -6,34 +6,60 @@ import commonStyles from "../../utility/commonStyles";
 
 type FlatItemType = {
   name: string;
-  value: number;
+  value: number | ReactNode;
   icon?: ReactNode;
   options?: ReactNode;
-  padding?: number;
+  paddingVertical?: number;
+  paddingHorizontal?: number;
   onPressCallback?: ({ name, value }) => void;
 };
 
-export const FlatItem = (content: FlatItemType) => {
+const isReactComponent = (variable) =>
+  typeof variable === "object" ? true : false;
+export const FlatItem = ({
+  name,
+  value,
+  icon,
+  options,
+  paddingVertical,
+  paddingHorizontal,
+  onPressCallback,
+}: FlatItemType) => {
   const styles = _styles;
 
   const onPress = () => {
-    content.onPressCallback && content.onPressCallback({ name: content.name, value: content.value });
+    onPressCallback && onPressCallback({ name: name, value: value });
   };
 
   return (
     //style={({ pressed }) => [{ backgroundColor: pressed ? 'black' : 'white' }, styles.btn ]}>
 
-    <Pressable onPress={onPress} style={({ pressed }) => commonStyles.onPressBounce(pressed, {}, content.onPressCallback)}>
-      <CardWrapper style={{ paddingVertical: content.padding ? content.padding : 15, paddingHorizontal: 30, maxHeight: 80 }}>
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) =>
+        commonStyles.onPressBounce(pressed, {}, onPressCallback)
+      }
+    >
+      <CardWrapper
+        style={{
+          paddingVertical: paddingVertical ? paddingVertical : 15,
+          paddingHorizontal: paddingHorizontal ? paddingHorizontal : 30,
+          maxHeight: 80,
+        }}
+      >
         <View style={styles.row}>
-          {content.icon && <View style={styles.left}>{content?.icon}</View>}
-          <View style={content.icon ? styles.center : styles.left}>
-            <Text style={styles.text}>{content.name}</Text>
+          {icon && <View style={styles.left}>{icon}</View>}
+          <View style={icon ? styles.center : styles.left}>
+            <Text style={styles.text}>{name}</Text>
           </View>
           <View style={styles.right}>
-            <View>{content.options}</View>
+            <View>{options}</View>
             <View style={styles.textBox}>
-              <Text style={styles.text}>{`${content.value} €`}</Text>
+              {isReactComponent(value) ? (
+                value // If value is a React component, render it directly
+              ) : (
+                <Text style={styles.text}>{`${value} €`}</Text>
+              )}
             </View>
           </View>
         </View>

@@ -13,11 +13,20 @@ export class InvestmentRepository {
   };
 
   public async getAll(userId: string): Promise<InvestmentModel[]> {
-    return await this.ormRepository?.find({ where: { userId }, relations: ["security"] });
+    return (
+      await this.ormRepository?.find({
+        where: { userId },
+        relations: ["security"],
+      })
+    ).filter((investment) => !isNaN(new Date(investment.buyDate).getTime()));
   }
 
   public async updateOrCreate(investmentEntity: InvestmentEntity) {
     await this.ormRepository.save(investmentEntity);
+  }
+
+  public async delete(id: number): Promise<void> {
+    await this.ormRepository.delete(id);
   }
 
   public async deleteAll() {

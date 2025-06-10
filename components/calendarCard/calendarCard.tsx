@@ -112,25 +112,18 @@ export default function CalendarCard({
    * year and new month in relation with current
    */
   const handleDate = () => {
+    const targetIndex = dateRange.findIndex((item) => item.year === newYear);
+
     if (currentMonth !== null) {
-      // If we are using month then we need to check the deviation
-      // Otherwise lets keep it zero
-      const monthChange = newMonth - currentMonth;
-      const targetIndex = dateRange.findIndex((item) => item.year === newYear);
-      // Check year deviation and multiple with offset
-      // This is because when we use months a change in
-      // One year refers to 12 positions in the range array
       flatListRef.current?.scrollToIndex({
-        index: targetIndex * monthOffset + monthChange,
+        index: targetIndex + newMonth,
       });
       setCurrentMonth(newMonth);
-      setCurrentYear(newYear);
     } else {
-      const targetIndex = dateRange.findIndex((item) => item.year === newYear);
       flatListRef.current?.scrollToIndex({ index: targetIndex });
-      setCurrentYear(newYear);
     }
 
+    setCurrentYear(newYear);
     setDatePicker(false);
   };
 
