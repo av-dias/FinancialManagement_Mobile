@@ -11,7 +11,11 @@ export const styles = StyleSheet.create({
     textAlign: "right",
   },
   textBox: { minWidth: 50 },
-  row: { flexDirection: "row", borderRadius: commonStyles.borderRadius },
+  row: {
+    flexDirection: "row",
+    borderRadius: commonStyles.borderRadius,
+    alignItems: "center",
+  },
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
   left: { flex: 1, alignItems: "flex-start", justifyContent: "center" },
   right: {
@@ -20,6 +24,11 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     gap: 20,
     justifyContent: "flex-end",
+  },
+  optionsContainer: {
+    paddingLeft: 20,
+    alignItems: "center",
+    justifyContent: "center",
   },
   optionBox: {
     backgroundColor: dark.glass,

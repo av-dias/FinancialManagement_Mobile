@@ -1,11 +1,11 @@
 import { Pressable, View, Text } from "react-native";
 import { ReactNode } from "react";
 import CardWrapper from "../cardWrapper/cardWrapper";
-import { _styles } from "./style";
+import { styles } from "./style";
 import commonStyles from "../../utility/commonStyles";
 
 type FlatItemType = {
-  name: string;
+  name: string | ReactNode;
   value: number | ReactNode;
   icon?: ReactNode;
   options?: ReactNode;
@@ -16,6 +16,11 @@ type FlatItemType = {
 
 const isReactComponent = (variable) =>
   typeof variable === "object" ? true : false;
+
+/**
+ * Generic FlatItem that will used to show
+ * readonly information throughout the app
+ */
 export const FlatItem = ({
   name,
   value,
@@ -25,15 +30,11 @@ export const FlatItem = ({
   paddingHorizontal,
   onPressCallback,
 }: FlatItemType) => {
-  const styles = _styles;
-
   const onPress = () => {
     onPressCallback && onPressCallback({ name: name, value: value });
   };
 
   return (
-    //style={({ pressed }) => [{ backgroundColor: pressed ? 'black' : 'white' }, styles.btn ]}>
-
     <Pressable
       onPress={onPress}
       style={({ pressed }) =>
@@ -50,7 +51,11 @@ export const FlatItem = ({
         <View style={styles.row}>
           {icon && <View style={styles.left}>{icon}</View>}
           <View style={icon ? styles.center : styles.left}>
-            <Text style={styles.text}>{name}</Text>
+            {isReactComponent(name) ? (
+              name // If name is a React component, render it directly
+            ) : (
+              <Text style={styles.text}>{name}</Text>
+            )}
           </View>
           <View style={styles.right}>
             <View>{options}</View>

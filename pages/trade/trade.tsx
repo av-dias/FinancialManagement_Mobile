@@ -4,6 +4,8 @@ import Header from "../../components/header/header";
 import { dark } from "../../utility/colors";
 import { useContext, useState } from "react";
 import { UserContext } from "../../store/user-context";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
 import { styles } from "./styles";
 import { CustomTitle } from "../../components/customTitle/CustomTitle";
 import { SecurityInvestmentService } from "../../store/database/SecurityInvestment/SecurityInvestmentService";
@@ -16,10 +18,18 @@ import React from "react";
 import { useDatabaseConnection } from "../../store/database-context";
 import ModalCustom from "../../components/modal/modal";
 import { logTimeTook } from "../../utility/logger";
-import { LoadSecurityIcon, valueComponent } from "./tradeComponents/tradeItem";
+import {
+  LoadSecurityIcon,
+  nameComponent,
+  valueComponent,
+} from "./tradeComponents/tradeItem";
 import { verticalScale } from "../../functions/responsive";
 import { dateSorterAsc } from "../../functions/dates";
-import { addInvestmentCallback, addSecurityCallback } from "./tradeHandler";
+import {
+  addInvestmentCallback,
+  addSecurityCallback,
+  editOption,
+} from "./tradeHandler";
 import {
   DateTitleFormat,
   InvestmentForm,
@@ -29,6 +39,7 @@ import { SecurityFilter } from "./tradeComponents/securityFilter";
 import { TradeHeaderOptions } from "./tradeComponents/tradeHeaderOptions";
 import { FlatItem } from "../../components/flatItem/flatItem";
 import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
+import { FlatOptionsItem } from "../../components/flatOptionsItem/flatOptionsItem";
 
 export default function Trade({ navigation }) {
   const email = useContext(UserContext).email;
@@ -87,6 +98,18 @@ export default function Trade({ navigation }) {
       setInputShareValue,
       email
     );
+  };
+
+  /**
+   * All available options that will show
+   * as icons on the flatItem
+   */
+  const loadOptions = (item: InvestmentEntity) => {
+    let options = [];
+    options.push(
+      editOption(setSelectedItem, item, setModalVisible, setModalType)
+    );
+    return options;
   };
 
   const getModalDialogData = (item: InvestmentEntity) => ({
@@ -223,9 +246,9 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
                   .map((item) => {
                     return (
                       <View key={`View${item.id}`}>
-                        <FlatItem
+                        <FlatOptionsItem
                           key={item.id}
-                          name={item.security.name}
+                          name={nameComponent(item)}
                           value={valueComponent(item)}
                           icon={icon(item.security.ticker)}
                           paddingVertical={verticalScale(10)}
@@ -234,6 +257,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
                             setAlertVisible(true);
                             setSelectedItem(item);
                           }}
+                          options={loadOptions(item)}
                         />
                       </View>
                     );

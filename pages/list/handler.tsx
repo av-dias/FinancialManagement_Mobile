@@ -327,27 +327,27 @@ export const searchItem = (
   if (searchQuery.trim().length == 0) return true;
   // Filter income based on search query
   else if (data.entity === ExpenseEnum.Income) {
-    if (
-      data.name.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim())
-    ) {
-      return true;
-    }
-    return false;
-    // Filter expenses based on search query
+    return data.name
+      .toLowerCase()
+      .includes(searchQuery.toLocaleLowerCase().trim());
   } else {
+    // For Purchase only
     if (
-      data.entity != ExpenseEnum.Transaction &&
-      data?.name.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim())
-    )
-      return true;
-    if (
-      data.entity != ExpenseEnum.Purchase &&
-      (data?.description
+      data.entity === ExpenseEnum.Purchase &&
+      (data.name
         .toLowerCase()
         .includes(searchQuery.toLocaleLowerCase().trim()) ||
-        data?.type
+        data.note
           .toLowerCase()
           .includes(searchQuery.toLocaleLowerCase().trim()))
+    )
+      return true;
+    // For Expenses
+    else if (
+      data.description
+        .toLowerCase()
+        .includes(searchQuery.toLocaleLowerCase().trim()) ||
+      data.type.toLowerCase().includes(searchQuery.toLocaleLowerCase().trim())
     )
       return true;
 

@@ -58,7 +58,6 @@ export const CustomListItem = ({
   selected = [],
 }: ListItemProps) => {
   const styles = _styles;
-  let iconComponent;
 
   const loadIcon = (
     data: PurchaseEntity | TransactionEntity | IncomeEntity
@@ -69,13 +68,9 @@ export const CustomListItem = ({
       return categoryIcons(30).find((category) => category.label === data.type);
     else if (data.entity === ExpenseEnum.Transaction) {
       if (data.transactionType == TransactionOperation.SENT) {
-        return (iconComponent = utilIcons().find(
-          (type) => type.label === "Transaction"
-        ));
+        return utilIcons().find((type) => type.label === "Transaction");
       } else {
-        return (iconComponent = utilIcons().find(
-          (type) => type.label === "Received"
-        ));
+        return utilIcons().find((type) => type.label === "Received");
       }
     } else {
       throw new Error("Unkown expense entity.");

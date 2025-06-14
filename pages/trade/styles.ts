@@ -42,6 +42,24 @@ export const styles = StyleSheet.create({
     backgroundColor: "orange",
   },
   submitTextStyle: { color: "white", fontSize: 18 },
+  normalText: {
+    zIndex: 1,
+    fontSize: 12,
+    color: dark.textPrimary,
+    textAlign: "center",
+  },
+  smallText: {
+    zIndex: 1,
+    fontSize: 10,
+    color: dark.textComplementary,
+    textAlign: "center",
+  },
+  symbolText: {
+    zIndex: 1,
+    fontSize: 8,
+    color: dark.textComplementary,
+    textAlign: "center",
+  },
   securityIconContainer: {
     backgroundColor: "black",
     padding: 10,

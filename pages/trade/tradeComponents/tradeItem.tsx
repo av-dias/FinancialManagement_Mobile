@@ -1,6 +1,7 @@
 import { View, Text } from "react-native";
 import { dark } from "../../../utility/colors";
 import { styles } from "../styles";
+import { InvestmentEntity } from "../../../store/database/SecurityInvestment/SecurityInvestmentEntity";
 
 export const LoadSecurityIcon = ({ ticker }) => (
   <View style={styles.securityIconContainer}>
@@ -10,7 +11,17 @@ export const LoadSecurityIcon = ({ ticker }) => (
   </View>
 );
 
-export const valueComponent = (item) => (
+export const nameComponent = (item: InvestmentEntity) => (
+  <View>
+    <Text style={styles.normalText}>{item.security.name}</Text>
+    <Text style={styles.smallText}>
+      {`${item.buyPrice} `}
+      <Text style={styles.symbolText}>{`€`}</Text>
+    </Text>
+  </View>
+);
+
+export const valueComponent = (item: InvestmentEntity) => (
   <TradeItem
     cost={Number(item.buyPrice) * item.shares}
     shares={item.shares.toString()}
@@ -19,8 +30,8 @@ export const valueComponent = (item) => (
 );
 
 const TradeItem = ({ cost, shares, ticker }) => (
-  <View style={{ flex: 3, alignItems: "flex-end" }}>
-    <View style={{ gap: 1 }}>
+  <View style={{ alignItems: "flex-end" }}>
+    <View>
       <Text style={{ textAlign: "right" }}>
         <Text
           style={{
@@ -31,7 +42,6 @@ const TradeItem = ({ cost, shares, ticker }) => (
         >
           {cost.toFixed(2)}
         </Text>
-        <Text> </Text>
         <Text
           style={{
             color: dark.textPrimary,
@@ -39,7 +49,7 @@ const TradeItem = ({ cost, shares, ticker }) => (
             textAlignVertical: "bottom",
           }}
         >
-          €
+          {` €`}
         </Text>
       </Text>
       <Text style={{ textAlign: "right" }}>
@@ -47,16 +57,15 @@ const TradeItem = ({ cost, shares, ticker }) => (
           style={{
             color: dark.textComplementary,
             textAlignVertical: "bottom",
-            fontSize: 12,
+            fontSize: 10,
           }}
         >
-          {shares}
+          {`${shares} `} {/* Added space after shares */}
         </Text>
-        <Text> </Text>
         <Text
           style={{
             color: dark.textComplementary,
-            fontSize: 10,
+            fontSize: 8,
             textAlignVertical: "bottom",
           }}
         >

@@ -1,4 +1,5 @@
 import { InvestmentEntity } from "../../store/database/SecurityInvestment/SecurityInvestmentEntity";
+import React from "react";
 
 export const createInvestment = (
   inputShareValue,
@@ -63,3 +64,17 @@ export const addSecurityCallback = async (
   setRefresh((prev) => !prev);
   //setModalVisible(null);
 };
+export const editOption = (
+  setSelectedItem: React.Dispatch<React.SetStateAction<InvestmentEntity>>,
+  item: InvestmentEntity,
+  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>,
+  setModalType: React.Dispatch<React.SetStateAction<"Trade" | "Security">>
+) => ({
+  callback: async () => {
+    /* setSelectedItem(item);
+    setModalVisible(true);
+    setModalType("Trade"); */
+    alert("Not implemented yet");
+  },
+  type: "Edit",
+});

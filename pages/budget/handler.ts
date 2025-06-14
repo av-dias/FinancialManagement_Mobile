@@ -11,26 +11,26 @@ export const handleAverageRequest = async (
   const expensesAverageByType = await expensesService.getExpenseAverageByType(
     email,
     Number(currentYear),
-    ANALYSES_TYPE.Personal
+    ANALYSES_TYPE.Total
   );
 
   let expensesPrevAverageByType = await expensesService.getExpenseAverageByType(
     email,
     Number(currentYear) - 1,
-    ANALYSES_TYPE.Personal
+    ANALYSES_TYPE.Total
   );
 
   let expensesAverageTotal = await expensesService.getExpensesTotalAverage(
     email,
     Number(currentYear),
-    ANALYSES_TYPE.Personal
+    ANALYSES_TYPE.Total
   );
 
   const expensesPrevAverageTotal =
     await expensesService.getExpensesTotalAverage(
       email,
       Number(currentYear) - 1,
-      ANALYSES_TYPE.Personal
+      ANALYSES_TYPE.Total
     );
 
   return {
@@ -52,24 +52,24 @@ export const handleCurrentRequest = async (
       email,
       month,
       Number(currentYear),
-      ANALYSES_TYPE.Personal
+      ANALYSES_TYPE.Total
     );
 
   const expensesMonthTotal = await expensesService.getTotalExpensesOnMonth(
     email,
     month,
     Number(currentYear),
-    ANALYSES_TYPE.Personal
+    ANALYSES_TYPE.Total
   );
   let expensesPrevYearTotalByType = await expensesService.getExpenseTotalByType(
     email,
     Number(currentYear) - 1,
-    ANALYSES_TYPE.Personal
+    ANALYSES_TYPE.Total
   );
   const expensesYearTotalByType = await expensesService.getExpenseTotalByType(
     email,
     Number(currentYear),
-    ANALYSES_TYPE.Personal
+    ANALYSES_TYPE.Total
   );
 
   return {

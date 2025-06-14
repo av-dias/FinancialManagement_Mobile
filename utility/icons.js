@@ -1,8 +1,13 @@
 import { Fontisto, MaterialIcons, FontAwesome, MaterialCommunityIcons, AntDesign, FontAwesome5, Ionicons, Feather, FontAwesome6 } from "@expo/vector-icons";
 import { horizontalScale, verticalScale, moderateScale } from "../functions/responsive";
 import { categoryColorsBackground, categoryColorsBorder, categoryColorsBright, dark } from "./colors";
-export const categoryIcons = (icon_size = 25, color) => {
-  const iconSize = verticalScale(icon_size);
+
+export const findIcon = (iconName, iconSize = 25, color) => {
+  return utilIcons(iconSize, color).find((category) => category.label === iconName).icon
+}
+
+export const categoryIcons = (iconSize = 25, color) => {
+  iconSize = verticalScale(iconSize);
 
   return [
     {
