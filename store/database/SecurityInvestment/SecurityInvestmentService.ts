@@ -31,14 +31,15 @@ export class SecurityInvestmentService {
       return;
     }
 
-    const invesment = new InvestmentModel();
-    invesment.shares = investmentEntity.shares;
-    invesment.buyPrice = investmentEntity.buyPrice;
-    invesment.buyDate = investmentEntity.buyDate;
-    invesment.userId = investmentEntity.userId;
-    invesment.security = security;
+    const investment = new InvestmentModel();
+    investment.id = investmentEntity?.id;
+    investment.shares = investmentEntity.shares;
+    investment.buyPrice = investmentEntity.buyPrice;
+    investment.buyDate = investmentEntity.buyDate;
+    investment.userId = investmentEntity.userId;
+    investment.security = security;
 
-    await this.investmentRepository.updateOrCreate(invesment);
+    await this.investmentRepository.updateOrCreate(investment);
     const endTime = performance.now();
     logTimeTook("InvestmentRepository", "Create", endTime, startTime);
   }

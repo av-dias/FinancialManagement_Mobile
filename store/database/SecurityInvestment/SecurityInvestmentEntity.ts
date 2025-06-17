@@ -27,17 +27,6 @@ export class InvestmentModel {
   userId: string;
 }
 
-export type InvestmentEntity = {
-  id?: number;
-  shares: number;
-  buyPrice: number;
-  buyDate: Date;
-  sellPrice?: number | null;
-  sellDate?: Date | null;
-  security?: SecurityEntity;
-  userId: string;
-};
-
 @Entity("securities")
 export class SecurityModel {
   @PrimaryGeneratedColumn("increment")
@@ -51,6 +40,33 @@ export class SecurityModel {
 }
 
 export type SecurityEntity = {
-  name: string;
+  name?: string;
   ticker: string;
 };
+
+export type InvestmentEntity = {
+  id?: number;
+  shares: number;
+  buyPrice: number;
+  buyDate: Date;
+  sellPrice?: number | null;
+  sellDate?: Date | null;
+  security?: SecurityEntity;
+  userId: string;
+};
+
+export const newInvestment = (user: string) => ({
+  id: null,
+  shares: 0,
+  buyPrice: 0,
+  buyDate: null,
+  sellPrice: null,
+  sellDate: null,
+  security: null,
+  userId: user,
+});
+
+export const newSecurity = () => ({
+  name: "",
+  ticker: "",
+});

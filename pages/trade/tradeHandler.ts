@@ -1,80 +1,60 @@
-import { InvestmentEntity } from "../../store/database/SecurityInvestment/SecurityInvestmentEntity";
+import {
+  InvestmentEntity,
+  newInvestment,
+  newSecurity,
+  SecurityEntity,
+} from "../../store/database/SecurityInvestment/SecurityInvestmentEntity";
 import React from "react";
 
-export const createInvestment = (
-  inputShareValue,
-  inputBuyPrice,
-  inputBuyDate,
-  email
-): InvestmentEntity => {
-  return {
-    shares: Number(inputShareValue.replace(",", ".")),
-    buyPrice: Number(inputBuyPrice),
-    buyDate: inputBuyDate,
-    userId: email,
-  };
-};
-
 export const addInvestmentCallback = async (
-  inputInvestmentTicker,
-  inputBuyDate,
-  inputShareValue,
-  inputBuyPrice,
+  investment: InvestmentEntity,
+  setInvestment,
   securityInvestmentService,
-  setRefresh,
-  setInputBuyPrice,
-  setInputShareValue,
-  email
+  setRefresh
 ) => {
   if (
-    inputInvestmentTicker === "" ||
-    inputBuyPrice == 0 ||
-    Number(inputShareValue) == 0
+    investment.security.ticker === "" ||
+    investment.buyPrice == 0 ||
+    investment.shares == 0
   ) {
     alert("Please fill in all fields correctly.");
     return;
   }
 
   await securityInvestmentService.insertInvestment(
-    createInvestment(inputShareValue, inputBuyPrice, inputBuyDate, email),
-    inputInvestmentTicker
+    investment,
+    investment.security.ticker
   );
   setRefresh((prev) => !prev);
   //setModalVisible(null);
-  setInputBuyPrice(0);
-  setInputShareValue("0");
+  setInvestment(newInvestment(investment.userId));
 };
 
 export const addSecurityCallback = async (
-  inputName,
-  inputTicker,
+  security: SecurityEntity,
   securityRepository,
-  setInputName,
-  setInputTicker,
+  setSecurity,
   setRefresh
 ) => {
-  if (inputName === "" || inputTicker === "") return;
+  if (security.name === "" || security.ticker === "") return;
 
-  await securityRepository.updateOrCreate({
-    name: inputName,
-    ticker: inputTicker,
-  });
-  setInputName("");
-  setInputTicker("");
+  await securityRepository.updateOrCreate(security);
+  setSecurity(newSecurity());
   setRefresh((prev) => !prev);
   //setModalVisible(null);
 };
 export const editOption = (
   setSelectedItem: React.Dispatch<React.SetStateAction<InvestmentEntity>>,
   item: InvestmentEntity,
+  setInvestment: React.Dispatch<React.SetStateAction<InvestmentEntity>>,
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>,
   setModalType: React.Dispatch<React.SetStateAction<"Trade" | "Security">>
 ) => ({
   callback: async () => {
-    /* setSelectedItem(item);
+    setSelectedItem(item);
     setModalVisible(true);
-    setModalType("Trade"); */
-    alert("Not implemented yet");
+    setModalType("Trade");
+    setInvestment(item);
   },
   type: "Edit",
 });

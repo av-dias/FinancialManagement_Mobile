@@ -1,5 +1,7 @@
 import { View, Pressable, Text } from "react-native";
-import Carrossel from "../../../components/carrossel/carrossel";
+import Carrossel, {
+  CarrosselItemsType,
+} from "../../../components/carrossel/carrossel";
 import CustomInput from "../../../components/customInput/customInput";
 import { CustomTitle } from "../../../components/customTitle/CustomTitle";
 import { FlatCalendar } from "../../../components/flatCalender/FlatCalender";
@@ -8,14 +10,22 @@ import { verticalScale } from "../../../functions/responsive";
 import { styles } from "../styles";
 import { dark } from "../../../utility/colors";
 import { months } from "../../../utility/calendar";
+import {
+  InvestmentEntity,
+  SecurityEntity,
+} from "../../../store/database/SecurityInvestment/SecurityInvestmentEntity";
+
+type SecurityFormProps = {
+  security: SecurityEntity;
+  setSecurity: React.Dispatch<React.SetStateAction<SecurityEntity>>;
+  addSecurityCallback;
+};
 
 export const SecurityForm = ({
-  inputName,
-  setInputName,
-  inputTicker,
-  setInputTicker,
+  security,
+  setSecurity,
   addSecurityCallback,
-}) => {
+}: SecurityFormProps) => {
   return (
     <View style={{ flex: 1, gap: 20 }}>
       <CustomTitle
@@ -29,14 +39,16 @@ export const SecurityForm = ({
       <CustomInput
         Icon={undefined}
         placeholder={"Name"}
-        value={inputName}
-        setValue={setInputName}
+        value={security.name}
+        setValue={(name) => setSecurity((prev) => ({ ...prev, name: name }))}
       />
       <CustomInput
         Icon={undefined}
         placeholder={"Ticker"}
-        value={inputTicker}
-        setValue={setInputTicker}
+        value={security.ticker}
+        setValue={(ticker) =>
+          setSecurity((prev) => ({ ...prev, ticker: ticker }))
+        }
         capitalize="characters"
       />
       <View style={{ flex: 1, justifyContent: "flex-end", bottom: 20 }}>
@@ -53,37 +65,58 @@ export const SecurityForm = ({
   );
 };
 
+type InvestmentFormProps = {
+  investment: InvestmentEntity;
+  setInvestment: React.Dispatch<React.SetStateAction<InvestmentEntity>>;
+  securityItems: CarrosselItemsType[];
+  addInvestmentCallback;
+};
+
 export const InvestmentForm = ({
+  investment,
+  setInvestment,
   securityItems,
   addInvestmentCallback,
-  inputBuyPrice,
-  setInputBuyPrice,
-  inputInvestmentTicker,
-  setInputInvestmentTicker,
-  setInputBuyDate,
-  inputShareValue,
-  setInputShareValue,
-}) => {
+}: InvestmentFormProps) => {
   return (
     <View style={{ flex: 2, gap: 20 }}>
       <MoneyInputHeader
         verticalHeight={180}
-        value={inputBuyPrice.toString()}
-        setValue={setInputBuyPrice}
-        onBlurHandle={() => setInputBuyPrice((prev) => Number(prev))}
+        value={investment.buyPrice.toString()}
+        setValue={(buyPrice) =>
+          setInvestment((prev) => ({ ...prev, buyPrice: buyPrice }))
+        }
+        onBlurHandle={() =>
+          setInvestment((prev) => ({
+            ...prev,
+            buyPrice: Number(prev.buyPrice),
+          }))
+        }
       />
-      <FlatCalendar date={new Date()} setInputBuyDate={setInputBuyDate} />
+      <FlatCalendar
+        date={investment?.buyDate ? new Date(investment?.buyDate) : new Date()}
+        setInputBuyDate={(date) =>
+          setInvestment((prev) => ({ ...prev, buyDate: date }))
+        }
+      />
       <CustomInput
         keyboardType="numeric"
         Icon={undefined}
         placeholder={"Shares"}
-        value={inputShareValue}
-        setValue={setInputShareValue}
+        value={investment.shares.toString()}
+        setValue={(shares) =>
+          setInvestment((prev) => ({ ...prev, shares: Number(shares) }))
+        }
       />
       <Carrossel
         items={securityItems}
-        type={inputInvestmentTicker}
-        setType={setInputInvestmentTicker}
+        type={investment?.security?.ticker}
+        setType={(ticker) =>
+          setInvestment((prev) => ({
+            ...prev,
+            security: { ticker: ticker },
+          }))
+        }
         size={60}
         iconBackground={dark.complementary}
       />

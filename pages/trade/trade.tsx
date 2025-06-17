@@ -4,14 +4,15 @@ import Header from "../../components/header/header";
 import { dark } from "../../utility/colors";
 import { useContext, useState } from "react";
 import { UserContext } from "../../store/user-context";
-import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { styles } from "./styles";
 import { CustomTitle } from "../../components/customTitle/CustomTitle";
 import { SecurityInvestmentService } from "../../store/database/SecurityInvestment/SecurityInvestmentService";
 import {
+  newInvestment,
   InvestmentEntity,
   SecurityEntity,
+  newSecurity,
 } from "../../store/database/SecurityInvestment/SecurityInvestmentEntity";
 import { useFocusEffect } from "@react-navigation/native";
 import React from "react";
@@ -37,7 +38,6 @@ import {
 } from "./tradeComponents/tradeForms";
 import { SecurityFilter } from "./tradeComponents/securityFilter";
 import { TradeHeaderOptions } from "./tradeComponents/tradeHeaderOptions";
-import { FlatItem } from "../../components/flatItem/flatItem";
 import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
 import { FlatOptionsItem } from "../../components/flatOptionsItem/flatOptionsItem";
 
@@ -48,15 +48,15 @@ export default function Trade({ navigation }) {
   const securityInvestmentService = new SecurityInvestmentService();
   const { investmentRepository, securityRepository } = useDatabaseConnection();
 
-  const [inputName, setInputName] = useState("");
-  const [inputTicker, setInputTicker] = useState("");
-  const [inputBuyPrice, setInputBuyPrice] = useState<number>(0);
-  const [inputBuyDate, setInputBuyDate] = useState<Date>(new Date());
-  const [inputShareValue, setInputShareValue] = useState<string>("");
-  const [inputInvestmentTicker, setInputInvestmentTicker] = useState("");
+  const [investment, setInvestment] = useState<InvestmentEntity>(
+    newInvestment(email)
+  );
+  const [security, setSecurity] = useState<SecurityEntity>(newSecurity());
   const [securities, setSecurities] = useState<SecurityEntity[]>([]);
   const [investments, setInvestments] = useState<InvestmentEntity[]>([]);
+
   const [refresh, setRefresh] = useState(false);
+
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [alertVisible, setAlertVisible] = useState<boolean>(false);
   const [modalType, setModalType] = useState<"Trade" | "Security">(null);
@@ -77,26 +77,19 @@ export default function Trade({ navigation }) {
 
   const callSecurityCallback = async () => {
     await addSecurityCallback(
-      inputName,
-      inputTicker,
+      security,
       securityRepository,
-      setInputName,
-      setInputTicker,
+      setSecurity,
       setRefresh
     );
   };
 
   const callInvestmentCallback = async () => {
     await addInvestmentCallback(
-      inputInvestmentTicker,
-      inputBuyDate,
-      inputShareValue,
-      inputBuyPrice,
+      investment,
+      setInvestment,
       securityInvestmentService,
-      setRefresh,
-      setInputBuyPrice,
-      setInputShareValue,
-      email
+      setRefresh
     );
   };
 
@@ -107,7 +100,13 @@ export default function Trade({ navigation }) {
   const loadOptions = (item: InvestmentEntity) => {
     let options = [];
     options.push(
-      editOption(setSelectedItem, item, setModalVisible, setModalType)
+      editOption(
+        setSelectedItem,
+        item,
+        setInvestment,
+        setModalVisible,
+        setModalType
+      )
     );
     return options;
   };
@@ -186,28 +185,22 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
           <ModalCustom
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
+            onCloseCallback={() => setInvestment(newInvestment(email))}
             size={15}
             hasColor={true}
           >
             {modalType === "Security" ? (
               <SecurityForm
-                inputName={inputName}
-                setInputName={setInputName}
-                inputTicker={inputTicker}
-                setInputTicker={setInputTicker}
+                security={security}
+                setSecurity={setSecurity}
                 addSecurityCallback={callSecurityCallback}
               />
             ) : (
               <InvestmentForm
+                investment={investment}
+                setInvestment={setInvestment}
                 securityItems={loadSecurityItems()}
                 addInvestmentCallback={callInvestmentCallback}
-                inputBuyPrice={inputBuyPrice}
-                setInputBuyPrice={setInputBuyPrice}
-                inputInvestmentTicker={inputInvestmentTicker}
-                setInputInvestmentTicker={setInputInvestmentTicker}
-                setInputBuyDate={setInputBuyDate}
-                inputShareValue={inputShareValue}
-                setInputShareValue={setInputShareValue}
               />
             )}
           </ModalCustom>
