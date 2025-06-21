@@ -1,4 +1,4 @@
-import { Connection, Repository } from "typeorm";
+import { Connection, DeleteResult, Repository } from "typeorm";
 import { SecurityEntity, SecurityModel } from "./SecurityInvestmentEntity";
 import { logTimeTook } from "../../../utility/logger";
 
@@ -26,6 +26,18 @@ export class SecurityRepository {
     await this.ormRepository.save(security);
     let endTime = performance.now();
     logTimeTook("SecurityRepository", "Save", endTime, startTime);
+  }
+
+  public async deleteUnlinkedSecurity(
+    securityTicker: string
+  ): Promise<DeleteResult> {
+    const result = await this.ormRepository
+      .createQueryBuilder("security")
+      .delete()
+      .where("ticker = :ticker", { ticker: securityTicker }) // Filter by the provided ticker
+      .execute();
+
+    return result;
   }
 
   public async deleteAll() {

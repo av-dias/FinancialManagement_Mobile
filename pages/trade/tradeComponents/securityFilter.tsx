@@ -11,6 +11,7 @@ export const SecurityFilter = ({
   noFilter,
   setSelectedTicker,
   securityItems,
+  onLongPress,
 }) => {
   return (
     <View style={{ flexDirection: "row", gap: 5, paddingBottom: 20 }}>
@@ -36,6 +37,7 @@ export const SecurityFilter = ({
           setType={setSelectedTicker}
           size={60}
           iconBackground={dark.complementary}
+          onLongPress={onLongPress}
         />
       </View>
     </View>

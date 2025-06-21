@@ -11,7 +11,6 @@ import Header from "../../components/header/header";
 
 //Custom Constants
 import { _styles } from "./style";
-import { ANALYSES_TYPE } from "../../utility/keys";
 
 //Functions
 import { dark } from "../../utility/colors";

@@ -15,15 +15,35 @@ type CarrosselProps = {
   iconBackground?: string;
   iconBorderColor?: string;
   items?: CarrosselItemsType[];
+  onLongPress?: (id: any) => void;
 };
 
-export type CarrosselItemsType = { label: string; color: string; icon?: ReactNode };
+export type CarrosselItemsType = {
+  label: string;
+  color: string;
+  icon?: ReactNode;
+};
 
-export default function Carrossel({ type, setType, size, iconSize = 30, items = categoryIcons(iconSize), iconBackground = "transparent", iconBorderColor = "transparent" }: CarrosselProps) {
+export default function Carrossel({
+  type,
+  setType,
+  size,
+  iconSize = 30,
+  items = categoryIcons(iconSize),
+  iconBackground = "transparent",
+  iconBorderColor = "transparent",
+  onLongPress = () => {},
+}: CarrosselProps) {
   const styles = _styles;
 
   return (
-    <View style={{ backgroundColor: "transparent", height: size, borderRadius: BORDER_RADIUS }}>
+    <View
+      style={{
+        backgroundColor: "transparent",
+        height: size,
+        borderRadius: BORDER_RADIUS,
+      }}
+    >
       <ScrollView
         horizontal={true}
         style={styles.categoryScrollContainer}
@@ -37,7 +57,10 @@ export default function Carrossel({ type, setType, size, iconSize = 30, items = 
             <CardWrapper
               key={iconComponent.label}
               style={{
-                backgroundColor: type == iconComponent.label ? iconComponent.color : iconBackground,
+                backgroundColor:
+                  type == iconComponent.label
+                    ? iconComponent.color
+                    : iconBackground,
                 width: size,
                 borderWidth: 1,
                 borderColor: iconBorderColor,
@@ -46,9 +69,8 @@ export default function Carrossel({ type, setType, size, iconSize = 30, items = 
               <Pressable
                 key={iconComponent.label}
                 style={styles.categoryContainer}
-                onPress={() => {
-                  setType(iconComponent.label);
-                }}
+                onPress={() => setType(iconComponent.label)}
+                onLongPress={() => onLongPress(iconComponent.label)}
               >
                 {iconComponent?.icon && (
                   <View style={styles.categoryIconContainer}>

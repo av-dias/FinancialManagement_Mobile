@@ -6,14 +6,14 @@ import { InvestmentEntity } from "../../../store/database/SecurityInvestment/Sec
 export const LoadSecurityIcon = ({ ticker }) => (
   <View style={styles.securityIconContainer}>
     <Text style={{ color: dark.textPrimary, textAlign: "center" }}>
-      {ticker}
+      {ticker || ""}
     </Text>
   </View>
 );
 
 export const nameComponent = (item: InvestmentEntity) => (
   <View>
-    <Text style={styles.normalText}>{item.security.name}</Text>
+    <Text style={styles.normalText}>{item?.security?.name}</Text>
     <Text style={styles.smallText}>
       {`${item.buyPrice} `}
       <Text style={styles.symbolText}>{`€`}</Text>
@@ -25,7 +25,7 @@ export const valueComponent = (item: InvestmentEntity) => (
   <TradeItem
     cost={Number(item.buyPrice) * item.shares}
     shares={item.shares.toString()}
-    ticker={item.security.ticker}
+    ticker={item?.security?.ticker}
   />
 );
 
@@ -69,7 +69,7 @@ const TradeItem = ({ cost, shares, ticker }) => (
             textAlignVertical: "bottom",
           }}
         >
-          {ticker}
+          {ticker || ""}
         </Text>
       </Text>
     </View>

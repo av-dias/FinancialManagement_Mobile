@@ -5,6 +5,8 @@ import {
   SecurityEntity,
 } from "../../store/database/SecurityInvestment/SecurityInvestmentEntity";
 import React from "react";
+import { SecurityRepository } from "../../store/database/SecurityInvestment/SecurityRepository";
+import { InvestmentRepository } from "../../store/database/SecurityInvestment/InvestmentRepository";
 
 export const addInvestmentCallback = async (
   investment: InvestmentEntity,
@@ -32,7 +34,7 @@ export const addInvestmentCallback = async (
 
 export const addSecurityCallback = async (
   security: SecurityEntity,
-  securityRepository,
+  securityRepository: SecurityRepository,
   setSecurity,
   setRefresh
 ) => {
@@ -43,6 +45,7 @@ export const addSecurityCallback = async (
   setRefresh((prev) => !prev);
   //setModalVisible(null);
 };
+
 export const editOption = (
   setSelectedItem: React.Dispatch<React.SetStateAction<InvestmentEntity>>,
   item: InvestmentEntity,

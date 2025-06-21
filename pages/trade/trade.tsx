@@ -40,6 +40,7 @@ import { SecurityFilter } from "./tradeComponents/securityFilter";
 import { TradeHeaderOptions } from "./tradeComponents/tradeHeaderOptions";
 import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
 import { FlatOptionsItem } from "../../components/flatOptionsItem/flatOptionsItem";
+import { TradeService } from "../../service/TradeService";
 
 export default function Trade({ navigation }) {
   const email = useContext(UserContext).email;
@@ -47,6 +48,7 @@ export default function Trade({ navigation }) {
 
   const securityInvestmentService = new SecurityInvestmentService();
   const { investmentRepository, securityRepository } = useDatabaseConnection();
+  const tradeService = new TradeService();
 
   const [investment, setInvestment] = useState<InvestmentEntity>(
     newInvestment(email)
@@ -93,6 +95,11 @@ export default function Trade({ navigation }) {
     );
   };
 
+  const onLongPressCallback = async (label: string) => {
+    // Improve by using dialog confirmation
+    await tradeService.deleteSecurtyByTicker(label, email, setRefresh);
+  };
+
   /**
    * All available options that will show
    * as icons on the flatItem
@@ -114,7 +121,7 @@ export default function Trade({ navigation }) {
   const getModalDialogData = (item: InvestmentEntity) => ({
     title: "Delete Investment",
     content: `Are you sure you want to delete this investment?\n
-Name: ${item.security.name}
+Name: ${item?.security?.name}
 Shares: ${item.shares}
 Buy Price: ${item.buyPrice}€
 Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
@@ -218,6 +225,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
           noFilter={noFilter}
           setSelectedTicker={setSelectedTicker}
           securityItems={loadSecurityItems()}
+          onLongPress={onLongPressCallback}
         />
         <TradeHeaderOptions
           setModalVisible={setModalVisible}
@@ -243,7 +251,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
                           key={item.id}
                           name={nameComponent(item)}
                           value={valueComponent(item)}
-                          icon={icon(item.security.ticker)}
+                          icon={icon(item?.security?.ticker)}
                           paddingVertical={verticalScale(10)}
                           paddingHorizontal={verticalScale(10)}
                           onPressCallback={() => {

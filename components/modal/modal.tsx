@@ -31,10 +31,9 @@ export default function ModalCustom({
 }) {
   return (
     <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {
+      animationOut="bounceIn"
+      isVisible={modalVisible}
+      onBackdropPress={() => {
         setModalVisible(!modalVisible);
         onCloseCallback();
       }}
