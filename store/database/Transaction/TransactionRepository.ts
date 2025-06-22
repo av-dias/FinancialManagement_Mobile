@@ -12,30 +12,50 @@ export class TransactionRepository {
     return this.ormRepository == undefined ? false : true;
   };
 
-  public async getById(userId: string, transactionId): Promise<TransactionModel> {
-    const transaction = await this.ormRepository?.findOne({ where: { userId: userId, id: transactionId } });
+  public async getById(
+    userId: string,
+    transactionId
+  ): Promise<TransactionModel> {
+    const transaction = await this.ormRepository?.findOne({
+      where: { userId: userId, id: transactionId },
+    });
     return transaction;
   }
 
   public async getAll(userId: string): Promise<TransactionModel[]> {
-    const transactions = await this.ormRepository?.find({ where: { userId: userId } });
+    const transactions = await this.ormRepository?.find({
+      where: { userId: userId },
+    });
     return transactions;
   }
 
-  public async getByDate(userId: string, month: number, year: number): Promise<TransactionModel[]> {
+  public async getByDate(
+    userId: string,
+    month: number,
+    year: number
+  ): Promise<TransactionModel[]> {
     const transactions = await this.ormRepository
       .createQueryBuilder("transactions")
       .where("userId = :userId", { userId: userId })
-      .andWhere("strftime('%Y', transactions.date) = :year", { year: year.toString() })
-      .andWhere("strftime('%m', transactions.date) = :month", { month: month < 10 ? `0${month}` : month.toString() })
+      .andWhere("strftime('%Y', transactions.date) = :year", {
+        year: year.toString(),
+      })
+      .andWhere("strftime('%m', transactions.date) = :month", {
+        month: month < 10 ? `0${month}` : month.toString(),
+      })
       .getMany();
 
     return transactions;
   }
 
-  public async getFromType(userId: string, type: string, month: number, year: number): Promise<TransactionModel[]> {
+  public async getFromType(
+    userId: string,
+    type: string,
+    month: number,
+    year: number
+  ): Promise<TransactionModel[]> {
     const firstDayOfMonth = new Date(year, month - 1, 1).toISOString();
-    const lastDayOfMonth = new Date(year, month, 0).toISOString();
+    const lastDayOfMonth = new Date(year, month, 0).toLocaleDateString();
 
     const transactions = await this.ormRepository.find({
       where: {
@@ -53,9 +73,14 @@ export class TransactionRepository {
 
     const sumArray = await this.ormRepository
       .createQueryBuilder("t")
-      .select("type, SUM(CASE WHEN transactionType = :sent then amount ELSE -amount END) as total")
+      .select(
+        "type, SUM(CASE WHEN transactionType = :sent then amount ELSE -amount END) as total"
+      )
       .setParameters({ sent: TransactionOperation.SENT })
-      .where(`t.userId = :userId AND strftime('%Y', t.date) = :year`, { userId: userId, year: year.toString() })
+      .where(`t.userId = :userId AND strftime('%Y', t.date) = :year`, {
+        userId: userId,
+        year: year.toString(),
+      })
       .groupBy("type")
       .getRawMany();
 
@@ -69,9 +94,14 @@ export class TransactionRepository {
 
     const sumArray = await this.ormRepository
       .createQueryBuilder("t")
-      .select("type, SUM(CASE WHEN transactionType = :sent then amount ELSE 0 END) as total")
+      .select(
+        "type, SUM(CASE WHEN transactionType = :sent then amount ELSE 0 END) as total"
+      )
       .setParameters({ sent: TransactionOperation.SENT })
-      .where(`t.userId = :userId AND strftime('%Y', t.date) = :year`, { userId: userId, year: year.toString() })
+      .where(`t.userId = :userId AND strftime('%Y', t.date) = :year`, {
+        userId: userId,
+        year: year.toString(),
+      })
       .groupBy("type")
       .getRawMany();
 
@@ -83,8 +113,13 @@ export class TransactionRepository {
   public async findTransactionReceivedYear(userId: string, year: number) {
     const transactionReceived = await this.ormRepository
       .createQueryBuilder("t")
-      .where(`t.userId = :userId AND strftime('%Y', t.date) = :year`, { userId: userId, year: year.toString() })
-      .andWhere("t.transactionType = :tReceived", { tReceived: TransactionOperation.RECEIVED })
+      .where(`t.userId = :userId AND strftime('%Y', t.date) = :year`, {
+        userId: userId,
+        year: year.toString(),
+      })
+      .andWhere("t.transactionType = :tReceived", {
+        tReceived: TransactionOperation.RECEIVED,
+      })
       .getMany();
 
     return transactionReceived;
@@ -98,14 +133,19 @@ export class TransactionRepository {
         "CAST(strftime('%m', t.date) AS INTEGER)  as month ",
         `SUM(CASE WHEN t.transactionType = "${TransactionOperation.RECEIVED}" THEN -amount ELSE 0 END) as total`,
       ])
-      .where(`t.userId = :userId AND strftime('%Y', t.date) = :year`, { userId: userId, year: year.toString() })
+      .where(`t.userId = :userId AND strftime('%Y', t.date) = :year`, {
+        userId: userId,
+        year: year.toString(),
+      })
       .groupBy("year, month")
       .getRawMany();
 
     return sumArray;
   }
 
-  public async updateOrCreate(transactionModel: TransactionModel): Promise<TransactionModel> {
+  public async updateOrCreate(
+    transactionModel: TransactionModel
+  ): Promise<TransactionModel> {
     await this.ormRepository.save(transactionModel);
     return transactionModel;
   }
