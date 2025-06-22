@@ -2,6 +2,11 @@ import { Dispatch, SetStateAction } from "react";
 import { useDatabaseConnection } from "../store/database-context";
 import { InvestmentRepository } from "../store/database/SecurityInvestment/InvestmentRepository";
 import { SecurityRepository } from "../store/database/SecurityInvestment/SecurityRepository";
+import { eventEmitter, NotificationEvent } from "../utility/eventEmitter";
+import {
+  createNotification,
+  NotificationData,
+} from "../components/NotificationBox/NotificationBox";
 
 export class TradeService {
   private securityRepository: SecurityRepository =
@@ -26,7 +31,10 @@ export class TradeService {
         await this.investmentRepository.getAllLinkedSecurities(userId);
 
       if (linkedTickers.includes(securityTicker)) {
-        console.log("Cannot delete ticker in use.");
+        eventEmitter.emit(
+          NotificationEvent,
+          createNotification("Cannot delete, ticker in use.", "orange")
+        );
       } else {
         await this.securityRepository.deleteUnlinkedSecurity(securityTicker);
         console.log(`Delete ticker ${securityTicker}.`);

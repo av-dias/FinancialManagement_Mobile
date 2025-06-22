@@ -41,6 +41,7 @@ import { TradeHeaderOptions } from "./tradeComponents/tradeHeaderOptions";
 import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
 import { FlatOptionsItem } from "../../components/flatOptionsItem/flatOptionsItem";
 import { TradeService } from "../../service/TradeService";
+import { NotificationBox } from "../../components/NotificationBox/NotificationBox";
 
 export default function Trade({ navigation }) {
   const email = useContext(UserContext).email;
@@ -187,6 +188,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
+      <NotificationBox />
       <View style={styles.usableScreen}>
         {modalVisible && (
           <ModalCustom
