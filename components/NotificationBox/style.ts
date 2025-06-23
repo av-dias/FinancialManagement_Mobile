@@ -6,9 +6,10 @@ export const styles = StyleSheet.create({
   container: {
     position: "absolute",
     height: 30,
-    width: "100%",
-    top: commonStyles.statusBarHeight,
+    width: "99%",
+    top: commonStyles.statusBarHeight + 5,
     paddingHorizontal: 10,
+    alignSelf: "center",
     backgroundColor: dark.complementarySolid,
     borderRadius: 10,
     justifyContent: "center",

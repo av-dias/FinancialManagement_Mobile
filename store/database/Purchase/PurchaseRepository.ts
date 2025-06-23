@@ -1,5 +1,9 @@
 import { Between, Connection, Repository, Like } from "typeorm";
-import { purchaseMapper, PurchaseModel } from "./PurchaseEntity";
+import {
+  PurchaseEntity,
+  purchaseMapper,
+  PurchaseModel,
+} from "./PurchaseEntity";
 
 export class PurchaseRepository {
   private ormRepository: Repository<PurchaseModel>;
@@ -200,6 +204,54 @@ export class PurchaseRepository {
       .getOne();
 
     return splitUserId?.split?.splitUserId;
+  }
+
+  public async findNearestNameForPurchase(
+    userId: string,
+    purchase: PurchaseEntity
+  ): Promise<string> {
+    const amount = purchase.amount;
+    const type = purchase.type;
+
+    const foundPurchase = await this.ormRepository
+      .createQueryBuilder("p")
+      .where(`p.userId = :userId and p.type= :type`, {
+        userId: userId,
+        type: type,
+      })
+      .orderBy("ABS(p.amount - :amount)", "ASC")
+      .setParameter("amount", amount)
+      .getOne();
+
+    return foundPurchase?.name;
+  }
+
+  public async findNearestBetweenNameForPurchase(
+    userId: string,
+    purchase: PurchaseEntity,
+    maxValue: number,
+    minValue: number
+  ): Promise<string> {
+    const amount = purchase.amount;
+    const type = purchase.type;
+
+    const foundPurchase: { name: string } = await this.ormRepository
+      .createQueryBuilder("p")
+      .select([`p.name as name`, `COUNT(p.name) as nameCount`])
+      .where(`p.userId = :userId and p.type= :type`, {
+        userId: userId,
+        type: type,
+      })
+      .andWhere(`p.amount BETWEEN :minValue AND :maxValue`, {
+        maxValue: maxValue,
+        minValue: minValue,
+      })
+      .setParameter("amount", amount)
+      .groupBy("p.name")
+      .orderBy("nameCount", "DESC")
+      .getRawOne();
+
+    return foundPurchase?.name;
   }
 
   public async delete(id: number): Promise<void> {

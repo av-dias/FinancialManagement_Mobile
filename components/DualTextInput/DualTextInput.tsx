@@ -1,17 +1,18 @@
-import { View, TextInput } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import { dark } from "../../utility/colors";
 import commonStyles from "../../utility/commonStyles";
 import CardWrapper from "../cardWrapper/cardWrapper";
-import { _styles } from "./style";
+import { styles } from "./style";
 import { verticalScale } from "../../functions/responsive";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Pressable } from "react-native";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { loadTimer } from "../../utility/timer";
 
 export type textInputType = {
   value: string;
   setValue: (value: string) => any;
+  suggestedName?: string;
   onBlurHandle: () => any;
   placeholder: string;
   icon: any;
@@ -26,28 +27,52 @@ type DualTextInputProps = {
   direction?: "row" | "column";
 };
 
-const loadCardSize = (direction: "row" | "column", isFocused: string, key: string) => {
+const loadCardSize = (
+  direction: "row" | "column",
+  isFocused: string,
+  key: string
+) => {
   if (direction === "row") return isFocused === key ? 3 : 1;
   else {
     return 0;
   }
 };
 
-export default function DualTextInput({ values = [], direction = "row", capitalize = "words", textAlign = "left", keyboardType = "default" }: DualTextInputProps) {
-  const styles = _styles;
+export default function DualTextInput({
+  values = [],
+  direction = "row",
+  capitalize = "words",
+  textAlign = "left",
+  keyboardType = "default",
+}: DualTextInputProps) {
   const [isFocused, setIsFocused] = useState<string>(null);
   const timeoutRef = useRef(null);
 
   // Allows to trigger isFocus reset
-  const resetFocusTimer = () => loadTimer(timeoutRef, () => setIsFocused(null), 2000);
+  const resetFocusTimer = () =>
+    loadTimer(timeoutRef, () => setIsFocused(null), 2000);
 
   /* Refrator code to have generic onBlur Handle */
   return (
     <View style={{ width: "100%", flexDirection: direction, gap: 10 }}>
       {values.map((data) => (
-        <CardWrapper key={data.placeholder} style={{ flex: loadCardSize(direction, isFocused, data.placeholder), borderRadius: commonStyles.borderRadius }}>
-          <View style={{ flexDirection: "row", borderRadius: commonStyles.borderRadius, alignItems: "center" }}>
-            <View style={{ paddingHorizontal: verticalScale(10) }}>{data.icon}</View>
+        <CardWrapper
+          key={data.placeholder}
+          style={{
+            flex: loadCardSize(direction, isFocused, data.placeholder),
+            borderRadius: commonStyles.borderRadius,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              borderRadius: commonStyles.borderRadius,
+              alignItems: "center",
+            }}
+          >
+            <View style={{ paddingHorizontal: verticalScale(10) }}>
+              {data.icon}
+            </View>
             <View style={{ flex: 1, paddingRight: verticalScale(10) }}>
               <TextInput
                 style={{ ...styles.textInput, textAlign: textAlign }}
@@ -76,11 +101,28 @@ export default function DualTextInput({ values = [], direction = "row", capitali
                 }}
               />
             </View>
-            {data?.editable !== false && data?.value && data?.value?.trim() !== "" && (
-              <Pressable style={{ paddingRight: verticalScale(10) }} onPress={() => data.setValue("")}>
-                <AntDesign name="closecircleo" size={15} color={dark.textPrimary} />
+            {data?.suggestedName && (
+              <Pressable
+                style={styles.suggestBtn}
+                onPress={() => data.setValue(data.suggestedName)}
+              >
+                <Text style={{ color: dark.white }}>{data.suggestedName}</Text>
               </Pressable>
             )}
+            {data?.editable !== false &&
+              data?.value &&
+              data?.value?.trim() !== "" && (
+                <Pressable
+                  style={{ paddingRight: verticalScale(10) }}
+                  onPress={() => data.setValue("")}
+                >
+                  <AntDesign
+                    name="closecircleo"
+                    size={15}
+                    color={dark.textPrimary}
+                  />
+                </Pressable>
+              )}
           </View>
         </CardWrapper>
       ))}

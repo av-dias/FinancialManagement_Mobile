@@ -19,9 +19,14 @@ import { _styles } from "./style";
 import { getSplitUser } from "../../functions/split";
 import { verticalScale } from "../../functions/responsive";
 import { FlatCalendar } from "../../components/flatCalender/FlatCalender";
-import { clearPurchaseEntity, PurchaseEntity } from "../../store/database/Purchase/PurchaseEntity";
+import {
+  clearPurchaseEntity,
+  PurchaseEntity,
+} from "../../store/database/Purchase/PurchaseEntity";
 import { ExpensesService } from "../../service/ExpensesService";
-import DualTextInput, { textInputType } from "../../components/DualTextInput/DualTextInput";
+import DualTextInput, {
+  textInputType,
+} from "../../components/DualTextInput/DualTextInput";
 
 type PurchaseProps = {
   purchase?: PurchaseEntity;
@@ -33,22 +38,41 @@ export default function Purchase({ purchase, callback }: PurchaseProps) {
   const expenseService = new ExpensesService();
   const email = useContext(UserContext).email;
 
-  const [newPurchase, setNewPurchase] = useState<PurchaseEntity>(purchase || clearPurchaseEntity(null, email));
-  const [slider, setSlider] = useState<number>(Number(purchase?.split?.weight) || 50);
-  const [splitStatus, setSplitStatus] = useState<boolean>((purchase !== undefined && purchase?.split !== null) || false);
+  const [newPurchase, setNewPurchase] = useState<PurchaseEntity>(
+    purchase || clearPurchaseEntity(null, email)
+  );
+  const [slider, setSlider] = useState<number>(
+    Number(purchase?.split?.weight) || 50
+  );
+  const [splitStatus, setSplitStatus] = useState<boolean>(
+    (purchase !== undefined && purchase?.split !== null) || false
+  );
   const [splitUser, setSplitUser] = useState({ email: "", value: "" });
+  const [suggestedName, setSuggestedName] = useState<string>(null);
 
   const inputConfig: textInputType[] = [
     {
       value: newPurchase.name,
       setValue: (_name) => setNewPurchase((prev) => ({ ...prev, name: _name })),
+      suggestedName: suggestedName,
       onBlurHandle: () =>
         setNewPurchase((prev) => ({
           ...prev,
           name: prev.name.trimEnd().trimStart(),
         })),
       placeholder: "Name",
-      icon: <MaterialIcons style={{ display: "flex", justifyContent: "center", alignSelf: "center" }} name="notes" size={verticalScale(12)} color={dark.textPrimary} />,
+      icon: (
+        <MaterialIcons
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignSelf: "center",
+          }}
+          name="notes"
+          size={verticalScale(12)}
+          color={dark.textPrimary}
+        />
+      ),
     },
     {
       value: newPurchase.note,
@@ -59,7 +83,18 @@ export default function Purchase({ purchase, callback }: PurchaseProps) {
           note: prev.note.trimEnd().trimStart(),
         })),
       placeholder: "Note",
-      icon: <MaterialIcons style={{ display: "flex", justifyContent: "center", alignSelf: "center" }} name="drive-file-rename-outline" size={verticalScale(12)} color={dark.textPrimary} />,
+      icon: (
+        <MaterialIcons
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignSelf: "center",
+          }}
+          name="drive-file-rename-outline"
+          size={verticalScale(12)}
+          color={dark.textPrimary}
+        />
+      ),
     },
   ];
 
@@ -74,7 +109,10 @@ export default function Purchase({ purchase, callback }: PurchaseProps) {
   useEffect(() => {
     async function fetchSplit() {
       if (splitStatus) {
-        setNewPurchase({ ...newPurchase, split: { userId: splitUser.email, weight: slider } });
+        setNewPurchase({
+          ...newPurchase,
+          split: { userId: splitUser.email, weight: slider },
+        });
       } else {
         setNewPurchase({ ...newPurchase, split: undefined });
       }
@@ -89,7 +127,22 @@ export default function Purchase({ purchase, callback }: PurchaseProps) {
         setSplitStatus(false);
       }
     }
+    async function suggestName() {
+      const suggestedName = await expenseService.suggestExpenseName(
+        email,
+        newPurchase
+      );
+
+      setSuggestedName(suggestedName);
+    }
     load();
+    if (newPurchase.name) {
+      setSuggestedName(null);
+    } else if (newPurchase.amount && newPurchase.type) {
+      suggestName();
+    } else {
+      setSuggestedName(null);
+    }
   }, [newPurchase]);
 
   return (
@@ -99,7 +152,9 @@ export default function Purchase({ purchase, callback }: PurchaseProps) {
           style={{
             paddingHorizontal: 10,
             paddingVertical: 5,
-            backgroundColor: newPurchase.isRefund ? dark.secundary : dark.complementary,
+            backgroundColor: newPurchase.isRefund
+              ? dark.secundary
+              : dark.complementary,
             borderRadius: 10,
             zIndex: 1,
           }}
@@ -136,11 +191,21 @@ export default function Purchase({ purchase, callback }: PurchaseProps) {
           <FlatCalendar
             date={newPurchase.date}
             setInputBuyDate={(_date) => {
-              setNewPurchase({ ...newPurchase, date: _date.toISOString().split("T")[0] });
+              setNewPurchase({
+                ...newPurchase,
+                date: _date.toISOString().split("T")[0],
+              });
             }}
           />
           <DualTextInput values={inputConfig} />
-          <SplitSlider value={newPurchase.amount} splitStatus={splitStatus} setSplitStatus={setSplitStatus} slider={slider} setSlider={setSlider} size={verticalScale(40)} />
+          <SplitSlider
+            value={newPurchase.amount}
+            splitStatus={splitStatus}
+            setSplitStatus={setSplitStatus}
+            slider={slider}
+            setSlider={setSlider}
+            size={verticalScale(40)}
+          />
         </View>
         <CustomButton
           addStyle={{ top: 0 }}

@@ -16,6 +16,7 @@ export const dark = {
   textSecundary: "lightgray",
   textExpenses: "red",
   incomeBackgroundColor: "rgb(180, 255, 180)",
+  white: "white",
 };
 
 export const ProgressBarColors = {
