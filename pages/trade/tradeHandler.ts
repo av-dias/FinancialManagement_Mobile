@@ -6,7 +6,9 @@ import {
 } from "../../store/database/SecurityInvestment/SecurityInvestmentEntity";
 import React from "react";
 import { SecurityRepository } from "../../store/database/SecurityInvestment/SecurityRepository";
-import { InvestmentRepository } from "../../store/database/SecurityInvestment/InvestmentRepository";
+import { eventEmitter, NotificationEvent } from "../../utility/eventEmitter";
+import { createNotification } from "../../components/NotificationBox/NotificationBox";
+import { dark } from "../../utility/colors";
 
 export const addInvestmentCallback = async (
   investment: InvestmentEntity,
@@ -14,12 +16,11 @@ export const addInvestmentCallback = async (
   securityInvestmentService,
   setRefresh
 ) => {
-  if (
-    investment.security.ticker === "" ||
-    investment.buyPrice == 0 ||
-    investment.shares == 0
-  ) {
-    alert("Please fill in all fields correctly.");
+  if (!investment.buyDate || !investment.shares || !investment.security) {
+    eventEmitter.emit(
+      NotificationEvent,
+      createNotification("Please fill all fields.", dark.error)
+    );
     return;
   }
 
@@ -38,7 +39,18 @@ export const addSecurityCallback = async (
   setSecurity,
   setRefresh
 ) => {
-  if (security.name === "" || security.ticker === "") return;
+  if (
+    !security.name ||
+    !security.ticker ||
+    security.name.trim() === "" ||
+    security.ticker.trim() === ""
+  ) {
+    eventEmitter.emit(
+      NotificationEvent,
+      createNotification("Please fill all fields.", dark.error)
+    );
+    return;
+  }
 
   await securityRepository.updateOrCreate(security);
   setSecurity(newSecurity());

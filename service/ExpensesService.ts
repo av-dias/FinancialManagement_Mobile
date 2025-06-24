@@ -1,3 +1,4 @@
+import { createNotification } from "../components/NotificationBox/NotificationBox";
 import { ExpenseEnum } from "../models/types";
 import { useDatabaseConnection } from "../store/database-context";
 import {
@@ -16,6 +17,8 @@ import {
 } from "../store/database/Transaction/TransactionEntity";
 import { TransactionRepository } from "../store/database/Transaction/TransactionRepository";
 import { months } from "../utility/calendar";
+import { dark } from "../utility/colors";
+import { eventEmitter, NotificationEvent } from "../utility/eventEmitter";
 import { ANALYSES_TYPE } from "../utility/keys";
 
 export class ExpensesService {
@@ -58,7 +61,10 @@ export class ExpensesService {
       !purchaseEntity.amount ||
       !purchaseEntity.date
     ) {
-      alert("Please fill all fields.");
+      eventEmitter.emit(
+        NotificationEvent,
+        createNotification("Please fill all fields.", dark.error)
+      );
       throw new Error("Please fill all fields.");
     }
 
@@ -148,7 +154,10 @@ export class ExpensesService {
       transactionEntity.description == "" ||
       !transactionEntity.date
     ) {
-      alert("Please fill all fields.");
+      eventEmitter.emit(
+        NotificationEvent,
+        createNotification("Please fill all fields.", dark.error)
+      );
       throw new Error("Please fill all fields.");
     }
 
@@ -157,7 +166,13 @@ export class ExpensesService {
       transactionEntity.userTransactionId == "" ||
       transactionEntity.userTransactionId == "Not Registed"
     ) {
-      alert("Please register a split user on the settings.");
+      eventEmitter.emit(
+        NotificationEvent,
+        createNotification(
+          "Please register a split user on the settings.",
+          dark.error
+        )
+      );
       throw new Error("Please register a split user on the settings.");
     }
 

@@ -17,6 +17,9 @@ export const dark = {
   textExpenses: "red",
   incomeBackgroundColor: "rgb(180, 255, 180)",
   white: "white",
+  success: "green",
+  warning: "orange",
+  error: "red",
 };
 
 export const ProgressBarColors = {

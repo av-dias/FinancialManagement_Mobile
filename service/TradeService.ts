@@ -3,10 +3,8 @@ import { useDatabaseConnection } from "../store/database-context";
 import { InvestmentRepository } from "../store/database/SecurityInvestment/InvestmentRepository";
 import { SecurityRepository } from "../store/database/SecurityInvestment/SecurityRepository";
 import { eventEmitter, NotificationEvent } from "../utility/eventEmitter";
-import {
-  createNotification,
-  NotificationData,
-} from "../components/NotificationBox/NotificationBox";
+import { createNotification } from "../components/NotificationBox/NotificationBox";
+import { dark } from "../utility/colors";
 
 export class TradeService {
   private securityRepository: SecurityRepository =
@@ -33,7 +31,7 @@ export class TradeService {
       if (linkedTickers.includes(securityTicker)) {
         eventEmitter.emit(
           NotificationEvent,
-          createNotification("Cannot delete, ticker in use.", "orange")
+          createNotification("Cannot delete, ticker in use.", dark.warning)
         );
       } else {
         await this.securityRepository.deleteUnlinkedSecurity(securityTicker);

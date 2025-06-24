@@ -5,6 +5,7 @@ import commonStyles from "../../utility/commonStyles";
 import { dark } from "../../utility/colors";
 import Modal from "react-native-modal";
 import { ReactNode } from "react";
+import { NotificationBox } from "../NotificationBox/NotificationBox";
 
 type ModalCustom = {
   modalVisible: boolean;
@@ -42,6 +43,7 @@ export default function ModalCustom({
       statusBarTranslucent
       deviceHeight={Dimensions.get("window").height * 2}
     >
+      <NotificationBox />
       <View
         style={{
           flex: 1,

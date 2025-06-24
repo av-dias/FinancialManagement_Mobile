@@ -11,6 +11,7 @@ import ButtonSwitch from "../../components/ButtonSwitch/ButtonSwitch";
 import Purchase from "../purchase/purchase";
 import Transaction from "../transaction/transaction";
 import Income from "../income/income";
+import { NotificationBox } from "../../components/NotificationBox/NotificationBox";
 
 const options = ["Purchase", "Transaction", "Income"];
 
@@ -22,9 +23,14 @@ export default function Add({ navigation }) {
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
+      <NotificationBox />
       <View style={styles.usableScreen}>
         <View>
-          <ButtonSwitch selectedOption={selectedOption} setSelectedOption={setSelectedOption} options={options} />
+          <ButtonSwitch
+            selectedOption={selectedOption}
+            setSelectedOption={setSelectedOption}
+            options={options}
+          />
         </View>
         {selectedOption == options[0] && <Purchase />}
         {selectedOption == options[1] && <Transaction />}

@@ -1,3 +1,6 @@
+import { createNotification } from "../../../components/NotificationBox/NotificationBox";
+import { dark } from "../../../utility/colors";
+import { eventEmitter, NotificationEvent } from "../../../utility/eventEmitter";
 import { logTimeTook } from "../../../utility/logger";
 import { useDatabaseConnection } from "../../database-context";
 import { InvestmentRepository } from "./InvestmentRepository";
@@ -26,9 +29,11 @@ export class SecurityInvestmentService {
     }
 
     if (isNaN(new Date(investmentEntity.buyDate).getTime())) {
-      console.log("Invalid buy date");
-      alert("Invalid buy date.");
-      return;
+      eventEmitter.emit(
+        NotificationEvent,
+        createNotification("Invalid buy date.", dark.error)
+      );
+      throw new Error("Invalid buy date.");
     }
 
     const investment = new InvestmentModel();

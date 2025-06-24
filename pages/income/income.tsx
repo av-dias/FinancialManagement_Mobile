@@ -16,12 +16,20 @@ import { dark } from "../../utility/colors";
 
 //Functions
 import { verticalScale } from "../../functions/responsive";
-import { clearIncomeEntity, IncomeEntity, IncomeModel } from "../../store/database/Income/IncomeEntity";
+import {
+  clearIncomeEntity,
+  IncomeEntity,
+  IncomeModel,
+} from "../../store/database/Income/IncomeEntity";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDatabaseConnection } from "../../store/database-context";
 import { FlatCalendar } from "../../components/flatCalender/FlatCalender";
 import { ExpenseEnum } from "../../models/types";
-import DualTextInput, { textInputType } from "../../components/DualTextInput/DualTextInput";
+import DualTextInput, {
+  textInputType,
+} from "../../components/DualTextInput/DualTextInput";
+import { eventEmitter, NotificationEvent } from "../../utility/eventEmitter";
+import { createNotification } from "../../components/NotificationBox/NotificationBox";
 
 type IncomeProps = {
   income?: IncomeEntity;
@@ -49,7 +57,18 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
   const inputConfig: textInputType[] = [
     {
       placeholder: "Name",
-      icon: <MaterialIcons style={{ display: "flex", justifyContent: "center", alignSelf: "center" }} name="notes" size={verticalScale(12)} color={dark.textPrimary} />,
+      icon: (
+        <MaterialIcons
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignSelf: "center",
+          }}
+          name="notes"
+          size={verticalScale(12)}
+          color={dark.textPrimary}
+        />
+      ),
       value: newIncome.name,
       setValue: (name: string) => {
         setNewIncome({ ...newIncome, name: name });
@@ -63,12 +82,18 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
   ];
 
   const loadCarroselItems = (items: string[]) => {
-    return items.map((item: string) => ({ label: item, color: dark.secundary }));
+    return items.map((item: string) => ({
+      label: item,
+      color: dark.secundary,
+    }));
   };
 
   const onPressCallback = async () => {
     if (!newIncome.amount || !newIncome.name || !newIncome.userId) {
-      alert("Please fill all fields.");
+      eventEmitter.emit(
+        NotificationEvent,
+        createNotification("Please fill all fields.", dark.error)
+      );
       return;
     }
 
@@ -91,7 +116,8 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
       async function fetchData() {
         try {
           if (email) {
-            const distinctIncomeNames = await incomeRepository.getDistinctIncomeNames(email);
+            const distinctIncomeNames =
+              await incomeRepository.getDistinctIncomeNames(email);
             setListNames(distinctIncomeNames);
           }
         } catch (e) {
@@ -104,7 +130,9 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ position: "absolute", right: 0, paddingTop: 50, gap: 10 }}></View>
+      <View
+        style={{ position: "absolute", right: 0, paddingTop: 50, gap: 10 }}
+      ></View>
       <View style={{ flex: 1 }}>
         <MoneyInputHeader
           value={newIncome?.amount?.toString()}
