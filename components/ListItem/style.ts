@@ -18,12 +18,24 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
     borderRadius: commonStyles.borderRadius,
   },
-  row: { flexDirection: "row", gap: verticalScale(15), borderRadius: commonStyles.borderRadius, backgroundColor: "transparent" },
+  row: {
+    flexDirection: "row",
+    gap: verticalScale(5),
+    borderRadius: commonStyles.borderRadius,
+    backgroundColor: "transparent",
+  },
   titleText: {
     fontSize: verticalScale(12),
     color: dark.textPrimary,
   },
-  text: { fontSize: verticalScale(12), textAlign: "center", zIndex: 1, backgroundColor: "transparent", alignSelf: "center", color: dark.textPrimary },
+  text: {
+    fontSize: verticalScale(12),
+    textAlign: "center",
+    zIndex: 1,
+    backgroundColor: "transparent",
+    alignSelf: "center",
+    color: dark.textPrimary,
+  },
   optionsContainer: {
     flex: 3,
     flexDirection: "row",
@@ -35,6 +47,7 @@ export const _styles = StyleSheet.create({
     gap: 5,
   },
   optionBox: {
+    zIndex: 1000,
     width: verticalScale(40),
     maxWidth: 50,
     height: verticalScale(40),

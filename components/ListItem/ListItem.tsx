@@ -13,6 +13,11 @@ import {
   TransactionEntity,
   TransactionOperation,
 } from "../../store/database/Transaction/TransactionEntity";
+import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import Reanimated, {
+  SharedValue,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 
 type ListItemProps = {
   item: PurchaseEntity | TransactionEntity | IncomeEntity;
@@ -84,6 +89,46 @@ export const CustomListItem = ({
     });
   };
 
+  const renderRightAction = (
+    prog: SharedValue<number>,
+    drag: SharedValue<number>
+  ) => {
+    const styleAnimation = useAnimatedStyle(() => {
+      //console.log("showRightProgress:", prog.value);
+      //console.log("appliedTranslation:", drag.value);
+
+      return {
+        transform: [{ translateX: drag.value + 200 }],
+      };
+    });
+
+    return (
+      <Reanimated.View
+        style={[
+          styles.row,
+          styleAnimation,
+          { width: 200, backgroundColor: "transparent" },
+        ]}
+      >
+        <View style={styles.optionsContainer}>
+          {options.map((option) => (
+            <Pressable
+              key={`${item.id}${option.type}`}
+              style={styles.optionBox}
+              onPress={option.callback}
+            >
+              {
+                utilIcons(verticalScale(20)).find(
+                  (type) => type.label === option.type
+                ).icon
+              }
+            </Pressable>
+          ))}
+        </View>
+      </Reanimated.View>
+    );
+  };
+
   return (
     <Pressable
       key={`${item}`}
@@ -103,50 +148,51 @@ export const CustomListItem = ({
           style={{
             ...styles.row,
             flex: 1,
-            backgroundColor: "transparent",
-            height: verticalScale(40),
           }}
         >
           <TypeIcon icon={loadIcon(item)} />
-          <View style={{ justifyContent: "center" }}>
-            <Text style={styles.titleText}>{getLabel(item)}</Text>
-            <Text
-              style={{
-                ...styles.titleText,
-                color:
-                  item.entity == ExpenseEnum.Income ||
-                  (item?.entity == ExpenseEnum.Transaction &&
-                    item.transactionType == TransactionOperation.RECEIVED) ||
-                  (item.entity == ExpenseEnum.Purchase && item.isRefund)
-                    ? "green"
-                    : dark.textExpenses,
-              }}
-            >
-              {getValue(item)}
-            </Text>
-          </View>
-        </View>
-        <View style={{ ...styles.row, flex: 1 }}>
-          <View style={styles.optionsContainer}>
-            {label && (
+          <ReanimatedSwipeable
+            containerStyle={{ flex: 1 }}
+            renderRightActions={renderRightAction}
+            childrenContainerStyle={{
+              ...styles.row,
+              flex: 1,
+              backgroundColor: "transparent",
+              height: verticalScale(40),
+              justifyContent: "space-between",
+            }}
+          >
+            {/* TODO - Add label as budget component */}
+            {label ? (
               <View style={styles.optionBox}>
                 <Text style={styles.text}>{label.text}</Text>
               </View>
+            ) : (
+              <View></View>
             )}
-            {options.map((option) => (
-              <Pressable
-                key={`${item.id}${option.type}`}
-                style={styles.optionBox}
-                onPress={option.callback}
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text style={styles.titleText}>{getLabel(item)}</Text>
+              <Text
+                style={{
+                  ...styles.titleText,
+                  color:
+                    item.entity == ExpenseEnum.Income ||
+                    (item?.entity == ExpenseEnum.Transaction &&
+                      item.transactionType == TransactionOperation.RECEIVED) ||
+                    (item.entity == ExpenseEnum.Purchase && item.isRefund)
+                      ? "green"
+                      : dark.textExpenses,
+                }}
               >
-                {
-                  utilIcons(verticalScale(20)).find(
-                    (type) => type.label === option.type
-                  ).icon
-                }
-              </Pressable>
-            ))}
-          </View>
+                {getValue(item)}
+              </Text>
+            </View>
+          </ReanimatedSwipeable>
         </View>
       </View>
     </Pressable>
