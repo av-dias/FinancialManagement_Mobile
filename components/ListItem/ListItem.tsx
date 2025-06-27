@@ -13,11 +13,8 @@ import {
   TransactionEntity,
   TransactionOperation,
 } from "../../store/database/Transaction/TransactionEntity";
-import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
-import Reanimated, {
-  SharedValue,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import Reanimated from "react-native-reanimated";
+import { Swipeable } from "react-native-gesture-handler";
 
 type ListItemProps = {
   item: PurchaseEntity | TransactionEntity | IncomeEntity;
@@ -89,11 +86,9 @@ export const CustomListItem = ({
     });
   };
 
-  const renderRightAction = (
-    prog: SharedValue<number>,
-    drag: SharedValue<number>
-  ) => {
-    const styleAnimation = useAnimatedStyle(() => {
+  const renderRightAction =
+    (/* prog: SharedValue<number>,drag: SharedValue<number> */) => {
+      /* const styleAnimation = useAnimatedStyle(() => {
       //console.log("showRightProgress:", prog.value);
       //console.log("appliedTranslation:", drag.value);
 
@@ -101,33 +96,33 @@ export const CustomListItem = ({
         transform: [{ translateX: drag.value + 200 }],
       };
     });
-
-    return (
-      <Reanimated.View
-        style={[
-          styles.row,
-          styleAnimation,
-          { width: 200, backgroundColor: "transparent" },
-        ]}
-      >
-        <View style={styles.optionsContainer}>
-          {options.map((option) => (
-            <Pressable
-              key={`${item.id}${option.type}`}
-              style={styles.optionBox}
-              onPress={option.callback}
-            >
-              {
-                utilIcons(verticalScale(20)).find(
-                  (type) => type.label === option.type
-                ).icon
-              }
-            </Pressable>
-          ))}
-        </View>
-      </Reanimated.View>
-    );
-  };
+ */
+      return (
+        <Reanimated.View
+          style={[
+            styles.row,
+            /* styleAnimation, */
+            { width: 200, backgroundColor: "transparent" },
+          ]}
+        >
+          <View style={styles.optionsContainer}>
+            {options.map((option) => (
+              <Pressable
+                key={`${item.id}${option.type}`}
+                style={styles.optionBox}
+                onPress={option.callback}
+              >
+                {
+                  utilIcons(verticalScale(20)).find(
+                    (type) => type.label === option.type
+                  ).icon
+                }
+              </Pressable>
+            ))}
+          </View>
+        </Reanimated.View>
+      );
+    };
 
   return (
     <Pressable
@@ -151,7 +146,7 @@ export const CustomListItem = ({
           }}
         >
           <TypeIcon icon={loadIcon(item)} />
-          <ReanimatedSwipeable
+          <Swipeable
             containerStyle={{ flex: 1 }}
             renderRightActions={renderRightAction}
             childrenContainerStyle={{
@@ -192,7 +187,7 @@ export const CustomListItem = ({
                 {getValue(item)}
               </Text>
             </View>
-          </ReanimatedSwipeable>
+          </Swipeable>
         </View>
       </View>
     </Pressable>
