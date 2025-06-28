@@ -17,13 +17,35 @@ type MainCardPropsType = {
 
 const styles = StyleSheet.create({
   wrapperContainer: { padding: 10, flex: 1, height: 150 },
-  titleContainer: { flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 },
+  titleContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+  },
   valueContainer: { flex: 2, justifyContent: "center", padding: 0 },
-  statusContainer: { flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 },
+  statusContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+  },
   chartContainer: { flex: 1 },
-  valueStyle: { fontSize: 35, fontWeight: "bold", color: dark.textSecundary, textAlign: "center", textAlignVertical: "center" },
+  valueStyle: {
+    fontSize: 35,
+    fontWeight: "bold",
+    color: dark.textSecundary,
+    textAlign: "center",
+    textAlignVertical: "center",
+  },
   titleStyle: { fontSize: 14, color: dark.textPrimary },
-  symbolStyle: { fontSize: 13, color: dark.textPrimary, textAlignVertical: "bottom" },
+  symbolStyle: {
+    fontSize: 13,
+    color: dark.textPrimary,
+    textAlignVertical: "bottom",
+  },
 });
 
 const StatsIcon = ({ value }) => {
@@ -32,7 +54,14 @@ const StatsIcon = ({ value }) => {
   } else if (value < 0) {
     return <Entypo name="arrow-long-down" size={15} color="red" />;
   } else {
-    return <Entypo style={{ marginBottom: -1 }} name="select-arrows" size={15} color="gray" />;
+    return (
+      <Entypo
+        style={{ marginBottom: -1 }}
+        name="select-arrows"
+        size={15}
+        color="gray"
+      />
+    );
   }
 };
 
@@ -63,12 +92,12 @@ export const MainCard = (content: MainCardPropsType) => {
           padding={0}
         >
           <VictoryAxis
-            tickLabelComponent={<></>} // Remove tick labels
+            tickLabelComponent={<View></View>} // Remove tick labels
             style={axisStyle}
           />
           <VictoryAxis
             style={axisStyle}
-            tickLabelComponent={<></>} // Remove tick labels
+            tickLabelComponent={<View></View>} // Remove tick labels
           />
           <VictoryLine
             style={{
@@ -80,14 +109,18 @@ export const MainCard = (content: MainCardPropsType) => {
         </VictoryChart>
         <View style={styles.statusContainer}>
           <View style={{ flexDirection: "row" }}>
-            <Text style={styles.titleStyle}>{`${content.absoluteIncrease}`}</Text>
+            <Text
+              style={styles.titleStyle}
+            >{`${content.absoluteIncrease}`}</Text>
             <Text style={styles.symbolStyle}>{`€`}</Text>
           </View>
           <View style={{ flexDirection: "row" }}>
             <View style={{ justifyContent: "center" }}>
               <StatsIcon value={content.absoluteIncrease} />
             </View>
-            <Text style={styles.titleStyle}>{`${content.relativeIncrease}`}</Text>
+            <Text
+              style={styles.titleStyle}
+            >{`${content.relativeIncrease}`}</Text>
             <Text style={styles.symbolStyle}>{`%`}</Text>
           </View>
         </View>

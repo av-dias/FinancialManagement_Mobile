@@ -10,7 +10,7 @@ export const dark = {
   calendarBorder: "white",
   secundary: "rgba(19, 137, 239, 1)",
   button: "#F4981B",
-  gradientColourLight: ["#010103", "#12102E"],
+  gradientColourLight: ["#010103", "#12102E"] as [string, string],
   textPrimary: "rgba(214, 210, 230, 1)",
   textComplementary: "rgba(214, 210, 230, 0.5)",
   textSecundary: "lightgray",

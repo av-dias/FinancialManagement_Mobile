@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Text, View, Pressable, Image } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { CheckBox } from "@rneui/themed";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import Checkbox from "expo-checkbox";
 import { saveToStorage, getFromStorage } from "../../functions/secureStorage";
 import { _styles } from "./style";
 import { verticalScale } from "../../functions/responsive";
 import { KEYS } from "../../utility/storageKeys";
 import { CustomTitle } from "../../components/customTitle/CustomTitle";
 import CustomInput from "../../components/customInput/customInput";
-import { EvilIcons, MaterialIcons } from "@expo/vector-icons";
+import { EvilIcons } from "@expo/vector-icons";
 import { dark } from "../../utility/colors";
 
 export default function Login({ navigation }) {
@@ -76,14 +76,28 @@ export default function Login({ navigation }) {
         />
         <View style={{ gap: 20 }}>
           <CustomInput
-            Icon={<AntDesign style={{ alignSelf: "center" }} name="user" size={16} color="white" />}
+            Icon={
+              <AntDesign
+                style={{ alignSelf: "center" }}
+                name="user"
+                size={16}
+                color="white"
+              />
+            }
             placeholder={"email"}
             value={email}
             setValue={(value) => setEmail(value.toLowerCase())}
             textAlign="left"
           />
           <CustomInput
-            Icon={<EvilIcons style={{ alignSelf: "center" }} name="lock" size={24} color="white" />}
+            Icon={
+              <EvilIcons
+                style={{ alignSelf: "center" }}
+                name="lock"
+                size={24}
+                color="white"
+              />
+            }
             placeholder={"password"}
             value={password}
             setValue={setPassword}
@@ -91,14 +105,21 @@ export default function Login({ navigation }) {
             textAlign="left"
           />
           <View style={styles.checkbox}>
-            <CheckBox
-              size={15}
-              containerStyle={{ backgroundColor: "transparent" }}
-              textStyle={{ fontSize: verticalScale(10), color: "white" }}
-              checked={checked}
-              onPress={toggleCheckbox}
-              title="Remember Me"
+            <Checkbox
+              value={checked}
+              onValueChange={toggleCheckbox}
+              color="white"
+              style={{ backgroundColor: "transparent" }}
             />
+            <Text
+              style={{
+                fontSize: verticalScale(10),
+                color: "white",
+                marginLeft: 8,
+              }}
+            >
+              Remember Me
+            </Text>
           </View>
         </View>
         <Pressable
@@ -112,7 +133,9 @@ export default function Login({ navigation }) {
         </Pressable>
       </View>
       <View style={{ position: "absolute", bottom: 50 }}>
-        <Text style={{ color: dark.textComplementary, textAlign: "center" }}>Just insert an email and password.</Text>
+        <Text style={{ color: dark.textComplementary, textAlign: "center" }}>
+          Just insert an email and password.
+        </Text>
       </View>
     </View>
   );
