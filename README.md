@@ -18,3 +18,12 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
   - Refactoring trade page
 - 3.0.9
   - FlatOptionItem to allow trade edit
+- 3.1.0
+  - Trade element edit and delete feature
+  - Security element delete feature
+  - Custom notification box to use across app with event emitter
+  - Home bug fix expense not showing
+  - Purchase name suggestion feature
+  - List item with swipeable feature
+- 3.2.0
+  - Major expo SDK 53 update and compatible dependency
