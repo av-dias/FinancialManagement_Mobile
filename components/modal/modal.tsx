@@ -32,7 +32,6 @@ export default function ModalCustom({
 }) {
   return (
     <Modal
-      animationOut="bounceIn"
       isVisible={modalVisible}
       onBackdropPress={() => {
         setModalVisible(!modalVisible);

@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { SplitEntity, splitMapper, SplitModel } from "../Split/SplitEntity";
 import { ExpenseEnum } from "../../../models/types";
 import { TransactionModel } from "../Transaction/TransactionEntity";
@@ -8,7 +14,7 @@ export class PurchaseModel {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ type: "decimal", nullable: false })
   amount: number;
 
   @Column({ nullable: false })
@@ -56,7 +62,10 @@ export type PurchaseEntity = {
   entity: ExpenseEnum.Purchase;
 };
 
-export const clearPurchaseEntity = (purchaseEntity: PurchaseEntity, user?: string): PurchaseEntity => ({
+export const clearPurchaseEntity = (
+  purchaseEntity: PurchaseEntity,
+  user?: string
+): PurchaseEntity => ({
   id: null,
   amount: 0,
   name: "",

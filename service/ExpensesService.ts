@@ -37,6 +37,18 @@ export class ExpensesService {
     );
   }
 
+  /**
+   * This is used to save db details in file for backup usage only
+   * @param userId
+   * @returns
+   */
+  public async getAllExpenses(userId: string) {
+    const p = await this.purchaseRepository.getAll(userId);
+    const t = await this.transactionRepository.getAll(userId);
+
+    return [...p, ...t];
+  }
+
   public async getExpenseByIdAndType(
     userId: string,
     expenseId: number,

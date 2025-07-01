@@ -1,12 +1,26 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Image,
+  Pressable,
+} from "react-native";
 import { dark } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+} from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 import commonStyles from "../../utility/commonStyles";
 
 export const _styles = StyleSheet.create({
   usableScreen: {
-    height: Dimensions.get("window").height - commonStyles.statusBarHeight - commonStyles.naviagtionBarHeight,
+    height:
+      Dimensions.get("window").height -
+      commonStyles.statusBarHeight -
+      commonStyles.naviagtionBarHeight,
     backgroundColor: "transparent",
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
@@ -17,9 +31,9 @@ export const _styles = StyleSheet.create({
     height: "97%",
   },
   calendar: {
+    width: "98%",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    width: "98%",
     backgroundColor: "transparent",
     alignSelf: "center",
     flexDirection: "row",
@@ -44,7 +58,11 @@ export const _styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "transparent",
   },
-  row: { flexDirection: "row", gap: verticalScale(15), backgroundColor: "transparent" },
+  row: {
+    flexDirection: "row",
+    gap: verticalScale(15),
+    backgroundColor: "transparent",
+  },
   buttonText: {
     fontSize: verticalScale(12),
     color: "black",
@@ -85,7 +103,11 @@ export const _styles = StyleSheet.create({
     marginVertical: verticalScale(15),
     borderRadius: commonStyles.borderRadius,
   },
-  iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
+  iconCenter: {
+    display: "flex",
+    justifyContent: "center",
+    alignSelf: "center",
+  },
   form: {
     flex: 7,
     gap: verticalScale(15),

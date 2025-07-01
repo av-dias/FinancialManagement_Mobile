@@ -10,7 +10,19 @@ import { UserContext } from "../../store/user-context";
 import { verticalScale } from "../../functions/responsive";
 import { KEYS as KEYS_SERIALIZER } from "../../utility/keys";
 import { getSplitUser } from "../../functions/split";
-import { expenseLabel, isIncomeOnDate, splitOption, settleOption, editOption, searchItem, searchExpenses, searchIncome, editIncomeOption, loadEditModal, isExpenseOnDate } from "./handler";
+import {
+  expenseLabel,
+  isIncomeOnDate,
+  splitOption,
+  settleOption,
+  editOption,
+  searchItem,
+  searchExpenses,
+  searchIncome,
+  editIncomeOption,
+  loadEditModal,
+  isExpenseOnDate,
+} from "./handler";
 import { months } from "../../utility/calendar";
 
 import Header from "../../components/header/header";
@@ -24,7 +36,12 @@ import { useDatabaseConnection } from "../../store/database-context";
 import { IncomeEntity } from "../../store/database/Income/IncomeEntity";
 import { CustomListItem } from "../../components/ListItem/ListItem";
 import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
-import { AlertData, IncomeAlertData, PurchaseAlertData, TransactionAlertData } from "../../constants/listConstants/deleteDialog";
+import {
+  AlertData,
+  IncomeAlertData,
+  PurchaseAlertData,
+  TransactionAlertData,
+} from "../../constants/listConstants/deleteDialog";
 import { Checkbox, Searchbar } from "react-native-paper";
 import { logTimeTook } from "../../utility/logger";
 import { utilIcons } from "../../utility/icons";
@@ -47,9 +64,13 @@ export default function List({ navigation }) {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   const [incomeData, setIncomeData] = useState<IncomeEntity[]>([]);
-  const [expenseData, setExpenseData] = useState<(PurchaseEntity | TransactionEntity)[]>([]);
+  const [expenseData, setExpenseData] = useState<
+    (PurchaseEntity | TransactionEntity)[]
+  >([]);
 
-  const [selectedItem, setSelectedItem] = useState<PurchaseEntity | TransactionEntity | IncomeEntity>();
+  const [selectedItem, setSelectedItem] = useState<
+    PurchaseEntity | TransactionEntity | IncomeEntity
+  >();
   const [destination, setDestination] = useState({ email: "", name: "" });
 
   const [listDays, setListDays] = useState([]);
@@ -58,7 +79,9 @@ export default function List({ navigation }) {
   const [alertVisible, setAlertVisible] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [multiSelect, setMultiSelect] = useState<(PurchaseEntity | TransactionEntity | IncomeEntity)[]>([]);
+  const [multiSelect, setMultiSelect] = useState<
+    (PurchaseEntity | TransactionEntity | IncomeEntity)[]
+  >([]);
   const [refresh, setRefresh] = useState<boolean>(false);
 
   useFocusEffect(
@@ -86,8 +109,16 @@ export default function List({ navigation }) {
           let expensesList = [];
 
           try {
-            incomeList = await incomeRepository.getIncomeFromDate(email, currentMonth, currentYear);
-            expensesList = await expensesService.getExpensesList(email, currentMonth + 1, currentYear);
+            incomeList = await incomeRepository.getIncomeFromDate(
+              email,
+              currentMonth,
+              currentYear
+            );
+            expensesList = await expensesService.getExpensesList(
+              email,
+              currentMonth + 1,
+              currentYear
+            );
             setExpenseData(expensesList);
             setIncomeData(incomeList);
           } catch (e) {
@@ -118,13 +149,20 @@ export default function List({ navigation }) {
 
   const removeExpense = (item: PurchaseEntity | TransactionEntity) => {
     setExpenseData((prev: (TransactionEntity | PurchaseEntity)[]) => {
-      const filteredList = prev.filter((prevItem) => !(prevItem.id === item.id && prevItem.entity === item.entity));
+      const filteredList = prev.filter(
+        (prevItem) =>
+          !(prevItem.id === item.id && prevItem.entity === item.entity)
+      );
 
       // If it is a transaction
       if (item.entity === ExpenseEnum.Transaction) {
         for (let prevItem of filteredList) {
           // We need to check if its associated with purchase
-          if (prevItem.entity === ExpenseEnum.Purchase && prevItem.wasRefunded && prevItem.wasRefunded === item.id) {
+          if (
+            prevItem.entity === ExpenseEnum.Purchase &&
+            prevItem.wasRefunded &&
+            prevItem.wasRefunded === item.id
+          ) {
             prevItem.wasRefunded = null;
             break;
           }
@@ -148,9 +186,22 @@ export default function List({ navigation }) {
   const expensesOptions = (expense: PurchaseEntity | TransactionEntity) => {
     let options = [];
     if (expense.entity === ExpenseEnum.Purchase && !expense.split) {
-      options.push(splitOption(expense, destination.email, expensesService, reload));
-    } else if (expense.entity === ExpenseEnum.Purchase && !expense?.wasRefunded) {
-      options.push(settleOption(email, expense, destination.email, expensesService, (expense: PurchaseEntity) => addExpense(expense)));
+      options.push(
+        splitOption(expense, destination.email, expensesService, reload)
+      );
+    } else if (
+      expense.entity === ExpenseEnum.Purchase &&
+      !expense?.wasRefunded
+    ) {
+      options.push(
+        settleOption(
+          email,
+          expense,
+          destination.email,
+          expensesService,
+          (expense: PurchaseEntity) => addExpense(expense)
+        )
+      );
     }
 
     options.push(editOption(setSelectedItem, expense, setEditVisible));
@@ -160,7 +211,9 @@ export default function List({ navigation }) {
 
   const removeSelection = () => setMultiSelect([]);
 
-  const loadModalDialog = (data: PurchaseEntity | TransactionEntity | IncomeType) => {
+  const loadModalDialog = (
+    data: PurchaseEntity | TransactionEntity | IncomeType
+  ) => {
     setAlertVisible(true);
     setSelectedItem(data);
   };
@@ -207,26 +260,40 @@ export default function List({ navigation }) {
   };
 
   /* Loads the dialog data when list item is pressed */
-  const getModalDialogData = (data: IncomeEntity | PurchaseEntity | TransactionEntity): AlertData => {
+  const getModalDialogData = (
+    data: IncomeEntity | PurchaseEntity | TransactionEntity
+  ): AlertData => {
     if (data.entity === ExpenseEnum.Income) {
       const handleConfirm = async (income: IncomeEntity) => {
         await incomeRepository.delete(income.id);
         setIncomeData((prev) => prev.filter((item) => item.id !== income.id));
       };
 
-      return IncomeAlertData(data.name, data.amount.toString(), async () => await handleConfirm(data));
+      return IncomeAlertData(
+        data.name,
+        data.amount.toString(),
+        async () => await handleConfirm(data)
+      );
     } else if (data.entity === ExpenseEnum.Purchase) {
       const handleConfirm = async (purchase: PurchaseEntity) => {
         await expensesService.deletePurchase(purchase);
         removeExpense(purchase);
       };
-      return PurchaseAlertData(data.name, data.amount.toString(), async () => await handleConfirm(data));
+      return PurchaseAlertData(
+        data.name,
+        data.amount.toString(),
+        async () => await handleConfirm(data)
+      );
     } else {
       const handleConfirm = async (transaction: TransactionEntity) => {
         await expensesService.deleteTransaction(transaction);
         removeExpense(transaction);
       };
-      return TransactionAlertData(data.description, data.amount.toString(), async () => await handleConfirm(data));
+      return TransactionAlertData(
+        data.description,
+        data.amount.toString(),
+        async () => await handleConfirm(data)
+      );
     }
   };
 
@@ -243,11 +310,23 @@ export default function List({ navigation }) {
         <View style={{ flex: 1, backgroundColor: "transparent" }}>
           {editVisible && (
             /* TODO Improve ModalList implementation to prevent code duplication */
-            <ModalCustom modalVisible={editVisible} setModalVisible={setEditVisible} size={18} hasColor={true}>
+            <ModalCustom
+              modalVisible={editVisible}
+              setModalVisible={setEditVisible}
+              size={18}
+              hasColor={true}
+            >
               {loadEditModal(selectedItem, email, reload, setIncomeData)}
             </ModalCustom>
           )}
-          {alertVisible && <ModalDialog visible={alertVisible} setVisible={setAlertVisible} size={2.5} data={getModalDialogData(selectedItem)} />}
+          {alertVisible && (
+            <ModalDialog
+              visible={alertVisible}
+              setVisible={setAlertVisible}
+              size={2.5}
+              data={getModalDialogData(selectedItem)}
+            />
+          )}
           {/*
            * Searchbar to filter items
            */}
@@ -268,9 +347,20 @@ export default function List({ navigation }) {
           <View style={{ flex: 1 }}>
             <ScrollView>
               {listDays.map((date) => (
-                <View key={KEYS_SERIALIZER.EXPENSE + KEYS_SERIALIZER.TOKEN_SEPARATOR + date} style={{ paddingHorizontal: 5 }}>
+                <View
+                  key={
+                    KEYS_SERIALIZER.EXPENSE +
+                    KEYS_SERIALIZER.TOKEN_SEPARATOR +
+                    date
+                  }
+                  style={{ paddingHorizontal: 5 }}
+                >
                   <View style={styles.listDateBox}>
-                    <Text style={styles.listDate}>{new Date(date).getDate() + " " + months[new Date(date).getMonth()]}</Text>
+                    <Text style={styles.listDate}>
+                      {new Date(date).getDate() +
+                        " " +
+                        months[new Date(date).getMonth()]}
+                    </Text>
                   </View>
                   <CardWrapper key={date} style={styles.listBox}>
                     {expenseData?.map(
@@ -296,7 +386,12 @@ export default function List({ navigation }) {
                             key={`Income${income.id}`}
                             item={income}
                             options={incomeOptions(income)}
-                            onPress={() => loadModalDialog({ ...income, key: KEYS_SERIALIZER.INCOME })}
+                            onPress={() =>
+                              loadModalDialog({
+                                ...income,
+                                key: KEYS_SERIALIZER.INCOME,
+                              })
+                            }
                             onLongPress={setMultiSelect}
                             selected={multiSelect}
                           />
@@ -315,24 +410,53 @@ export default function List({ navigation }) {
            */}
           {multiSelect.length > 0 && (
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Checkbox status={multiSelect.length > 0 ? "checked" : "unchecked"} onPress={removeSelection} />
+              <Checkbox
+                status={multiSelect.length > 0 ? "checked" : "unchecked"}
+                onPress={removeSelection}
+              />
               <Pressable onPress={removeSelection}>
-                <Text style={{ color: dark.textPrimary }}>{`Selected items: ${multiSelect.length}`}</Text>
+                <Text
+                  style={{ color: dark.textPrimary }}
+                >{`Selected items: ${multiSelect.length}`}</Text>
               </Pressable>
             </View>
           )}
           <View style={styles.calendar}>
-            <View style={{ flexDirection: "row", gap: 5 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 5,
+              }}
+            >
               <Pressable onPress={async () => await onRecurringHandle()}>
-                <CardWrapper style={{ height: verticalScale(40), padding: 5 }}>{utilIcons(35, dark.textPrimary).find((icon) => icon.label === "Recurring").icon}</CardWrapper>
+                <CardWrapper style={{ height: verticalScale(40), padding: 5 }}>
+                  {
+                    utilIcons(35, dark.textPrimary).find(
+                      (icon) => icon.label === "Recurring"
+                    ).icon
+                  }
+                </CardWrapper>
               </Pressable>
               {multiSelect.length > 0 && (
                 <Pressable onPress={onBulkDeleteHandle}>
-                  <CardWrapper style={{ height: verticalScale(40), padding: 5 }}>{utilIcons(35, dark.textPrimary).find((icon) => icon.label === "Delete").icon}</CardWrapper>
+                  <CardWrapper
+                    style={{ height: verticalScale(40), padding: 5 }}
+                  >
+                    {
+                      utilIcons(35, dark.textPrimary).find(
+                        (icon) => icon.label === "Delete"
+                      ).icon
+                    }
+                  </CardWrapper>
                 </Pressable>
               )}
             </View>
-            <CalendarCard monthState={[currentMonth, setCurrentMonth]} yearState={[currentYear, setCurrentYear]} />
+            <View>
+              <CalendarCard
+                monthState={[currentMonth, setCurrentMonth]}
+                yearState={[currentYear, setCurrentYear]}
+              />
+            </View>
           </View>
         </View>
       </View>

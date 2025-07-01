@@ -18,6 +18,7 @@ import Reanimated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import { Badge } from "react-native-paper";
 
 type ListItemProps = {
   item: PurchaseEntity | TransactionEntity | IncomeEntity;
@@ -129,6 +130,7 @@ export const CustomListItem = ({
       style={({ pressed }) => [
         commonStyles.onPressBounce(pressed, styles.button, onPress, 12),
         {
+          paddingHorizontal: 15,
           backgroundColor: selected.includes(item)
             ? dark.secundary
             : "transparent",
@@ -137,58 +139,51 @@ export const CustomListItem = ({
       onPress={selected.length < 1 ? onPress : onLongPressHandle}
       onLongPress={onLongPressHandle}
     >
-      <View style={styles.rowGap}>
-        <View
-          style={{
-            ...styles.row,
-            flex: 1,
-          }}
+      <View style={[styles.rowGap, styles.row]}>
+        <TypeIcon icon={loadIcon(item)} />
+        <View style={{ justifyContent: "center" }}>
+          <Text style={styles.titleText}>{getLabel(item)}</Text>
+        </View>
+        <ReanimatedSwipeable
+          containerStyle={{ flex: 1 }}
+          renderRightActions={renderRightAction}
+          childrenContainerStyle={[styles.row, styles.rightContainerSwipe]}
         >
-          <TypeIcon icon={loadIcon(item)} />
-          <ReanimatedSwipeable
-            containerStyle={{ flex: 1 }}
-            renderRightActions={renderRightAction}
-            childrenContainerStyle={{
-              ...styles.row,
-              flex: 1,
-              backgroundColor: "transparent",
-              height: verticalScale(40),
-              justifyContent: "space-between",
-            }}
-          >
-            {/* TODO - Add label as budget component */}
-            {label ? (
-              <View style={styles.optionBox}>
-                <Text style={styles.text}>{label.text}</Text>
-              </View>
-            ) : (
-              <View></View>
-            )}
-            <View
+          <Text>
+            <Text
               style={{
-                justifyContent: "center",
-                alignItems: "flex-end",
+                ...styles.titleText,
+                color:
+                  item.entity == ExpenseEnum.Income ||
+                  (item?.entity == ExpenseEnum.Transaction &&
+                    item.transactionType == TransactionOperation.RECEIVED) ||
+                  (item.entity == ExpenseEnum.Purchase && item.isRefund)
+                    ? "green"
+                    : dark.textExpenses,
               }}
             >
-              <Text style={styles.titleText}>{getLabel(item)}</Text>
-              <Text
-                style={{
-                  ...styles.titleText,
-                  color:
-                    item.entity == ExpenseEnum.Income ||
-                    (item?.entity == ExpenseEnum.Transaction &&
-                      item.transactionType == TransactionOperation.RECEIVED) ||
-                    (item.entity == ExpenseEnum.Purchase && item.isRefund)
-                      ? "green"
-                      : dark.textExpenses,
-                }}
-              >
-                {getValue(item)}
-              </Text>
-            </View>
-          </ReanimatedSwipeable>
-        </View>
+              {getValue(item)}
+            </Text>
+            <Text
+              style={{
+                ...styles.textSymbol,
+                color:
+                  item.entity == ExpenseEnum.Income ||
+                  (item?.entity == ExpenseEnum.Transaction &&
+                    item.transactionType == TransactionOperation.RECEIVED) ||
+                  (item.entity == ExpenseEnum.Purchase && item.isRefund)
+                    ? "green"
+                    : dark.textExpenses,
+              }}
+            >{`€`}</Text>
+          </Text>
+        </ReanimatedSwipeable>
       </View>
+      {label && (
+        <Badge size={20} style={styles.badgeContainer}>
+          {label.text}
+        </Badge>
+      )}
     </Pressable>
   );
 };

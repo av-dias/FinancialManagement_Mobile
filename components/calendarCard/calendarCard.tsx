@@ -16,7 +16,7 @@ import ModalCustom from "../modal/modal";
 import { dark } from "../../utility/colors";
 import commonStyles from "../../utility/commonStyles";
 import { DateFormat } from "../../models/basicUtils";
-import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
+import { FlatList } from "react-native-gesture-handler";
 
 /**
  * DateItem Shows date item on calendar date picker
@@ -76,9 +76,9 @@ export default function CalendarCard({
   yearState: [currentYear, setCurrentYear],
 }) {
   const styles = _styles;
-  const monthRef = useRef<ScrollView>();
-  const yearRef = useRef<ScrollView>();
-  const flatListRef = useRef<FlatList>();
+  const monthRef = useRef<ScrollView>(null);
+  const yearRef = useRef<ScrollView>(null);
+  const flatListRef = useRef<FlatList>(null);
   const deviceTodayYear = new Date().getFullYear();
   const monthOffset = currentMonth ? 12 : 1; // If we are using months we need to offset
   const ITEM_WIDTH = Math.floor(verticalScale(100));
@@ -130,56 +130,54 @@ export default function CalendarCard({
   return (
     <View style={styles.calendarContainer}>
       <View style={styles.calendarBox}>
-        <GestureHandlerRootView>
-          <FlatList
-            ref={flatListRef}
-            horizontal={true}
-            snapToInterval={ITEM_WIDTH}
-            snapToAlignment="center"
-            pagingEnabled
-            decelerationRate={0.5}
-            data={dateRange}
-            showsHorizontalScrollIndicator={false}
-            initialScrollIndex={defaultIndex}
-            getItemLayout={(data, index) => ({
-              length: ITEM_WIDTH,
-              offset: ITEM_WIDTH * index,
-              index,
-            })}
-            onMomentumScrollEnd={(event) => {
-              const offsetX = event.nativeEvent.contentOffset.x;
-              const index = Math.round(offsetX / ITEM_WIDTH);
+        <FlatList
+          ref={flatListRef}
+          horizontal={true}
+          snapToInterval={ITEM_WIDTH}
+          snapToAlignment="center"
+          pagingEnabled
+          decelerationRate={0.5}
+          data={dateRange}
+          showsHorizontalScrollIndicator={false}
+          initialScrollIndex={defaultIndex}
+          getItemLayout={(data, index) => ({
+            length: ITEM_WIDTH,
+            offset: ITEM_WIDTH * index,
+            index,
+          })}
+          onMomentumScrollEnd={(event) => {
+            const offsetX = event.nativeEvent.contentOffset.x;
+            const index = Math.round(offsetX / ITEM_WIDTH);
 
-              if (currentMonth !== null && currentMonth !== undefined) {
-                const month = dateRange[index].month;
-                const year = dateRange[index].year;
-                setCurrentYear(year);
-                setCurrentMonth(months.findIndex((v) => v === month));
-              } else {
-                const year = dateRange[index].year;
-                setCurrentYear(year);
-              }
-            }}
-            renderItem={(element) => (
-              <View
-                style={{
-                  ...styles.centered,
-                  width: ITEM_WIDTH,
-                }}
-              >
-                <Pressable onPress={() => setDatePicker(true)}>
-                  <Text style={styles.text}>{`${
-                    currentMonth !== null ? element.item.month : ""
-                  } ${element.item.year}`}</Text>
-                </Pressable>
-              </View>
-            )}
-            style={{
-              height: verticalScale(40),
-              width: ITEM_WIDTH,
-            }}
-          />
-        </GestureHandlerRootView>
+            if (currentMonth !== null && currentMonth !== undefined) {
+              const month = dateRange[index].month;
+              const year = dateRange[index].year;
+              setCurrentYear(year);
+              setCurrentMonth(months.findIndex((v) => v === month));
+            } else {
+              const year = dateRange[index].year;
+              setCurrentYear(year);
+            }
+          }}
+          renderItem={(element) => (
+            <View
+              style={{
+                ...styles.centered,
+                width: ITEM_WIDTH,
+              }}
+            >
+              <Pressable onPress={() => setDatePicker(true)}>
+                <Text style={styles.text}>{`${
+                  currentMonth !== null ? element.item.month : ""
+                } ${element.item.year}`}</Text>
+              </Pressable>
+            </View>
+          )}
+          style={{
+            height: verticalScale(40),
+            width: ITEM_WIDTH,
+          }}
+        />
         {datePicker && (
           <ModalCustom
             modalVisible={datePicker}

@@ -20,13 +20,14 @@ export const _styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    gap: verticalScale(5),
+    gap: verticalScale(10),
     borderRadius: commonStyles.borderRadius,
     backgroundColor: "transparent",
   },
   titleText: {
-    fontSize: verticalScale(12),
+    fontSize: verticalScale(14),
     color: dark.textPrimary,
+    textAlignVertical: "bottom",
   },
   text: {
     fontSize: verticalScale(12),
@@ -57,4 +58,18 @@ export const _styles = StyleSheet.create({
     alignContent: "center",
     borderRadius: commonStyles.borderRadius,
   },
+  rightContainerSwipe: {
+    flex: 1,
+    backgroundColor: "transparent",
+    height: verticalScale(40),
+    justifyContent: "flex-end",
+    alignItems: "center",
+    gap: 2,
+  },
+  textSymbol: {
+    color: dark.textPrimary,
+    fontSize: verticalScale(8),
+    textAlignVertical: "bottom",
+  },
+  badgeContainer: { top: -9, right: -5, zIndex: 1, position: "absolute" },
 });

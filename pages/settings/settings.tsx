@@ -8,18 +8,33 @@ import commonStyles from "../../utility/commonStyles";
 import * as FileSystem from "expo-file-system";
 
 import { getSplitUsers, getSplitEmail } from "../../functions/split";
-import { saveToStorage, getFromStorage, addToStorage } from "../../functions/secureStorage";
+import {
+  saveToStorage,
+  getFromStorage,
+  addToStorage,
+} from "../../functions/secureStorage";
 import { _styles } from "./style";
 import { getUser } from "../../functions/basic";
 import { KEYS } from "../../utility/storageKeys";
 import Header from "../../components/header/header";
 import { dark } from "../../utility/colors";
+import { ExpensesService } from "../../service/ExpensesService";
+import { IncomeService } from "../../service/IncomeService";
+import { PortfolioService } from "../../service/PortfolioService";
+import { TradeService } from "../../service/TradeService";
+import { SubscriptionService } from "../../service/SubscriptionService";
 
 const MODAL_DEFAULT_SIZE = 6;
 const MODAL_LARGE_SIZE = 9;
 
 export default function Settings({ navigation }) {
   const styles = _styles;
+  const expenseService = new ExpensesService();
+  const incomeService = new IncomeService();
+  const portfolioService = new PortfolioService();
+  const tradeService = new TradeService();
+  const subscriptionService = new SubscriptionService();
+
   const [email, setEmail] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [modalContentFlag, setModalContentFlag] = useState("");
@@ -47,8 +62,24 @@ export default function Settings({ navigation }) {
     switch (modalContentFlag) {
       case "split":
         content = (
-          <View style={{ flex: 4, backgroundColor: "transparent", borderRadius: commonStyles.borderRadius, padding: verticalScale(30), gap: 20 }}>
-            <View style={{ position: "absolute", right: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
+          <View
+            style={{
+              flex: 4,
+              backgroundColor: "transparent",
+              borderRadius: commonStyles.borderRadius,
+              padding: verticalScale(30),
+              gap: 20,
+            }}
+          >
+            <View
+              style={{
+                position: "absolute",
+                right: 0,
+                zIndex: 1,
+                backgroundColor: "transparent",
+                padding: 10,
+              }}
+            >
               <Pressable
                 style={{}}
                 onPress={() => {
@@ -60,12 +91,24 @@ export default function Settings({ navigation }) {
                 <Entypo name="cross" size={verticalScale(20)} color="black" />
               </Pressable>
             </View>
-            <View style={{ position: "absolute", left: 0, zIndex: 1, backgroundColor: "transparent", padding: 10 }}>
+            <View
+              style={{
+                position: "absolute",
+                left: 0,
+                zIndex: 1,
+                backgroundColor: "transparent",
+                padding: 10,
+              }}
+            >
               <Pressable
                 testID="split_list"
                 style={{}}
                 onPress={async () => {
-                  setModalSize(modalSize == MODAL_LARGE_SIZE ? MODAL_DEFAULT_SIZE : MODAL_LARGE_SIZE);
+                  setModalSize(
+                    modalSize == MODAL_LARGE_SIZE
+                      ? MODAL_DEFAULT_SIZE
+                      : MODAL_LARGE_SIZE
+                  );
                   setListVisible(!listVisible);
                 }}
               >
@@ -73,15 +116,39 @@ export default function Settings({ navigation }) {
               </Pressable>
             </View>
             {listVisible && (
-              <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
+              <View
+                style={{
+                  padding: verticalScale(20),
+                  backgroundColor: "white",
+                  borderRadius: commonStyles.borderRadius,
+                }}
+              >
                 <Text style={{ fontSize: 20 }}>Users Registered</Text>
-                {splitUsers ? splitUsers.map((row) => <Text key={"split-user" + getSplitEmail(row)}>{getSplitEmail(row)}</Text>) : null}
+                {splitUsers
+                  ? splitUsers.map((row) => (
+                      <Text key={"split-user" + getSplitEmail(row)}>
+                        {getSplitEmail(row)}
+                      </Text>
+                    ))
+                  : null}
               </View>
             )}
-            <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
+            <View
+              style={{
+                padding: verticalScale(20),
+                backgroundColor: "white",
+                borderRadius: commonStyles.borderRadius,
+              }}
+            >
               <Text style={{ fontSize: 20 }}>User to Split Email</Text>
             </View>
-            <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
+            <View
+              style={{
+                padding: verticalScale(20),
+                backgroundColor: "white",
+                borderRadius: commonStyles.borderRadius,
+              }}
+            >
               <TextInput
                 ref={(input) => {
                   this.textInputEmail = input;
@@ -92,7 +159,13 @@ export default function Settings({ navigation }) {
                 onChangeText={setNewEmail}
               />
             </View>
-            <View style={{ padding: verticalScale(20), backgroundColor: "white", borderRadius: commonStyles.borderRadius }}>
+            <View
+              style={{
+                padding: verticalScale(20),
+                backgroundColor: "white",
+                borderRadius: commonStyles.borderRadius,
+              }}
+            >
               <TextInput
                 ref={(input) => {
                   this.textInputName = input;
@@ -117,7 +190,16 @@ export default function Settings({ navigation }) {
         );
         break;
       default:
-        content = <View style={{ flex: 4, backgroundColor: "white", borderRadius: commonStyles.borderRadius, padding: verticalScale(20) }}></View>;
+        content = (
+          <View
+            style={{
+              flex: 4,
+              backgroundColor: "white",
+              borderRadius: commonStyles.borderRadius,
+              padding: verticalScale(20),
+            }}
+          ></View>
+        );
     }
 
     return content;
@@ -143,7 +225,11 @@ export default function Settings({ navigation }) {
           onPress: async () => {
             let infoPurchase = await saveToStorage(KEYS.PURCHASE, "[]", email);
             //let infoSplit = await saveToStorage(KEYS.SPLIT_USERS, "[]", email);
-            let infoTransaction = await saveToStorage(KEYS.TRANSACTION, "[]", email);
+            let infoTransaction = await saveToStorage(
+              KEYS.TRANSACTION,
+              "[]",
+              email
+            );
             alert("Cleared");
           },
         },
@@ -161,39 +247,71 @@ export default function Settings({ navigation }) {
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
-      <ModalCustom size={modalSize} modalVisible={modalVisible} setModalVisible={setModalVisible}>
+      <ModalCustom
+        size={modalSize}
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      >
         {ModalContent()}
       </ModalCustom>
       <View style={styles.form}>
         <Pressable
           style={styles.buttonChoice}
           onPress={async () => {
-            let uriRaw = [],
-              filename = "fm_" + new Date().getTime() + ".txt",
+            let filename = "fm_" + new Date().getTime() + ".txt",
               mimetype = "text/plain";
 
-            Object.keys(KEYS).map(async (key) => {
+            /* Object.keys(KEYS).map(async (key) => {
               let data = await getFromStorage(KEYS[key], email);
               if (data) {
                 uriRaw.push(KEYS[key]);
                 uriRaw.push(data);
               }
-            });
+            }); */
+            const income = await incomeService.getAllIncome(email);
+            const portfolio = await portfolioService.getAllPortfolio(email);
+            const expenses = await expenseService.getAllExpenses(email);
+            const trade = await tradeService.getAllTrade(email);
+            const subscriptions = await subscriptionService.getAll(email);
+            const uriRaw = [].concat(
+              "INCOME",
+              income,
+              "PORTFOLIO",
+              portfolio,
+              "EXPENSES",
+              expenses,
+              "TRADE",
+              trade,
+              "SUBSCRIPTION",
+              subscriptions
+            );
+
+            //console.log(uriRaw);
 
             try {
-              const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+              const permissions =
+                await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
 
               if (permissions.granted) {
-                const base64Data = uriRaw.join("\n");
+                const base64Data = uriRaw
+                  .map((item) => JSON.stringify(item))
+                  .join("\n");
 
                 console.log(filename);
                 console.log(base64Data);
 
-                const fileUri = await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, filename, mimetype);
+                const fileUri =
+                  await FileSystem.StorageAccessFramework.createFileAsync(
+                    permissions.directoryUri,
+                    filename,
+                    mimetype
+                  );
 
                 console.log(fileUri);
 
-                await FileSystem.writeAsStringAsync(fileUri, base64Data, { encoding: FileSystem.EncodingType.UTF8 });
+                await FileSystem.writeAsStringAsync(fileUri, base64Data, {
+                  encoding: FileSystem.EncodingType.UTF8,
+                });
 
                 console.log("File created successfully:", fileUri);
               } else {

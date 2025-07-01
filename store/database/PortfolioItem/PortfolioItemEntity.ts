@@ -6,7 +6,7 @@ export class PortfolioItemModel {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ type: "decimal", nullable: false })
   value: number;
 
   @Column({ nullable: false })
@@ -15,7 +15,9 @@ export class PortfolioItemModel {
   @Column({ nullable: false })
   year: number;
 
-  @ManyToOne(() => PortfolioModel, (portfolio) => portfolio.items, { cascade: false })
+  @ManyToOne(() => PortfolioModel, (portfolio) => portfolio.items, {
+    cascade: false,
+  })
   portfolio: PortfolioModel;
 }
 
@@ -26,14 +28,19 @@ export type PortfolioItemEntity = {
   year: number;
 };
 
-export const clearPortfolioItemEntity = (month: number, year: number): PortfolioItemEntity => ({
+export const clearPortfolioItemEntity = (
+  month: number,
+  year: number
+): PortfolioItemEntity => ({
   id: null,
   value: 0,
   month: month,
   year: year,
 });
 
-export const portfolioItemMapper = (i: PortfolioItemModel[]): PortfolioItemEntity[] =>
+export const portfolioItemMapper = (
+  i: PortfolioItemModel[]
+): PortfolioItemEntity[] =>
   i.map(
     (entity) =>
       ({

@@ -10,6 +10,12 @@ export const styles = StyleSheet.create({
     color: dark.textPrimary,
     textAlign: "right",
   },
+  textSymbol: {
+    zIndex: 1,
+    fontSize: verticalScale(8),
+    color: dark.textPrimary,
+    textAlign: "right",
+  },
   textBox: { minWidth: 50 },
   row: { flexDirection: "row", borderRadius: commonStyles.borderRadius },
   center: { flex: 1, alignItems: "center", justifyContent: "center" },

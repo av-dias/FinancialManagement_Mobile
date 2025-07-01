@@ -18,6 +18,11 @@ export class TradeService {
     );
   }
 
+  public async getAllTrade(userId: string) {
+    const trade = await this.investmentRepository.getAll(userId);
+    return trade;
+  }
+
   public async deleteSecurtyByTicker(
     securityTicker: string,
     userId: string,

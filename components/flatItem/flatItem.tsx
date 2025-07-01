@@ -63,7 +63,10 @@ export const FlatItem = ({
               {isReactComponent(value) ? (
                 value // If value is a React component, render it directly
               ) : (
-                <Text style={styles.text}>{`${value} €`}</Text>
+                <Text>
+                  <Text style={styles.text}>{value}</Text>
+                  <Text style={styles.textSymbol}>{`€`}</Text>
+                </Text>
               )}
             </View>
           </View>

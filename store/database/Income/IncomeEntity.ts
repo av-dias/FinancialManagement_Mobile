@@ -9,7 +9,7 @@ export class IncomeModel {
   @Column({ nullable: false })
   name: string;
 
-  @Column({ nullable: false })
+  @Column({ type: "decimal", nullable: false })
   amount: number;
 
   @Column({ nullable: false })

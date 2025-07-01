@@ -8,13 +8,13 @@ export class InvestmentModel {
   @Column({ nullable: false })
   shares: number;
 
-  @Column({ nullable: false })
+  @Column({ type: "decimal", nullable: false })
   buyPrice: number;
 
   @Column({ nullable: false })
   buyDate: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: "decimal", nullable: true })
   sellPrice: number;
 
   @Column({ nullable: true })

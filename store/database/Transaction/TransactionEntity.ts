@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { ExpenseEnum } from "../../../models/types";
 
 export enum TransactionOperation {
@@ -11,7 +17,7 @@ export class TransactionModel {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ type: "decimal", nullable: false })
   amount: number;
 
   @Column({ nullable: false })
@@ -45,13 +51,17 @@ export type TransactionEntity = {
   entity: ExpenseEnum.Transaction;
 };
 
-export const clearTransactionEntity = (transactionEntity: TransactionEntity, user?: string): TransactionEntity => ({
+export const clearTransactionEntity = (
+  transactionEntity: TransactionEntity,
+  user?: string
+): TransactionEntity => ({
   id: null,
   amount: 0,
   type: "",
   description: "",
   date: transactionEntity?.date || new Date().toISOString().split("T")[0],
-  transactionType: transactionEntity?.transactionType || TransactionOperation.SENT,
+  transactionType:
+    transactionEntity?.transactionType || TransactionOperation.SENT,
   userTransactionId: transactionEntity?.userTransactionId,
   userId: transactionEntity?.userId || user,
   entity: ExpenseEnum.Transaction,

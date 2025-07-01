@@ -2,7 +2,7 @@
   "expo": {
     "name": "Finbel",
     "slug": "fm_mobile",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "orientation": "portrait",
     "icon": "./images/icon.png",
     "userInterfaceStyle": "light",
@@ -26,6 +26,7 @@
         "foregroundImage": "./images/logo.png",
         "backgroundColor": "#000000"
       },
+      "debuggable":true,
       "package": "com.avdias.fm_mobile"
     },
     "androidNavigationBar": {
