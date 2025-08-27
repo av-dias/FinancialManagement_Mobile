@@ -39,3 +39,6 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
   - Fixed calendar card component now showing after update
   - Polish on currency symbol
   - Fixing list calendar size
+- 3.2.2
+  - Added subscription total amount information
+  - Minor polish on subscription day icon

@@ -11,9 +11,18 @@ import { FlatItem } from "../../components/flatItem/flatItem";
 import { getExpenseName } from "../../functions/expenses";
 import Header from "../../components/header/header";
 import CustomButton from "../../components/customButton/customButton";
+import commonStyles from "../../utility/commonStyles";
 
 const loadIcon = (day) => (
-  <View style={{ backgroundColor: "lightblue", borderRadius: 20, padding: 3 }}>
+  <View
+    style={{
+      backgroundColor: "lightblue",
+      borderRadius: 7,
+      padding: 3,
+      width: 50,
+      alignItems: "center",
+    }}
+  >
     <Text style={{ fontSize: 11 }}>{`Day ${day}`}</Text>
   </View>
 );
@@ -31,7 +40,6 @@ export default function Subscription({ navigation }) {
       async function fetchData() {
         try {
           const subscriptions = await subscriptionService.getAll(email);
-          console.log(subscriptions);
           setSubscriptions(subscriptions);
         } catch (e) {
           console.log("Subscription: " + e);
@@ -56,6 +64,23 @@ export default function Subscription({ navigation }) {
               onPressCallback={() => console.log(s.id)}
             />
           ))}
+        </View>
+        <View style={{ alignItems: "flex-end" }}>
+          <Text
+            style={{
+              color: dark.textPrimary,
+              backgroundColor: dark.complementary,
+              borderRadius: 5,
+              padding: 8,
+              marginBottom: 10,
+            }}
+          >
+            <Text>{`Total: ${subscriptions.reduce(
+              (acc, s) => acc + s.item.amount,
+              0
+            )}`}</Text>
+            <Text style={{ fontSize: commonStyles.symbolSize }}>{`€`}</Text>
+          </Text>
         </View>
         <CustomButton
           text={"Delete Subscriptions"}
