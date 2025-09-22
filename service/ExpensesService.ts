@@ -229,7 +229,16 @@ export class ExpensesService {
   public async deleteTransaction(
     transaction: TransactionEntity | TransactionModel
   ): Promise<void> {
-    //await this.transactionRepository.deleteAll();
+    const purchase = await this.purchaseRepository.findPurchaseWithRefundId(
+      transaction.userId,
+      transaction.id
+    );
+
+    if (purchase) {
+      purchase.wasRefunded = null;
+      await this.purchaseRepository.updateOrCreate(purchase);
+    }
+
     await this.transactionRepository.delete(transaction.id);
   }
 

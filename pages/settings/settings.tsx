@@ -50,8 +50,8 @@ export default function Settings({ navigation }) {
     await addToStorage(KEYS.SPLIT_USERS, JSON.stringify(value), user);
     await getSplitUsers(setSplitUsers, email);
 
-    this.textInputName.clear();
-    this.textInputEmail.clear();
+    if (this.textInputName) this.textInputName.clear();
+    if (this.textInputEmail) this.textInputEmail.clear();
     setNewEmail("");
     setNewName("");
   };
@@ -88,7 +88,7 @@ export default function Settings({ navigation }) {
                   setListVisible(false);
                 }}
               >
-                <Entypo name="cross" size={verticalScale(20)} color="black" />
+                <Entypo name="cross" size={verticalScale(20)} color="white" />
               </Pressable>
             </View>
             <View
@@ -112,12 +112,13 @@ export default function Settings({ navigation }) {
                   setListVisible(!listVisible);
                 }}
               >
-                <FontAwesome5 name="list" size={15} color="black" />
+                <FontAwesome5 name="list" size={15} color="white" />
               </Pressable>
             </View>
             {listVisible && (
               <View
                 style={{
+                  marginTop: verticalScale(20),
                   padding: verticalScale(20),
                   backgroundColor: "white",
                   borderRadius: commonStyles.borderRadius,
@@ -135,6 +136,7 @@ export default function Settings({ navigation }) {
             )}
             <View
               style={{
+                marginTop: verticalScale(40),
                 padding: verticalScale(20),
                 backgroundColor: "white",
                 borderRadius: commonStyles.borderRadius,
@@ -144,7 +146,7 @@ export default function Settings({ navigation }) {
             </View>
             <View
               style={{
-                padding: verticalScale(20),
+                padding: verticalScale(10),
                 backgroundColor: "white",
                 borderRadius: commonStyles.borderRadius,
               }}
@@ -154,24 +156,26 @@ export default function Settings({ navigation }) {
                   this.textInputEmail = input;
                 }}
                 keyboardType="email-address"
-                style={{ fontSize: 20 }}
+                placeholderTextColor={"gray"}
+                style={{ fontSize: 20, color: "black" }}
                 placeholder="split-user@gmail.com"
                 onChangeText={setNewEmail}
               />
             </View>
             <View
               style={{
-                padding: verticalScale(20),
+                padding: verticalScale(10),
                 backgroundColor: "white",
                 borderRadius: commonStyles.borderRadius,
               }}
             >
               <TextInput
                 ref={(input) => {
-                  this.textInputName = input;
+                  if (this.textInputName && input) this.textInputName = input;
                 }}
                 keyboardType="default"
-                style={{ fontSize: 20 }}
+                placeholderTextColor={"gray"}
+                style={{ fontSize: 20, color: "black" }}
                 placeholder="user-name"
                 onChangeText={setNewName}
               />

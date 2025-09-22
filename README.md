@@ -42,3 +42,6 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
 - 3.2.2
   - Added subscription total amount information
   - Minor polish on subscription day icon
+- 3.3.3
+  - Fixed bug where purchase refunded transaction could not be deleted
+  - Fixed split user registry UI

@@ -254,6 +254,17 @@ export class PurchaseRepository {
     return foundPurchase?.name;
   }
 
+  public async findPurchaseWithRefundId(userId: string, refundId: number) {
+    const purchase = await this.ormRepository
+      .createQueryBuilder("p")
+      .leftJoinAndSelect("p.wasRefunded", "wasRefunded")
+      .andWhere(`p.userId = :userId`, { userId: userId })
+      .andWhere("p.wasRefunded = :refundId", { refundId: refundId })
+      .getOne();
+
+    return purchase;
+  }
+
   public async delete(id: number): Promise<void> {
     await this.ormRepository.delete(id);
   }
