@@ -13,6 +13,7 @@ const commonStyles = {
   boxPaddingHorizontal: moderateScale(0),
   naviagtionBarHeight: verticalScale(110),
   symbolSize: verticalScale(8),
+  smallTextSize: verticalScale(9),
   statusBarHeight: verticalScale(StatusBar.currentHeight),
   onPressBounce: (pressed, style, onPressCallback, padding = 2) => [
     {

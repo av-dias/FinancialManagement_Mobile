@@ -14,7 +14,7 @@ export const _styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   calendarBox: {
-    width: verticalScale(100),
+    width: verticalScale(80),
     height: "100%",
     maxWidth: 175,
     maxHeight: 50,
@@ -24,9 +24,22 @@ export const _styles = StyleSheet.create({
     borderRadius: commonStyles.borderRadius,
     elevation: 2,
   },
-  iconCenterLeft: { display: "flex", justifyContent: "center", alignSelf: "flex-end" },
-  iconCenterRight: { display: "flex", justifyContent: "center", alignSelf: "flex-start" },
-  text: { fontSize: verticalScale(15), textAlign: "center", justifyContent: "center", color: dark.textPrimary },
+  iconCenterLeft: {
+    display: "flex",
+    justifyContent: "center",
+    alignSelf: "flex-end",
+  },
+  iconCenterRight: {
+    display: "flex",
+    justifyContent: "center",
+    alignSelf: "flex-start",
+  },
+  text: {
+    fontSize: verticalScale(15),
+    textAlign: "center",
+    justifyContent: "center",
+    color: dark.textPrimary,
+  },
   rowGap: {
     flexDirection: "row",
     justifyContent: "center",

@@ -87,12 +87,20 @@ export const _styles = StyleSheet.create({
     fontWeight: "bold",
     color: "grey",
   },
+  listTotalCost: {
+    fontSize: verticalScale(13),
+    fontWeight: "bold",
+    color: "grey",
+  },
   listDateBox: {
     alignSelf: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     width: "100%",
     maxWidth: 750,
     borderRadius: commonStyles.borderRadius,
     marginTop: verticalScale(10),
+    paddingHorizontal: moderateScale(10),
     marginBottom: -10,
   },
   listBox: {

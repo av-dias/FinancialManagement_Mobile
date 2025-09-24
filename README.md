@@ -45,3 +45,7 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
 - 3.3.3
   - Fixed bug where purchase refunded transaction could not be deleted
   - Fixed split user registry UI
+- 3.4.0
+  - Polish on home page
+  - Added percentage of expense type
+  - Added total expense on list

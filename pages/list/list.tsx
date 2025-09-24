@@ -46,11 +46,15 @@ import { Checkbox, Searchbar } from "react-native-paper";
 import { logTimeTook } from "../../utility/logger";
 import { utilIcons } from "../../utility/icons";
 import { ExpensesService } from "../../service/ExpensesService";
-import { TransactionEntity } from "../../store/database/Transaction/TransactionEntity";
+import {
+  TransactionEntity,
+  TransactionOperation,
+} from "../../store/database/Transaction/TransactionEntity";
 import { PurchaseEntity } from "../../store/database/Purchase/PurchaseEntity";
 import { SubscriptionService } from "../../service/SubscriptionService";
 import { SubscriptionEntity } from "../../store/database/Subscription/SubscriptionEntity";
 import { getExpenseDate } from "../../functions/expenses";
+import commonStyles from "../../utility/commonStyles";
 
 export default function List({ navigation }) {
   const email = useContext(UserContext).email;
@@ -360,6 +364,32 @@ export default function List({ navigation }) {
                       {new Date(date).getDate() +
                         " " +
                         months[new Date(date).getMonth()]}
+                    </Text>
+                    <Text style={styles.listTotalCost}>
+                      {expenseData
+                        ?.map(
+                          (expense: PurchaseEntity | TransactionEntity) =>
+                            isExpenseOnDate(expense, date) &&
+                            searchItem(expense, searchQuery) &&
+                            (expense.entity === ExpenseEnum.Transaction &&
+                            expense.transactionType ===
+                              TransactionOperation.RECEIVED
+                              ? +expense.amount
+                              : -expense.amount)
+                        )
+                        .reduce((a, b) => a + b, 0) +
+                        incomeData
+                          ?.map(
+                            (income: IncomeEntity) =>
+                              isIncomeOnDate(income.doi, date) &&
+                              searchItem(income, searchQuery) &&
+                              income.amount
+                          )
+                          .reduce((a, b) => a + b, 0)
+                          .toFixed(2)}
+                      <Text
+                        style={{ fontSize: commonStyles.symbolSize }}
+                      >{`€`}</Text>
                     </Text>
                   </View>
                   <CardWrapper key={date} style={styles.listBox}>

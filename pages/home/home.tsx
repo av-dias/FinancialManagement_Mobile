@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, Pressable } from "react-native";
 import React, { useState, useContext } from "react";
 import { VictoryPie, VictoryLabel } from "victory-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -39,6 +39,9 @@ import {
   TransactionOperation,
 } from "../../store/database/Transaction/TransactionEntity";
 import { PurchaseEntity } from "../../store/database/Purchase/PurchaseEntity";
+import commonStyles from "../../utility/commonStyles";
+import { TypeIcon } from "../../components/TypeIcon/TypeIcon";
+import SimpleItem from "../../components/SimpleItem/SimpleItem";
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -336,6 +339,13 @@ export default function Home({ navigation }) {
     </ScrollView>
   );
 
+  const onPress = (rowData) => {
+    if (statsMode === TIME_MODE.Monthly) {
+      setModalVisible(true);
+      setRowType(rowData[1]);
+    }
+  };
+
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
@@ -371,8 +381,8 @@ export default function Home({ navigation }) {
                   </Text>
                 </View>
                 <VictoryPie
-                  height={horizontalScale(320)}
-                  innerRadius={horizontalScale(130)}
+                  height={horizontalScale(250)}
+                  innerRadius={horizontalScale(100)}
                   padding={{ top: 0, bottom: 0 }}
                   data={
                     loadPieChartData(
@@ -386,7 +396,7 @@ export default function Home({ navigation }) {
                           statsType,
                           pieChartData,
                           pieChartAverageData
-                        )
+                        ).sort((a, b) => a.y - b.y)
                       : [{ x: "Your Spents", y: 1 }]
                   }
                   style={{
@@ -397,7 +407,7 @@ export default function Home({ navigation }) {
                   labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
                 />
                 <View style={styles.expensesContainer}>
-                  <View style={{ paddingBottom: 10 }}>
+                  <View style={{ paddingBottom: 5 }}>
                     <Text>
                       <Text
                         style={styles.expensesText}
@@ -410,11 +420,13 @@ export default function Home({ navigation }) {
                       <Text style={styles.textSymbol}>{`€`}</Text>
                     </Text>
                   </View>
-                  {statsMode == TIME_MODE.Monthly && (
+                  {statsMode == TIME_MODE.Monthly ? (
                     <CalendarCard
                       monthState={[currentMonth, setCurrentMonth]}
                       yearState={[currentYear, setCurrentYear]}
                     />
+                  ) : (
+                    <View style={{ height: 35 }} />
                   )}
                 </View>
               </View>
@@ -432,7 +444,14 @@ export default function Home({ navigation }) {
             <View style={{ flex: 4 }}>
               <View style={{ flex: 4 }}>
                 <ScrollView
-                  contentContainerStyle={{ gap: 5, paddingHorizontal: 5 }}
+                  style={{ borderRadius: commonStyles.borderRadius }}
+                  contentContainerStyle={{
+                    gap: 5,
+                    padding: 5,
+                    backgroundColor: dark.glass,
+                    borderRadius: commonStyles.borderRadius,
+                  }}
+                  showsVerticalScrollIndicator={false}
                 >
                   {spendAverageByType &&
                     loadSpendTableData(
@@ -441,17 +460,11 @@ export default function Home({ navigation }) {
                       spendByType,
                       spendAverageByType
                     ).map((rowData) => (
-                      <FlatItem
+                      <SimpleItem
                         key={rowData[1]}
-                        icon={rowData[0]}
-                        name={rowData[1]}
-                        value={rowData[2]}
-                        onPressCallback={() => {
-                          if (statsMode === TIME_MODE.Monthly) {
-                            setModalVisible(true);
-                            setRowType(rowData[1]);
-                          }
-                        }}
+                        rowData={rowData}
+                        total={expenseTotal[statsType]}
+                        onPressCallback={onPress}
                       />
                     ))}
                 </ScrollView>

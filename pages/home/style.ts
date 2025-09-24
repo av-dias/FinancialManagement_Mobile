@@ -1,6 +1,18 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Image,
+  Pressable,
+} from "react-native";
 import { dark } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../functions/responsive";
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+  largeScale,
+} from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 import commonStyles from "../../utility/commonStyles";
 
@@ -12,12 +24,21 @@ export const _styles = StyleSheet.create({
     height: "97%",
   },
   usableScreen: {
-    height: Dimensions.get("window").height - commonStyles.statusBarHeight - commonStyles.naviagtionBarHeight,
+    height:
+      Dimensions.get("window").height -
+      commonStyles.statusBarHeight -
+      commonStyles.naviagtionBarHeight,
     backgroundColor: "transparent",
     marginTop: verticalScale(5),
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
-  calendar: { justifyContent: "center", alignItems: "center", flex: 1, width: "100%", backgroundColor: "transparent" },
+  calendar: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+    width: "100%",
+    backgroundColor: "transparent",
+  },
   hitBox: {
     alignItems: "center",
     justifyContent: "center",
@@ -26,7 +47,12 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
     zIndex: -1,
   },
-  rowGap: { flexDirection: "row", justifyContent: "center", width: "100%", gap: 20 },
+  rowGap: {
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "100%",
+    gap: 20,
+  },
   text: { fontSize: 20, textAlign: "center" },
   chart: {
     justifyContent: "center",
@@ -41,8 +67,17 @@ export const _styles = StyleSheet.create({
     backgroundColor: dark.complementary,
     borderRadius: commonStyles.borderRadius,
   },
-  textCenter: { textAlign: "center", fontSize: verticalScale(12), gap: 10, color: dark.textPrimary },
-  textCenterHead: { textAlign: "center", fontWeight: "bold", fontSize: verticalScale(15) },
+  textCenter: {
+    textAlign: "center",
+    fontSize: verticalScale(12),
+    gap: 10,
+    color: dark.textPrimary,
+  },
+  textCenterHead: {
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: verticalScale(15),
+  },
   rowTable: {
     flexDirection: "row",
     justifyContent: "center",
@@ -50,7 +85,12 @@ export const _styles = StyleSheet.create({
     borderColor: "transparent",
     borderWidth: 0,
   },
-  colorIcon: { textAlign: "center", fontSize: verticalScale(15), padding: 0, margin: 0 },
+  colorIcon: {
+    textAlign: "center",
+    fontSize: verticalScale(15),
+    padding: 0,
+    margin: 0,
+  },
   savingsContainer: {
     position: "absolute",
     width: 70,
@@ -58,19 +98,70 @@ export const _styles = StyleSheet.create({
     borderRadius: 1000,
     borderColor: "lightgreen",
     borderWidth: 4,
-    left: 20,
+    left: verticalScale(40),
     bottom: -30,
     backgroundColor: "transparent",
     justifyContent: "center",
   },
-  savingsText: { textAlign: "center", color: "white",fontSize: verticalScale(12) },
-  textSavingsSymbol:  { alignSelf: "center", fontSize: verticalScale(8), color: "white" },
-  mainContainer: { flex: verticalScale(8), justifyContent: "center", alignItems: "center", backgroundColor: "transparent" },
-  expensesText: { alignSelf: "center", fontSize: verticalScale(40), color: "white" },
-  textSymbol:  { alignSelf: "center", fontSize: verticalScale(20), color: "white" },
-  expensesContainer: { position: "absolute", justifyContent: "center", alignContent: "center", backgroundColor: "transparent" },
-  typeCardContainer: { flex: 1, alignSelf: "flex-end", flexDirection: "row", maxHeight: 35, gap: 10, paddingHorizontal: 5 },
-  noDataContainer: { flex: 8, justifyContent: "center", alignItems: "center", gap: 10, bottom: 85 },
-  splitModalTitle: { color: dark.textPrimary, fontWeight: "bold", fontSize: 24, paddingVertical: 10 },
-  splitModalText: { color: dark.textPrimary, fontSize: 14, paddingHorizontal: 10, paddingVertical: 5, backgroundColor: dark.complementary, borderRadius: commonStyles.borderRadius },
+  savingsText: {
+    textAlign: "center",
+    color: "white",
+    fontSize: verticalScale(12),
+  },
+  textSavingsSymbol: {
+    alignSelf: "center",
+    fontSize: verticalScale(8),
+    color: "white",
+  },
+  mainContainer: {
+    flex: verticalScale(4),
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "transparent",
+  },
+  expensesText: {
+    alignSelf: "center",
+    fontSize: verticalScale(35),
+    color: "white",
+  },
+  textSymbol: {
+    alignSelf: "center",
+    fontSize: verticalScale(20),
+    color: "white",
+  },
+  expensesContainer: {
+    position: "absolute",
+    justifyContent: "center",
+    alignContent: "center",
+    backgroundColor: "transparent",
+  },
+  typeCardContainer: {
+    flex: 1,
+    alignSelf: "flex-end",
+    flexDirection: "row",
+    maxHeight: 35,
+    gap: 10,
+    paddingHorizontal: 5,
+  },
+  noDataContainer: {
+    flex: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+    bottom: 85,
+  },
+  splitModalTitle: {
+    color: dark.textPrimary,
+    fontWeight: "bold",
+    fontSize: 24,
+    paddingVertical: 10,
+  },
+  splitModalText: {
+    color: dark.textPrimary,
+    fontSize: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: dark.complementary,
+    borderRadius: commonStyles.borderRadius,
+  },
 });

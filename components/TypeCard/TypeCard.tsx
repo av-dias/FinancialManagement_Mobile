@@ -11,7 +11,11 @@ type TypeCardProps = {
   defaultValue?: number;
 };
 
-export default function TypeCard({ setItem, itemList, defaultValue = null }: TypeCardProps) {
+export default function TypeCard({
+  setItem,
+  itemList,
+  defaultValue = null,
+}: TypeCardProps) {
   const styles = _styles;
 
   return (
@@ -26,7 +30,9 @@ export default function TypeCard({ setItem, itemList, defaultValue = null }: Typ
             onSnapToItem={(index) => {
               setItem(itemList[index]);
             }}
-            defaultIndex={defaultValue ? itemList.findIndex((i) => i == defaultValue) : 0}
+            defaultIndex={
+              defaultValue ? itemList.findIndex((i) => i == defaultValue) : 0
+            }
             renderItem={({ index }) => (
               <View
                 style={{
