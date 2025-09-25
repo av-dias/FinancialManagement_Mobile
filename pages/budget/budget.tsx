@@ -13,7 +13,7 @@ import Header from "../../components/header/header";
 import { _styles } from "./style";
 
 //Functions
-import { dark } from "../../utility/colors";
+import { dark, ProgressBarColors } from "../../utility/colors";
 import Statistics from "../stats/statistics";
 import { AverageProgressBar } from "./components/AverageProgressBar";
 import { StatsProgressBar } from "./components/StatsProgressBar";
@@ -26,11 +26,15 @@ import {
   handleCurrentRequest,
   isLoaded,
 } from "./handler";
+import { months } from "../../utility/calendar";
+import BarChartCard from "../../components/BarChartCard/BarChartCard";
+import { IncomeService } from "../../service/IncomeService";
 
 export default function Budget({ navigation }) {
   const styles = _styles;
   const email = useContext(UserContext).email;
   const expensesService = new ExpensesService();
+  const incomeService = new IncomeService();
 
   const [currentMonth, setCurrentMonth] = useState(
     new Date().getMonth().toString()
@@ -45,7 +49,13 @@ export default function Budget({ navigation }) {
   const [purchaseCurrentStats, setPurchaseCurrentStats] = useState({});
   const [expensesPrevTotalByType, setExpensesPrevTotalByType] = useState({});
   const [expensesTotalByType, setExpensesTotalByType] = useState({});
+  const [expensesByMonth, setExpensesByMonth] = useState([]);
+  const [savingsByMonth, setSavingsByMonth] = useState([]);
+  const [lastIncome, setLastIncome] = useState(0);
 
+  /**
+   * Load expenses by type
+   */
   useFocusEffect(
     React.useCallback(() => {
       async function fetchaData() {
@@ -124,11 +134,67 @@ export default function Budget({ navigation }) {
     }, [email, expensesService.isReady()])
   );
 
+  /**
+   * Load expenses/savings total by month
+   */
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchaData() {
+        let expensesMonth = [],
+          savingsMonth = [];
+
+        for (let i = 0; i < months.length; i++) {
+          await expensesService
+            .getTotalExpensesOnMonth(email, i + 1, Number(currentYear))
+            .then(async (totalExpense) => {
+              expensesMonth.push({
+                label: months[i],
+                dataPointText: totalExpense,
+                value: totalExpense,
+                color:
+                  Number(currentMonth) === i
+                    ? ProgressBarColors.blueAccent
+                    : null,
+              });
+
+              await incomeService
+                .getTotalIncomeFromMonth(email, Number(i), Number(currentYear))
+                .then((totalIncome) => {
+                  savingsMonth.push({
+                    label: months[i],
+                    dataPointText: totalIncome - totalExpense,
+                    value: totalIncome - totalExpense,
+                    color:
+                      Number(currentMonth) === i
+                        ? ProgressBarColors.blueAccent
+                        : null,
+                  });
+
+                  if (Number(currentMonth) === i) setLastIncome(totalIncome);
+                });
+            });
+        }
+
+        setExpensesByMonth(expensesMonth);
+        setSavingsByMonth(savingsMonth);
+      }
+
+      console.log("Budget Stats: Fetching app data...");
+      const startTime = performance.now();
+
+      if (email && expensesService.isReady()) {
+        fetchaData();
+      }
+      const endTime = performance.now();
+      logTimeTook("Budget Stats", "useFocusEffect", endTime, startTime);
+    }, [email, expensesService.isReady(), currentYear])
+  );
+
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
-        <View style={{ flex: 1, gap: 20 }}>
+        <View style={{ flex: 1, gap: 10 }}>
           <AverageProgressBar
             purchaseTotal={purchaseTotal}
             purchaseAverageTotal={purchaseAverageTotal}
@@ -142,6 +208,19 @@ export default function Budget({ navigation }) {
               currentYear={Number(currentYear)}
               setCurrentYear={setCurrentYear}
             />
+            <BarChartCard
+              cardTitle="Expenses Distribution"
+              cardSubtitle={`Average: ${purchaseAverageTotal.toFixed(2)}`}
+              expensesByMonth={expensesByMonth}
+            />
+            <BarChartCard
+              cardTitle="Savings Distribution"
+              cardSubtitle={`Average: ${(
+                lastIncome - purchaseAverageTotal
+              ).toFixed(2)}`}
+              expensesByMonth={savingsByMonth}
+            />
+
             <CardWrapper style={{ flex: 1, justifyContent: "flex-start" }}>
               <ProgressItemsHeader />
               {isLoaded([

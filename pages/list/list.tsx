@@ -366,27 +366,28 @@ export default function List({ navigation }) {
                         months[new Date(date).getMonth()]}
                     </Text>
                     <Text style={styles.listTotalCost}>
-                      {expenseData
-                        ?.map(
-                          (expense: PurchaseEntity | TransactionEntity) =>
-                            isExpenseOnDate(expense, date) &&
-                            searchItem(expense, searchQuery) &&
-                            (expense.entity === ExpenseEnum.Transaction &&
-                            expense.transactionType ===
-                              TransactionOperation.RECEIVED
-                              ? +expense.amount
-                              : -expense.amount)
-                        )
-                        .reduce((a, b) => a + b, 0) +
-                        incomeData
+                      {Number(
+                        expenseData
                           ?.map(
-                            (income: IncomeEntity) =>
-                              isIncomeOnDate(income.doi, date) &&
-                              searchItem(income, searchQuery) &&
-                              income.amount
+                            (expense: PurchaseEntity | TransactionEntity) =>
+                              isExpenseOnDate(expense, date) &&
+                              searchItem(expense, searchQuery) &&
+                              (expense.entity === ExpenseEnum.Transaction &&
+                              expense.transactionType ===
+                                TransactionOperation.RECEIVED
+                                ? +expense.amount
+                                : -expense.amount)
                           )
-                          .reduce((a, b) => a + b, 0)
-                          .toFixed(2)}
+                          .reduce((a, b) => a + b, 0) +
+                          incomeData
+                            ?.map(
+                              (income: IncomeEntity) =>
+                                isIncomeOnDate(income.doi, date) &&
+                                searchItem(income, searchQuery) &&
+                                income.amount
+                            )
+                            .reduce((a, b) => a + b, 0)
+                      ).toFixed(2)}
                       <Text
                         style={{ fontSize: commonStyles.symbolSize }}
                       >{`€`}</Text>

@@ -2,12 +2,12 @@
   "expo": {
     "name": "Finbel",
     "slug": "fm_mobile",
-    "version": "3.4.0",
+    "version": "3.5.0",
     "orientation": "portrait",
-    "icon": "./images/icon.png",
+    "icon": "./images/playstore.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./images/logo.png",
+      "image": "./images/logo-finbel.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -18,22 +18,23 @@
       "supportsTablet": true,
       "config": {
         "usesNonExemptEncryption": false
-      }
+      },
+      "bundleIdentifier": "com.avdias.fm-mobile"
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
-        "foregroundImage": "./images/logo.png",
+        "foregroundImage": "./images/logo-finbel.png",
         "backgroundColor": "#000000"
       },
-      "debuggable":true,
+      "debuggable": true,
       "package": "com.avdias.fm_mobile"
     },
     "androidNavigationBar": {
       "backgroundColor": "#12102E"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./images/logo-finbel.png"
     },
     "extra": {
       "eas": {
@@ -42,7 +43,7 @@
     },
     "plugins": [
       "expo-secure-store",
-       [
+      [
         "expo-build-properties",
         {
           "android": {

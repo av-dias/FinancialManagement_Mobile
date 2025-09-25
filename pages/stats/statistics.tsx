@@ -204,9 +204,12 @@ export default function Statistics({ currentYear, setCurrentYear }) {
       <View style={styles.chartHeader}>
         <View style={styles.containerJustifyCenter}>
           <Text style={styles.textTitle}>{"Total Purchase"}</Text>
-          <Text style={styles.textSecundary}>{`Split: ${splitTotal.toFixed(
-            0
-          )}€`}</Text>
+          <Text>
+            <Text style={styles.textSecundary}>{`Split: ${splitTotal.toFixed(
+              0
+            )}`}</Text>
+            <Text style={styles.textSymbol}>{`€`}</Text>
+          </Text>
         </View>
         <View style={styles.containerRowGap}>
           <CalendarCard

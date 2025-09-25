@@ -43,7 +43,7 @@ export const _styles = StyleSheet.create({
   scrollviewContainer: {
     flexGrow: 1,
     paddingVertical: 0,
-    gap: 20,
+    gap: 10,
   },
   containerItem: {
     flexDirection: "row",

@@ -41,6 +41,7 @@ export const _styles = StyleSheet.create({
   text: { fontSize: 15, color: dark.textPrimary },
   textTitle: { fontSize: 15, fontWeight: "bold", color: dark.textPrimary },
   textSecundary: { fontSize: 13, color: dark.textSecundary },
+  textSymbol: { fontSize: commonStyles.symbolSize, color: dark.textSecundary },
   chart: {
     justifyContent: "center",
     alignItems: "center",

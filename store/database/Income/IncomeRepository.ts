@@ -13,22 +13,34 @@ export class IncomeRepository {
   };
 
   public async getAll(userId: string): Promise<IncomeModel[]> {
-    const incomes = await this.ormRepository?.find({ where: { userId: userId } });
+    const incomes = await this.ormRepository?.find({
+      where: { userId: userId },
+    });
     return incomes;
   }
 
   public async getDistinctIncomeNames(userId: string): Promise<string[]> {
-    const distinctNames = await this.ormRepository.createQueryBuilder("i").select("i.name as name").distinct().getRawMany();
+    const distinctNames = await this.ormRepository
+      .createQueryBuilder("i")
+      .select("i.name as name")
+      .distinct()
+      .getRawMany();
 
     return distinctNames.map((income) => income.name);
   }
 
-  public async getIncomeFromDate(userId: string, month: number, year: number): Promise<IncomeEntity[]> {
+  public async getIncomeFromDate(
+    userId: string,
+    month: number,
+    year: number
+  ): Promise<IncomeEntity[]> {
     const firstDateOfMonth = new Date(year, month, 1).toISOString();
     const lastDateOfMonth = new Date(year, month + 1, 0).toISOString();
     const incomeData = await this.ormRepository
       .createQueryBuilder("i")
-      .select("i.amount AS amount, i.doi AS doi, i.id AS id, i.name AS name, i.userId AS userId")
+      .select(
+        "i.amount AS amount, i.doi AS doi, i.id AS id, i.name AS name, i.userId AS userId"
+      )
       .where("i.userId = :userId AND i.doi BETWEEN :startDate AND :endDate ", {
         userId: userId,
         startDate: firstDateOfMonth,
@@ -39,7 +51,11 @@ export class IncomeRepository {
     return incomeData.length > 0 ? incomeData.map((i) => incomeMapper(i)) : [];
   }
 
-  public async getTotalIncomeFromDate(userId: string, month: number, year: number): Promise<number> {
+  public async getTotalIncomeFromDate(
+    userId: string,
+    month: number,
+    year: number
+  ): Promise<number> {
     const firstDateOfMonth = new Date(year, month, 1).toISOString();
     const lastDateOfMonth = new Date(year, month + 1, 0).toISOString();
     const totalIncomeData = await this.ormRepository
@@ -55,7 +71,9 @@ export class IncomeRepository {
     return totalIncomeData[0].totalIncome || 0;
   }
 
-  public async updateOrCreate(incomeEntity: IncomeModel): Promise<IncomeEntity> {
+  public async updateOrCreate(
+    incomeEntity: IncomeModel
+  ): Promise<IncomeEntity> {
     await this.ormRepository.save(incomeEntity);
     return incomeMapper(incomeEntity);
   }

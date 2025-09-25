@@ -25,6 +25,7 @@ export const dark = {
 export const ProgressBarColors = {
   red: "rgb(234,71,59)",
   blue: "rgb(113,198,244)",
+  blueAccent: "rgba(113, 159, 244, 1)",
 };
 
 export const categoryColorsBackground = {

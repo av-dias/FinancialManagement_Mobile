@@ -49,3 +49,7 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
   - Polish on home page
   - Added percentage of expense type
   - Added total expense on list
+- 3.5.0
+  - Generic bar chart card component
+  - Added stats on expense and savings bar charts
+  - Minor polish on custom bar chart

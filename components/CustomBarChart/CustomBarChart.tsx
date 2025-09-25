@@ -25,7 +25,12 @@ const loadScrollViewPosition = () => {
   return offset;
 };
 
-export const CustomBarChart = ({ maxBarValue = 1, data, labels, onPressCallback }: CustomBarChartProps) => {
+export const CustomBarChart = ({
+  maxBarValue = 1,
+  data,
+  labels,
+  onPressCallback,
+}: CustomBarChartProps) => {
   const styles = _styles;
   const ref = useRef<ScrollView>(null); // Improve scrollView positioning based on current month
   if (!data) return null;
@@ -35,28 +40,50 @@ export const CustomBarChart = ({ maxBarValue = 1, data, labels, onPressCallback 
     <CardWrapper noStyle={true}>
       <ScrollView
         ref={ref}
-        onContentSizeChange={() => ref.current.scrollTo({ x: loadScrollViewPosition(), animated: true })}
+        onContentSizeChange={() =>
+          ref.current.scrollTo({ x: loadScrollViewPosition(), animated: true })
+        }
         horizontal={true}
         contentContainerStyle={styles.scrollviewContainer}
         showsHorizontalScrollIndicator={false}
       >
         {labels.map((month, index) => {
-          let value = Number(data.find((element) => element.label === month).value);
+          let value =
+            Number(data.find((element) => element.label === month)?.value) || 0;
+          let color = data.find((element) => element.label === month)?.color;
           return (
-            <Pressable key={`barChart${month}`} style={({ pressed }) => commonStyles.onBarPressBounce(pressed, styles.barContainer, onPressCallback)} onPress={() => onPressCallback(index)}>
+            <Pressable
+              key={`barChart${month}`}
+              style={({ pressed }) =>
+                commonStyles.onBarPressBounce(
+                  pressed,
+                  styles.barContainer,
+                  onPressCallback
+                )
+              }
+              onPress={() => onPressCallback(index)}
+            >
               <View style={styles.barValueContainer}>
                 <Text style={styles.barValueText}>{value.toFixed(0)}</Text>
               </View>
               <View style={styles.barOutterStyle}>
-                <View style={{ ...styles.barUnfilledStyle, flex: 1 - value / maxBarValue }} />
                 <View
                   style={{
-                    ...styles.barFilledStyle,
-                    flex: value / maxBarValue,
+                    ...styles.barUnfilledStyle,
+                    flex: 1 - value / maxBarValue,
                   }}
                 />
+                <View
+                  style={[
+                    styles.barFilledStyle,
+                    { flex: value / maxBarValue },
+                    color && { backgroundColor: color },
+                  ]}
+                />
               </View>
-              <Text style={{ color: dark.textPrimary, textAlign: "center" }}>{month}</Text>
+              <Text style={{ color: dark.textPrimary, textAlign: "center" }}>
+                {month}
+              </Text>
             </Pressable>
           );
         })}

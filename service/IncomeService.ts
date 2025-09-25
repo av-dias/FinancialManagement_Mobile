@@ -19,4 +19,18 @@ export class IncomeService {
 
     return i;
   }
+
+  public async getTotalIncomeFromMonth(
+    email: string,
+    currentMonth: number,
+    currentYear: number
+  ) {
+    const i = await this.incomeRepository.getIncomeFromDate(
+      email,
+      currentMonth,
+      currentYear
+    );
+
+    return i.reduce((acc, income) => acc + Number(income.amount), 0);
+  }
 }
