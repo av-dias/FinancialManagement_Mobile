@@ -4,6 +4,7 @@ import { Entypo } from "@expo/vector-icons";
 import { dark } from "../../../utility/colors";
 import React, { ReactNode } from "react";
 import { VictoryChart, VictoryAxis, VictoryLine } from "victory-native";
+import { verticalScale } from "../../../functions/responsive";
 
 type MainCardPropsType = {
   title: string;
@@ -15,50 +16,17 @@ type MainCardPropsType = {
   onPress: () => void;
 };
 
-const styles = StyleSheet.create({
-  wrapperContainer: { padding: 10, flex: 1, height: 150 },
-  titleContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 10,
-  },
-  valueContainer: { flex: 2, justifyContent: "center", padding: 0 },
-  statusContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 10,
-  },
-  chartContainer: { flex: 1 },
-  valueStyle: {
-    fontSize: 35,
-    fontWeight: "bold",
-    color: dark.textSecundary,
-    textAlign: "center",
-    textAlignVertical: "center",
-  },
-  titleStyle: { fontSize: 14, color: dark.textPrimary },
-  symbolStyle: {
-    fontSize: 13,
-    color: dark.textPrimary,
-    textAlignVertical: "bottom",
-  },
-});
-
 const StatsIcon = ({ value }) => {
   if (value > 0) {
-    return <Entypo name="arrow-long-up" size={15} color="green" />;
+    return <Entypo name="arrow-long-up" size={10} color={dark.green} />;
   } else if (value < 0) {
-    return <Entypo name="arrow-long-down" size={15} color="red" />;
+    return <Entypo name="arrow-long-down" size={10} color="red" />;
   } else {
     return (
       <Entypo
         style={{ marginBottom: -1 }}
         name="select-arrows"
-        size={15}
+        size={10}
         color="gray"
       />
     );
@@ -78,18 +46,42 @@ export const MainCard = (content: MainCardPropsType) => {
   return (
     <CardWrapper style={styles.wrapperContainer}>
       <Pressable style={{ flex: 1 }} onPress={content.onPress}>
-        <View style={styles.titleContainer}>
-          {content.icon}
-          <Text style={styles.titleStyle}>{content.title}</Text>
-        </View>
-        <View style={styles.valueContainer}>
-          <Text style={styles.valueStyle}>{content.value}</Text>
+        <View style={{ padding: 5 }}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.titleStyle}>{content.title}</Text>
+            {content.icon}
+          </View>
+          <Text>
+            <Text style={styles.valueStyle}>{content.value}</Text>
+            <Text style={styles.symbolStyle}>{`€`}</Text>
+          </Text>
+          <View style={styles.statusContainer}>
+            <View style={{ flexDirection: "row" }}>
+              <Text>
+                <Text
+                  style={styles.smallTextStyle}
+                >{`${content.absoluteIncrease}`}</Text>
+                <Text style={styles.smallSymbolStyle}>{`€`}</Text>
+              </Text>
+            </View>
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ justifyContent: "center" }}>
+                <StatsIcon value={content.absoluteIncrease} />
+              </View>
+              <Text>
+                <Text
+                  style={styles.smallTextStyle}
+                >{`${content.relativeIncrease}`}</Text>
+                <Text style={styles.smallSymbolStyle}>{`%`}</Text>
+              </Text>
+            </View>
+          </View>
         </View>
         <VictoryChart
-          height={20} // Adjust this value to control the chart's height
-          width={130} // Adjust this value to control the chart's width
-          domain={{ y: [minValue * 0.99, maxValue * 1.01] }} // Set the Y-axis domain
-          padding={0}
+          height={60} // Adjust this value to control the chart's height
+          width={verticalScale(140)} // Adjust this value to control the chart's width
+          domain={{ y: [minValue, maxValue] }} // Set the Y-axis domain
+          padding={5}
         >
           <VictoryAxis
             tickLabelComponent={<View></View>} // Remove tick labels
@@ -101,30 +93,60 @@ export const MainCard = (content: MainCardPropsType) => {
           />
           <VictoryLine
             style={{
-              data: { stroke: "green", strokeWidth: 2 }, // Set the stroke color to green
+              data: {
+                stroke: dark.green,
+                strokeWidth: 2,
+              }, // Set the stroke color to green
             }}
             data={lineChartData}
-            interpolation="natural"
+            interpolation="basis"
           />
         </VictoryChart>
-        <View style={styles.statusContainer}>
-          <View style={{ flexDirection: "row" }}>
-            <Text
-              style={styles.titleStyle}
-            >{`${content.absoluteIncrease}`}</Text>
-            <Text style={styles.symbolStyle}>{`€`}</Text>
-          </View>
-          <View style={{ flexDirection: "row" }}>
-            <View style={{ justifyContent: "center" }}>
-              <StatsIcon value={content.absoluteIncrease} />
-            </View>
-            <Text
-              style={styles.titleStyle}
-            >{`${content.relativeIncrease}`}</Text>
-            <Text style={styles.symbolStyle}>{`%`}</Text>
-          </View>
-        </View>
       </Pressable>
     </CardWrapper>
   );
 };
+
+const styles = StyleSheet.create({
+  wrapperContainer: {
+    padding: 10,
+    flex: 1,
+    height: 160,
+    backgroundColor: dark.glass,
+  },
+  titleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 10,
+  },
+  valueContainer: {
+    flex: 2,
+    justifyContent: "flex-start",
+    padding: 0,
+    backgroundColor: "red",
+  },
+  statusContainer: {
+    flexDirection: "row",
+    paddingLeft: verticalScale(2),
+  },
+  chartContainer: { flex: 1 },
+  valueStyle: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: dark.textSecundary,
+    textAlign: "left",
+  },
+  titleStyle: { fontSize: 14, color: dark.textPrimary },
+  smallTextStyle: { fontSize: 10, color: dark.textPrimary },
+  symbolStyle: {
+    fontSize: 13,
+    color: dark.textPrimary,
+    textAlignVertical: "bottom",
+  },
+  smallSymbolStyle: {
+    fontSize: 8,
+    color: dark.textPrimary,
+    textAlignVertical: "bottom",
+  },
+});

@@ -9,6 +9,9 @@ export const dark = {
   calendar: "white",
   calendarBorder: "white",
   secundary: "rgba(19, 137, 239, 1)",
+  blueAccent: "rgba(113, 159, 244, 1)",
+  green: "rgba(173, 251, 91, 1)",
+  lightgreen: "rgba(0, 134, 40, 1)",
   button: "#F4981B",
   gradientColourLight: ["#010103", "#12102E"] as [string, string],
   textPrimary: "rgba(214, 210, 230, 1)",
@@ -89,4 +92,9 @@ export const categoryColorsBright = {
   Home: "rgba(219, 109, 182, 1)",
   Uber: "rgba(255, 115, 148, 1)",
   Other: "rgba(249, 166, 171, 1)",
+};
+
+export const utilsColors = {
+  green: "darkgreen",
+  lightgreen: "rgba(117, 245, 166, 1)",
 };

@@ -166,7 +166,7 @@ export default function Networth({ navigation }) {
         <FontAwesome5
           name="money-check-alt"
           size={20}
-          color={p.networthFlag ? "lightblue" : "gray"}
+          color={p.networthFlag ? dark.blueAccent : "gray"}
         />
       </View>
     );
@@ -212,12 +212,13 @@ export default function Networth({ navigation }) {
             value={portfolioWorth.grossworth.toFixed(0)}
             absoluteIncrease={portfolioStatus.grossworth.absolute.toFixed(0)}
             relativeIncrease={portfolioStatus.grossworth.relative.toFixed(0)}
-            title={"Grossworth"}
+            title={"GROSS"}
             icon={
               <FontAwesome5
                 name="money-check"
-                size={15}
-                color={dark.secundary}
+                size={8}
+                color={dark.textPrimary}
+                style={styles.iconContainerGross}
               />
             }
             data={worthData.grossworth}
@@ -228,12 +229,13 @@ export default function Networth({ navigation }) {
             value={portfolioWorth.networth.toFixed(0)}
             absoluteIncrease={portfolioStatus.networth.absolute.toFixed(0)}
             relativeIncrease={portfolioStatus.networth.relative.toFixed(0)}
-            title={"Networth"}
+            title={"NET"}
             icon={
               <FontAwesome5
                 name="money-check-alt"
-                size={15}
-                color="lightblue"
+                size={8}
+                color={dark.textPrimary}
+                style={styles.iconContainerNet}
               />
             }
             data={worthData.networth}

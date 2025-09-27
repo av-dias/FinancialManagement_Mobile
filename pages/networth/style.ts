@@ -1,6 +1,18 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Image,
+  Pressable,
+} from "react-native";
 import { dark } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale, largeScale } from "../../functions/responsive";
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+  largeScale,
+} from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 import commonStyles from "../../utility/commonStyles";
 
@@ -12,7 +24,10 @@ export const _styles = StyleSheet.create({
     height: "97%",
   },
   usableScreen: {
-    height: Dimensions.get("window").height - commonStyles.statusBarHeight - commonStyles.naviagtionBarHeight,
+    height:
+      Dimensions.get("window").height -
+      commonStyles.statusBarHeight -
+      commonStyles.naviagtionBarHeight,
     backgroundColor: "transparent",
     marginTop: verticalScale(5),
     paddingHorizontal: commonStyles.paddingHorizontal,
@@ -28,8 +43,17 @@ export const _styles = StyleSheet.create({
     borderColor: "transparent",
     borderWidth: 0,
   },
-  textCenter: { textAlign: "center", fontSize: verticalScale(12), gap: 10, color: dark.textPrimary },
-  textTitle: { fontSize: verticalScale(15), color: dark.textPrimary, padding: 10 },
+  textCenter: {
+    textAlign: "center",
+    fontSize: verticalScale(12),
+    gap: 10,
+    color: dark.textPrimary,
+  },
+  textTitle: {
+    fontSize: verticalScale(15),
+    color: dark.textPrimary,
+    padding: 10,
+  },
   tableInfo: {
     width: "100%",
     justifyContent: "center",
@@ -38,6 +62,26 @@ export const _styles = StyleSheet.create({
     borderRadius: commonStyles.borderRadius,
   },
   iconButton: { padding: 11 },
-  dividerContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 10, paddingBottom: 0, paddingRight: 0 },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 10,
+    paddingBottom: 0,
+    paddingRight: 0,
+  },
   mainContainer: { flexDirection: "row", gap: 10, padding: 10 },
+  iconContainerGross: {
+    alignSelf: "center",
+    justifyContent: "center",
+    padding: 6,
+    borderRadius: 20,
+    backgroundColor: dark.secundary,
+  },
+  iconContainerNet: {
+    alignSelf: "center",
+    padding: 6,
+    borderRadius: 20,
+    backgroundColor: dark.blueAccent,
+  },
 });
