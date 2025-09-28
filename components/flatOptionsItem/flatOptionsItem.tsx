@@ -4,6 +4,7 @@ import commonStyles from "../../utility/commonStyles";
 import { findIcon } from "../../utility/icons";
 import CardWrapper from "../cardWrapper/cardWrapper";
 import { styles } from "./style";
+import { dark } from "../../utility/colors";
 
 type FlatItemType = {
   name: ReactNode;
@@ -52,6 +53,7 @@ export const FlatOptionsItem = ({
           paddingVertical: paddingVertical ? paddingVertical : 15,
           paddingHorizontal: paddingHorizontal ? paddingHorizontal : 30,
           maxHeight: 80,
+          backgroundColor: dark.glass,
         }}
       >
         <View style={styles.row}>

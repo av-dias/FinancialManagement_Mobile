@@ -29,7 +29,7 @@ export const CustomBarChart = ({
   maxBarValue = 1,
   data,
   labels,
-  onPressCallback,
+  onPressCallback = () => {},
 }: CustomBarChartProps) => {
   const styles = _styles;
   const ref = useRef<ScrollView>(null); // Improve scrollView positioning based on current month

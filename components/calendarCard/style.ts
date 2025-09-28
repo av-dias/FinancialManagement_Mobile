@@ -16,11 +16,11 @@ export const _styles = StyleSheet.create({
   calendarBox: {
     width: verticalScale(100),
     maxWidth: 175,
-    backgroundColor: dark.complementary,
+    backgroundColor: dark.glass,
     padding: verticalScale(0),
     justifyContent: "center",
     borderRadius: commonStyles.borderRadius,
-    elevation: 2,
+    elevation: 0,
   },
   iconCenterLeft: {
     display: "flex",
@@ -61,5 +61,8 @@ export const _styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   calendarMonthContainer: { width: 50, borderRadius: 5, height: 20 },
-  centered: { justifyContent: "center", alignItems: "center" },
+  centered: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

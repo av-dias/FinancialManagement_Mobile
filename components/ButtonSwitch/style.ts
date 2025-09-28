@@ -11,7 +11,13 @@ export const _styles = StyleSheet.create({
     borderRadius: commonStyles.borderRadius,
     padding: 2,
     zIndex: 1,
+    backgroundColor: "transparent",
   },
   button: { padding: 5, width: 100, borderRadius: commonStyles.borderRadius },
-  text: { color: dark.textPrimary, flex: 1, textAlignVertical: "center", textAlign: "center" },
+  text: {
+    color: dark.textPrimary,
+    flex: 1,
+    textAlignVertical: "center",
+    textAlign: "center",
+  },
 });

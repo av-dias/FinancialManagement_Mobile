@@ -61,6 +61,7 @@ export default function DualTextInput({
           style={{
             flex: loadCardSize(direction, isFocused, data.placeholder),
             borderRadius: commonStyles.borderRadius,
+            backgroundColor: dark.glass,
           }}
         >
           <View

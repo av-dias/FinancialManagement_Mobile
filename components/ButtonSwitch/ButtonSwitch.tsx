@@ -11,7 +11,11 @@ type ButtonSwitchPropsType = {
   setSelectedOption: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function ButtonSwitch({ options, selectedOption, setSelectedOption }: ButtonSwitchPropsType) {
+export default function ButtonSwitch({
+  options,
+  selectedOption,
+  setSelectedOption,
+}: ButtonSwitchPropsType) {
   const styles = _styles;
 
   const onPressHandle = (optionText: string) => {
@@ -28,7 +32,8 @@ export default function ButtonSwitch({ options, selectedOption, setSelectedOptio
           }}
           style={{
             ...styles.button,
-            backgroundColor: selectedOption == option ? dark.secundary : dark.complementary,
+            backgroundColor:
+              selectedOption == option ? dark.secundary : dark.glass,
           }}
         >
           <Text key={`Text${option}`} style={styles.text}>

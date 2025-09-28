@@ -3,6 +3,7 @@ import CardWrapper from "../cardWrapper/cardWrapper";
 import { CustomBarChart } from "../CustomBarChart/CustomBarChart";
 import { months } from "../../utility/calendar";
 import { styles } from "./style";
+import { dark } from "../../utility/colors";
 
 export default function BarChartCard({
   expensesByMonth,
@@ -10,7 +11,7 @@ export default function BarChartCard({
   cardSubtitle,
 }) {
   return (
-    <CardWrapper style={{ padding: 20 }}>
+    <CardWrapper style={{ padding: 20, backgroundColor: dark.glass }}>
       <View style={styles.headerContainer}>
         <View>
           <Text style={styles.titleStyle}>{cardTitle}</Text>

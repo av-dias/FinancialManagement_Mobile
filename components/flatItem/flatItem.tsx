@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import CardWrapper from "../cardWrapper/cardWrapper";
 import { styles } from "./style";
 import commonStyles from "../../utility/commonStyles";
+import { dark } from "../../utility/colors";
 
 type FlatItemType = {
   name: string | ReactNode;
@@ -46,6 +47,7 @@ export const FlatItem = ({
           paddingVertical: paddingVertical ? paddingVertical : 15,
           paddingHorizontal: paddingHorizontal ? paddingHorizontal : 30,
           maxHeight: 80,
+          backgroundColor: dark.glass,
         }}
       >
         <View style={styles.row}>

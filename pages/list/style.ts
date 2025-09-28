@@ -110,6 +110,7 @@ export const _styles = StyleSheet.create({
     gap: 1,
     marginVertical: verticalScale(15),
     borderRadius: commonStyles.borderRadius,
+    backgroundColor: dark.glass,
   },
   iconCenter: {
     display: "flex",

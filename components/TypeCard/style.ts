@@ -18,7 +18,7 @@ export const _styles = StyleSheet.create({
     height: "100%",
     maxWidth: 175,
     maxHeight: 50,
-    backgroundColor: dark.complementary,
+    backgroundColor: dark.glass,
     padding: verticalScale(0),
     justifyContent: "center",
     borderRadius: commonStyles.borderRadius,

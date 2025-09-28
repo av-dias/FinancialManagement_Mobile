@@ -24,10 +24,9 @@ export const _styles = StyleSheet.create({
     margin: 5,
   },
   containerAverage: {
-    height: verticalScale(60),
-    backgroundColor: dark.complementary,
-    padding: 20,
-    paddingHorizontal: 30,
+    backgroundColor: "transparent",
+    padding:verticalScale(10),
+    paddingHorizontal: 5,
     borderRadius: 10,
     justifyContent: "center",
     gap: 5,

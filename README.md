@@ -53,3 +53,5 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
   - Generic bar chart card component
   - Added stats on expense and savings bar charts
   - Minor polish on custom bar chart
+- 3.6.0
+  - Polished Networth and Networth UI components

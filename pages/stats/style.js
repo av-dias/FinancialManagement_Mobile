@@ -49,7 +49,7 @@ export const _styles = StyleSheet.create({
   chartContainer: {
     height: "auto",
     elevation: 0,
-    backgroundColor: dark.complementary,
+    backgroundColor: dark.glass,
     padding: 20,
     paddingBottom: 10,
   },
@@ -90,7 +90,7 @@ export const _styles = StyleSheet.create({
     alignSelf: "center",
   },
   containerJustifyCenter: { justifyContent: "center" },
-  containerRowGap: { flexDirection: "row", gap: 10, zIndex: 100 },
+  containerRowGap: { flexDirection: "row", gap: 10 },
   splitModalTitle: { color: dark.textPrimary, fontWeight: "bold", fontSize: 24, paddingVertical: 10 },
   splitModalText: { color: dark.textPrimary, fontSize: 14, paddingHorizontal: 10, paddingVertical: 5, backgroundColor: dark.complementary, borderRadius: commonStyles.borderRadius },
 });

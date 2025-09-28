@@ -221,7 +221,13 @@ export default function Budget({ navigation }) {
               expensesByMonth={savingsByMonth}
             />
 
-            <CardWrapper style={{ flex: 1, justifyContent: "flex-start" }}>
+            <CardWrapper
+              style={{
+                flex: 1,
+                justifyContent: "flex-start",
+                backgroundColor: dark.glass,
+              }}
+            >
               <ProgressItemsHeader />
               {isLoaded([
                 spendAverageByType,

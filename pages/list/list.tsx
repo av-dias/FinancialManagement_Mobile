@@ -338,7 +338,7 @@ export default function List({ navigation }) {
             <Searchbar
               iconColor="white"
               placeholderTextColor="lightgray"
-              style={{ backgroundColor: dark.complementary, borderRadius: 10 }}
+              style={{ backgroundColor: dark.glass, borderRadius: 10 }}
               placeholder="Search"
               inputStyle={{ color: "white" }}
               onChangeText={setSearchQuery}
