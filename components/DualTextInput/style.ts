@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
   textInput: {
     color: dark.textPrimary,
     fontSize: verticalScale(14),
-    paddingVertical: moderateScale(6),
+    paddingVertical: moderateScale(10),
   },
   suggestBtn: {
     marginRight: verticalScale(5),

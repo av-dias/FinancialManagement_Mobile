@@ -25,6 +25,7 @@ type DualTextInputProps = {
   textAlign?: "left" | "center" | "right"; // align text to left, center, or right in text input field. Default is center.
   keyboardType?: "default" | "numeric"; // type of keyboard to show. Default is default.
   direction?: "row" | "column";
+  gap?: number;
 };
 
 const loadCardSize = (
@@ -44,6 +45,7 @@ export default function DualTextInput({
   capitalize = "words",
   textAlign = "left",
   keyboardType = "default",
+  gap = 15,
 }: DualTextInputProps) {
   const [isFocused, setIsFocused] = useState<string>(null);
   const timeoutRef = useRef(null);
@@ -54,7 +56,7 @@ export default function DualTextInput({
 
   /* Refrator code to have generic onBlur Handle */
   return (
-    <View style={{ width: "100%", flexDirection: direction, gap: 10 }}>
+    <View style={{ width: "100%", flexDirection: direction, gap: gap }}>
       {values.map((data) => (
         <CardWrapper
           key={data.placeholder}

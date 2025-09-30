@@ -97,7 +97,7 @@ export const StatsProgressBar = ({
       />
       <View style={styles.itemContainer}>
         <TypeIcon
-          icon={categoryIcons(25).find((category) => category.label === type)}
+          icon={categoryIcons(30).find((category) => category.label === type)}
         />
       </View>
       <ProgressBarComponent

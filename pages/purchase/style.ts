@@ -1,6 +1,18 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Image,
+  Pressable,
+} from "react-native";
 import { dark } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale, heightTreshold } from "../../functions/responsive";
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+  heightTreshold,
+} from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 import commonStyles from "../../utility/commonStyles";
 
@@ -8,7 +20,10 @@ const borderRadius = commonStyles.borderRadius;
 
 export const _styles = StyleSheet.create({
   usableScreen: {
-    height: Dimensions.get("window").height - commonStyles.statusBarHeight - commonStyles.naviagtionBarHeight,
+    height:
+      Dimensions.get("window").height -
+      commonStyles.statusBarHeight -
+      commonStyles.naviagtionBarHeight,
     backgroundColor: "transparent",
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
@@ -19,10 +34,9 @@ export const _styles = StyleSheet.create({
     height: "97%",
   },
   form: {
-    flex: 7,
-    gap: verticalScale(30),
-    //paddingVertical: verticalScale(10),
-    paddingTop: verticalScale(10),
+    gap: verticalScale(15),
+    paddingTop: verticalScale(0),
+    flex: 1,
   },
   tableInfo: {
     width: "100%",
@@ -57,15 +71,30 @@ export const _styles = StyleSheet.create({
     backgroundColor: dark.button,
     elevation: 1,
   },
-  submitButton: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "transparent " },
+  submitButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent ",
+  },
   buttonText: {
     fontSize: 20,
     color: "white",
   },
-  textCenter: { textAlign: "center", borderRadius: borderRadius, height: "100%", gap: 10 },
+  textCenter: {
+    textAlign: "center",
+    borderRadius: borderRadius,
+    height: "100%",
+    gap: 10,
+  },
   textCenterHead: { textAlign: "center", fontWeight: "bold" },
   tableText: { fontSize: verticalScale(10), textAlign: "center", padding: 0 },
-  symbolBig: { fontSize: horizontalScale(25), textAlign: "center", width: "auto", alignSelf: "center" },
+  symbolBig: {
+    fontSize: horizontalScale(25),
+    textAlign: "center",
+    width: "auto",
+    alignSelf: "center",
+  },
   row: {
     flexDirection: "row",
     justifyContent: "center",
@@ -86,7 +115,11 @@ export const _styles = StyleSheet.create({
     borderRadius: borderRadius,
     backgroundColor: "transparent",
   },
-  iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center" },
+  iconCenter: {
+    display: "flex",
+    justifyContent: "center",
+    alignSelf: "center",
+  },
   scrollTable: { height: "100%", backgroundColor: "transparent" },
   divider: { margin: -5 },
   text: { color: dark.textSecundary },

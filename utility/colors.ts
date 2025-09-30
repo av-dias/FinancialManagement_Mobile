@@ -17,7 +17,7 @@ export const dark = {
   textPrimary: "rgba(214, 210, 230, 1)",
   textComplementary: "rgba(214, 210, 230, 0.5)",
   textSecundary: "lightgray",
-  textExpenses: "red",
+  textExpenses: "rgb(234,71,59)",
   incomeBackgroundColor: "rgb(180, 255, 180)",
   white: "white",
   success: "green",
@@ -76,7 +76,7 @@ export const categoryColorsBorder = {
 export const categoryColorsBright = {
   Supermarket: "rgba(238, 66, 66, 1)",
   Travel: "rgba(255, 92, 70, 1)",
-  Rent: "rgba(244, 123, 71, 1)",
+  Rent: "rgba(248, 139, 66, 1)",
   Work: "rgba(219, 155, 109, 1)",
   CoffeePub: "rgba(219, 182, 109, 1)",
   Fun: "rgba(219, 215, 109, 1)",
@@ -95,6 +95,8 @@ export const categoryColorsBright = {
 };
 
 export const utilsColors = {
-  green: "darkgreen",
+  darkgreen: "darkgreen",
+  green: "rgba(31, 150, 76, 1)",
   lightgreen: "rgba(117, 245, 166, 1)",
+  badge: "rgba(216, 70, 60, 0.5)",
 };

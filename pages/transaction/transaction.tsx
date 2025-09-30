@@ -19,21 +19,32 @@ import { dark } from "../../utility/colors";
 import { verticalScale } from "../../functions/responsive";
 import { getSplitUser, getSplitEmail } from "../../functions/split";
 import { FlatCalendar } from "../../components/flatCalender/FlatCalender";
-import { clearTransactionEntity, TransactionEntity, TransactionOperation } from "../../store/database/Transaction/TransactionEntity";
+import {
+  clearTransactionEntity,
+  TransactionEntity,
+  TransactionOperation,
+} from "../../store/database/Transaction/TransactionEntity";
 import { ExpensesService } from "../../service/ExpensesService";
-import DualTextInput, { textInputType } from "../../components/DualTextInput/DualTextInput";
+import DualTextInput, {
+  textInputType,
+} from "../../components/DualTextInput/DualTextInput";
 
 type TransactionProps = {
   transaction?: TransactionEntity;
   callback?: () => void;
 };
 
-export default function Transaction({ transaction, callback }: TransactionProps) {
+export default function Transaction({
+  transaction,
+  callback,
+}: TransactionProps) {
   const styles = _styles;
   const expenseService = new ExpensesService();
   const email = useContext(UserContext).email;
 
-  const [newTransaction, setNewTransaction] = useState<TransactionEntity>(transaction || clearTransactionEntity(null, email));
+  const [newTransaction, setNewTransaction] = useState<TransactionEntity>(
+    transaction || clearTransactionEntity(null, email)
+  );
   const [destination, setDestination] = useState({ email: "", name: "" });
 
   const inputConfig: textInputType[] = [
@@ -48,14 +59,14 @@ export default function Transaction({ transaction, callback }: TransactionProps)
           name: prev.description.trimEnd().trimStart(),
         })),
       placeholder: "Description",
-      icon: <MaterialIcons style={{ display: "flex", justifyContent: "center", alignSelf: "center" }} name="notes" size={verticalScale(12)} color={dark.textPrimary} />,
+      icon: null,
     },
     {
       value: getSplitEmail(destination),
       setValue: () => {},
       onBlurHandle: () => {},
       placeholder: "Email",
-      icon: <Entypo style={styles.iconCenter} name="email" size={verticalScale(10)} color={dark.textPrimary} />,
+      icon: null,
       editable: false,
     },
   ];
@@ -80,14 +91,25 @@ export default function Transaction({ transaction, callback }: TransactionProps)
           style={{
             paddingHorizontal: 10,
             paddingVertical: 5,
-            backgroundColor: newTransaction.transactionType === TransactionOperation.RECEIVED ? dark.secundary : dark.complementary,
+            backgroundColor:
+              newTransaction.transactionType === TransactionOperation.RECEIVED
+                ? dark.secundary
+                : dark.glass,
             borderRadius: 10,
+            width: verticalScale(100),
+            alignItems: "center",
             zIndex: 1,
           }}
           onPress={() => {
             newTransaction.transactionType === TransactionOperation.RECEIVED
-              ? setNewTransaction({ ...newTransaction, transactionType: TransactionOperation.SENT })
-              : setNewTransaction({ ...newTransaction, transactionType: TransactionOperation.RECEIVED });
+              ? setNewTransaction({
+                  ...newTransaction,
+                  transactionType: TransactionOperation.SENT,
+                })
+              : setNewTransaction({
+                  ...newTransaction,
+                  transactionType: TransactionOperation.RECEIVED,
+                });
           }}
         >
           <Text style={styles.text}>Received</Text>
@@ -118,7 +140,10 @@ export default function Transaction({ transaction, callback }: TransactionProps)
           <FlatCalendar
             date={newTransaction.date}
             setInputBuyDate={(_date) => {
-              setNewTransaction({ ...newTransaction, date: new Date(_date).toISOString().split("T")[0] });
+              setNewTransaction({
+                ...newTransaction,
+                date: new Date(_date).toISOString().split("T")[0],
+              });
             }}
           />
           <DualTextInput values={inputConfig} direction="column" />
@@ -126,7 +151,10 @@ export default function Transaction({ transaction, callback }: TransactionProps)
         <CustomButton
           handlePress={async () => {
             try {
-              await expenseService.createTransaction({ ...newTransaction, userTransactionId: destination.email });
+              await expenseService.createTransaction({
+                ...newTransaction,
+                userTransactionId: destination.email,
+              });
               setNewTransaction(clearTransactionEntity(newTransaction));
               callback && callback();
             } catch (e) {

@@ -1,12 +1,19 @@
 import { StyleSheet } from "react-native";
 import { dark } from "../../utility/colors";
-import { horizontalScale, verticalScale, moderateScale } from "../../functions/responsive";
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+} from "../../functions/responsive";
 import { StatusBar, Dimensions } from "react-native";
 import commonStyles from "../../utility/commonStyles";
 
 export const _styles = StyleSheet.create({
   usableScreen: {
-    height: Dimensions.get("window").height - commonStyles.statusBarHeight - commonStyles.naviagtionBarHeight,
+    height:
+      Dimensions.get("window").height -
+      commonStyles.statusBarHeight -
+      commonStyles.naviagtionBarHeight,
     backgroundColor: "transparent",
     paddingHorizontal: commonStyles.paddingHorizontal,
   },
@@ -17,7 +24,12 @@ export const _styles = StyleSheet.create({
     height: "97%",
   },
   text: { color: dark.textSecundary },
-  rowGap: { flexDirection: "row", justifyContent: "space-between", width: "100%", backgroundColor: "transparent" },
+  rowGap: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    backgroundColor: "transparent",
+  },
   buttonText: {
     fontSize: verticalScale(12),
     color: "black",
@@ -29,11 +41,16 @@ export const _styles = StyleSheet.create({
     backgroundColor: "transparent",
     alignSelf: "center",
   },
-  iconCenter: { display: "flex", justifyContent: "center", alignSelf: "center", backgroundColor: "transparent" },
+  iconCenter: {
+    display: "flex",
+    justifyContent: "center",
+    alignSelf: "center",
+    backgroundColor: "transparent",
+  },
   form: {
-    flex: 7,
-    gap: verticalScale(30),
+    flex: 1,
+    gap: verticalScale(15),
     //paddingVertical: verticalScale(10),
-    paddingTop: verticalScale(10),
+    paddingTop: verticalScale(0),
   },
 });

@@ -48,8 +48,8 @@ export default function Carrossel({
         horizontal={true}
         style={styles.categoryScrollContainer}
         contentContainerStyle={{
-          gap: verticalScale(5),
-          paddingHorizontal: 1,
+          gap: verticalScale(10),
+          paddingHorizontal: 0,
         }}
       >
         {items.map((iconComponent) => {
@@ -61,7 +61,7 @@ export default function Carrossel({
                   type == iconComponent.label
                     ? iconComponent.color
                     : iconBackground,
-                width: size,
+                width: 70,
                 borderWidth: 1,
                 borderColor: iconBorderColor,
               }}

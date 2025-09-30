@@ -11,7 +11,7 @@ import { verticalScale, moderateScale } from "../../../functions/responsive";
 import { _styles } from "../style";
 import { months } from "../../../utility/calendar";
 import { dark } from "../../../utility/colors";
-import { Entypo, FontAwesome5, FontAwesome } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 export const ChartCard = ({
   averageWorth,
@@ -83,10 +83,7 @@ export const ChartCard = ({
             : grossworthChart.length - 1 || 0
         }
       >
-        <VictoryAxis
-          tickLabelComponent={<></>} // Remove tick labels
-          style={axisStyle}
-        />
+        <VictoryAxis style={axisStyle} />
         <VictoryAxis
           style={{
             axis: { stroke: "transparent" }, // Axis line itself

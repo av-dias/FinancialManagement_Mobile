@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text } from "react-native";
 import { _styles } from "./style";
 import { useContext } from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -12,20 +12,16 @@ import { calculateSplitDeptData } from "../../functions/statistics";
 import { getSumArrayObject } from "../../functions/array";
 import { months } from "../../utility/calendar";
 import ModalCustom from "../../components/modal/modal";
-import { FlatItem } from "../../components/flatItem/flatItem";
 import { categoryIcons } from "../../utility/icons";
-import { Badge } from "react-native-paper";
 import { CustomBarChart } from "../../components/CustomBarChart/CustomBarChart";
 import { verticalScale } from "../../functions/responsive";
 import { logTimeTook } from "../../utility/logger";
 import CalendarCard from "../../components/calendarCard/calendarCard";
 import { ExpensesService } from "../../service/ExpensesService";
 import { PurchaseEntity } from "../../store/database/Purchase/PurchaseEntity";
-import {
-  TransactionEntity,
-  TransactionOperation,
-} from "../../store/database/Transaction/TransactionEntity";
-import { ExpenseEnum } from "../../models/types";
+import { TransactionEntity } from "../../store/database/Transaction/TransactionEntity";
+import { TypeIcon } from "../../components/TypeIcon/TypeIcon";
+import { ExpenseItem } from "../../components/ExpenseItem/ExpenseItem";
 
 const sortMonths = (a, b) => months.indexOf(a.label) - months.indexOf(b.label);
 
@@ -103,44 +99,14 @@ export default function Statistics({ currentYear, setCurrentYear }) {
   );
 
   const loadIcon = (expense: PurchaseEntity | TransactionEntity) => (
-    <View>
-      {
-        categoryIcons(25).find((category) => category.label === expense.type)
-          .icon
-      }
-    </View>
+    <TypeIcon
+      icon={categoryIcons().find((category) => category.label === expense.type)}
+      customStyle={{
+        width: verticalScale(40),
+        borderRadius: 20,
+      }}
+    />
   );
-
-  const loadSplitItem = () => {
-    return (
-      <ScrollView contentContainerStyle={{ gap: 10, paddingTop: 10 }}>
-        {[...purchaseWithSplit, ...transactionsWithSplit].map(
-          (expense: PurchaseEntity | TransactionEntity) =>
-            new Date(expense.date).getMonth() === chartIndex && (
-              <View key={expense.entity + expense.id}>
-                {expense.entity === ExpenseEnum.Purchase && (
-                  <Badge
-                    size={24}
-                    style={{ top: -5, zIndex: 1, position: "absolute" }}
-                  >{`${expense.split.weight}%`}</Badge>
-                )}
-                <FlatItem
-                  icon={loadIcon(expense)}
-                  name={(expense as PurchaseEntity)?.name || expense.type}
-                  value={
-                    expense.entity === ExpenseEnum.Transaction &&
-                    (expense as TransactionEntity).transactionType ===
-                      TransactionOperation.RECEIVED
-                      ? Number(-expense.amount)
-                      : Number(expense.amount)
-                  }
-                />
-              </View>
-            )
-        )}
-      </ScrollView>
-    );
-  };
 
   const loadSplitHeader = () => (
     <View>
@@ -197,7 +163,11 @@ export default function Statistics({ currentYear, setCurrentYear }) {
         {modalVisible && (
           <View style={{ flex: 1, padding: 10, gap: 20 }}>
             {loadSplitHeader()}
-            {loadSplitItem()}
+            <ExpenseItem
+              expenses={[...purchaseWithSplit, ...transactionsWithSplit].filter(
+                (expense) => new Date(expense.date).getMonth() === chartIndex
+              )}
+            />
           </View>
         )}
       </ModalCustom>

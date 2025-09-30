@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { verticalScale } from "../../functions/responsive";
 import commonStyles from "../../utility/commonStyles";
-import { dark } from "../../utility/colors";
+import { dark, utilsColors } from "../../utility/colors";
 
 export const _styles = StyleSheet.create({
   rowGap: {
@@ -71,5 +71,11 @@ export const _styles = StyleSheet.create({
     fontSize: verticalScale(8),
     textAlignVertical: "bottom",
   },
-  badgeContainer: { top: -9, right: -5, zIndex: 1, position: "absolute" },
+  badgeContainer: {
+    top: 0,
+    right: -5,
+    zIndex: 1,
+    position: "absolute",
+    backgroundColor: utilsColors.badge,
+  },
 });

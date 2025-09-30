@@ -61,18 +61,7 @@ export default function Purchase({ purchase, callback }: PurchaseProps) {
           name: prev.name.trimEnd().trimStart(),
         })),
       placeholder: "Name",
-      icon: (
-        <MaterialIcons
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignSelf: "center",
-          }}
-          name="notes"
-          size={verticalScale(12)}
-          color={dark.textPrimary}
-        />
-      ),
+      icon: null,
     },
     {
       value: newPurchase.note,
@@ -83,18 +72,7 @@ export default function Purchase({ purchase, callback }: PurchaseProps) {
           note: prev.note.trimEnd().trimStart(),
         })),
       placeholder: "Note",
-      icon: (
-        <MaterialIcons
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignSelf: "center",
-          }}
-          name="drive-file-rename-outline"
-          size={verticalScale(12)}
-          color={dark.textPrimary}
-        />
-      ),
+      icon: null,
     },
   ];
 
@@ -147,15 +125,15 @@ export default function Purchase({ purchase, callback }: PurchaseProps) {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ position: "absolute", right: 0, paddingTop: 50, gap: 10 }}>
+      <View style={{ position: "absolute", right: 0, paddingTop: 40, gap: 10 }}>
         <Pressable
           style={{
             paddingHorizontal: 10,
             paddingVertical: 5,
-            backgroundColor: newPurchase.isRefund
-              ? dark.secundary
-              : dark.complementary,
+            backgroundColor: newPurchase.isRefund ? dark.secundary : dark.glass,
             borderRadius: 10,
+            width: verticalScale(100),
+            alignItems: "center",
             zIndex: 1,
           }}
           onPress={() => {
@@ -197,7 +175,7 @@ export default function Purchase({ purchase, callback }: PurchaseProps) {
               });
             }}
           />
-          <DualTextInput values={inputConfig} />
+          <DualTextInput values={inputConfig} direction="column" />
           <SplitSlider
             value={newPurchase.amount}
             splitStatus={splitStatus}

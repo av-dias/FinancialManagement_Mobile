@@ -55,3 +55,10 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
   - Minor polish on custom bar chart
 - 3.6.0
   - Polished Networth and Networth UI components
+  - Use of glass background on most components for uniform look
+  - Polish icons, icon size and badge
+  - Polish on TypeIcon component to remove border color
+  - Improve expense info component to generic ExpenseItem
+  - Polish add forms on purchase, transaction and income
+  - Polished FlatCalendar component to be more consistent
+  - Custom button default text change to save

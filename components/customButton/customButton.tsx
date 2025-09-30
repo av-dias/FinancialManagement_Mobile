@@ -1,4 +1,15 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable, TouchableOpacity, ScrollView, Alert, ViewStyle } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Image,
+  Pressable,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  ViewStyle,
+} from "react-native";
 import { _styles } from "./style";
 
 type CustomButtonProps = {
@@ -7,12 +18,19 @@ type CustomButtonProps = {
   addStyle?: ViewStyle; // Add any additional styling here, e.g., borderRadius, backgroundColor, etc.
 };
 
-export default function CustomButton({ handlePress, text = "Submit", addStyle = {} }: CustomButtonProps) {
+export default function CustomButton({
+  handlePress,
+  text = "Save",
+  addStyle = {},
+}: CustomButtonProps) {
   const styles = _styles;
 
   return (
     <View style={styles.submitButton}>
-      <Pressable style={{ ...styles.button, ...addStyle }} onPress={handlePress}>
+      <Pressable
+        style={{ ...styles.button, ...addStyle }}
+        onPress={handlePress}
+      >
         <Text style={styles.buttonText}>{text}</Text>
       </Pressable>
     </View>

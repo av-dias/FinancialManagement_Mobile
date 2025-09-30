@@ -23,7 +23,16 @@ export const loadExpenses = (expenses: any) => {
       let pieChartValue = expenses[stats][type] < 0 ? 1 : expenses[stats][type];
 
       array[stats].push({ x: " ", y: pieChartValue, color: _color } as Chart);
-      arrayTables[stats].push([<FontAwesome name="circle" size={24} color={_color} style={styles.colorIcon} />, type, parseFloat(expenses[stats][type]).toFixed(0)] as Table);
+      arrayTables[stats].push([
+        <FontAwesome
+          name="circle"
+          size={24}
+          color={_color}
+          style={styles.colorIcon}
+        />,
+        type,
+        parseFloat(expenses[stats][type]).toFixed(0),
+      ] as Table);
     });
 
     arrayTables[stats] = arrayTables[stats].sort(function (a, b) {
@@ -34,18 +43,33 @@ export const loadExpenses = (expenses: any) => {
   return [array, arrayTables];
 };
 
-export const loadPieChartData = (statsMode: any, statsType: any, pieChartData: any, pieChartAverageData: any) => {
+export const loadPieChartData = (
+  statsMode: any,
+  statsType: any,
+  pieChartData: any,
+  pieChartAverageData: any
+) => {
   if (statsMode == TIME_MODE.Monthly) return pieChartData[statsType];
   else return pieChartAverageData[statsType];
 };
 
-export const loadPurchaseTotalData = (statsMode: any, statsType: any, purchaseTotal: any, purchaseAverageTotal: any) => {
+export const loadPurchaseTotalData = (
+  statsMode: any,
+  statsType: any,
+  purchaseTotal: any,
+  purchaseAverageTotal: any
+) => {
   if (statsMode == TIME_MODE.Monthly) {
     return Number(purchaseTotal[statsType]).toFixed(1);
   } else return Number(purchaseAverageTotal[statsType]).toFixed(1);
 };
 
-export const loadSpendTableData = (statsMode, statsType, spendByType, spendAverageByType) => {
+export const loadSpendTableData = (
+  statsMode,
+  statsType,
+  spendByType,
+  spendAverageByType
+) => {
   if (statsMode == TIME_MODE.Monthly) return spendByType[statsType];
   else return spendAverageByType[statsType];
 };

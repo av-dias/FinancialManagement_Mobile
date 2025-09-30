@@ -57,18 +57,7 @@ export default function Income({ income, handleEditCallback }: IncomeProps) {
   const inputConfig: textInputType[] = [
     {
       placeholder: "Name",
-      icon: (
-        <MaterialIcons
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignSelf: "center",
-          }}
-          name="notes"
-          size={verticalScale(12)}
-          color={dark.textPrimary}
-        />
-      ),
+      icon: null,
       value: newIncome.name,
       setValue: (name: string) => {
         setNewIncome({ ...newIncome, name: name });

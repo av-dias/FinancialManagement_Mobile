@@ -1,5 +1,5 @@
 import { Pressable, View, Text } from "react-native";
-import { dark } from "../../utility/colors";
+import { dark, utilsColors } from "../../utility/colors";
 import commonStyles from "../../utility/commonStyles";
 import { _styles } from "./style";
 import { TypeIcon } from "../TypeIcon/TypeIcon";
@@ -158,7 +158,7 @@ export const CustomListItem = ({
                   (item?.entity == ExpenseEnum.Transaction &&
                     item.transactionType == TransactionOperation.RECEIVED) ||
                   (item.entity == ExpenseEnum.Purchase && item.isRefund)
-                    ? "green"
+                    ? utilsColors.lightgreen
                     : dark.textExpenses,
               }}
             >
@@ -172,7 +172,7 @@ export const CustomListItem = ({
                   (item?.entity == ExpenseEnum.Transaction &&
                     item.transactionType == TransactionOperation.RECEIVED) ||
                   (item.entity == ExpenseEnum.Purchase && item.isRefund)
-                    ? "green"
+                    ? utilsColors.lightgreen
                     : dark.textExpenses,
               }}
             >{`€`}</Text>

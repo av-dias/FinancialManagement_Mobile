@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { Text, View, ScrollView, Pressable } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import React, { useState, useContext } from "react";
 import { VictoryPie, VictoryLabel } from "victory-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -27,11 +27,9 @@ import {
 } from "./handler";
 import { calcExpensesTotalFromType } from "../../functions/expenses";
 import { dark } from "../../utility/colors";
-import { FlatItem } from "../../components/flatItem/flatItem";
 import ModalCustom from "../../components/modal/modal";
 import { ExpenseEnum } from "../../models/types";
 import { categoryIcons, utilIcons } from "../../utility/icons";
-import { Badge } from "react-native-paper";
 import { logTimeTook } from "../../utility/logger";
 import { ExpensesService } from "../../service/ExpensesService";
 import {
@@ -42,6 +40,7 @@ import { PurchaseEntity } from "../../store/database/Purchase/PurchaseEntity";
 import commonStyles from "../../utility/commonStyles";
 import { TypeIcon } from "../../components/TypeIcon/TypeIcon";
 import SimpleItem from "../../components/SimpleItem/SimpleItem";
+import { ExpenseItem } from "../../components/ExpenseItem/ExpenseItem";
 
 export default function Home({ navigation }) {
   const styles = _styles;
@@ -226,12 +225,15 @@ export default function Home({ navigation }) {
   const loadIcon = (expense: PurchaseEntity | TransactionEntity) => {
     if (expense.entity === ExpenseEnum.Purchase)
       return (
-        <View>
-          {
-            categoryIcons().find((category) => category.label === expense.type)
-              .icon
-          }
-        </View>
+        <TypeIcon
+          icon={categoryIcons().find(
+            (category) => category.label === expense.type
+          )}
+          customStyle={{
+            width: verticalScale(40),
+            borderRadius: 20,
+          }}
+        />
       );
     else {
       if (
@@ -308,37 +310,6 @@ export default function Home({ navigation }) {
     }
   };
 
-  // TODO
-  const loadSplitItem = () => (
-    <ScrollView contentContainerStyle={{ gap: 10, paddingTop: 10 }}>
-      {listExpenseOfType.map(
-        (expense: PurchaseEntity | TransactionEntity) =>
-          rowType === expense.type && (
-            <View key={`V${expense.entity + expense.id}`}>
-              {(expense as PurchaseEntity)?.split &&
-                statsType === ANALYSES_TYPE.Total && (
-                  <Badge
-                    size={24}
-                    style={{ top: -5, zIndex: 1, position: "absolute" }}
-                  >
-                    {`${(expense as PurchaseEntity).split.weight}%`}
-                  </Badge>
-                )}
-              <FlatItem
-                key={`FI${expense.entity + expense.id}`}
-                icon={loadIcon(expense)}
-                name={
-                  (expense as PurchaseEntity).name ||
-                  (expense as TransactionEntity).description
-                }
-                value={loadExpenseValue(expense)}
-              />
-            </View>
-          )
-      )}
-    </ScrollView>
-  );
-
   const onPress = (rowData) => {
     if (statsMode === TIME_MODE.Monthly) {
       setModalVisible(true);
@@ -358,7 +329,7 @@ export default function Home({ navigation }) {
         {modalVisible && (
           <View style={{ flex: 1, padding: 10, gap: 20 }}>
             {loadSplitHeader()}
-            {loadSplitItem()}
+            <ExpenseItem expenses={listExpenseOfType} />
           </View>
         )}
       </ModalCustom>
@@ -446,7 +417,7 @@ export default function Home({ navigation }) {
                 <ScrollView
                   style={{ borderRadius: commonStyles.borderRadius }}
                   contentContainerStyle={{
-                    gap: 5,
+                    gap: 0,
                     padding: 5,
                     backgroundColor: dark.glass,
                     borderRadius: commonStyles.borderRadius,
