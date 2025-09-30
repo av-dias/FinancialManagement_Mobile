@@ -37,6 +37,7 @@ export const _styles = StyleSheet.create({
     backgroundColor: "transparent",
     alignSelf: "center",
     flexDirection: "row",
+    paddingTop: verticalScale(5),
     //bottom: 50,
   },
   hitBox: {

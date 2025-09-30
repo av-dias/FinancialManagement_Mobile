@@ -17,6 +17,7 @@ export type textInputType = {
   placeholder: string;
   icon: any;
   editable?: boolean;
+  label?: string;
 };
 
 type DualTextInputProps = {
@@ -73,6 +74,19 @@ export default function DualTextInput({
               alignItems: "center",
             }}
           >
+            {data?.label && (
+              <View
+                style={{
+                  position: "absolute",
+                  top: -verticalScale(5),
+                  left: verticalScale(5),
+                }}
+              >
+                <Text style={{ color: dark.textSecundary, fontSize: 10 }}>
+                  {data.label}
+                </Text>
+              </View>
+            )}
             <View style={{ paddingHorizontal: verticalScale(10) }}>
               {data.icon}
             </View>
@@ -80,7 +94,7 @@ export default function DualTextInput({
               <TextInput
                 style={{ ...styles.textInput, textAlign: textAlign }}
                 ref={(input) => {
-                  this.textInputName = input;
+                  if (this) this.textInputName = input;
                 }}
                 value={data.value}
                 placeholder={data.placeholder}

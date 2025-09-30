@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { dark } from "../../utility/colors";
 import { _styles } from "./style";
@@ -12,18 +12,73 @@ import { getExpenseName } from "../../functions/expenses";
 import Header from "../../components/header/header";
 import CustomButton from "../../components/customButton/customButton";
 import commonStyles from "../../utility/commonStyles";
+import ModalCustom from "../../components/modal/modal";
+import DualTextInput, {
+  textInputType,
+} from "../../components/DualTextInput/DualTextInput";
+import { NotificationBox } from "../../components/NotificationBox/NotificationBox";
+import { ExpenseEnum } from "../../models/types";
+import { TypeIcon } from "../../components/TypeIcon/TypeIcon";
+import { verticalScale } from "../../functions/responsive";
 
-const loadIcon = (day) => (
-  <View
-    style={{
-      backgroundColor: "lightblue",
-      borderRadius: 7,
-      padding: 3,
-      width: 50,
-      alignItems: "center",
-    }}
-  >
-    <Text style={{ fontSize: 11 }}>{`Day ${day}`}</Text>
+const EditForm = ({
+  subscription,
+  inputConfig,
+  handleSaveRecurring,
+  handleDeleteRecurring,
+}) => {
+  return (
+    <View style={_styles.mainContainer}>
+      <View style={_styles.formContainer}>
+        <View>
+          <Text style={_styles.textTitle}>Edit Recurring Expense</Text>
+        </View>
+        <View style={_styles.inputContainer}>
+          <TextInput
+            style={_styles.textInput}
+            value={
+              subscription.item.entity == ExpenseEnum.Purchase
+                ? subscription.item.name
+                : subscription.entity
+            }
+            editable={false}
+          />
+          <DualTextInput values={inputConfig} direction="column" />
+        </View>
+      </View>
+      <View style={{ flex: 1, flexDirection: "row", gap: 20 }}>
+        <View style={{ flex: 1 }}>
+          <CustomButton handlePress={handleSaveRecurring} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <CustomButton
+            text="Delete"
+            handlePress={handleDeleteRecurring}
+            addStyle={{ backgroundColor: dark.complementarySolid }}
+          />
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const Icon = ({ day, name }) => (
+  <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+    <TypeIcon
+      icon={{
+        icon: (
+          <View style={_styles.centered}>
+            <Text style={{ color: dark.textPrimary }}>{`D${day}`}</Text>
+          </View>
+        ),
+        borderColor: dark.complementarySolid,
+      }}
+      customStyle={{
+        width: verticalScale(40),
+        borderRadius: 20,
+      }}
+    />
+    <Text style={{ color: dark.textPrimary }}>{name}</Text>
   </View>
 );
 
@@ -34,6 +89,8 @@ export default function Subscription({ navigation }) {
 
   const [subscriptions, setSubscriptions] = useState<SubscriptionEntity[]>([]);
   const [refresh, setRefresh] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [subscription, setSubscription] = useState<SubscriptionEntity>();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -49,46 +106,103 @@ export default function Subscription({ navigation }) {
     }, [email, subscriptionService.isReady, refresh])
   );
 
+  const setSubscriptionValue = (value) => {
+    const expenseEntity = subscription.item;
+    expenseEntity.amount = value;
+
+    setSubscription((subscription) => ({
+      ...subscription,
+      item: expenseEntity,
+    }));
+  };
+
+  const handleDeleteRecurring = async () => {
+    await subscriptionService.deleteById(subscription.id);
+    setRefresh((r) => !r);
+    setIsModalVisible(false);
+  };
+
+  const handleSaveRecurring = async () => {
+    await subscriptionService.updateSubscription(email, subscription);
+    setRefresh((r) => !r);
+    setIsModalVisible(false);
+  };
+
+  const inputConfig: textInputType[] = [
+    {
+      value: subscription?.dayOfMonth.toString(),
+      setValue: (_day) => {
+        setSubscription((prev) => ({ ...prev, dayOfMonth: Number(_day) }));
+      },
+      onBlurHandle: () => {
+        if (!(subscription.dayOfMonth >= 1 && subscription.dayOfMonth <= 31)) {
+          setSubscription((prev) => ({ ...prev, dayOfMonth: 1 }));
+        }
+      },
+      placeholder: "Day of month",
+      icon: null,
+      label: "Day of Month",
+    },
+    {
+      value: subscription?.item.amount.toString(),
+      setValue: (_item) => setSubscriptionValue(Number(_item)),
+      onBlurHandle: () => {},
+      placeholder: "Amount",
+      icon: null,
+      label: "Amount",
+    },
+  ];
+
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
+      <NotificationBox />
       <View style={styles.usableScreen}>
-        <View style={{ flex: 1, gap: 5 }}>
+        {isModalVisible && (
+          <ModalCustom
+            modalVisible={isModalVisible}
+            setModalVisible={setIsModalVisible}
+            children={
+              <EditForm
+                subscription={subscription}
+                inputConfig={inputConfig}
+                handleSaveRecurring={handleSaveRecurring}
+                handleDeleteRecurring={handleDeleteRecurring}
+              />
+            }
+          />
+        )}
+        <View
+          style={{
+            flex: 1,
+            gap: 15,
+            paddingVertical: 20,
+            paddingHorizontal: 5,
+          }}
+        >
           {subscriptions?.map((s) => (
             <FlatItem
               key={s.id}
-              name={getExpenseName(s?.item)}
+              name={<Icon day={s?.dayOfMonth} name={getExpenseName(s?.item)} />}
               value={s?.item?.amount}
-              paddingVertical={15}
-              icon={loadIcon(s?.dayOfMonth)}
-              onPressCallback={() => console.log(s.id)}
+              paddingVertical={10}
+              paddingHorizontal={15}
+              onPressCallback={() => {
+                setSubscription(s);
+                setIsModalVisible((visible) => !visible);
+              }}
             />
           ))}
         </View>
         <View style={{ alignItems: "flex-end" }}>
-          <Text
-            style={{
-              color: dark.textPrimary,
-              backgroundColor: dark.complementary,
-              borderRadius: 5,
-              padding: 8,
-              marginBottom: 10,
-            }}
-          >
+          <Text style={styles.text}>
             <Text>{`Total: ${subscriptions.reduce(
-              (acc, s) => acc + s.item.amount,
+              (acc, s) => acc + Number(s.item.amount),
               0
             )}`}</Text>
             <Text style={{ fontSize: commonStyles.symbolSize }}>{`€`}</Text>
           </Text>
         </View>
-        <CustomButton
-          text={"Delete Subscriptions"}
-          handlePress={async () => {
-            await subscriptionService.deleteAll(email);
-            setRefresh((prev) => !prev);
-          }}
-        />
       </View>
     </LinearGradient>
   );

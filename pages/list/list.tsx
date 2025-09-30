@@ -338,9 +338,15 @@ export default function List({ navigation }) {
             <Searchbar
               iconColor="white"
               placeholderTextColor="lightgray"
-              style={{ backgroundColor: dark.glass, borderRadius: 10 }}
+              style={{
+                backgroundColor: dark.glass,
+                borderRadius: 10,
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+              }}
               placeholder="Search"
-              inputStyle={{ color: "white" }}
+              inputStyle={{ color: "white", textAlignVertical: "center" }}
               onChangeText={setSearchQuery}
               value={searchQuery}
             />
@@ -440,7 +446,12 @@ export default function List({ navigation }) {
            *  Calendar  - Change current view date
            */}
           {multiSelect.length > 0 && (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
               <Checkbox
                 status={multiSelect.length > 0 ? "checked" : "unchecked"}
                 onPress={removeSelection}
@@ -460,7 +471,14 @@ export default function List({ navigation }) {
               }}
             >
               <Pressable onPress={async () => await onRecurringHandle()}>
-                <CardWrapper style={{ height: verticalScale(40), padding: 5 }}>
+                <CardWrapper
+                  style={{
+                    height: verticalScale(40),
+                    aspectRatio: 1,
+                    padding: 5,
+                    alignItems: "center",
+                  }}
+                >
                   {
                     utilIcons(35, dark.textPrimary).find(
                       (icon) => icon.label === "Recurring"
@@ -471,7 +489,10 @@ export default function List({ navigation }) {
               {multiSelect.length > 0 && (
                 <Pressable onPress={onBulkDeleteHandle}>
                   <CardWrapper
-                    style={{ height: verticalScale(40), padding: 5 }}
+                    style={{
+                      height: verticalScale(40),
+                      padding: 5,
+                    }}
                   >
                     {
                       utilIcons(35, dark.textPrimary).find(

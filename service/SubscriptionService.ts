@@ -78,6 +78,39 @@ export class SubscriptionService {
     await this.subscriptionRepository.updateOrCreate(subscription);
   }
 
+  public async updateSubscription(
+    userId: string,
+    subscriptionEntity: SubscriptionEntity
+  ): Promise<void> {
+    if (
+      !subscriptionEntity.dayOfMonth ||
+      !subscriptionEntity.item ||
+      subscriptionEntity.item.amount.toString().trim() === "" ||
+      subscriptionEntity.dayOfMonth < 1 ||
+      subscriptionEntity.dayOfMonth > 31
+    ) {
+      eventEmitter.emit(
+        NotificationEvent,
+        createNotification("Please fill all fields correctly.", dark.error)
+      );
+      throw new Error("Please fill all fields correctly.");
+    }
+    if (!subscriptionEntity.lastUpdateDate)
+      subscriptionEntity.lastUpdateDate = new Date()
+        .toISOString()
+        .split("T")[0];
+
+    const subscription = new SubscriptionModel();
+    subscription.id = subscriptionEntity?.id;
+    subscription.entity = subscriptionEntity.entity;
+    subscription.dayOfMonth = subscriptionEntity.dayOfMonth;
+    subscription.lastUpdateDate = new Date(subscriptionEntity.lastUpdateDate);
+    subscription.userId = subscriptionEntity.userId;
+    subscription.item = JSON.stringify(subscriptionEntity.item);
+
+    await this.subscriptionRepository.updateOrCreate(subscription);
+  }
+
   public async updateLastUpdateDate(userId: string, subscriptionId: number) {
     await this.subscriptionRepository.updateLastUpdateDate(
       userId,

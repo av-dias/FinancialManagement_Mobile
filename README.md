@@ -62,3 +62,7 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
   - Polish add forms on purchase, transaction and income
   - Polished FlatCalendar component to be more consistent
   - Custom button default text change to save
+- 3.7.0
+  - Allow subscription to be edited on amount and day of month
+  - Dual Text Input with optional label
+  - Delete subscription feature

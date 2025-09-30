@@ -194,7 +194,7 @@ export const utilIcons = (size = 25, _color) => {
     },
     {
       label: "Recurring",
-      icon: <MaterialCommunityIcons name="calendar-refresh-outline" size={30} color={_color} />,
+      icon: <MaterialCommunityIcons name="calendar-refresh-outline" size={size - verticalScale(12)} color={_color} />,
       color: _color,
     },
     {
