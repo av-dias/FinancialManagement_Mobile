@@ -22,10 +22,15 @@ import { PurchaseEntity } from "../../store/database/Purchase/PurchaseEntity";
 import { TransactionEntity } from "../../store/database/Transaction/TransactionEntity";
 import { TypeIcon } from "../../components/TypeIcon/TypeIcon";
 import { ExpenseItem } from "../../components/ExpenseItem/ExpenseItem";
+import { BlurText } from "../../components/BlurText/BlurText";
 
 const sortMonths = (a, b) => months.indexOf(a.label) - months.indexOf(b.label);
 
-export default function Statistics({ currentYear, setCurrentYear }) {
+export default function Statistics({
+  currentYear,
+  setCurrentYear,
+  privacyShield = false,
+}) {
   const styles = _styles;
   const email = useContext(UserContext).email;
   const expensesService = new ExpensesService();
@@ -98,16 +103,6 @@ export default function Statistics({ currentYear, setCurrentYear }) {
     }, [email, currentYear])
   );
 
-  const loadIcon = (expense: PurchaseEntity | TransactionEntity) => (
-    <TypeIcon
-      icon={categoryIcons().find((category) => category.label === expense.type)}
-      customStyle={{
-        width: verticalScale(40),
-        borderRadius: 20,
-      }}
-    />
-  );
-
   const loadSplitHeader = () => (
     <View>
       <Text style={styles.splitModalTitle}>Splitted Expenses</Text>
@@ -161,7 +156,7 @@ export default function Statistics({ currentYear, setCurrentYear }) {
         hasColor={true}
       >
         {modalVisible && (
-          <View style={{ flex: 1, padding: 10, gap: 20 }}>
+          <View style={{ flex: 1, gap: 20 }}>
             {loadSplitHeader()}
             <ExpenseItem
               expenses={[...purchaseWithSplit, ...transactionsWithSplit].filter(
@@ -174,12 +169,18 @@ export default function Statistics({ currentYear, setCurrentYear }) {
       <View style={styles.chartHeader}>
         <View style={styles.containerJustifyCenter}>
           <Text style={styles.textTitle}>{"Total Purchase"}</Text>
-          <Text>
-            <Text style={styles.textSecundary}>{`Split: ${splitTotal.toFixed(
-              0
-            )}`}</Text>
-            <Text style={styles.textSymbol}>{`€`}</Text>
-          </Text>
+          <BlurText
+            text={
+              <Text>
+                <Text
+                  style={styles.textSecundary}
+                >{`Split: ${splitTotal.toFixed(0)}`}</Text>
+                <Text style={styles.textSymbol}>{`€`}</Text>
+              </Text>
+            }
+            privacyShield={privacyShield}
+            style={{}}
+          />
         </View>
         <View style={styles.containerRowGap}>
           <CalendarCard
@@ -204,6 +205,7 @@ export default function Statistics({ currentYear, setCurrentYear }) {
             setModalVisible(true);
             setChartIndex(index);
           }}
+          privacyShield={privacyShield}
         />
       </View>
     </CardWrapper>

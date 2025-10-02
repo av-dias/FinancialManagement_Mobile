@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { UserContext } from "./user-context";
 import { logTimeTook } from "../utility/logger";
@@ -30,24 +30,45 @@ const AppContextProvider = ({ children }) => {
 
           // On load check if subscriptions are up-to-date
           const currentDate = new Date();
-          const subscriptions = await subscriptionService.getAllBeforeDate(userCtx.email, currentDate);
+          const subscriptions = await subscriptionService.getAllBeforeDate(
+            userCtx.email,
+            currentDate
+          );
           let subscriptionUpdateCount = 0;
 
           for (const subscription of subscriptions) {
-            subscription.item = subscription.item as PurchaseEntity | TransactionEntity;
+            subscription.item = subscription.item as
+              | PurchaseEntity
+              | TransactionEntity;
             subscription.item.id = null;
-            subscription.item.date = new Date(currentDate.getFullYear(), currentDate.getMonth(), subscription.dayOfMonth).toISOString().split("T")[0];
+            subscription.item.date = new Date(
+              currentDate.getFullYear(),
+              currentDate.getMonth(),
+              subscription.dayOfMonth
+            )
+              .toISOString()
+              .split("T")[0];
 
             switch (subscription.entity) {
               case ExpenseEnum.Purchase: {
-                await expenseService.createPurchase(subscription.item as PurchaseEntity);
-                await subscriptionService.updateLastUpdateDate(userCtx.email, subscription.id);
+                await expenseService.createPurchase(
+                  subscription.item as PurchaseEntity
+                );
+                await subscriptionService.updateLastUpdateDate(
+                  userCtx.email,
+                  subscription.id
+                );
                 subscriptionUpdateCount++;
                 break;
               }
               case ExpenseEnum.Transaction: {
-                await expenseService.createTransaction(subscription.item as TransactionEntity);
-                await subscriptionService.updateLastUpdateDate(userCtx.email, subscription.id);
+                await expenseService.createTransaction(
+                  subscription.item as TransactionEntity
+                );
+                await subscriptionService.updateLastUpdateDate(
+                  userCtx.email,
+                  subscription.id
+                );
                 subscriptionUpdateCount++;
                 break;
               }
@@ -56,7 +77,9 @@ const AppContextProvider = ({ children }) => {
             }
           }
 
-          console.log(`App-Context subscription service has updated ${subscriptionUpdateCount} items.`);
+          console.log(
+            `App-Context subscription service has updated ${subscriptionUpdateCount} items.`
+          );
 
           let endTime = performance.now();
           logTimeTook("App-Context", "Load useFocusEffect", endTime, startTime);
@@ -64,7 +87,8 @@ const AppContextProvider = ({ children }) => {
 
         // Load subscription service
       }
-      if (expenseService.isReady() && subscriptionService.isReady()) fetchData();
+      if (expenseService.isReady() && subscriptionService.isReady())
+        fetchData();
     }, [userCtx.email, expenseService.isReady(), subscriptionService.isReady()])
   );
 

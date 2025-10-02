@@ -16,7 +16,6 @@ import ModalCustom from "../../components/modal/modal";
 import DualTextInput, {
   textInputType,
 } from "../../components/DualTextInput/DualTextInput";
-import { NotificationBox } from "../../components/NotificationBox/NotificationBox";
 import { ExpenseEnum } from "../../models/types";
 import { TypeIcon } from "../../components/TypeIcon/TypeIcon";
 import { verticalScale } from "../../functions/responsive";
@@ -156,7 +155,6 @@ export default function Subscription({ navigation }) {
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
-      <NotificationBox />
       <View style={styles.usableScreen}>
         {isModalVisible && (
           <ModalCustom

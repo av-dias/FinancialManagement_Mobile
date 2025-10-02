@@ -3,6 +3,7 @@ import { Text, View, ScrollView } from "react-native";
 import React, { useState, useContext } from "react";
 import { VictoryPie, VictoryLabel } from "victory-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "@react-native-community/blur";
 
 //Context
 import { UserContext } from "../../store/user-context";
@@ -13,38 +14,67 @@ import CalendarCard from "../../components/calendarCard/calendarCard";
 import TypeCard from "../../components/TypeCard/TypeCard";
 import Header from "../../components/header/header";
 import CardWrapper from "../../components/cardWrapper/cardWrapper";
+import ModalCustom from "../../components/modal/modal";
 
 //Custom Constants
 import { _styles } from "./style";
 import { ANALYSES_TYPE, TIME_MODE } from "../../utility/keys";
 
+//Custom Styling
+import { dark } from "../../utility/colors";
 import { horizontalScale, verticalScale } from "../../functions/responsive";
+import commonStyles from "../../utility/commonStyles";
+
 import {
   loadPieChartData,
   loadPurchaseTotalData,
   loadSpendTableData,
-  loadExpenses,
+  fetchData as fetchExpenseData,
 } from "./handler";
-import { calcExpensesTotalFromType } from "../../functions/expenses";
-import { dark } from "../../utility/colors";
-import ModalCustom from "../../components/modal/modal";
-import { ExpenseEnum } from "../../models/types";
-import { categoryIcons, utilIcons } from "../../utility/icons";
+import { loadExpenseValue } from "../../functions/expenses";
 import { logTimeTook } from "../../utility/logger";
 import { ExpensesService } from "../../service/ExpensesService";
-import {
-  TransactionEntity,
-  TransactionOperation,
-} from "../../store/database/Transaction/TransactionEntity";
+import { TransactionEntity } from "../../store/database/Transaction/TransactionEntity";
 import { PurchaseEntity } from "../../store/database/Purchase/PurchaseEntity";
-import commonStyles from "../../utility/commonStyles";
-import { TypeIcon } from "../../components/TypeIcon/TypeIcon";
 import SimpleItem from "../../components/SimpleItem/SimpleItem";
 import { ExpenseItem } from "../../components/ExpenseItem/ExpenseItem";
+import { BlurText } from "../../components/BlurText/BlurText";
+
+const SplitHeader = ({ listExpenseOfType, statsType }) => (
+  <View>
+    <Text style={_styles.splitModalTitle}>Expenses</Text>
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        paddingTop: 20,
+      }}
+    >
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <Text style={{ color: "white", fontSize: 16 }}>Total</Text>
+        <Text style={_styles.splitModalText}>
+          {`${Number(
+            listExpenseOfType.reduce(
+              (acc: number, expense: PurchaseEntity | TransactionEntity) =>
+                acc + Number(loadExpenseValue(expense, statsType)),
+              0
+            )
+          ).toFixed(0)}€`}
+        </Text>
+      </View>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <Text style={{ color: "white", fontSize: 16 }}>Count</Text>
+        <Text style={_styles.splitModalText}>{listExpenseOfType.length}</Text>
+      </View>
+    </View>
+  </View>
+);
 
 export default function Home({ navigation }) {
   const styles = _styles;
   const expensesService = new ExpensesService();
+  const email = useContext(UserContext).email;
+  const { incomeRepository } = useDatabaseConnection();
 
   const [statsType, setStatsType] = useState(ANALYSES_TYPE.Total);
   const [statsMode, setStatsMode] = useState(TIME_MODE.Monthly);
@@ -74,91 +104,39 @@ export default function Home({ navigation }) {
   const [listExpenseOfType, setListExpenseOfType] = useState<
     (PurchaseEntity | TransactionEntity)[]
   >([]);
+  const { privacyShield } = useContext(UserContext).privacyShield;
 
-  const email = useContext(UserContext).email;
-  const { incomeRepository } = useDatabaseConnection();
-
+  /**
+   * Load main page data
+   */
   useFocusEffect(
     React.useCallback(() => {
-      async function fetchData() {
-        const expensesByTypeTotal =
-          await expensesService.getMonthExpensesByType(
-            email,
-            currentMonth + 1,
-            currentYear,
-            ANALYSES_TYPE.Total
-          );
-        const expensesByTypePersonal =
-          await expensesService.getMonthExpensesByType(
-            email,
-            currentMonth + 1,
-            currentYear,
-            ANALYSES_TYPE.Personal
-          );
-
-        let resExpensesByType = {
-          [ANALYSES_TYPE.Total]: expensesByTypeTotal,
-          [ANALYSES_TYPE.Personal]: expensesByTypePersonal,
-        };
-
-        if (
-          resExpensesByType[ANALYSES_TYPE.Personal] &&
-          resExpensesByType[ANALYSES_TYPE.Total]
-        ) {
-          let [resPieChart, resTableChart] = loadExpenses(resExpensesByType);
-          setPieChartData(resPieChart);
-          setSpendByType(resTableChart);
-          setExpenseTotal(calcExpensesTotalFromType(resExpensesByType));
-        }
-
-        const averageTotal = await expensesService.getExpensesTotalAverage(
-          email,
-          currentYear,
-          ANALYSES_TYPE.Total
-        );
-        const averagePersonal = await expensesService.getExpensesTotalAverage(
-          email,
-          currentYear,
-          ANALYSES_TYPE.Personal
-        );
-
-        const averageTypeTotal = await expensesService.getExpenseAverageByType(
-          email,
-          currentYear,
-          ANALYSES_TYPE.Total
-        );
-        const averageTypePersonal =
-          await expensesService.getExpenseAverageByType(
-            email,
-            currentYear,
-            ANALYSES_TYPE.Personal
-          );
-
-        if (averageTypeTotal && averageTypePersonal) {
-          let [resAveragePieChart, resAverageTableChart] = loadExpenses({
-            Total: averageTypeTotal,
-            Personal: averageTypePersonal,
-          });
-          setPieChartAverageData(resAveragePieChart);
-          setSpendAverageByType(resAverageTableChart);
-          setPurchaseAverageTotal({
-            Total: averageTotal,
-            Personal: averagePersonal,
-          });
-        }
-      }
       if (email && expensesService.isReady()) {
         let startTime = performance.now();
-        fetchData();
+        fetchExpenseData(
+          email,
+          currentMonth,
+          currentYear,
+          setPieChartData,
+          setSpendByType,
+          setExpenseTotal,
+          setPieChartAverageData,
+          setSpendAverageByType,
+          setPurchaseAverageTotal,
+          expensesService
+        );
         let endTime = performance.now();
         logTimeTook("Home", "Fetch", endTime, startTime);
       }
     }, [email, expensesService.isReady(), currentMonth, currentYear])
   );
 
+  /**
+   * Load savings prediction
+   */
   useFocusEffect(
     React.useCallback(() => {
-      async function fetchData() {
+      async function fetchSavingsData() {
         //Calculate Current Savings
         try {
           const resTotalIncome = await incomeRepository.getTotalIncomeFromDate(
@@ -166,24 +144,22 @@ export default function Home({ navigation }) {
             currentMonth,
             currentYear
           );
-          setPrediction(
-            resTotalIncome -
-              Number(
-                loadPurchaseTotalData(
-                  statsMode,
-                  statsType,
-                  expenseTotal,
-                  purchaseAverageTotal
-                )
-              )
+          const expenseTotalData = Number(
+            loadPurchaseTotalData(
+              statsMode,
+              statsType,
+              expenseTotal,
+              purchaseAverageTotal
+            )
           );
+          setPrediction(resTotalIncome - expenseTotalData);
         } catch (e) {
           console.log(e);
         }
       }
       let startTime = performance.now();
       if (incomeRepository.isReady() && email) {
-        fetchData();
+        fetchSavingsData();
       }
       let endTime = performance.now();
       logTimeTook("Home", "Database Fetch", endTime, startTime);
@@ -197,9 +173,12 @@ export default function Home({ navigation }) {
     ])
   );
 
+  /**
+   * Load the expenses by category once selected
+   */
   useFocusEffect(
     React.useCallback(() => {
-      async function fetchData() {
+      async function fetchExpenseSelectedData() {
         //Get data related to selected type
         try {
           const typeItems = await expensesService.getExpensesFromType(
@@ -215,100 +194,12 @@ export default function Home({ navigation }) {
       }
       let startTime = performance.now();
       if (rowType && expensesService.isReady() && email) {
-        fetchData();
+        fetchExpenseSelectedData();
       }
       let endTime = performance.now();
       logTimeTook("Home", "Database Fetch", endTime, startTime);
     }, [rowType])
   );
-
-  const loadIcon = (expense: PurchaseEntity | TransactionEntity) => {
-    if (expense.entity === ExpenseEnum.Purchase)
-      return (
-        <TypeIcon
-          icon={categoryIcons().find(
-            (category) => category.label === expense.type
-          )}
-          customStyle={{
-            width: verticalScale(40),
-            borderRadius: 20,
-          }}
-        />
-      );
-    else {
-      if (
-        expense.entity === ExpenseEnum.Transaction &&
-        expense.transactionType === TransactionOperation.SENT
-      )
-        return (
-          <View>
-            {
-              utilIcons().find((category) => category.label === "Transaction")
-                .icon
-            }
-          </View>
-        );
-      else
-        return (
-          <View>
-            {utilIcons().find((category) => category.label === "Received").icon}
-          </View>
-        );
-    }
-  };
-
-  // TODO
-  const loadSplitHeader = () => (
-    <View>
-      <Text style={styles.splitModalTitle}>Expenses</Text>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          paddingTop: 20,
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <Text style={{ color: "white", fontSize: 16 }}>Total</Text>
-          <Text style={styles.splitModalText}>
-            {`${Number(
-              listExpenseOfType.reduce(
-                (acc: number, expense: PurchaseEntity | TransactionEntity) =>
-                  acc + Number(loadExpenseValue(expense)),
-                0
-              )
-            ).toFixed(0)}€`}
-          </Text>
-        </View>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <Text style={{ color: "white", fontSize: 16 }}>Count</Text>
-          <Text style={styles.splitModalText}>{listExpenseOfType.length}</Text>
-        </View>
-      </View>
-    </View>
-  );
-
-  /*
-   * Load the purchase value based on Stats Type
-   * If stats type is personal
-   * The purchase needs to consider the spluit weight if it exists
-   */
-  const loadExpenseValue = (expense: PurchaseEntity | TransactionEntity) => {
-    if (expense.entity === ExpenseEnum.Transaction) return expense.amount;
-
-    if (statsType === ANALYSES_TYPE.Total) {
-      return Number(expense.amount);
-    } else {
-      let value: number;
-      if (expense.split) {
-        value =
-          (Number(expense.amount) * (100 - Number(expense.split.weight))) / 100;
-      } else {
-        value = Number(expense.amount);
-      }
-      return Number(value.toFixed(1));
-    }
-  };
 
   const onPress = (rowData) => {
     if (statsMode === TIME_MODE.Monthly) {
@@ -327,8 +218,16 @@ export default function Home({ navigation }) {
         hasColor={true}
       >
         {modalVisible && (
-          <View style={{ flex: 1, padding: 10, gap: 20 }}>
-            {loadSplitHeader()}
+          <View
+            style={{
+              flex: 1,
+              gap: 20,
+            }}
+          >
+            <SplitHeader
+              listExpenseOfType={listExpenseOfType}
+              statsType={statsType}
+            />
             <ExpenseItem expenses={listExpenseOfType} />
           </View>
         )}
@@ -343,33 +242,29 @@ export default function Home({ navigation }) {
           <View style={{ flex: 8, gap: verticalScale(10) }}>
             <CardWrapper style={styles.mainContainer}>
               <View style={styles.chart}>
-                <View style={styles.savingsContainer}>
-                  <Text>
-                    <Text style={styles.savingsText}>{`${prediction.toFixed(
-                      0
-                    )}`}</Text>
-                    <Text style={styles.textSavingsSymbol}>{`€`}</Text>
-                  </Text>
-                </View>
+                <BlurText
+                  style={styles.savingsContainer}
+                  blurStyle={{ height: "40%" }}
+                  text={
+                    <Text>
+                      <Text style={styles.savingsText}>{`${prediction.toFixed(
+                        0
+                      )}`}</Text>
+                      <Text style={styles.textSavingsSymbol}>{`€`}</Text>
+                    </Text>
+                  }
+                  privacyShield={privacyShield}
+                />
                 <VictoryPie
                   height={horizontalScale(250)}
                   innerRadius={horizontalScale(100)}
                   padding={{ top: 0, bottom: 0 }}
-                  data={
-                    loadPieChartData(
-                      statsMode,
-                      statsType,
-                      pieChartData,
-                      pieChartAverageData
-                    ).length != 0
-                      ? loadPieChartData(
-                          statsMode,
-                          statsType,
-                          pieChartData,
-                          pieChartAverageData
-                        ).sort((a, b) => a.y - b.y)
-                      : [{ x: "Your Spents", y: 1 }]
-                  }
+                  data={loadPieChartData(
+                    statsMode,
+                    statsType,
+                    pieChartData,
+                    pieChartAverageData
+                  ).sort((a, b) => a.y - b.y)}
                   style={{
                     data: {
                       fill: ({ datum }) => datum.color,
@@ -378,19 +273,26 @@ export default function Home({ navigation }) {
                   labelComponent={<VictoryLabel style={[{ fontSize: 10 }]} />}
                 />
                 <View style={styles.expensesContainer}>
-                  <View style={{ paddingBottom: 5 }}>
-                    <Text>
-                      <Text
-                        style={styles.expensesText}
-                      >{`${loadPurchaseTotalData(
-                        statsMode,
-                        statsType,
-                        expenseTotal,
-                        purchaseAverageTotal
-                      )}`}</Text>
-                      <Text style={styles.textSymbol}>{`€`}</Text>
-                    </Text>
-                  </View>
+                  <BlurText
+                    style={{
+                      paddingBottom: 5,
+                      borderRadius: commonStyles.borderRadius,
+                    }}
+                    text={
+                      <Text>
+                        <Text style={styles.expensesText}>
+                          {loadPurchaseTotalData(
+                            statsMode,
+                            statsType,
+                            expenseTotal,
+                            purchaseAverageTotal
+                          )}
+                        </Text>
+                        <Text style={styles.textSymbol}>{`€`}</Text>
+                      </Text>
+                    }
+                    privacyShield={privacyShield}
+                  />
                   {statsMode == TIME_MODE.Monthly ? (
                     <CalendarCard
                       monthState={[currentMonth, setCurrentMonth]}
@@ -413,12 +315,13 @@ export default function Home({ navigation }) {
               />
             </View>
             <View style={{ flex: 4 }}>
-              <View style={{ flex: 4 }}>
+              <View
+                style={{ flex: 4, padding: commonStyles.mainPaddingHorizontal }}
+              >
                 <ScrollView
                   style={{ borderRadius: commonStyles.borderRadius }}
                   contentContainerStyle={{
                     gap: 0,
-                    padding: 5,
                     backgroundColor: dark.glass,
                     borderRadius: commonStyles.borderRadius,
                   }}
@@ -436,6 +339,8 @@ export default function Home({ navigation }) {
                         rowData={rowData}
                         total={expenseTotal[statsType]}
                         onPressCallback={onPress}
+                        privacyShield={privacyShield}
+                        blurStyle={{ height: "50%" }}
                       />
                     ))}
                 </ScrollView>

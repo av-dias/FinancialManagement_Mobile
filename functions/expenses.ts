@@ -1,11 +1,18 @@
 import { ExpensesByYear } from "../models/interfaces";
-import { ExpenseEnum, ExpenseType, PurchaseType, TransactionType } from "../models/types";
+import {
+  ExpenseEnum,
+  ExpenseType,
+  PurchaseType,
+  TransactionType,
+} from "../models/types";
 import { IncomeEntity } from "../store/database/Income/IncomeEntity";
 import { PurchaseEntity } from "../store/database/Purchase/PurchaseEntity";
 import { TransactionEntity } from "../store/database/Transaction/TransactionEntity";
 import { KEYS, ANALYSES_TYPE, TRANSACTION_TYPE } from "../utility/keys";
 
-export const getExpenseDate = (itemSelected: PurchaseEntity | TransactionEntity | IncomeEntity) => {
+export const getExpenseDate = (
+  itemSelected: PurchaseEntity | TransactionEntity | IncomeEntity
+) => {
   switch (itemSelected.entity) {
     case ExpenseEnum.Purchase: {
       return new Date(itemSelected.date).getDate();
@@ -21,7 +28,9 @@ export const getExpenseDate = (itemSelected: PurchaseEntity | TransactionEntity 
   }
 };
 
-export const getExpenseName = (itemSelected: PurchaseEntity | TransactionEntity | IncomeEntity) => {
+export const getExpenseName = (
+  itemSelected: PurchaseEntity | TransactionEntity | IncomeEntity
+) => {
   switch (itemSelected?.entity) {
     case ExpenseEnum.Purchase: {
       return itemSelected.name;
@@ -34,6 +43,31 @@ export const getExpenseName = (itemSelected: PurchaseEntity | TransactionEntity 
     }
     default:
       null;
+  }
+};
+
+/*
+ * Load the purchase value based on Stats Type
+ * If stats type is personal
+ * The purchase needs to consider the spluit weight if it exists
+ */
+export const loadExpenseValue = (
+  expense: PurchaseEntity | TransactionEntity,
+  statsType = ANALYSES_TYPE.Total
+) => {
+  if (expense.entity === ExpenseEnum.Transaction) return expense.amount;
+
+  if (statsType === ANALYSES_TYPE.Total) {
+    return Number(expense.amount);
+  } else {
+    let value: number;
+    if (expense.split) {
+      value =
+        (Number(expense.amount) * (100 - Number(expense.split.weight))) / 100;
+    } else {
+      value = Number(expense.amount);
+    }
+    return Number(value.toFixed(1));
   }
 };
 
@@ -64,12 +98,22 @@ export const calcTransactionStats = (expenses: any) => {
 
         // Verify if year already exists
         if (!res[year]) {
-          res[year] = { [month]: { [TRANSACTION_TYPE.Total]: 0, [TRANSACTION_TYPE["Sent"]]: 0, [TRANSACTION_TYPE["Received"]]: 0 } };
+          res[year] = {
+            [month]: {
+              [TRANSACTION_TYPE.Total]: 0,
+              [TRANSACTION_TYPE["Sent"]]: 0,
+              [TRANSACTION_TYPE["Received"]]: 0,
+            },
+          };
         }
 
         // Verify if month already exists
         if (!res[year][month]) {
-          res[year][month] = { [TRANSACTION_TYPE.Total]: 0, [TRANSACTION_TYPE["Sent"]]: 0, [TRANSACTION_TYPE["Received"]]: 0 };
+          res[year][month] = {
+            [TRANSACTION_TYPE.Total]: 0,
+            [TRANSACTION_TYPE["Sent"]]: 0,
+            [TRANSACTION_TYPE["Received"]]: 0,
+          };
         }
 
         // if transaction received expenses are reduced
@@ -88,7 +132,9 @@ export const calcTransactionStats = (expenses: any) => {
 };
 
 export const calcTotalExpensesByType = (expenses: any, year: number) => {
-  let resType = { [year]: { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} } };
+  let resType = {
+    [year]: { [ANALYSES_TYPE.Total]: {}, [ANALYSES_TYPE.Personal]: {} },
+  };
 
   Object.keys(expenses[year]).forEach((month) => {
     expenses[year][month].forEach(({ element, index, key }: ExpenseType) => {
@@ -111,7 +157,11 @@ export const calcTotalExpensesByType = (expenses: any, year: number) => {
         let value = parseFloat(element.amount);
 
         // Verify if type already exists
-        if (!Object.keys(resType[year][ANALYSES_TYPE.Total]).includes(element.type)) {
+        if (
+          !Object.keys(resType[year][ANALYSES_TYPE.Total]).includes(
+            element.type
+          )
+        ) {
           resType[year][ANALYSES_TYPE.Total][element.type] = 0;
           resType[year][ANALYSES_TYPE.Personal][element.type] = 0;
         }
@@ -127,7 +177,11 @@ export const calcTotalExpensesByType = (expenses: any, year: number) => {
         element = element as PurchaseType;
 
         // Verify if type already exists
-        if (!Object.keys(resType[year][ANALYSES_TYPE.Total]).includes(element.type)) {
+        if (
+          !Object.keys(resType[year][ANALYSES_TYPE.Total]).includes(
+            element.type
+          )
+        ) {
           resType[year][ANALYSES_TYPE.Total][element.type] = 0;
           resType[year][ANALYSES_TYPE.Personal][element.type] = 0;
         }
@@ -166,14 +220,20 @@ export const updateExpenses = (expense: ExpenseType, setExpenses: any) => {
       return prev;
     }
 
-    let index = prev[year][month].findIndex((e: ExpenseType) => e.index == expense.index && e.key == expense.key);
+    let index = prev[year][month].findIndex(
+      (e: ExpenseType) => e.index == expense.index && e.key == expense.key
+    );
     updatedState[year][month][index] = expense;
 
     return updatedState;
   });
 };
 
-export const addExpenses = (newElement: PurchaseType | TransactionType, key: any, setExpenses: any) => {
+export const addExpenses = (
+  newElement: PurchaseType | TransactionType,
+  key: any,
+  setExpenses: any
+) => {
   let year: number, month: number, index: number, updatedState: ExpensesByYear;
   setExpenses((prev: ExpensesByYear) => {
     updatedState = { ...prev };

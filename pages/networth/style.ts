@@ -70,7 +70,11 @@ export const _styles = StyleSheet.create({
     paddingBottom: 0,
     paddingRight: 0,
   },
-  mainContainer: { flexDirection: "row", gap: 10, padding: 10 },
+  mainContainer: {
+    flexDirection: "row",
+    gap: 10,
+    padding: commonStyles.mainPaddingHorizontal,
+  },
   iconContainerGross: {
     alignSelf: "center",
     justifyContent: "center",

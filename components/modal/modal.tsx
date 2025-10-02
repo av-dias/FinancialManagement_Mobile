@@ -68,7 +68,12 @@ export default function ModalCustom({
             borderRadius: commonStyles.borderRadius,
           }}
         >
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              padding: commonStyles.mainPaddingHorizontal,
+            }}
+          >
             {children}
           </ScrollView>
         </View>

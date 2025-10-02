@@ -4,12 +4,14 @@ import { dark } from "../../utility/colors";
 import { _styles } from "./style";
 import { useRef } from "react";
 import commonStyles from "../../utility/commonStyles";
+import { BlurText } from "../BlurText/BlurText";
 
 type CustomBarChartProps = {
   maxBarValue: number; // Maximum value of the bar chart
   data: any[]; // Data for the bar chart (array of objects with 'value' and 'color' properties)
   labels: string[]; // Labels for the bar chart (array of objects with
   onPressCallback?: (index: number) => void; // Callback
+  privacyShield?: boolean;
 };
 
 const loadScrollViewPosition = () => {
@@ -30,6 +32,7 @@ export const CustomBarChart = ({
   data,
   labels,
   onPressCallback = () => {},
+  privacyShield = false,
 }: CustomBarChartProps) => {
   const styles = _styles;
   const ref = useRef<ScrollView>(null); // Improve scrollView positioning based on current month
@@ -63,9 +66,14 @@ export const CustomBarChart = ({
               }
               onPress={() => onPressCallback(index)}
             >
-              <View style={styles.barValueContainer}>
-                <Text style={styles.barValueText}>{value.toFixed(0)}</Text>
-              </View>
+              <BlurText
+                text={
+                  <Text style={styles.barValueText}>{value.toFixed(0)}</Text>
+                }
+                privacyShield={privacyShield}
+                style={styles.barValueContainer}
+                blurStyle={{ height: "80%" }}
+              />
               <View style={styles.barOutterStyle}>
                 <View
                   style={{

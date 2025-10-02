@@ -29,6 +29,7 @@ import {
 import { months } from "../../utility/calendar";
 import BarChartCard from "../../components/BarChartCard/BarChartCard";
 import { IncomeService } from "../../service/IncomeService";
+import commonStyles from "../../utility/commonStyles";
 
 export default function Budget({ navigation }) {
   const styles = _styles;
@@ -52,6 +53,7 @@ export default function Budget({ navigation }) {
   const [expensesByMonth, setExpensesByMonth] = useState([]);
   const [savingsByMonth, setSavingsByMonth] = useState([]);
   const [lastIncome, setLastIncome] = useState(0);
+  const { privacyShield } = useContext(UserContext).privacyShield;
 
   /**
    * Load expenses by type
@@ -194,10 +196,17 @@ export default function Budget({ navigation }) {
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
-        <View style={{ flex: 1, gap: 10 }}>
+        <View
+          style={{
+            flex: 1,
+            gap: 10,
+            paddingHorizontal: commonStyles.mainPaddingHorizontal,
+          }}
+        >
           <AverageProgressBar
             purchaseTotal={purchaseTotal}
             purchaseAverageTotal={purchaseAverageTotal}
+            privacyShield={privacyShield}
           />
           <ScrollView
             horizontal={false}
@@ -207,11 +216,13 @@ export default function Budget({ navigation }) {
             <Statistics
               currentYear={Number(currentYear)}
               setCurrentYear={setCurrentYear}
+              privacyShield={privacyShield}
             />
             <BarChartCard
               cardTitle="Expenses Distribution"
               cardSubtitle={`Average: ${purchaseAverageTotal.toFixed(2)}`}
               expensesByMonth={expensesByMonth}
+              privacyShield={privacyShield}
             />
             <BarChartCard
               cardTitle="Savings Distribution"
@@ -219,6 +230,7 @@ export default function Budget({ navigation }) {
                 lastIncome - purchaseAverageTotal
               ).toFixed(2)}`}
               expensesByMonth={savingsByMonth}
+              privacyShield={privacyShield}
             />
 
             <CardWrapper

@@ -5,8 +5,15 @@ import commonStyles from "../../utility/commonStyles";
 import { TypeIcon } from "../TypeIcon/TypeIcon";
 import { categoryIcons } from "../../utility/icons";
 import { styles } from "./style";
+import { BlurText } from "../BlurText/BlurText";
 
-export default function SimpleItem({ rowData, total, onPressCallback }) {
+export default function SimpleItem({
+  rowData,
+  total,
+  onPressCallback,
+  privacyShield = false,
+  blurStyle = {},
+}) {
   const categoryIcon = categoryIcons(30).find(
     (category) => category.label === rowData[1]
   );
@@ -43,12 +50,17 @@ export default function SimpleItem({ rowData, total, onPressCallback }) {
           </Text>
         </View>
       </View>
-      <View style={styles.centered}>
-        <Text>
-          <Text style={{ color: dark.textPrimary }}>{rowData[2]}</Text>
-          <Text style={styles.textSymbol}>{`€`}</Text>
-        </Text>
-      </View>
+      <BlurText
+        style={styles.centered}
+        blurStyle={blurStyle}
+        text={
+          <Text>
+            <Text style={{ color: dark.textPrimary }}>{rowData[2]}</Text>
+            <Text style={styles.textSymbol}>{`€`}</Text>
+          </Text>
+        }
+        privacyShield={privacyShield}
+      />
     </Pressable>
   );
 }

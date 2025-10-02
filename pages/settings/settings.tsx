@@ -1,6 +1,6 @@
 import { Text, View, TextInput, Pressable, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
-import { Entypo, FontAwesome5 } from "@expo/vector-icons";
+import { Entypo, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import ModalCustom from "../../components/modal/modal";
 import { verticalScale } from "../../functions/responsive";
 import { LinearGradient } from "expo-linear-gradient";
@@ -23,6 +23,7 @@ import { IncomeService } from "../../service/IncomeService";
 import { PortfolioService } from "../../service/PortfolioService";
 import { TradeService } from "../../service/TradeService";
 import { SubscriptionService } from "../../service/SubscriptionService";
+import CardWrapper from "../../components/cardWrapper/cardWrapper";
 
 const MODAL_DEFAULT_SIZE = 6;
 const MODAL_LARGE_SIZE = 9;
@@ -364,14 +365,21 @@ export default function Settings({ navigation }) {
         >
           <Text style={styles.buttonText}>Logs: Split Users</Text>
         </Pressable>
-        {/* <Pressable
-          style={styles.buttonChoice}
-          onPress={async () => {
-            showAlert();
-          }}
-        >
-          <Text style={styles.buttonText}>Clear All</Text>
-        </Pressable> */}
+        <Pressable style={styles.buttonChoice}>
+          <View style={{ flexDirection: "row", gap: 5 }}>
+            <Text style={{ fontSize: 16, color: "white" }}>Sign Off</Text>
+            <MaterialIcons
+              testID="logout_icon"
+              name="logout"
+              size={20}
+              color="white"
+              onPress={async () => {
+                await saveToStorage(KEYS.PASSWORD, "");
+                navigation.navigate("Login");
+              }}
+            />
+          </View>
+        </Pressable>
       </View>
     </LinearGradient>
   );

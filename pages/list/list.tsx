@@ -334,7 +334,7 @@ export default function List({ navigation }) {
           {/*
            * Searchbar to filter items
            */}
-          <View style={{ paddingHorizontal: 5 }}>
+          <View style={{ padding: commonStyles.mainPaddingHorizontal }}>
             <Searchbar
               iconColor="white"
               placeholderTextColor="lightgray"

@@ -7,6 +7,7 @@ import {
 } from "../functions/responsive";
 
 const commonStyles = {
+  mainPaddingHorizontal: 5,
   paddingHorizontal: moderateScale(15),
   borderRadius: 10,
   boxPaddingVertical: moderateScale(10),

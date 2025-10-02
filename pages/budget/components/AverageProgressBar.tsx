@@ -2,13 +2,19 @@ import { Text, View } from "react-native";
 import { _styles } from "../style";
 import { ProgressBar } from "react-native-paper";
 import { ProgressBarColors } from "../../../utility/colors";
+import { BlurText } from "../../../components/BlurText/BlurText";
 
 type AverageProgressBar = {
   purchaseTotal: any;
   purchaseAverageTotal: any;
+  privacyShield: boolean;
 };
 
-export const AverageProgressBar = ({ purchaseTotal, purchaseAverageTotal }: AverageProgressBar) => {
+export const AverageProgressBar = ({
+  purchaseTotal,
+  purchaseAverageTotal,
+  privacyShield = false,
+}: AverageProgressBar) => {
   const styles = _styles;
 
   const getCurrentValue = (value) => {
@@ -17,7 +23,8 @@ export const AverageProgressBar = ({ purchaseTotal, purchaseAverageTotal }: Aver
   };
 
   const getTotalProgress = (monthValue, monthAverage) => {
-    if (!monthValue || !monthAverage || monthAverage == 0 || monthValue == 0) return 0;
+    if (!monthValue || !monthAverage || monthAverage == 0 || monthValue == 0)
+      return 0;
     return monthValue / monthAverage;
   };
 
@@ -27,16 +34,30 @@ export const AverageProgressBar = ({ purchaseTotal, purchaseAverageTotal }: Aver
         <Text key={"TotalTextAverage"} style={styles.textValue}>
           {"Average"}
         </Text>
-        <View style={styles.averageTextValue}>
-          <Text key={"TotalText1"} style={styles.textValue}>
-            {`${getCurrentValue(purchaseTotal)}/`}
-          </Text>
-          <Text key={"TotalText2"} style={styles.textTotal}>
-            {getCurrentValue(purchaseAverageTotal)}
-          </Text>
-        </View>
+        <BlurText
+          text={
+            <View style={styles.averageTextValue}>
+              <Text key={"TotalText1"} style={styles.textValue}>
+                {`${getCurrentValue(purchaseTotal)}/`}
+              </Text>
+              <Text key={"TotalText2"} style={styles.textTotal}>
+                {getCurrentValue(purchaseAverageTotal)}
+              </Text>
+            </View>
+          }
+          privacyShield={privacyShield}
+          style={undefined}
+        />
       </View>
-      <ProgressBar key={"PTtotal"} progress={getTotalProgress(getCurrentValue(purchaseTotal), purchaseAverageTotal)} style={styles.progressStyle} color={ProgressBarColors.red} />
+      <ProgressBar
+        key={"PTtotal"}
+        progress={getTotalProgress(
+          getCurrentValue(purchaseTotal),
+          purchaseAverageTotal
+        )}
+        style={styles.progressStyle}
+        color={ProgressBarColors.red}
+      />
     </View>
   );
 };

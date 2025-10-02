@@ -5,6 +5,7 @@ import { dark } from "../../../utility/colors";
 import React, { ReactNode } from "react";
 import { VictoryChart, VictoryAxis, VictoryLine } from "victory-native";
 import { verticalScale } from "../../../functions/responsive";
+import { BlurText } from "../../../components/BlurText/BlurText";
 
 type MainCardPropsType = {
   title: string;
@@ -14,6 +15,7 @@ type MainCardPropsType = {
   relativeIncrease: string;
   data: number[];
   onPress: () => void;
+  privacyShield?: boolean;
 };
 
 const StatsIcon = ({ value }) => {
@@ -51,29 +53,45 @@ export const MainCard = (content: MainCardPropsType) => {
             <Text style={styles.titleStyle}>{content.title}</Text>
             {content.icon}
           </View>
-          <Text>
-            <Text style={styles.valueStyle}>{content.value}</Text>
-            <Text style={styles.symbolStyle}>{`€`}</Text>
-          </Text>
-          <View style={styles.statusContainer}>
-            <View style={{ flexDirection: "row" }}>
+          <BlurText
+            text={
               <Text>
-                <Text
-                  style={styles.smallTextStyle}
-                >{`${content.absoluteIncrease}`}</Text>
-                <Text style={styles.smallSymbolStyle}>{`€`}</Text>
+                <Text style={styles.valueStyle}>{content.value}</Text>
+                <Text style={styles.symbolStyle}>{`€`}</Text>
               </Text>
-            </View>
+            }
+            privacyShield={content.privacyShield}
+            style={undefined}
+          />
+          <View style={styles.statusContainer}>
+            <BlurText
+              text={
+                <Text>
+                  <Text
+                    style={styles.smallTextStyle}
+                  >{`${content.absoluteIncrease}`}</Text>
+                  <Text style={styles.smallSymbolStyle}>{`€`}</Text>
+                </Text>
+              }
+              privacyShield={content.privacyShield}
+              style={{ flexDirection: "row" }}
+            />
             <View style={{ flexDirection: "row" }}>
               <View style={{ justifyContent: "center" }}>
                 <StatsIcon value={content.absoluteIncrease} />
               </View>
-              <Text>
-                <Text
-                  style={styles.smallTextStyle}
-                >{`${content.relativeIncrease}`}</Text>
-                <Text style={styles.smallSymbolStyle}>{`%`}</Text>
-              </Text>
+              <BlurText
+                text={
+                  <Text>
+                    <Text
+                      style={styles.smallTextStyle}
+                    >{`${content.relativeIncrease}`}</Text>
+                    <Text style={styles.smallSymbolStyle}>{`%`}</Text>
+                  </Text>
+                }
+                privacyShield={content.privacyShield}
+                style={undefined}
+              />
             </View>
           </View>
         </View>

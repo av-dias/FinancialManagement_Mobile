@@ -66,3 +66,7 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
   - Allow subscription to be edited on amount and day of month
   - Dual Text Input with optional label
   - Delete subscription feature
+- 3.8.0
+  - Standardize common padding
+  - Add initial blur options and sensitive values
+  - Networth Statistics bug fix when only one datapoint exists

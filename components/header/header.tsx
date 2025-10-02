@@ -7,13 +7,47 @@ import { saveToStorage } from "../../functions/secureStorage";
 import { KEYS } from "../../utility/storageKeys";
 import { UserContext } from "../../store/user-context";
 import CardWrapper from "../cardWrapper/cardWrapper";
+import Feather from "@expo/vector-icons/Feather";
+import { dark } from "../../utility/colors";
+import { useFocusEffect } from "@react-navigation/native";
+import { eventEmitter, PrivacyEvent } from "../../utility/eventEmitter";
+
 const title = "Financial Manager";
+
+const PrivacyIcon = ({ privacy }) =>
+  privacy ? (
+    <Feather
+      name="eye-off"
+      size={18}
+      color={dark.textPrimary}
+      style={{ alignItems: "center" }}
+    />
+  ) : (
+    <Feather
+      name="eye"
+      size={18}
+      color={dark.textPrimary}
+      style={{ justifyContent: "center" }}
+    />
+  );
 
 export default function Header(props) {
   const styles = _styles;
   const email = useContext(UserContext).email;
+  const { privacyShield, setPrivacyShield } =
+    useContext(UserContext).privacyShield;
   let nameLetter: string = "";
+
   if (email) nameLetter = email[0]?.toUpperCase();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function emitEvent() {
+        eventEmitter.emit(PrivacyEvent, privacyShield);
+      }
+      emitEvent();
+    }, [privacyShield])
+  );
 
   return (
     <View style={styles.header}>
@@ -39,18 +73,16 @@ export default function Header(props) {
         </CardWrapper>
       </View>
       <CardWrapper style={styles.exitContainer}>
-        <View style={styles.iconLeft}>
-          <MaterialIcons
-            testID="logout_icon"
-            name="logout"
-            size={20}
-            color="white"
-            onPress={async () => {
-              await saveToStorage(KEYS.PASSWORD, "");
-              props.navigation.navigate("Login");
-            }}
-          />
-        </View>
+        <Pressable
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            aspectRatio: 1,
+          }}
+          onPress={() => setPrivacyShield((p) => !p)}
+        >
+          <PrivacyIcon privacy={privacyShield} />
+        </Pressable>
       </CardWrapper>
     </View>
   );

@@ -4,6 +4,8 @@ import CardWrapper from "../cardWrapper/cardWrapper";
 import { styles } from "./style";
 import commonStyles from "../../utility/commonStyles";
 import { dark } from "../../utility/colors";
+import { BlurView } from "@react-native-community/blur";
+import { BlurText } from "../BlurText/BlurText";
 
 type FlatItemType = {
   name: string | ReactNode;
@@ -13,6 +15,7 @@ type FlatItemType = {
   paddingVertical?: number;
   paddingHorizontal?: number;
   onPressCallback?: ({ name, value }) => void;
+  privacyShield?: boolean;
 };
 
 const isReactComponent = (variable) =>
@@ -30,6 +33,7 @@ export const FlatItem = ({
   paddingVertical,
   paddingHorizontal,
   onPressCallback,
+  privacyShield = false,
 }: FlatItemType) => {
   const onPress = () => {
     onPressCallback && onPressCallback({ name: name, value: value });
@@ -65,10 +69,16 @@ export const FlatItem = ({
               {isReactComponent(value) ? (
                 value // If value is a React component, render it directly
               ) : (
-                <Text>
-                  <Text style={styles.text}>{value}</Text>
-                  <Text style={styles.textSymbol}>{`€`}</Text>
-                </Text>
+                <BlurText
+                  text={
+                    <Text>
+                      <Text style={styles.text}>{value}</Text>
+                      <Text style={styles.textSymbol}>{`€`}</Text>
+                    </Text>
+                  }
+                  privacyShield={privacyShield}
+                  style={undefined}
+                />
               )}
             </View>
           </View>

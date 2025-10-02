@@ -42,6 +42,7 @@ import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
 import { FlatOptionsItem } from "../../components/flatOptionsItem/flatOptionsItem";
 import { TradeService } from "../../service/TradeService";
 import { NotificationBox } from "../../components/NotificationBox/NotificationBox";
+import commonStyles from "../../utility/commonStyles";
 
 export default function Trade({ navigation }) {
   const email = useContext(UserContext).email;
@@ -222,53 +223,59 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
             data={getModalDialogData(selectedItem)}
           />
         )}
-        <SecurityFilter
-          selectedTicker={selectedTicker}
-          noFilter={noFilter}
-          setSelectedTicker={setSelectedTicker}
-          securityItems={loadSecurityItems()}
-          onLongPress={onLongPressCallback}
-        />
-        <TradeHeaderOptions
-          setModalVisible={setModalVisible}
-          setModalType={setModalType}
-        />
-        <CustomTitle title={"Investments"} textStyle={styles.mainTitleStyle} />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ gap: 20 }}
-        >
-          {sortedDates.map((dates) => {
-            return (
-              <View key={`Date${dates}`} style={{ gap: 10 }}>
-                <DateTitleFormat dates={dates} />
-                {investments
-                  .filter(
-                    (item) => item.buyDate.toISOString().split("T")[0] === dates
-                  )
-                  .map((item) => {
-                    return (
-                      <View key={`View${item.id}`}>
-                        <FlatOptionsItem
-                          key={item.id}
-                          name={nameComponent(item)}
-                          value={valueComponent(item)}
-                          icon={icon(item?.security?.ticker)}
-                          paddingVertical={verticalScale(10)}
-                          paddingHorizontal={verticalScale(10)}
-                          onPressCallback={() => {
-                            setAlertVisible(true);
-                            setSelectedItem(item);
-                          }}
-                          options={loadOptions(item)}
-                        />
-                      </View>
-                    );
-                  })}
-              </View>
-            );
-          })}
-        </ScrollView>
+        <View style={{ padding: commonStyles.mainPaddingHorizontal }}>
+          <SecurityFilter
+            selectedTicker={selectedTicker}
+            noFilter={noFilter}
+            setSelectedTicker={setSelectedTicker}
+            securityItems={loadSecurityItems()}
+            onLongPress={onLongPressCallback}
+          />
+          <TradeHeaderOptions
+            setModalVisible={setModalVisible}
+            setModalType={setModalType}
+          />
+          <CustomTitle
+            title={"Investments"}
+            textStyle={styles.mainTitleStyle}
+          />
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ gap: 20 }}
+          >
+            {sortedDates.map((dates) => {
+              return (
+                <View key={`Date${dates}`} style={{ gap: 10 }}>
+                  <DateTitleFormat dates={dates} />
+                  {investments
+                    .filter(
+                      (item) =>
+                        item.buyDate.toISOString().split("T")[0] === dates
+                    )
+                    .map((item) => {
+                      return (
+                        <View key={`View${item.id}`}>
+                          <FlatOptionsItem
+                            key={item.id}
+                            name={nameComponent(item)}
+                            value={valueComponent(item)}
+                            icon={icon(item?.security?.ticker)}
+                            paddingVertical={verticalScale(10)}
+                            paddingHorizontal={verticalScale(10)}
+                            onPressCallback={() => {
+                              setAlertVisible(true);
+                              setSelectedItem(item);
+                            }}
+                            options={loadOptions(item)}
+                          />
+                        </View>
+                      );
+                    })}
+                </View>
+              );
+            })}
+          </ScrollView>
+        </View>
       </View>
     </LinearGradient>
   );

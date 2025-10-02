@@ -55,6 +55,7 @@ export default function Networth({ navigation }) {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [alertVisible, setAlertVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<PortfolioDAO>();
+  const { privacyShield } = useContext(UserContext).privacyShield;
 
   const onSubmiteCallback = () => {
     setModalVisible(false);
@@ -223,6 +224,7 @@ export default function Networth({ navigation }) {
             }
             data={worthData.grossworth}
             onPress={() => navigation.navigate("NetworthStats")}
+            privacyShield={privacyShield}
           />
           <MainCard
             key={"MainCardNetWorth"}
@@ -240,6 +242,7 @@ export default function Networth({ navigation }) {
             }
             data={worthData.networth}
             onPress={() => navigation.navigate("NetworthStats")}
+            privacyShield={privacyShield}
           />
         </View>
         <View style={{ flex: 1, gap: 10, padding: 5 }}>
@@ -293,6 +296,7 @@ export default function Networth({ navigation }) {
                 onPressCallback={
                   isItemMonthYear(p.item) ? loadModalDialog : undefined
                 }
+                privacyShield={privacyShield}
               />
             ))}
           </ScrollView>

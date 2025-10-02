@@ -3,8 +3,85 @@ import { FontAwesome } from "@expo/vector-icons";
 import { _styles } from "./style";
 import { TIME_MODE, ANALYSES_TYPE } from "../../utility/keys";
 import { Chart, Table } from "../../models/charts";
+import { calcExpensesTotalFromType } from "../../functions/expenses";
 
 const styles = _styles;
+
+export async function fetchData(
+  email,
+  currentMonth,
+  currentYear,
+  setPieChartData,
+  setSpendByType,
+  setExpenseTotal,
+  setPieChartAverageData,
+  setSpendAverageByType,
+  setPurchaseAverageTotal,
+  expensesService
+) {
+  const expensesByTypeTotal = await expensesService.getMonthExpensesByType(
+    email,
+    currentMonth + 1,
+    currentYear,
+    ANALYSES_TYPE.Total
+  );
+  const expensesByTypePersonal = await expensesService.getMonthExpensesByType(
+    email,
+    currentMonth + 1,
+    currentYear,
+    ANALYSES_TYPE.Personal
+  );
+
+  let resExpensesByType = {
+    [ANALYSES_TYPE.Total]: expensesByTypeTotal,
+    [ANALYSES_TYPE.Personal]: expensesByTypePersonal,
+  };
+
+  if (
+    resExpensesByType[ANALYSES_TYPE.Personal] &&
+    resExpensesByType[ANALYSES_TYPE.Total]
+  ) {
+    let [resPieChart, resTableChart] = loadExpenses(resExpensesByType);
+    setPieChartData(resPieChart);
+    setSpendByType(resTableChart);
+    setExpenseTotal(calcExpensesTotalFromType(resExpensesByType));
+  }
+
+  const averageTotal = await expensesService.getExpensesTotalAverage(
+    email,
+    currentYear,
+    ANALYSES_TYPE.Total
+  );
+  const averagePersonal = await expensesService.getExpensesTotalAverage(
+    email,
+    currentYear,
+    ANALYSES_TYPE.Personal
+  );
+
+  const averageTypeTotal = await expensesService.getExpenseAverageByType(
+    email,
+    currentYear,
+    ANALYSES_TYPE.Total
+  );
+  const averageTypePersonal = await expensesService.getExpenseAverageByType(
+    email,
+    currentYear,
+    ANALYSES_TYPE.Personal
+  );
+
+  if (averageTypeTotal && averageTypePersonal) {
+    let [resAveragePieChart, resAverageTableChart] = loadExpenses({
+      Total: averageTypeTotal,
+      Personal: averageTypePersonal,
+    });
+    setPieChartAverageData(resAveragePieChart);
+    setSpendAverageByType(resAverageTableChart);
+    setPurchaseAverageTotal({
+      Total: averageTotal,
+      Personal: averagePersonal,
+    });
+  }
+}
 
 export const loadExpenses = (expenses: any) => {
   let array = { [ANALYSES_TYPE.Total]: [], [ANALYSES_TYPE.Personal]: [] };
@@ -49,6 +126,9 @@ export const loadPieChartData = (
   pieChartData: any,
   pieChartAverageData: any
 ) => {
+  if (pieChartAverageData[statsType].length === 0)
+    return [{ x: "Your Spents", y: 1 }];
+
   if (statsMode == TIME_MODE.Monthly) return pieChartData[statsType];
   else return pieChartAverageData[statsType];
 };

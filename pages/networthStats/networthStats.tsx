@@ -8,12 +8,9 @@ import { UserContext } from "../../store/user-context";
 import { PortfolioService } from "../../service/PortfolioService";
 import { useFocusEffect } from "@react-navigation/native";
 import { logTimeTook } from "../../utility/logger";
-import { getMonthsBetween, months } from "../../utility/calendar";
+import { getMonthsBetween } from "../../utility/calendar";
 import { ChartCard } from "./component/chartCard";
-
-const axisStyle = {
-  axis: { stroke: "transparent" }, // Adjust strokeWidth
-};
+import commonStyles from "../../utility/commonStyles";
 
 export default function NetworthStats({ navigation }) {
   const styles = _styles;
@@ -42,20 +39,7 @@ export default function NetworthStats({ navigation }) {
   const [monthCount, setMonthCount] = React.useState<number>(0);
   const [evenSelector, setEvenSelector] = React.useState<boolean>(true);
   const [periodSelector, setPeriodSelector] = React.useState<number>(6); // 0 for 6 months, 1 for 12 months
-
-  const evenEvaluator = (value: number) => {
-    if (periodSelector >= 48) {
-      return value % 5 === 0; // Return true if value is a multiple of 5 for 2 years
-    }
-    if (periodSelector >= 24) {
-      return value % 4 === 0; // Return true if value is a multiple of 5 for 2 years
-    }
-    if (evenSelector) {
-      return value % 2 === 0; // Return 2 if evenSelector is 2, otherwise return 1
-    } else {
-      return value % 2 !== 0; // Default to 1 if evenSelector is not set
-    }
-  };
+  const { privacyShield } = useContext(UserContext).privacyShield;
 
   useFocusEffect(
     React.useCallback(() => {
@@ -69,12 +53,25 @@ export default function NetworthStats({ navigation }) {
               totalWorth.max.month,
               totalWorth.max.year
             );
-            const grossworthDiff =
-              totalWorth.max.grossWorth - totalWorth.min.grossWorth;
-            const networthDiff =
-              totalWorth.max.networth - totalWorth.min.networth;
-            const averageGrossworth = grossworthDiff / monthCount;
-            const averageNetworth = networthDiff / monthCount;
+
+            let grossworthDiff,
+              networthDiff,
+              averageGrossworth,
+              averageNetworth;
+
+            if (monthCount === 0) {
+              grossworthDiff = totalWorth.max.grossWorth;
+              networthDiff = totalWorth.max.networth;
+              averageGrossworth = totalWorth.max.grossWorth;
+              averageNetworth = totalWorth.max.networth;
+            } else {
+              grossworthDiff =
+                totalWorth.max.grossWorth - totalWorth.min.grossWorth;
+              networthDiff = totalWorth.max.networth - totalWorth.min.networth;
+              averageGrossworth = grossworthDiff / monthCount;
+              averageNetworth = networthDiff / monthCount;
+            }
+
             const grossworthChart = totalWorth.values.map((value, index) => ({
               x: index,
               y: Math.round(value.grossworth),
@@ -83,6 +80,7 @@ export default function NetworthStats({ navigation }) {
               x: index,
               y: Math.round(value.networth),
             }));
+
             setAverageWorth({
               grossworth: Math.round(averageGrossworth),
               networth: Math.round(averageNetworth),
@@ -94,13 +92,17 @@ export default function NetworthStats({ navigation }) {
             let networthValue = totalWorth.max.networth;
             let grossworthValue = totalWorth.max.grossWorth;
 
+            const monthDiff = new Date().getMonth() - totalWorth.max.month;
+
             for (
               let i = monthCount + 1;
               i <= monthCount + periodSelector;
               i++
             ) {
-              grossworthValue += averageGrossworth;
-              networthValue += averageNetworth;
+              if (i > monthDiff) {
+                grossworthValue += averageGrossworth;
+                networthValue += averageNetworth;
+              }
               grossworthChart.push({ x: i, y: Math.round(grossworthValue) });
               networthChart.push({ x: i, y: Math.round(networthValue) });
             }
@@ -135,7 +137,13 @@ export default function NetworthStats({ navigation }) {
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <View style={styles.usableScreen}>
-        <View style={{ flex: 1, gap: 20 }}>
+        <View
+          style={{
+            flex: 1,
+            gap: 20,
+            paddingHorizontal: commonStyles.mainPaddingHorizontal,
+          }}
+        >
           <ChartCard
             key={"GROSSWORTH"}
             averageWorth={averageWorth.grossworth}
@@ -146,6 +154,7 @@ export default function NetworthStats({ navigation }) {
             periodSelector={periodSelector}
             firstMonth={firstMonth}
             monthCount={monthCount}
+            privacyShield={privacyShield}
           />
           <ChartCard
             key={"NETWORTH"}
@@ -157,6 +166,7 @@ export default function NetworthStats({ navigation }) {
             periodSelector={periodSelector}
             firstMonth={firstMonth}
             monthCount={monthCount}
+            privacyShield={privacyShield}
           />
           <View
             style={{

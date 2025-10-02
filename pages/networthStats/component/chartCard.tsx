@@ -12,6 +12,7 @@ import { _styles } from "../style";
 import { months } from "../../../utility/calendar";
 import { dark } from "../../../utility/colors";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { BlurText } from "../../../components/BlurText/BlurText";
 
 export const ChartCard = ({
   averageWorth,
@@ -22,6 +23,7 @@ export const ChartCard = ({
   periodSelector,
   firstMonth,
   monthCount,
+  privacyShield = false,
 }) => {
   const styles = _styles;
 
@@ -43,6 +45,8 @@ export const ChartCard = ({
     }
   };
 
+  if (isNaN(averageWorth)) return;
+
   return (
     <CardWrapper style={styles.wrapperContainer}>
       <View style={styles.titleContainer}>
@@ -59,12 +63,16 @@ export const ChartCard = ({
           <FontAwesome5 name="money-check" size={15} color={dark.secundary} />
           <Text style={styles.titleStyle}>{"GROSS"}</Text>
         </View>
-        <View style={{ flex: 1, alignItems: "flex-start" }}>
-          <Text>
-            <Text style={styles.AverageTitleStyle}>{`${averageWorth}`}</Text>
-            <Text style={styles.AverageSubTitleStyle}>{`€ on average`}</Text>
-          </Text>
-        </View>
+        <BlurText
+          text={
+            <Text>
+              <Text style={styles.AverageTitleStyle}>{`${averageWorth}`}</Text>
+              <Text style={styles.AverageSubTitleStyle}>{`€ on average`}</Text>
+            </Text>
+          }
+          privacyShield={privacyShield}
+          style={{ flex: 1, alignItems: "flex-start" }}
+        />
       </View>
       <VictoryChart
         height={moderateScale(230)} // Adjust this value to control the chart's height
@@ -112,7 +120,7 @@ export const ChartCard = ({
               style={{
                 fill: ({ datum }) =>
                   datum.x === monthCount ? dark.button : dark.textPrimary,
-                fontSize: 8,
+                fontSize: privacyShield ? 1 : 8,
               }} // 👈 Change font color here
             />
           }
