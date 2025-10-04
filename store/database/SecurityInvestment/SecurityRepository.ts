@@ -18,7 +18,7 @@ export class SecurityRepository {
   }
 
   public async getByTicker(ticker: string): Promise<SecurityModel> {
-    return await this.ormRepository.findOne({ ticker: ticker });
+    return await this.ormRepository.findOne({ where: { ticker: ticker } });
   }
 
   public async updateOrCreate(security: SecurityEntity) {

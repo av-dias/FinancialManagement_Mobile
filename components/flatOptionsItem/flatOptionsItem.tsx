@@ -5,6 +5,7 @@ import { findIcon } from "../../utility/icons";
 import CardWrapper from "../cardWrapper/cardWrapper";
 import { styles } from "./style";
 import { dark } from "../../utility/colors";
+import { BlurText } from "../BlurText/BlurText";
 
 type FlatItemType = {
   name: ReactNode;
@@ -14,6 +15,7 @@ type FlatItemType = {
   paddingVertical?: number;
   paddingHorizontal?: number;
   onPressCallback?: ({ name, value }) => void;
+  privacyShield?: boolean;
 };
 
 /**
@@ -29,6 +31,7 @@ export const FlatOptionsItem = ({
   paddingVertical,
   paddingHorizontal,
   onPressCallback,
+  privacyShield = false,
 }: FlatItemType) => {
   const onPress = () => {
     onPressCallback && onPressCallback({ name: name, value: value });
@@ -62,9 +65,15 @@ export const FlatOptionsItem = ({
               {icon && <View>{icon}</View>}
               {name}
             </View>
-            <View style={styles.right}>
-              <View style={styles.textBox}>{value}</View>
-            </View>
+            <BlurText
+              text={
+                <View style={styles.right}>
+                  <View style={styles.textBox}>{value}</View>
+                </View>
+              }
+              privacyShield={privacyShield}
+              style={styles.right}
+            />
           </View>
           <View style={styles.optionsContainer}>{loadOptions()}</View>
         </View>

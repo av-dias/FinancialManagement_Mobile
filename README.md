@@ -70,3 +70,8 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
   - Standardize common padding
   - Add initial blur options and sensitive values
   - Networth Statistics bug fix when only one datapoint exists
+- 3.9.0
+  - Fixed bug where insert trade was not working
+  - Allow trade share amount to use decimal values and db update
+  - Improved trade filter to have information such as total invested
+  - Minor polish on trade page to align list

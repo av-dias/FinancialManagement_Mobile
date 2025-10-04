@@ -5,7 +5,7 @@ export class InvestmentModel {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ type: "decimal", nullable: false })
   shares: number;
 
   @Column({ type: "decimal", nullable: false })

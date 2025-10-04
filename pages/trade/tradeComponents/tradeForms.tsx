@@ -38,18 +38,20 @@ export const SecurityForm = ({
       />
       <CustomInput
         Icon={undefined}
-        placeholder={"Name"}
+        placeholder={""}
         value={security.name}
         setValue={(name) => setSecurity((prev) => ({ ...prev, name: name }))}
+        label="Name"
       />
       <CustomInput
         Icon={undefined}
-        placeholder={"Ticker"}
+        placeholder={""}
         value={security.ticker}
         setValue={(ticker) =>
           setSecurity((prev) => ({ ...prev, ticker: ticker }))
         }
         capitalize="characters"
+        label="Ticker"
       />
       <View style={{ flex: 1, justifyContent: "flex-end", bottom: 20 }}>
         <Pressable
@@ -105,8 +107,9 @@ export const InvestmentForm = ({
         placeholder={"Shares"}
         value={investment.shares.toString()}
         setValue={(shares) =>
-          setInvestment((prev) => ({ ...prev, shares: Number(shares) }))
+          setInvestment((prev) => ({ ...prev, shares: shares }))
         }
+        label="Shares"
       />
       <Carrossel
         items={securityItems}

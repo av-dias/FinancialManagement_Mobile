@@ -5,6 +5,7 @@ import Carrossel from "../../../components/carrossel/carrossel";
 import { EvilIcons } from "@expo/vector-icons";
 import { dark } from "../../../utility/colors";
 import { IconButton } from "../../../components/iconButton/IconButton";
+import { verticalScale } from "../../../functions/responsive";
 
 export const SecurityFilter = ({
   selectedTicker,
@@ -17,8 +18,8 @@ export const SecurityFilter = ({
     <View style={{ flexDirection: "row", gap: 5, paddingBottom: 20 }}>
       <CardWrapper
         style={{
-          width: 60,
-          height: 60,
+          width: verticalScale(60),
+          aspectRatio: 1,
           alignItems: "center",
           backgroundColor:
             selectedTicker === noFilter ? dark.secundary : dark.complementary,
@@ -35,7 +36,7 @@ export const SecurityFilter = ({
           items={securityItems}
           type={selectedTicker}
           setType={setSelectedTicker}
-          size={60}
+          size={verticalScale(60)}
           iconBackground={dark.complementary}
           onLongPress={onLongPress}
         />

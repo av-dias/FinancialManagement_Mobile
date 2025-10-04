@@ -22,6 +22,7 @@ export type CarrosselItemsType = {
   label: string;
   color: string;
   icon?: ReactNode;
+  isLabelVisible?: boolean;
 };
 
 export default function Carrossel({
@@ -49,13 +50,13 @@ export default function Carrossel({
         style={styles.categoryScrollContainer}
         contentContainerStyle={{
           gap: verticalScale(10),
-          paddingHorizontal: 0,
+          paddingHorizontal: 5,
         }}
       >
-        {items.map((iconComponent) => {
+        {items.map((iconComponent, index) => {
           return (
             <CardWrapper
-              key={iconComponent.label}
+              key={iconComponent.label || index}
               style={{
                 backgroundColor:
                   type == iconComponent.label
@@ -77,9 +78,14 @@ export default function Carrossel({
                     <TypeIcon icon={iconComponent} />
                   </View>
                 )}
-                <View style={styles.labelContainer}>
-                  <Text style={styles.iconLabel}>{iconComponent.label}</Text>
-                </View>
+                {iconComponent?.label &&
+                  !(iconComponent.isLabelVisible === false) && (
+                    <View style={styles.labelContainer}>
+                      <Text style={styles.iconLabel}>
+                        {iconComponent.label}
+                      </Text>
+                    </View>
+                  )}
               </Pressable>
             </CardWrapper>
           );

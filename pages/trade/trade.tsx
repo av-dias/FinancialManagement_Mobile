@@ -20,6 +20,7 @@ import { useDatabaseConnection } from "../../store/database-context";
 import ModalCustom from "../../components/modal/modal";
 import { logTimeTook } from "../../utility/logger";
 import {
+  LoadSecurityHeaderIcon,
   LoadSecurityIcon,
   nameComponent,
   valueComponent,
@@ -41,8 +42,11 @@ import { TradeHeaderOptions } from "./tradeComponents/tradeHeaderOptions";
 import { ModalDialog } from "../../components/ModalDialog/ModalDialog";
 import { FlatOptionsItem } from "../../components/flatOptionsItem/flatOptionsItem";
 import { TradeService } from "../../service/TradeService";
-import { NotificationBox } from "../../components/NotificationBox/NotificationBox";
 import commonStyles from "../../utility/commonStyles";
+
+const Icon = ({ ticker }: { ticker: string }) => (
+  <LoadSecurityIcon ticker={ticker} />
+);
 
 export default function Trade({ navigation }) {
   const email = useContext(UserContext).email;
@@ -58,6 +62,9 @@ export default function Trade({ navigation }) {
   const [security, setSecurity] = useState<SecurityEntity>(newSecurity());
   const [securities, setSecurities] = useState<SecurityEntity[]>([]);
   const [investments, setInvestments] = useState<InvestmentEntity[]>([]);
+  const [investmentsUnFilter, setInvestmentsUnFilter] = useState<
+    InvestmentEntity[]
+  >([]);
 
   const [refresh, setRefresh] = useState(false);
 
@@ -68,10 +75,26 @@ export default function Trade({ navigation }) {
   const [selectedItem, setSelectedItem] = useState<InvestmentEntity>(null);
   const [sortedDates, setSortedDates] = useState([]);
   const [selectedTicker, setSelectedTicker] = useState<string>(noFilter);
+  const { privacyShield } = useContext(UserContext).privacyShield;
 
-  const icon = (ticker) => <LoadSecurityIcon ticker={ticker} />;
+  const SecurityHeader = () => {
+    return securities.map((security) => ({
+      label: security.ticker,
+      color: dark.secundary,
+      icon: (
+        <LoadSecurityHeaderIcon
+          security={security}
+          investments={investmentsUnFilter.filter(
+            (i) => i.security.ticker === security.ticker
+          )}
+          privacyShield={privacyShield}
+        />
+      ),
+      isLabelVisible: false,
+    }));
+  };
 
-  const loadSecurityItems = () => {
+  const SecurityItems = () => {
     return securities.map((security) => ({
       label: security.ticker,
       color: dark.secundary,
@@ -146,6 +169,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
 
               let dateList = [];
               let listInvestment = await investmentRepository.getAll(email);
+              setInvestmentsUnFilter(listInvestment);
 
               // Check if filter is selected and filter appropriately
               if (selectedTicker != noFilter) {
@@ -164,6 +188,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
             } catch (e) {
               setSecurities([]);
               setInvestments([]);
+              setInvestmentsUnFilter([]);
               console.log(e);
             }
           }
@@ -189,7 +214,6 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
-      <NotificationBox />
       <View style={styles.usableScreen}>
         {modalVisible && (
           <ModalCustom
@@ -209,7 +233,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
               <InvestmentForm
                 investment={investment}
                 setInvestment={setInvestment}
-                securityItems={loadSecurityItems()}
+                securityItems={SecurityItems()}
                 addInvestmentCallback={callInvestmentCallback}
               />
             )}
@@ -228,7 +252,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
             selectedTicker={selectedTicker}
             noFilter={noFilter}
             setSelectedTicker={setSelectedTicker}
-            securityItems={loadSecurityItems()}
+            securityItems={SecurityHeader()}
             onLongPress={onLongPressCallback}
           />
           <TradeHeaderOptions
@@ -241,6 +265,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
           />
           <ScrollView
             showsVerticalScrollIndicator={false}
+            style={{ height: verticalScale(460) }}
             contentContainerStyle={{ gap: 20 }}
           >
             {sortedDates.map((dates) => {
@@ -259,7 +284,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
                             key={item.id}
                             name={nameComponent(item)}
                             value={valueComponent(item)}
-                            icon={icon(item?.security?.ticker)}
+                            icon={<Icon ticker={item?.security?.ticker} />}
                             paddingVertical={verticalScale(10)}
                             paddingHorizontal={verticalScale(10)}
                             onPressCallback={() => {
@@ -267,6 +292,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
                               setSelectedItem(item);
                             }}
                             options={loadOptions(item)}
+                            privacyShield={privacyShield}
                           />
                         </View>
                       );

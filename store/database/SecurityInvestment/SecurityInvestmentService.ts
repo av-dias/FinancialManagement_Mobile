@@ -25,6 +25,10 @@ export class SecurityInvestmentService {
     const security = await this.securityRepository.getByTicker(securityTicker);
 
     if (!security) {
+      eventEmitter.emit(
+        NotificationEvent,
+        createNotification("Security not found.", dark.error)
+      );
       throw new Error("Security not found");
     }
 
@@ -38,8 +42,8 @@ export class SecurityInvestmentService {
 
     const investment = new InvestmentModel();
     investment.id = investmentEntity?.id;
-    investment.shares = investmentEntity.shares;
-    investment.buyPrice = investmentEntity.buyPrice;
+    investment.shares = Number(investmentEntity.shares);
+    investment.buyPrice = Number(investmentEntity.buyPrice);
     investment.buyDate = investmentEntity.buyDate;
     investment.userId = investmentEntity.userId;
     investment.security = security;

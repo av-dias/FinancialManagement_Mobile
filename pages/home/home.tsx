@@ -244,7 +244,7 @@ export default function Home({ navigation }) {
               <View style={styles.chart}>
                 <BlurText
                   style={styles.savingsContainer}
-                  blurStyle={{ height: "40%" }}
+                  blurStyle={{ height: "40%", width: "80%", marginLeft: 5 }}
                   text={
                     <Text>
                       <Text style={styles.savingsText}>{`${prediction.toFixed(

@@ -97,6 +97,7 @@ export const categoryColorsBright = {
 export const utilsColors = {
   darkgreen: "darkgreen",
   green: "rgba(31, 150, 76, 1)",
+  green50: "rgba(173, 251, 91, 0.7)",
   lightgreen: "rgba(117, 245, 166, 1)",
   badge: "rgba(216, 70, 60, 0.5)",
 };

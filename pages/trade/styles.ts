@@ -61,10 +61,10 @@ export const styles = StyleSheet.create({
     textAlign: "center",
   },
   securityIconContainer: {
-    backgroundColor: "black",
+    backgroundColor: dark.glass,
     padding: 10,
     borderRadius: 8,
-    width: 50,
+    width: verticalScale(60),
   },
   dateContainer: {
     flexDirection: "row",
