@@ -66,8 +66,9 @@ export class PurchaseRepository {
     month: number,
     year: number
   ): Promise<PurchaseModel[]> {
-    const firstDayOfMonth = new Date(year, month - 1, 1).toISOString();
-    const lastDayOfMonth = new Date(year, month, 0).toLocaleDateString();
+    const utcTimestamp = Date.UTC(year, month - 1, 1);
+    const firstDayOfMonth = new Date(utcTimestamp);
+    const lastDayOfMonth = new Date(year, month, 0);
 
     const purchases = await this.ormRepository.find({
       where: {
@@ -78,6 +79,7 @@ export class PurchaseRepository {
       relations: ["split"], // Add this line
     });
 
+    console.log(purchases);
     return purchases;
   }
 

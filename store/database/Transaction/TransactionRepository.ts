@@ -54,8 +54,9 @@ export class TransactionRepository {
     month: number,
     year: number
   ): Promise<TransactionModel[]> {
-    const firstDayOfMonth = new Date(year, month - 1, 1).toISOString();
-    const lastDayOfMonth = new Date(year, month, 0).toLocaleDateString();
+    const utcTimestamp = Date.UTC(year, month - 1, 1);
+    const firstDayOfMonth = new Date(utcTimestamp);
+    const lastDayOfMonth = new Date(year, month, 0);
 
     const transactions = await this.ormRepository.find({
       where: {
