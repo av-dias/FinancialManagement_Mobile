@@ -7,6 +7,7 @@ import { SubscriptionService } from "../service/SubscriptionService";
 import { PurchaseEntity } from "./database/Purchase/PurchaseEntity";
 import { TransactionEntity } from "./database/Transaction/TransactionEntity";
 import { ExpenseEnum } from "../models/types";
+import { daysInMonth } from "../utility/calendar";
 
 interface AppContext {
   email: any;
@@ -37,6 +38,16 @@ const AppContextProvider = ({ children }) => {
           let subscriptionUpdateCount = 0;
 
           for (const subscription of subscriptions) {
+            const lastDayOfMonth = daysInMonth(
+              currentDate.getFullYear(),
+              currentDate.getMonth()
+            );
+
+            const correctDate =
+              subscription.dayOfMonth > lastDayOfMonth
+                ? lastDayOfMonth
+                : subscription.dayOfMonth;
+
             subscription.item = subscription.item as
               | PurchaseEntity
               | TransactionEntity;
@@ -44,7 +55,7 @@ const AppContextProvider = ({ children }) => {
             subscription.item.date = new Date(
               currentDate.getFullYear(),
               currentDate.getMonth(),
-              subscription.dayOfMonth
+              correctDate
             )
               .toISOString()
               .split("T")[0];

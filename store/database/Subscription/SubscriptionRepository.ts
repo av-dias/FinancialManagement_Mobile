@@ -19,10 +19,13 @@ export class SubscriptionRepository {
     return subscriptions;
   }
 
-  public async getAllBeforeDate(userId: string, date: Date): Promise<SubscriptionModel[]> {
+  public async getAllBeforeDate(
+    userId: string,
+    date: Date
+  ): Promise<SubscriptionModel[]> {
     const year = date.getFullYear();
     const month = date.getMonth();
-    const startOfMonth = new Date(year, month, 1).toISOString();
+    const startOfMonth = new Date(year, month, 1);
 
     const subscriptions = await this.ormRepository?.find({
       where: { userId: userId, lastUpdateDate: LessThan(startOfMonth) },
@@ -30,7 +33,9 @@ export class SubscriptionRepository {
     return subscriptions;
   }
 
-  public async updateOrCreate(subcriptionModel: SubscriptionModel): Promise<SubscriptionModel> {
+  public async updateOrCreate(
+    subcriptionModel: SubscriptionModel
+  ): Promise<SubscriptionModel> {
     const newSubscription = await this.ormRepository.save(subcriptionModel);
     return newSubscription;
   }

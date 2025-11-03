@@ -27,7 +27,6 @@
         "foregroundImage": "./images/logo-finbel.png",
         "backgroundColor": "#000000"
       },
-      "debuggable": true,
       "package": "com.avdias.fm_mobile"
     },
     "androidNavigationBar": {
