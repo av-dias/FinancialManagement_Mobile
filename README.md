@@ -77,3 +77,7 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
   - Minor polish on trade page to align list
 - 3.10.0
   - Update typoOrm date between query update
+- 3.11.0
+  - Dependency Updates
+  - Library query update
+  - Fixed subscription logic due to date
