@@ -214,7 +214,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
-      <View style={styles.usableScreen}>
+      <View style={commonStyles.usableScreen}>
         {modalVisible && (
           <ModalCustom
             modalVisible={modalVisible}
@@ -258,6 +258,7 @@ Buy Date: ${item.buyDate.toISOString().split("T")[0]}\n`,
           <TradeHeaderOptions
             setModalVisible={setModalVisible}
             setModalType={setModalType}
+            navigation={navigation}
           />
           <CustomTitle
             title={"Investments"}

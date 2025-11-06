@@ -17,9 +17,9 @@ export const styles = StyleSheet.create({
   },
   mainIcon: { left: 2, bottom: 1 },
   tab: {
-    height: 50,
+    height: 45,
     paddingHorizontal: 5,
-    paddingTop: 5,
+    paddingTop: 0,
     backgroundColor: "#12102E",
     position: "absolute",
     borderTopWidth: 0,

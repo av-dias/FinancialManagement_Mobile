@@ -32,6 +32,7 @@ import Trade from "./pages/trade/trade";
 import Subscription from "./pages/subscription/subscription";
 import NetworthStats from "./pages/networthStats/networthStats";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Invest from "./pages/invest/invest";
 
 const IGNORED_LOGS = [
   "Warning: Failed prop type: Invalid prop `domain` supplied to `VictoryLine`.",
@@ -122,6 +123,11 @@ function HomeTabs() {
             <Tab.Screen
               name="Trade"
               component={Trade}
+              options={{ headerShown: false, tabBarButton: (props) => null }}
+            />
+            <Tab.Screen
+              name="Invest"
+              component={Invest}
               options={{ headerShown: false, tabBarButton: (props) => null }}
             />
             <Tab.Screen

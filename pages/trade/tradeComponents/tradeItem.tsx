@@ -26,7 +26,7 @@ const loadChartData = (investments: InvestmentEntity[]) => {
     acc = 0,
     index = 0;
 
-  if (sortedInvestments.length > 1) {
+  if (sortedInvestments.length >= 1) {
     for (const i of sortedInvestments) {
       if (previousDate) {
         const onDate = new Date(i.buyDate);

@@ -81,3 +81,6 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
   - Dependency Updates
   - Library query update
   - Fixed subscription logic due to date
+- 3.12.0
+  - Investment page with overall stats
+  - Draft button to go back on Trades and Invest
