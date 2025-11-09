@@ -1,4 +1,4 @@
-import { StatusBar } from "react-native";
+import { StatusBar, Dimensions } from "react-native";
 import {
   horizontalScale,
   verticalScale,
@@ -6,13 +6,25 @@ import {
   largeScale,
 } from "../functions/responsive";
 
+const statusBarHeight = verticalScale(StatusBar.currentHeight);
+const navigationBarHeight = verticalScale(120);
+const paddingHorizontal = moderateScale(15);
+
 const commonStyles = {
+  usableScreen: {
+    height:
+      Dimensions.get("window").height - statusBarHeight - navigationBarHeight,
+    backgroundColor: "transparent",
+    marginTop: verticalScale(5),
+    paddingHorizontal: paddingHorizontal,
+  },
   mainPaddingHorizontal: 5,
   paddingHorizontal: moderateScale(15),
   borderRadius: 10,
   boxPaddingVertical: moderateScale(10),
   boxPaddingHorizontal: moderateScale(0),
   naviagtionBarHeight: verticalScale(110),
+  textSizeLarge: verticalScale(30),
   symbolSize: verticalScale(8),
   smallTextSize: verticalScale(9),
   statusBarHeight: verticalScale(StatusBar.currentHeight),

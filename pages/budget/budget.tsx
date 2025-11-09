@@ -195,7 +195,7 @@ export default function Budget({ navigation }) {
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
-      <View style={styles.usableScreen}>
+      <View style={commonStyles.usableScreen}>
         <View
           style={{
             flex: 1,
@@ -211,6 +211,7 @@ export default function Budget({ navigation }) {
           <ScrollView
             horizontal={false}
             style={{ flex: 1 }}
+            showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollviewContainer}
           >
             <Statistics

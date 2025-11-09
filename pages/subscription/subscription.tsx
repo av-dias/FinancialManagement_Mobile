@@ -155,7 +155,7 @@ export default function Subscription({ navigation }) {
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
-      <View style={styles.usableScreen}>
+      <View style={commonStyles.usableScreen}>
         {isModalVisible && (
           <ModalCustom
             modalVisible={isModalVisible}

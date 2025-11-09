@@ -12,6 +12,7 @@ import Purchase from "../purchase/purchase";
 import Transaction from "../transaction/transaction";
 import Income from "../income/income";
 import { NotificationBox } from "../../components/NotificationBox/NotificationBox";
+import commonStyles from "../../utility/commonStyles";
 
 const options = ["Purchase", "Transaction", "Income"];
 
@@ -24,7 +25,7 @@ export default function Add({ navigation }) {
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
       <NotificationBox />
-      <View style={styles.usableScreen}>
+      <View style={commonStyles.usableScreen}>
         <View>
           <ButtonSwitch
             selectedOption={selectedOption}

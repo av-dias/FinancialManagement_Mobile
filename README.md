@@ -84,3 +84,4 @@ A Mobile version of the FinancialManagementUI, made from scratch to ease on the 
 - 3.12.0
   - Investment page with overall stats
   - Draft button to go back on Trades and Invest
+  - Styling consistency minor update

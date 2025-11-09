@@ -232,7 +232,7 @@ export default function Home({ navigation }) {
           </View>
         )}
       </ModalCustom>
-      <View style={styles.usableScreen}>
+      <View style={commonStyles.usableScreen}>
         {loadPieChartData(
           statsMode,
           statsType,

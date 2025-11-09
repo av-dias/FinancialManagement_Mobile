@@ -74,7 +74,7 @@ export const styles = StyleSheet.create({
   },
   headerOptions: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     gap: 10,
   },
   optionBtnStyle: {

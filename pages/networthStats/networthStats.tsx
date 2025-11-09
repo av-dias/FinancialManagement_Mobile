@@ -136,7 +136,7 @@ export default function NetworthStats({ navigation }) {
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
-      <View style={styles.usableScreen}>
+      <View style={commonStyles.usableScreen}>
         <View
           style={{
             flex: 1,
