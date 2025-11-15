@@ -26,6 +26,8 @@ import { NetworthAlertData } from "../../constants/networthConstants/networthDel
 import { PortfolioItemEntity } from "../../store/database/PortfolioItem/PortfolioItemEntity";
 import { logTimeTook } from "../../utility/logger";
 import { loadPortfolioAnalyses, loadWorthData } from "../../functions/networth";
+import { Badge } from "react-native-paper";
+import commonStyles from "../../utility/commonStyles";
 
 type PortfolioStatusType = {
   networth: { absolute: number; relative: number };
@@ -66,7 +68,7 @@ export default function Networth({ navigation }) {
   };
 
   const onTradePressCallback = () => {
-    navigation.navigate("Trade");
+    navigation.navigate("Invest");
   };
 
   const deleteQuery = async ({ name, value }) => {
@@ -169,6 +171,9 @@ export default function Networth({ navigation }) {
           size={20}
           color={p.networthFlag ? dark.blueAccent : "gray"}
         />
+        <Badge style={{ width: 30, backgroundColor: dark.glass }}>
+          {`${((p.item.value / portfolioWorth.grossworth) * 100).toFixed(0)}%`}
+        </Badge>
       </View>
     );
   };
@@ -188,7 +193,7 @@ export default function Networth({ navigation }) {
   return (
     <LinearGradient colors={dark.gradientColourLight} style={styles.page}>
       <Header email={email} navigation={navigation} />
-      <View style={styles.usableScreen}>
+      <View style={commonStyles.usableScreen}>
         {modalVisible && (
           <ModalCustom
             modalVisible={modalVisible}
